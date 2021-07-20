@@ -22,6 +22,8 @@ import { CartComponent } from './cart/cart.component';
 import { AddproductComponent } from './addproduct/addproduct.component';
 import { CustomersComponent } from './customers/customers.component';
 import { OrdersComponent } from './orders/orders.component';
+import {MatPaginatorModule} from '@angular/material/paginator';
+
 
 const config: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -46,7 +48,8 @@ const config: DropzoneConfigInterface = {
     WidgetModule,
     Ng5SliderModule,
     NgSelectModule,
-    NgbPaginationModule
+    NgbPaginationModule,
+    MatPaginatorModule
   ],
   providers: [
     {

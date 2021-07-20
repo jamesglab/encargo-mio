@@ -6,59 +6,13 @@
 
   <div class="row">
     <div class="d-flex">
-      <button class="btn btn-success ms-auto mb-2" (click)="openModal(content)">Add user </button>
+      <button class="btn btn-success mb-2" (click)="openModal(content)">Crear Rol </button>
+      <button class="btn btn-success mb-2" style="margin-left: 10px;" (click)="openModal(content_permission)">Crear
+        Permiso </button>
+
     </div>
-    <ng-template #content role="document" let-modal>
-      <div class="modal-header">
-        <h5 class="modal-title mt-0">Add Customer</h5>
-        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="saveUser()" [formGroup]="userForm">
-          <div class="row">
-            <div class="col-12">
-              <div class="mb-3">
-                <label class="control-label">Username</label>
-                <input class="form-control" placeholder="Enter Username" type="text" name="name"
-                  formControlName="name" [ngClass]="{'is-invalid': submitted && form.name.errors}" />
-                <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
-                  <span *ngIf="form.name.errors.required">Username is required.</span>
-                </div>
-              </div>
 
-              <div class="mb-3">
-                <label class="control-label">Designation</label>
-                <input class="form-control" placeholder="Enter designation" type="text" name="designation"
-                  formControlName="designation" [ngClass]="{'is-invalid': submitted && form.designation.errors}" />
-                <div *ngIf="submitted && form.designation.errors" class="invalid-feedback">
-                  <span *ngIf="form.designation.errors.required">Username is required.</span>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="control-label">Email</label>
-                <input class="form-control" placeholder="Enter email" type="text" name="email" formControlName="email"
-                  [ngClass]="{'is-invalid': submitted && form.email.errors}" />
-                <div *ngIf="submitted && form.email.errors" class="invalid-feedback">
-                  <span *ngIf="form.email.errors.required">Email is required.</span>
-                  <span *ngIf="form.email.errors.pattern">This value should be a valid email.</span>
-                </div>
-              </div>
-              <div class="mb-3">
-                <label class="control-label">Select</label>
-                <ng-select [items]="selectValue" [multiple]="true" name="select" [ngModelOptions]="{standalone: true}" [(ngModel)]="selected"></ng-select>
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-success" id="btn-save-event">
-            Save
-          </button>
-        </form>
-      </div>
-    </ng-template>
-
-
-
-    <div class="col-xl-3 col-sm-6" *ngFor="let data of userGridData">
+    <div class="col-xl-3 col-sm-6 mt-4" *ngFor="let data of rolesTable">
       <div class="card text-center">
         <div class="card-body">
           <div class="avatar-sm mx-auto mb-4" *ngIf="!data.image">
@@ -70,23 +24,20 @@
             <img class="rounded-circle avatar-sm" src="{{data.image}}" alt />
           </div>
           <h5 class="font-size-15 mb-1"><a href="javascript: void(0);" class="text-dark">{{data.name}}</a></h5>
-          <p class="text-muted">{{data.designation}}</p>
+          <p class="text-muted">{{data.description}}</p>
           <div>
-            <a href="javascript: void(0);" class="badge bg-primary font-size-11 m-1">{{data.projects[0]}}</a>
-            <a href="javascript: void(0);" class="badge bg-primary font-size-11 m-1">{{data.projects[1]}}</a>
-            <a href="javascript: void(0);" class="badge bg-primary font-size-11 m-1">{{data.projects[2]}}</a>
+            <!-- <a href="javascript: void(0);" class="badge bg-primary font-size-11 m-1" *ngFor="let item of data.permissions">{{item.description}}</a> -->
           </div>
         </div>
         <div class="card-footer bg-transparent border-top">
           <div class="contact-links d-flex font-size-20">
             <div class="flex-fill">
-              <a href="javascript: void(0);" ngbTooltip="Message"><i class="bx bx-message-square-dots"></i></a>
+              <a href="javascript: void(0);" (click)="openModal(content,data)" ngbTooltip="Editar"><i
+                  class="bx bxs-edit-alt"></i></a>
             </div>
             <div class="flex-fill">
-              <a href="javascript: void(0);" ngbTooltip="Projects"><i class="bx bx-pie-chart-alt"></i></a>
-            </div>
-            <div class="flex-fill">
-              <a href="javascript: void(0);" ngbTooltip="Profile"><i class="bx bx-user-circle"></i></a>
+              <a href="javascript: void(0);" ngbTooltip="Permisos"
+                (click)="openRolePermissionModale(roles_permissions,data)"><i class="bx bx-add-to-queue"></i></a>
             </div>
           </div>
         </div>
@@ -98,10 +49,124 @@
   <div class="row">
     <div class="col-12">
       <div class="text-center my-3">
-        <a href="javascript:void(0);" class="text-success"><i class="bx bx-hourglass bx-spin mr-2"></i> Load more </a>
+        <!-- <a href="javascript:void(0);" class="text-success"><i class="bx bx-hourglass bx-spin mr-2"></i> Load more </a> -->
       </div>
     </div> <!-- end col-->
   </div>
   <!-- end row -->
 
 </div> <!-- container-fluid -->
+
+
+
+
+
+
+
+<!-- Modal create and update rol -->
+<ng-template #content role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0" *ngIf="!editRol">Crear Rol</h5>
+    <h5 class="modal-title mt-0" *ngIf="editRol">Actualizar Rol</h5>
+
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body ">
+    <form (ngSubmit)="saveRol()" [formGroup]="rolForm">
+      <div class="row">
+        <div class="col-12">
+          <div class="mb-3">
+            <label class="control-label">Nombre</label>
+            <input class="form-control" placeholder="Nombre" type="text" name="name" formControlName="name"
+              autocomplete="off" [ngClass]="{'is-invalid': submitted && form.name.errors}" autocomplete="off" />
+            <div *ngIf="submitted && form.name.errors" class="invalid-feedback">
+              <span *ngIf="form.name.errors.required">Nombre es requerido.</span>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="control-label">Descripción</label>
+            <input class="form-control" placeholder="Descripción" type="text" name="description"
+              formControlName="description" [ngClass]="{'is-invalid': submitted && form.description.errors}" />
+            <div *ngIf="submitted && form.description.errors" class="invalid-feedback">
+              <span *ngIf="form.description.errors.required">Descripcion es requerida.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button *ngIf="!editRol" type="submit" class="btn btn-success" id="btn-save-event">
+        Crear Rol
+      </button>
+      <button *ngIf="editRol" type="submit" class="btn btn-success" id="btn-save-event">
+        Actualizar Rol
+      </button>
+    </form>
+  </div>
+</ng-template>
+<!-- Modal create rol -->
+<ng-template #content_permission role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Crear permiso</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body ">
+    <form (ngSubmit)="savePermisson()" [formGroup]="permisionForm">
+      <div class="row">
+        <div class="col-12">
+          <div class="mb-3">
+            <label class="control-label">Valor</label>
+            <input class="form-control" placeholder="Nombre" type="text" name="value" formControlName="value"
+              autocomplete="off" [ngClass]="{'is-invalid': submitted && form.name.errors}" autocomplete="off" />
+            <div *ngIf="submitted && form.value.errors" class="invalid-feedback">
+              <span *ngIf="form.value.errors.required">Valor requerido</span>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="control-label">Descripción</label>
+            <input class="form-control" placeholder="Descripción" type="text" name="description"
+              formControlName="description" [ngClass]="{'is-invalid': submitted && form.description.errors}" />
+            <div *ngIf="submitted && form.description.errors" class="invalid-feedback">
+              <span *ngIf="form.description.errors.required">Descripcion es requerida.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success" id="btn-save-event">
+        Crear Permiso
+      </button>
+    </form>
+  </div>
+</ng-template>
+
+<!-- modale add permissions to rol -->
+<ng-template #roles_permissions role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Permisos del Rol</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <h5>Permisos</h5>
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let item of permissionsRole ;let i = index"
+              (click)="addPermisionToRole(item,i)">{{item.value}}
+              <a href="javascript: void(0);" ngbTooltip="agregar a rol"><i class="bx bx-label"></i></a>
+            </li>
+          </ul>
+        </div>
+        <div class="col">
+          <h5>Permisos del rol</h5>
+          <ul class="list-group">
+            <li class="list-group-item" ngbTooltip="eliminar permiso"
+              *ngFor="let item of roleSelected.permissions; let i =index" (click)="deletePermission(item,i)">
+              {{item.value}}
+              <a href="javascript: void(0);"><i class="bx bx-trash-alt"></i></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

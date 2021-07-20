@@ -1,8 +1,18 @@
-export interface Usergrid {
+export interface Role {
     id: number;
-    image?: string;
-    name: string;
-    designation: string;
-    projects: string[];
+    name?: string;
+    status: boolean;
+    created_at: Date;
+    updated_at: Date;
     email: string;
+    permissions: permission[]
+}
+
+export interface permission {
+    id: number;
+    value: string;
+    description: string;
+    status: boolean;
+    created_at: Date;
+    updated_at: Date;
 }

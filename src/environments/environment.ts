@@ -6,6 +6,7 @@ export const environment = {
 
   production: false,
   defaultauth: 'fackbackend',
+  url_api: 'https://c464f19477de.ngrok.io/api/v1/',
   firebaseConfig: {
     apiKey: '',
     authDomain: '',
