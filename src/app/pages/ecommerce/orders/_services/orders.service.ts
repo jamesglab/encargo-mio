@@ -39,6 +39,7 @@ export class OrderService {
   //     );
   // }
   getQuotations(params) {
+    if (!params.status) delete params.status;
     return this.http.get<any>(
       `http://localhost:4002/api/v1/orders/admin`, { headers: header, params }).pipe(
         map((res: any) => {
@@ -70,4 +71,13 @@ export class OrderService {
       );
   }
 
+  getTRM() {
+    return this.http.get<any>(
+      `http://localhost:4002/api/v1/orders/trm`, { headers: header, }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

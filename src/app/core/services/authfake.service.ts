@@ -4,14 +4,15 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { User } from '../models/auth.models';
+import { StorageService } from '../../_services/storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthfakeauthenticationService {
     private currentUserSubject: BehaviorSubject<User>;
     public currentUser: Observable<User>;
 
-    constructor(private http: HttpClient) {
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+    constructor(private http: HttpClient, private _storageService: StorageService) {
+        this.currentUserSubject = new BehaviorSubject<User>(this._storageService.getItem('currentUser'));
         this.currentUser = this.currentUserSubject.asObservable();
     }
 

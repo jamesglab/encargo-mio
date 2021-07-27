@@ -17,14 +17,42 @@
             <div class="col-sm-8">
               <div class="text-sm-end">
                 <button type="button" class="btn btn-success btn-rounded mb-2 me-2"><i class="mdi mdi-plus mr-1"></i>
-                  Add New Order</button>
+                  Crear una Orden</button>
               </div>
             </div><!-- end col-->
           </div>
 
+
+          <ul class="nav nav-pills">
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active':!status}" (click)="status = null ;  getTransactions()">Por
+                Aprobar</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active':status==1}"
+                (click)="status = 1 ;  getTransactions()">Aprobadas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active':status==2}" (click)="status = 2 ;  getTransactions()">En proceso
+                de pago</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active':status==3}" (click)="status = 3 ;  getTransactions()">En proceso
+                de compra</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active':status==5}"
+                (click)="status = 5 ;  getTransactions()">Entregado</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active':status==6}"
+                (click)="status = 6 ;  getTransactions()">Canceladas</a>
+            </li>
+          </ul>
           <!-- Table data -->
-          <app-transaction [transactions]="transactions |  filter:term"></app-transaction>
-          <mat-paginator [length]="counts" [pageSizeOptions]="[10, 50, 100]" (page)="getTransactions($event)">
+          <hr>
+          <app-transaction class="mt-1" [transactions]="transactions |  filter:term"></app-transaction>
+          <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
           </mat-paginator>
         </div>
       </div>

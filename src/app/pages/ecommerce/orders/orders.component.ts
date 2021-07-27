@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { OrderService } from "./_services/orders.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+
 @Component({
   selector: "app-orders",
   templateUrl: "./orders.component.html",
@@ -17,21 +19,31 @@ export class OrdersComponent implements OnInit {
   public itemPerPage = 5;
   public transactions;
   public counts: number;
+  public status: number;
 
-  constructor(private readonly _orderService: OrderService) { }
+  constructor(private readonly _orderService: OrderService,
+    private modalService: NgbModal
+  ) { }
 
   ngOnInit() {
-    this.getTransactions({ pageSize: 10, pageIndex: 0 })
+    this.getTransactions()
   }
-  getTransactions(pagination) {
+  getTransactions(pagination?) {
+    console.log('status', this.status)
     this._orderService
       .getQuotations({
-        pageSize: pagination.pageSize,
-        page: pagination.pageIndex + 1,
+        pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+        page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
+        status: this.status ? this.status : '0'
       })
       .subscribe((res) => {
         this.transactions = res.orders;
         this.counts = res.count;
       });
   }
+
+  openModal(content: any) {
+    this.modalService.open(content, { size: 'xl', centered: true });
+  }
+
 }

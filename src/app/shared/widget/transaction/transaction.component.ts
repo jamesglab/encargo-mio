@@ -20,14 +20,15 @@ export class TransactionComponent implements OnInit {
   productSelected;
   subTotalPrice = 0;
   totalPrice = 0;
-  trm = 30;
-
+  public trm: number;
   constructor(
     private modalService: NgbModal,
     private _orderService: OrderService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.getTRM();
+  }
 
   /**
    * Open modal
@@ -36,20 +37,25 @@ export class TransactionComponent implements OnInit {
   openModal(order, content: any) {
     this._orderService.detailOrder({ id: order.id }).subscribe((res) => {
       console.log("la orden es ", res);
-      this.productSelected = res[0];
-      this.productSelected.order_service.estimated_value = parseInt(this.productSelected.order_service.estimated_value);
-      this.modalService.open(content, { centered: true });
+      this.productSelected = res;
+      this.modalService.open(content, { size: 'xl', centered: true });
     });
   }
 
+  getTRM() {
+    this._orderService.getTRM().subscribe(res => {
+      this.trm = res.value;
+    })
+  }
+
   calcTotalProducts() {
-    this.subTotalPrice = 0;
-    this.productSelected.order_service.estimated_value = 0;
-    this.productSelected.order_service.products.map((item) => {
-      const itemsubTotalPrice = item.quantity * item.price;
-      this.subTotalPrice = this.subTotalPrice + itemsubTotalPrice;
-    });
-    this.productSelected.order_service.estimated_value = this.subTotalPrice + this.trm
+    // this.subTotalPrice = 0;
+    // this.productSelected.order_service.estimated_value.usd = 0;
+    // this.productSelected.order_service.products.map((item) => {
+    //   const itemsubTotalPrice = item.quantity * item.price.usd;
+    //   this.subTotalPrice = this.subTotalPrice + itemsubTotalPrice;
+    // });
+    // this.productSelected.order_service.estimated_value.usd = this.subTotalPrice;
   }
   sendQuotation() {
     let found = false;
