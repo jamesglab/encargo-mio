@@ -20,6 +20,7 @@ export class OrdersComponent implements OnInit {
   public transactions;
   public counts: number;
   public status: number;
+  public trm: number;
 
   constructor(private readonly _orderService: OrderService,
     private modalService: NgbModal
@@ -30,6 +31,10 @@ export class OrdersComponent implements OnInit {
   }
   getTransactions(pagination?) {
     console.log('status', this.status)
+
+    this._orderService.getTRM().subscribe(res => {
+      this.trm = res.value;
+    })
     this._orderService
       .getQuotations({
         pageSize: pagination?.pageSize ? pagination.pageSize : 10,
@@ -45,5 +50,7 @@ export class OrdersComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, { size: 'xl', centered: true });
   }
+  createQuotation() {
 
+  }
 }

@@ -16,7 +16,8 @@
             </div>
             <div class="col-sm-8">
               <div class="text-sm-end">
-                <button type="button" class="btn btn-success btn-rounded mb-2 me-2"><i class="mdi mdi-plus mr-1"></i>
+                <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="openModal(content)"><i
+                    class="mdi mdi-plus mr-1"></i>
                   Crear una Orden</button>
               </div>
             </div><!-- end col-->
@@ -59,3 +60,10 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal To create New Order -->
+
+<ng-template #content role="document" let-modal>
+  <app-create-order [trm]="trm" (close_modale)="modal.close('Close click')"></app-create-order>
+</ng-template>

@@ -23,6 +23,7 @@ import { AddproductComponent } from './addproduct/addproduct.component';
 import { CustomersComponent } from './customers/customers.component';
 import { OrdersComponent } from './orders/orders.component';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { CreateOrderComponent } from './orders/components/create-order/create-order.component';
 
 
 const config: DropzoneConfigInterface = {
@@ -33,7 +34,7 @@ const config: DropzoneConfigInterface = {
 
 @NgModule({
   // tslint:disable-next-line: max-line-length
-  declarations: [ProductsComponent, ProductdetailComponent, ShopsComponent, CheckoutComponent, CartComponent, AddproductComponent, CustomersComponent, OrdersComponent],
+  declarations: [ProductsComponent, ProductdetailComponent, ShopsComponent, CheckoutComponent, CartComponent, AddproductComponent, CustomersComponent, OrdersComponent, CreateOrderComponent],
   imports: [
     CommonModule,
     EcommerceRoutingModule,

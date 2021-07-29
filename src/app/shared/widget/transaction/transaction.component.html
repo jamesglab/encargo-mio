@@ -150,41 +150,10 @@
           </div>
         </div>
       </div>
-
-
-      <!-- <p class="mb-2">
-        Product id:
-        <span class="text-primary">#{{ productSelected.order_service.id }}</span>
-      </p>
-      <p class="mb-2">
-        Usuario:
-        <span class="text-secondary">{{
-          productSelected.order_service.user.name
-        }}</span>
-      </p>
-      <p class="mb-4">
-        Numero de contacto:
-        <span class="text-secondary">{{
-          productSelected.order_service.user.phone
-        }}</span>
-      </p> -->
-
-      <!-- <ul class="nav nav-pills">
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{'active':tabProducts == 1 }" (click)="tabProducts = 1">Precio de producto</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{'active':tabProducts == 2}" (click)="tabProducts = 2">Envío a casillero</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [ngClass]="{'active':tabProducts == 3}" (click)="tabProducts = 3">Envío a casa</a>
-        </li>
-      </ul> -->
       <hr>
       <div class="table-responsive">
 
         <div class="container" *ngFor="let item of productSelected.order_service.products">
-
           <div class="row">
             <div class="col-2 d-flex justify-content-center align-items-center">
               <img [src]="item.image" alt class="avatar" />
@@ -276,78 +245,7 @@
           </div>
           <hr>
         </div>
-
-
-
-
-        <!-- <table class="table table-centered table-nowrap">
-          <thead>
-            <tr>
-              <th scope="col">Imagen</th>
-              <th scope="col">Nombre del Producto</th>
-              <th scope="col">Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of productSelected.order_service.products">
-              <th scope="row">
-                <div>
-                  <img [src]="item.image" alt class="avatar-lg" />
-                </div>
-              </th>
-              <td>
-                <div style="max-width: 9rem">
-                  <a [href]="item.link" target="blank">
-                    <h5 class="text-truncate font-size-14">{{ item.name }}</h5>
-                  </a>
-                  <input type="number" class="form-control ng-valid ng-dirty ng-touched" [min]="0"
-                    [(ngModel)]="item.price.usd" (ngModelChange)="calcTotalProducts()" />
-                  <p class="text-muted mb-0">
-                    $ {{ item.price.usd }} x {{ item.quantity }}
-                  </p>
-                </div>
-              </td>
-              <td>$ {{ (item.quantity * item.price.usd).toFixed(2) }}</td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <h6 class="m-0 text-end">Sub Total:</h6>
-              </td>
-              <td>{{ subTotalPrice }}</td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <h6 class="m-0 text-end">TRM:</h6>
-              </td>
-              <td>{{ trm }}</td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <h6 class="m-0 text-end">Total:</h6>
-              </td>
-              <td>$ USD {{ productSelected.order_service.estimated_value.usd.toFixed(2) }}/ COP
-                {{ (productSelected.order_service.estimated_value.usd * trm).toFixed(2) }}</td>
-            </tr>
-          </tbody>
-        </table> -->
-        <!-- <div class="row m-2">
-          <div class="col"></div>
-          <div class="col">
-            <div class="d-flex">
-              <div class="title">
-                Sub Total :
-              </div>
-              <div>
-                USD {{ subTotalPrice }}
-              </div>
-            </div>
-
-          </div>
-        </div> -->
       </div>
-
-
-
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="modal.close('Close click')">
