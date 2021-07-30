@@ -49,6 +49,15 @@ export class TransactionComponent implements OnInit {
   }
 
   calcTotalProducts() {
+    this.productSelected.locker_value = 0;
+    this.productSelected.total_value = 0;
+    let totalProducts = 0
+    this.productSelected.products.map((product, i) => {
+      this.productSelected.locker_value = this.productSelected.locker_value + product.price.price_locker.usd;
+      totalProducts = totalProducts + ((product.price.usd + product.price.tax) * product.quantity);
+    });
+    this.productSelected.total_value = totalProducts + this.productSelected.locker_value;
+
     // this.subTotalPrice = 0;
     // this.productSelected.order_service.estimated_value.usd = 0;
     // this.productSelected.order_service.products.map((item) => {
@@ -59,8 +68,8 @@ export class TransactionComponent implements OnInit {
   }
   sendQuotation() {
     let found = false;
-    this.productSelected.order_service.products.map((item) => {
-      if (item.price == 0) {
+    this.productSelected.products.map((item) => {
+      if (item.price.usd == 0) {
         found = true;
       }
     });
@@ -71,14 +80,14 @@ export class TransactionComponent implements OnInit {
         "error"
       );
     this._orderService
-      .updateOrder(this.productSelected.order_service)
+      .updateOrder(this.productSelected)
       .subscribe((res) => {
         Swal.fire(
           "Cotización actualizada",
-          `aprobaste la cotizacion  # ${this.productSelected.order_service.id}`,
+          `aprobaste la cotizacion  # ${this.productSelected.id}`,
           "success"
         );
-        this.modalService.dismissAll();
+        // this.modalService.dismissAll();
       });
   }
 }

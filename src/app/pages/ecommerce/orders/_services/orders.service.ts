@@ -63,7 +63,7 @@ export class OrderService {
   updateOrder(order) {
     const products = order.products;
     return this.http.put<any>(
-      `http://localhost:4002/api/v1/orders/admin/update`, { products, order }, { headers: header }).pipe(
+      `http://localhost:4002/api/v1/orders/admin/update`, order, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
