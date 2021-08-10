@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { OrderService } from "./_services/orders.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { UserService } from "src/app/_services/users.service";
 
 @Component({
   selector: "app-orders",
@@ -21,13 +22,22 @@ export class OrdersComponent implements OnInit {
   public counts: number;
   public status: number;
   public trm: number;
+  public users = [];
 
   constructor(private readonly _orderService: OrderService,
+    private _userService: UserService,
     private modalService: NgbModal
   ) { }
 
   ngOnInit() {
-    this.getTransactions()
+    this.getTransactions();
+    this.getUsersAdmin();
+  }
+  getUsersAdmin() {
+    this._userService.getUsersAdmin().subscribe(users => {
+      console.log('users', users);
+      this.users = users;
+    })
   }
   getTransactions(pagination?) {
     console.log('status', this.status)

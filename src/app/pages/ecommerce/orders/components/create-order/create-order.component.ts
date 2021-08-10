@@ -10,6 +10,7 @@ import { OrderService } from '../../_services/orders.service';
 export class CreateOrderComponent implements OnInit {
   @Output() close_modale = new EventEmitter<any>();
   @Input() trm;
+  @Input() users = [];
   public createProductForm: FormGroup;
   public products: FormArray;
 
@@ -19,6 +20,7 @@ export class CreateOrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
+    console.log('users to modale',this.users);
   }
 
   buildForm() {
@@ -96,14 +98,14 @@ export class CreateOrderComponent implements OnInit {
     this.products.controls[i].get('price').get('price_locker').get('usd').setValue(0);
     console.log(
 
-    // this.products.controls[i].
+      // this.products.controls[i].
 
     )
     if (this.products.controls[i].get('price').get('free_shipping_locker').value) {
       this.products.controls[i].get('price').get('price_locker').get('usd').disabled
-    
-    }else {
-    // this.products.controls[i].get('price').get('price_locker').get('usd')['controls'].enabled();
+
+    } else {
+      // this.products.controls[i].get('price').get('price_locker').get('usd')['controls'].enabled();
     }
   }
 

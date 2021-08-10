@@ -32,5 +32,14 @@ export class UserService {
     );
   }
 
+  getUsersAdmin(): Observable<any> {
+    return this.http.get<any>(`${environment.url_api}user/user/users/admin`).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+
+  }
 
 }
