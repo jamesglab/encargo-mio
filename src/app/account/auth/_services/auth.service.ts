@@ -36,7 +36,7 @@ export class AuthService {
     this._storageService.clear();
     credentials.email = credentials.email.trim();
 
-    return this.http.post<any>(`${environment.url_api}user/auth`, credentials, { headers: header }).pipe(
+    return this.http.post<any>(`${environment.microservices.user}/auth`, credentials, { headers: header }).pipe(
       map((res: any) => {
         // localStorage.setItem("currentUser", JSON.stringify({ user: res.user, token: res.token }));
 

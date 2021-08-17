@@ -6,7 +6,11 @@ export const environment = {
 
   production: false,
   defaultauth: '',
-  url_api: 'http://localhost:4001/api/v1/',
+  url_api: '',
+  microservices: {
+    user: "https://dev-api.encargomio.com/api/v1/user",
+    management: "http://localhost:4004/api/v1/management/"
+  },
   firebaseConfig: {
     apiKey: '',
     authDomain: '',

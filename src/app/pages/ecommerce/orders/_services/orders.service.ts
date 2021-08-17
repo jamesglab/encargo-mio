@@ -29,19 +29,10 @@ export class OrderService {
       );
   }
 
-  // makeQuotation(data: { products: any[] }): Observable<any> {
-  //   return this.http.post<any>(
-  //     `https://c78cfa85ab8a.ngrok.io/api/v1/orders`, data, { headers: header }).pipe(
-  //       map((res: any) => {
-  //         return res;
-  //       }),
-  //       catchError(handleError)
-  //     );
-  // }
   getQuotations(params) {
     if (!params.status) delete params.status;
     return this.http.get<any>(
-      `http://localhost:4002/api/v1/orders/admin`, { headers: header, params }).pipe(
+      `${environment.microservices.management}orders`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -52,7 +43,7 @@ export class OrderService {
 
   detailOrder(params) {
     return this.http.get<any>(
-      `http://localhost:4002/api/v1/orders/detail`, { headers: header, params }).pipe(
+      `http://localhost:4004/api/v1/management/orders/detail`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -63,12 +54,12 @@ export class OrderService {
   updateOrder(order) {
     const products = order.products;
     return this.http.put<any>(
-      `http://localhost:4002/api/v1/orders/admin/update`, order, { headers: header }).pipe(
+      `${environment.microservices.management}orders`, { ...order, status: '1' },
+      { headers: header, params: { id: order.id } }).pipe(
         map((res: any) => {
           return res;
         }),
-        catchError(handleError)
-      );
+        catchError(handleError));
   }
 
   getTRM() {
