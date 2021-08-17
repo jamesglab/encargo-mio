@@ -6,7 +6,11 @@ export const environment = {
 
   production: false,
   defaultauth: '',
-  url_api: 'http://localhost:4001/api/v1/',
+  url_api: {
+    orders:'http://localhost:4002/api/v1/',
+    users:'http://localhost:4001/api/v1/',
+    managment:'http://localhost:4003/api/v1/'
+  },
   firebaseConfig: {
     apiKey: '',
     authDomain: '',

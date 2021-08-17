@@ -21,7 +21,7 @@ export class OrderService {
 
   getProductInfo(url: string): Observable<any> {
     return this.http.post<any>(
-      `http://localhost:4002/api/v1/orders/product-url`, { url }, { headers: header }).pipe(
+      `${environment.url_api.orders}orders/product-url`, { url }, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -29,6 +29,16 @@ export class OrderService {
       );
   }
 
+  createQuotation(quotation) {
+
+    return this.http.post<any>(
+      `${environment.url_api.orders}orders/admin`, quotation, { headers: header }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
   // makeQuotation(data: { products: any[] }): Observable<any> {
   //   return this.http.post<any>(
   //     `https://c78cfa85ab8a.ngrok.io/api/v1/orders`, data, { headers: header }).pipe(
@@ -41,7 +51,7 @@ export class OrderService {
   getQuotations(params) {
     if (!params.status) delete params.status;
     return this.http.get<any>(
-      `http://localhost:4002/api/v1/orders/admin`, { headers: header, params }).pipe(
+      `${environment.url_api.orders}orders/admin`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -52,7 +62,7 @@ export class OrderService {
 
   detailOrder(params) {
     return this.http.get<any>(
-      `http://localhost:4002/api/v1/orders/detail`, { headers: header, params }).pipe(
+      `${environment.url_api.orders}orders/detail`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -63,7 +73,7 @@ export class OrderService {
   updateOrder(order) {
     const products = order.products;
     return this.http.put<any>(
-      `http://localhost:4002/api/v1/orders/admin/update`, order, { headers: header }).pipe(
+      `${environment.url_api.orders}/admin/update`, order, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -73,7 +83,7 @@ export class OrderService {
 
   getTRM() {
     return this.http.get<any>(
-      `http://localhost:4002/api/v1/orders/trm`, { headers: header, }).pipe(
+      `${environment.url_api.orders}orders/trm`, { headers: header, }).pipe(
         map((res: any) => {
           return res;
         }),

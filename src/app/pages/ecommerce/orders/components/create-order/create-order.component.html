@@ -92,6 +92,14 @@
                 <div>USD 0 / COP 0</div>
               </div>
             </div>
+            <div class="row mt-2">
+              <div class="col-12">
+                <select class="form-select" aria-label="Seleccióna un usuario" formControlName="user">
+                  <option disabled>Seleccióna un usuario</option>
+                  <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -122,7 +130,7 @@
                 {{item.aditional_info}}
               </div>
               <div class="mt-2 h5">
-                Cantidad: {{item.quantity}}
+                Cantidad: {{createProductForm.get('products')['controls'][i].controls.quantity.value}}
               </div>
             </div>
             <div class="col-4">
@@ -145,15 +153,14 @@
                     USD
                   </div>
                 </div>
-  
+
                 <div class="row mt-2">
                   <div class="col-6 h5 d-flex align-items-center">
                     Artículo:
                   </div>
-                  <div class="col-6 h5 d-flex" >
+                  <div class="col-6 h5 d-flex">
                     <div>
-                      <input type="number" class="form-control" [min]="0" formControlName="usd"
-                        >
+                      <input type="number" class="form-control" [min]="0" formControlName="usd">
                     </div>
                   </div>
                 </div>
@@ -163,7 +170,8 @@
                   </div>
                   <div class="col-6">
                     <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" formControlName="free_shipping_locker" (click)="resetProductValue(i)">
+                      <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                        formControlName="free_shipping_locker" (click)="resetProductValue(i)">
                     </div>
                   </div>
                 </div>
@@ -173,11 +181,11 @@
                   </div>
                   <div class="col-6 h5 d-flex">
                     <div>
-                      <input  type="number" class="form-control" [min]="0" formControlName="usd">
+                      <input type="number" class="form-control" [min]="0" formControlName="usd">
                     </div>
                   </div>
                 </div>
-  
+
                 <div class="row mt-2">
                   <div class="col-6 h5 d-flex align-items-center">
                     Tax :
@@ -185,29 +193,14 @@
                   <div class="col-6 h5 d-flex">
                     <div>
                       <input type="number" class="form-control" [min]="0" formControlName="tax">
-
                     </div>
                   </div>
                 </div>
-  
               </div>
-         
-
-
             </div>
           </div>
-
-
-          <!-- <figure class="image is-60x60">
-            <img src="{{  createProductForm.get('products')['controls'][i].controls.image.value }}"
-              (error)="$event.src = 'https://bulma.io/images/placeholders/96x96.png'" alt="Placeholder image"
-              style="width: 100px; height: 100px;" />
-          </figure> -->
         </div>
-
       </div>
-
-
 
 
 

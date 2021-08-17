@@ -1,7 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import Swal from 'sweetalert2';
 import { OrderService } from '../../_services/orders.service';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-create-order',
   templateUrl: './create-order.component.html',
@@ -16,11 +17,11 @@ export class CreateOrderComponent implements OnInit {
 
   public isLoading: boolean = false;
 
-  constructor(private _formBuilder: FormBuilder, private quotationService: OrderService) { }
+  constructor(private _formBuilder: FormBuilder,
+    private quotationService: OrderService) { }
 
   ngOnInit(): void {
     this.buildForm();
-    console.log('users to modale',this.users);
   }
 
   buildForm() {
@@ -28,10 +29,11 @@ export class CreateOrderComponent implements OnInit {
       link: [null, [Validators.required]],
       name: [null],
       description: [null],
-      aditional_info: [null],
+      quantity: [1],
+      aditional_info: [null, [Validators.required]],
       image: [null],
-      quantity: [1, [Validators.required]],
       products: this._formBuilder.array([]),
+      user: [null],
     });
   }
 
@@ -96,11 +98,6 @@ export class CreateOrderComponent implements OnInit {
   resetProductValue(i) {
     this.products = this.createProductForm.get('products') as FormArray;
     this.products.controls[i].get('price').get('price_locker').get('usd').setValue(0);
-    console.log(
-
-      // this.products.controls[i].
-
-    )
     if (this.products.controls[i].get('price').get('free_shipping_locker').value) {
       this.products.controls[i].get('price').get('price_locker').get('usd').disabled
 
@@ -115,7 +112,18 @@ export class CreateOrderComponent implements OnInit {
 
 
   createOrder() {
-    console.log('order to created', this.createProductForm)
+    if (this.createProductForm.valid) {
+      this.quotationService.createQuotation({
+        user: this.createProductForm.getRawValue().user,
+        products: this.createProductForm.getRawValue().products,
+      }).subscribe(res => {
+        console.log('creamos la orden desde el administrador', res)
+      }, err => {
+        console.log('tenemos el error')
+      })
+    } else {
+      Swal.fire('Datos incompletos', `- Selecciona el usuario \b -Seleccióna al menos un producto`, 'info')
+    }
   }
 
 }
