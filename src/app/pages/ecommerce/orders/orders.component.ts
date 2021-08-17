@@ -24,21 +24,23 @@ export class OrdersComponent implements OnInit {
   public trm: number;
   public users = [];
 
-  constructor(private readonly _orderService: OrderService,
+  constructor(
+    private readonly _orderService: OrderService,
     private _userService: UserService,
-    private modalService: NgbModal
-  ) { }
+    private modalService: NgbModal) { }
 
   ngOnInit() {
     this.getTransactions();
     this.getUsersAdmin();
   }
+
   getUsersAdmin() {
     this._userService.getUsersAdmin().subscribe(users => {
       console.log('users', users);
       this.users = users;
     })
   }
+
   getTransactions(pagination?) {
     console.log('status', this.status)
 
@@ -52,6 +54,7 @@ export class OrdersComponent implements OnInit {
         status: this.status ? this.status : '0'
       })
       .subscribe((res) => {
+        console.log("ORDERS RESPONSE", res);
         this.transactions = res.orders;
         this.counts = res.count;
       });
@@ -60,7 +63,7 @@ export class OrdersComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, { size: 'xl', centered: true });
   }
-  createQuotation() {
 
-  }
+  createQuotation() { }
+
 }
