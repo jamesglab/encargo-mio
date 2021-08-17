@@ -24,7 +24,7 @@ export class UserService {
   createUser(user_type: number, user): Observable<any> {
 
 
-    return this.http.post<any>(`${environment.url_api}user/user/insert_user`, user, { headers: header, params: { user_type: (user_type == 1) ? 'client' : 'company' } }).pipe(
+    return this.http.post<any>(`${environment.microservices.user}user/user/insert_user`, user, { headers: header, params: { user_type: (user_type == 1) ? 'client' : 'company' } }).pipe(
       map((res: any) => {
         return res;
       }),

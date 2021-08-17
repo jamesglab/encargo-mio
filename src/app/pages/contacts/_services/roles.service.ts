@@ -21,7 +21,7 @@ export class RolesService {
 
   getRoles(): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:4001/api/v1/user/role`, { headers: header }).pipe(
+      `${environment.microservices.management}/role`, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -31,7 +31,7 @@ export class RolesService {
 
   getPermissions(): Observable<any> {
     return this.http.get<any>(
-      `http://localhost:4001/api/v1/user/permission`, { headers: header }).pipe(
+      `${environment.microservices.management}/permission`, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -41,7 +41,7 @@ export class RolesService {
 
   getPermissionById(id) {
     return this.http.get<any>(
-      `http://localhost:4001/api/v1/user/permission`, { headers: header, params: { id } }).pipe(
+      `${environment.microservices.management}/permission`, { headers: header, params: { id } }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -49,10 +49,10 @@ export class RolesService {
       );
   }
 
-  getRoleById(id){
+  getRoleById(id) {
 
     return this.http.get<any>(
-      `http://localhost:4001/api/v1/user/role/detail`, { headers: header, params: { id } }).pipe(
+      `${environment.microservices.management}/role/detail`, { headers: header, params: { id } }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -62,7 +62,7 @@ export class RolesService {
   }
   createRol(role) {
     return this.http.post<any>(
-      `http://localhost:4001/api/v1/user/role`, role, { headers: header }).pipe(
+      `${environment.microservices.management}/role`, role, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -70,12 +70,12 @@ export class RolesService {
       );
   }
 
-  roleDetail(){
+  roleDetail() {
     // localhost:4001/api/v1/user/role/detail?id=1
   }
   updateRol(role) {
     return this.http.put<any>(
-      `http://localhost:4001/api/v1/user/role`, role, { headers: header }).pipe(
+      `${environment.microservices.management}/role`, role, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -85,7 +85,7 @@ export class RolesService {
 
   addPermisionRole(role_permission) {
     return this.http.put<any>(
-      `http://localhost:4001/api/v1/user/role/add-permission`, role_permission, { headers: header }).pipe(
+      `${environment.microservices.management}/role/add-permission`, role_permission, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -93,9 +93,9 @@ export class RolesService {
       );
   }
 
-  deletePermission(role_permission){
+  deletePermission(role_permission) {
     return this.http.put<any>(
-      `http://localhost:4001/api/v1/user/role/delete-permission`, role_permission, { headers: header }).pipe(
+      `${environment.microservices.management}/role/delete-permission`, role_permission, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -105,7 +105,7 @@ export class RolesService {
 
   createPermission(permission) {
     return this.http.post<any>(
-      `http://localhost:4001/api/v1/user/permission`, permission, { headers: header }).pipe(
+      `${environment.microservices.management}/permission`, permission, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),

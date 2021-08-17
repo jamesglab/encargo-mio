@@ -45,7 +45,7 @@
       "EMAIL": "Correo electrónico",
       "PROJECTS": "Proyectos",
       "TASKS": "Tareas",
-      "CONTACTS": "Contactos"
+      "CONTACTS": "Usuarios"
     },
     "EXTRA_PAGES": {
       "TITLE": "Páginas extra",
@@ -174,9 +174,9 @@
       }
     },
     "CONTACTS": {
-      "TEXT": "Contactos",
+      "TEXT": "Usuarios",
       "LIST": {
-        "USERGRID": "Cuadrícula de usuario",
+        "USERGRID": "Roles y Permisos",
         "USERLIST": "Lista de usuarios",
         "PROFILE": "Perfil"
       }

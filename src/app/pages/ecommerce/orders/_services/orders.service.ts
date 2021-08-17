@@ -43,14 +43,23 @@ export class OrderService {
 
   detailOrder(params) {
     return this.http.get<any>(
-      `http://localhost:4004/api/v1/management/orders/detail`, { headers: header, params }).pipe(
+      `${environment.microservices.management}orders/detail`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
         catchError(handleError)
       );
   }
+  createQuotation(body) {
+    return this.http.post<any>(
+      `${environment.microservices.management}orders/admin`,body,
+      { headers: header}).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError));
 
+  }
   updateOrder(order) {
     const products = order.products;
     return this.http.put<any>(
@@ -64,7 +73,7 @@ export class OrderService {
 
   getTRM() {
     return this.http.get<any>(
-      `${environment.microservices.management}orders/trm`, { headers: header, }).pipe(
+      `${environment.microservices.management}trm`, { headers: header, }).pipe(
         map((res: any) => {
           return res;
         }),

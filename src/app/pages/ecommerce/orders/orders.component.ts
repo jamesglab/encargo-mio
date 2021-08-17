@@ -35,10 +35,12 @@ export class OrdersComponent implements OnInit {
   }
 
   getUsersAdmin() {
-    this._userService.getUsersAdmin().subscribe(users => {
-      console.log('users', users);
-      this.users = users;
-    })
+    // this._userService.getUsersAdmin().subscribe(users => {
+    //   console.log('users', users);
+    //   this.users = users;
+    // },err=>{
+    //   console.log('error',err)
+    // })
   }
 
   getTransactions(pagination?) {

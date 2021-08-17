@@ -8,8 +8,8 @@ export const environment = {
   defaultauth: '',
   url_api: '',
   microservices: {
-    user: "https://dev-api.encargomio.com/api/v1/user",
-    management: "http://localhost:4004/api/v1/management/",
+    user: "https://dev-api.encargomio.com/api/v1/user/",
+    management: "https://a0e971a88204.ngrok.io/api/v1/management/",
   },
   firebaseConfig: {
     apiKey: '',

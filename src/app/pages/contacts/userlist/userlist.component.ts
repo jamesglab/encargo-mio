@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserService } from "src/app/_services/users.service";
 
 @Component({
   selector: 'app-userlist',
@@ -11,11 +12,22 @@ import { Component, OnInit } from '@angular/core';
  */
 export class UserlistComponent implements OnInit {
   // bread crumb items
-  breadCrumbItems: Array<{}>;
+  public users = [];
+  public counts = 100;
 
-  constructor() { }
+  constructor(private _userService: UserService) { }
 
   ngOnInit() {
-    this.breadCrumbItems = [{ label: 'Contacts' }, { label: 'Users List', active: true }];
+    this.getUsers();
+  }
+
+  getUsers(pagination?) {
+    this._userService.getUsersAdmin({
+      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
+    }).subscribe(res => {
+      this.users = res.users;
+      this.counts = res.count
+    });
   }
 }

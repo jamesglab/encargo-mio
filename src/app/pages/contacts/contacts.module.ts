@@ -13,6 +13,8 @@ import { ContactsRoutingModule } from './contacts-routing.module';
 import { UsergridComponent } from './usergrid/usergrid.component';
 import { UserlistComponent } from './userlist/userlist.component';
 import { ProfileComponent } from './profile/profile.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 
 @NgModule({
   declarations: [UsergridComponent, UserlistComponent, ProfileComponent],
@@ -23,8 +25,10 @@ import { ProfileComponent } from './profile/profile.component';
     UIModule,
     NgSelectModule,
     NgApexchartsModule,
-    FormsModule, ReactiveFormsModule ,
-    NgbTooltipModule
+    FormsModule,
+    ReactiveFormsModule,
+    NgbTooltipModule,
+    MatPaginatorModule
   ]
 })
 export class ContactsModule { }
