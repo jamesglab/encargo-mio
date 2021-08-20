@@ -21,7 +21,7 @@ export class OrderService {
 
   getProductInfo(url: string): Observable<any> {
     return this.http.post<any>(
-      `${environment.microservices.management}orders/product-url`, { url }, { headers: header }).pipe(
+      `${environment.microservices.orders}product-url`, { url }, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -52,7 +52,7 @@ export class OrderService {
   }
   createQuotation(body) {
     return this.http.post<any>(
-      `${environment.microservices.management}orders/admin`,body,
+      `${environment.microservices.management}orders`,body,
       { headers: header}).pipe(
         map((res: any) => {
           return res;

@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { OrderService } from '../../_services/orders.service';
+import { OrderService } from '../../../_services/orders.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -23,24 +23,26 @@ export class CreateOrderComponent implements OnInit {
   ngOnInit(): void {
     this.buildForm();
   }
-
+  //creacion del formulario principal
   buildForm() {
     this.createProductForm = this._formBuilder.group({
-      link: [null, [Validators.required]],
+      link: [null,],
       name: [null],
       description: [null],
       quantity: [1],
-      aditional_info: [null, [Validators.required]],
+      aditional_info: [null],
       image: [null],
       products: this._formBuilder.array([]),
       user: [null],
     });
   }
 
+  //retorna los controles del formulario que se consumen desde el HTML
   get form() {
     return this.createProductForm.controls;
   }
 
+  // Creación de productos con formularios reactivos y dinamicos multinivel
   createProduct(): FormGroup {
     return this._formBuilder.group({
       link: [this.createProductForm.value.link, []],
@@ -62,6 +64,7 @@ export class CreateOrderComponent implements OnInit {
     });
   }
 
+  //creamos un producto nuevo que sera pusheado en los formArray
   addProduct(): void {
     if (!this.createProductForm.invalid) {
       this.products = this.createProductForm.get('products') as FormArray;
@@ -94,7 +97,7 @@ export class CreateOrderComponent implements OnInit {
     }
   }
 
-
+  //reiniciamos los valores de un producto
   resetProductValue(i) {
     this.products = this.createProductForm.get('products') as FormArray;
     this.products.controls[i].get('price').get('price_locker').get('usd').setValue(0);
@@ -102,15 +105,10 @@ export class CreateOrderComponent implements OnInit {
       this.products.controls[i].get('price').get('price_locker').get('usd').disabled
 
     } else {
-      // this.products.controls[i].get('price').get('price_locker').get('usd')['controls'].enabled();
     }
   }
 
-  calcTotalProducts() {
-
-  }
-
-
+  //consumimos el endPoint de creación de orden por parte del administrador 
   createOrder() {
     if (this.createProductForm.valid) {
       this.quotationService.createQuotation({

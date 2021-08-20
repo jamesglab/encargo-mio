@@ -14,10 +14,11 @@ import { UsergridComponent } from './usergrid/usergrid.component';
 import { UserlistComponent } from './userlist/userlist.component';
 import { ProfileComponent } from './profile/profile.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ModalUserComponent } from './components/modal-user/modal-user.component';
 
 
 @NgModule({
-  declarations: [UsergridComponent, UserlistComponent, ProfileComponent],
+  declarations: [UsergridComponent, UserlistComponent, ProfileComponent, ModalUserComponent],
   imports: [
     CommonModule,
     ContactsRoutingModule,

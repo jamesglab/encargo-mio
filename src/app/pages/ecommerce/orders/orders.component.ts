@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { OrderService } from "./_services/orders.service";
+import { OrderService } from "../_services/orders.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UserService } from "src/app/_services/users.service";
 
@@ -35,12 +35,12 @@ export class OrdersComponent implements OnInit {
   }
 
   getUsersAdmin() {
-    // this._userService.getUsersAdmin().subscribe(users => {
-    //   console.log('users', users);
-    //   this.users = users;
-    // },err=>{
-    //   console.log('error',err)
-    // })
+    this._userService.getUsersAdmin().subscribe(users => {
+      console.log('users', users);
+      this.users = users;
+    },err=>{
+      console.log('error',err)
+    })
   }
 
   getTransactions(pagination?) {

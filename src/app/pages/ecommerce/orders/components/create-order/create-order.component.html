@@ -8,8 +8,6 @@
       <div class="container">
         <div class="row">
           <div class="col-7">
-            <!-- <div class="h5">TRM cotización: {{ trm }}</div>
-            <hr /> -->
             <div class="col-7 mt-2 form-group h5">
               <label for="exampleInputEmail1">Link </label>
               <input type="text" class="form-control" placeholder="Pega aqui el link del producto"
@@ -47,8 +45,6 @@
                   (click)="addProduct()">AGREGAR</button>
               </div>
             </div>
-
-
           </div>
           <div class="col-5">
             <div class="row mt-2">
@@ -92,6 +88,13 @@
                 <div>USD 0 / COP 0</div>
               </div>
             </div>
+
+            <div class="row mt-2">
+              <div class="col-6 h5 d-flex c-gray">Peso Total</div>
+              <div class="col-6 h5 d-flex c-gray">
+                <div> 20 Libras</div>
+              </div>
+            </div>
             <div class="row mt-2">
               <div class="col-12">
                 <select class="form-select" aria-label="Seleccióna un usuario" formControlName="user">
@@ -107,15 +110,16 @@
     <div class="table-responsive p-3">
       <h4 class="h4">Productos</h4>
 
-
+      <!-- se crea el bucle que crea los formularios dinamicos para el usuario -->
       <div formArrayName="products" *ngFor="let item of createProductForm.get('products')['controls']; let i = index;">
         <div>
+          <hr>
           <div class="row" [formGroupName]="i">
-            <div class="col-2 d-flex justify-content-center align-items-center">
+            <div class="col-3 d-flex justify-content-center align-items-center">
               <img src="{{createProductForm.get('products')['controls'][i].controls.image.value }}"
                 (error)="$event.src = 'https://bulma.io/images/placeholders/96x96.png'" class="avatar" />
             </div>
-            <div class="col-6">
+            <div class="col-4">
               <div>
                 <a [href]="createProductForm.get('products')['controls'][i].controls.link.value" target="blank">
                   <h5 class="text-truncate h5">
@@ -129,74 +133,157 @@
               <div class="mt-2">
                 {{item.aditional_info}}
               </div>
+              <div class="form-group mt-2 h5">
+                <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="aditional_info"
+                  cols="30" rows="5"
+                  placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
+              </div>
+
+
+              <div class="form-group mt-2 h5">
+                <label for="exampleFormControlTextarea1">Observaciones del cliente</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
+                  placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
+              </div>
               <div class="mt-2 h5">
                 Cantidad: {{createProductForm.get('products')['controls'][i].controls.quantity.value}}
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-5">
 
               <div class="row">
-                <div class="col-12 h5">
-                  <!-- USD {{item.price.usd + item.price.price_locker.usd + item.price.tax}} / COP
-                  {{(item.price.usd + item.price.price_locker.usd + item.price.tax) * trm}} -->
-                </div>
-              </div>
-              <hr>
-
-              <div formGroupName="price">
-
-                <div class="row">
-                  <div class="col-6 h5">
-                    Precio
-                  </div>
-                  <div class="col-6 h5">
-                    USD
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo USD *</label>
+                    <input type="text" class="form-control" placeholder="Valor en USD">
                   </div>
                 </div>
-
-                <div class="row mt-2">
-                  <div class="col-6 h5 d-flex align-items-center">
-                    Artículo:
-                  </div>
-                  <div class="col-6 h5 d-flex">
-                    <div>
-                      <input type="number" class="form-control" [min]="0" formControlName="usd">
-                    </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="text-truncate h5">% Desc</label>
+                    <input type="text" class="form-control" placeholder="% descuento">
                   </div>
                 </div>
-                <div class="row mt-2">
-                  <div class="col-6 h5">
-                    Envío a casillero gratis
-                  </div>
-                  <div class="col-6">
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                        formControlName="free_shipping_locker" (click)="resetProductValue(i)">
-                    </div>
-                  </div>
-                </div>
-                <div class="row mt-2" formGroupName="price_locker">
-                  <div class="col-6 h5 d-flex align-items-center">
-                    Envío al casillero :
-                  </div>
-                  <div class="col-6 h5 d-flex">
-                    <div>
-                      <input type="number" class="form-control" [min]="0" formControlName="usd">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row mt-2">
-                  <div class="col-6 h5 d-flex align-items-center">
-                    Tax :
-                  </div>
-                  <div class="col-6 h5 d-flex">
-                    <div>
-                      <input type="number" class="form-control" [min]="0" formControlName="tax">
-                    </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
+                    <input type="text" class="form-control" placeholder="Tax">
                   </div>
                 </div>
               </div>
+
+              <div class="row mt-4">
+                <div class="form-group col-12">
+                  <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen</label>
+                  <input type="text" class="form-control" placeholder="Envio origen">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+
+                <div class="col-6">
+                  <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
+                  <input type="text" class="form-control" placeholder="Peso en libras">
+                </div>
+                <div class="col-6">
+                  <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
+                  <input type="text" class="form-control" placeholder="Valor envio fijo">
+                </div>
+              </div>
+
+
+              
+              <div class="row mt-4">
+
+                <div class="col-6 text-truncate h5">
+                  SUB-TOTAL USD 200 / COP 300
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-switch text-truncate h5">
+                    <label for="form-group">Envio Gratis</label>
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                      formControlName="free_shipping_locker" (click)="resetProductValue(i)">
+                  </div>
+                </div>
+              </div>
+
+
+
+
+              <!-- <div class="row">
+
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-12 h5">
+                      USD 3E123/ COP 420
+                    </div>
+                  </div>
+                  <hr>
+
+                  <div formGroupName="price">
+                    <div class="row">
+                      <div class="col-6 h5">
+                        Precio
+                      </div>
+                      <div class="col-6 h5">
+                        USD
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-6 h5 d-flex align-items-center">
+                        Artículo:
+                      </div>
+                      <div class="col-6 h5 d-flex">
+                        <div>
+                          <input type="number" class="form-control" [min]="0" formControlName="usd">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <div class="col-6 h5">
+                        Envío a casillero gratis
+                      </div>
+                      <div class="col-6">
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                            formControlName="free_shipping_locker" (click)="resetProductValue(i)">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mt-2" formGroupName="price_locker">
+                      <div class="col-6 h5 d-flex align-items-center">
+                        Envío al casillero :
+                      </div>
+                      <div class="col-6 h5 d-flex">
+                        <div>
+                          <input type="number" class="form-control" [min]="0" formControlName="usd">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-6 h5 d-flex align-items-center">
+                        Tax :
+                      </div>
+                      <div class="col-6 h5 d-flex">
+                        <div>
+                          <input type="number" class="form-control" [min]="0" formControlName="tax">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto explicabo rerum a blanditiis non
+                  aliquid accusantium, amet ut assumenda, odit exercitationem dicta, fugiat facilis est laborum
+                  obcaecati ipsum hic aut.
+                </div>
+
+              </div> -->
+
+
             </div>
           </div>
         </div>

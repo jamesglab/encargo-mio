@@ -109,12 +109,12 @@
       "BADGE": "Nueva"
     },
     "ECOMMERCE": {
-      "TEXT": "Comercio electrónico",
+      "TEXT": "Pedidos",
       "LIST": {
         "PRODUCTS": "Productos",
         "PRODUCTDETAIL": "Detalle del producto",
-        "ORDERS": "Pedidos",
-        "CUSTOMERS": "Clientes",
+        "ORDERS": "Ordenes",
+        "CUSTOMERS": "Pagos",
         "CART": "Carro",
         "CHECKOUT": "Revisa",
         "SHOPS": "Tiendas",

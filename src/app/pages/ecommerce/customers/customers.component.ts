@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
-import { Customers } from './customers.model';
-
-import { customersData } from './data';
+import Swal from 'sweetalert2';
+import { OrderService } from '../_services/orders.service';
+import { TransactionService } from '../_services/transactions.service';
 
 @Component({
   selector: 'app-customers',
@@ -21,14 +20,23 @@ export class CustomersComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   formData: FormGroup;
   submitted = false;
-  customersData: Customers[];
-
+  transactions = [];
+  referenceImage: any;
+  orderSelected: any;
+  transactionSelected: any;
   term: any;
+  trm = 0;
+  status: number;
 
   // page
   currentpage: number;
 
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder) { }
+  constructor(private modalService: NgbModal,
+    private formBuilder: FormBuilder,
+    private _transactionService: TransactionService,
+    private _orderService: OrderService
+
+  ) { }
 
   ngOnInit() {
     this.breadCrumbItems = [{ label: 'Ecommerce' }, { label: 'Customers', active: true }];
@@ -46,14 +54,23 @@ export class CustomersComponent implements OnInit {
     /**
      * Fetches the data
      */
-    this._fetchData();
+    this.getTransactions(2);
   }
+
 
   /**
    * Customers data fetches
    */
-  private _fetchData() {
-    this.customersData = customersData;
+  getTransactions(status?) {
+    this.status = status;
+    this._transactionService.getTransactionsFilter({ status: status ? status : 2 }).subscribe(res => {
+      this.transactions = res;
+    })
+  }
+  allTransactions() {
+    this._transactionService.getTransactions().subscribe(res => {
+      this.transactions = res;
+    })
   }
   get form() {
     return this.formData.controls;
@@ -63,31 +80,50 @@ export class CustomersComponent implements OnInit {
    * Open modal
    * @param content modal content
    */
-  openModal(content: any) {
-    this.modalService.open(content);
+  openModalOrderService(content: any, transaction) {
+    console.log('transaction', transaction)
+    this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
+      console.log('tenemos los datos de la orden', res)
+      this.orderSelected = res;
+      this.modalService.open(content, { size: 'xl', centered: true });
+    })
   }
+  openModalReference(modale, transaction) {
+    this.transactionSelected = transaction;
+    if (transaction.image) {
+      this.referenceImage = transaction.image.url;
+      console.log('url image', this.referenceImage)
+      this.modalService.open(modale, { size: 'lg', centered: true })
+    }
 
+  }
   saveCustomer() {
     const currentDate = new Date();
     if (this.formData.valid) {
-     const username = this.formData.get('username').value;
-     const email = this.formData.get('email').value;
-     const phone = this.formData.get('phone').value;
-     const address = this.formData.get('address').value;
-     const balance = this.formData.get('balance').value;
+      const username = this.formData.get('username').value;
+      const email = this.formData.get('email').value;
+      const phone = this.formData.get('phone').value;
+      const address = this.formData.get('address').value;
+      const balance = this.formData.get('balance').value;
 
-      this.customersData.push({
-        id: this.customersData.length + 1,
+      this.transactions.push({
+        id: this.transactions.length + 1,
         username,
         email,
         phone,
         address,
         balance,
         rating: '4.3',
-        date: currentDate + ':' 
+        date: currentDate + ':'
       })
       this.modalService.dismissAll()
     }
     this.submitted = true
+  }
+  updateTransaction(status) {
+    this._transactionService.updateTransaction(this.transactionSelected.id, status).subscribe(res => {
+      Swal.fire('Transaccion actualizada', `La transacción quedo ${res.status == 1 ? 'Aprobada' : 'Rechazada'}`, 'success');
+      this.modalService.dismissAll();
+    })
   }
 }

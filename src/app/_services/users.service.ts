@@ -14,24 +14,30 @@ import { environment } from 'src/environments/environment';
 export class UserService {
 
 
-  constructor(private http: HttpClient,
-
-    private router: Router,
-    private _storageService: StorageService) {
-
-  }
+  constructor(private http: HttpClient) { }
 
   createUser(user_type: number, user): Observable<any> {
-    return this.http.post<any>(`${environment.microservices.management}/users/insert_user`, user, { headers: header, params: { user_type: (user_type == 1) ? 'client' : 'company' } }).pipe(
+    return this.http.post<any>(`${environment.microservices.management}users/insert_user`, user, { headers: header, params: { user_type: (user_type == 1) ? 'client' : 'company' } }).pipe(
       map((res: any) => {
         return res;
       }),
       catchError(handleError)
     );
   }
-
-  getUsersAdmin(params): Observable<any> {
-    return this.http.get<any>(`${environment.microservices.management}users/`, { params }).pipe(
+  getUsersAdmin() {
+    return this.http.get<any>(`${environment.microservices.management}users/`).pipe(
+      map((res: any) => {
+        return res;
+      }), catchError(handleError));
+  }
+  getUserById(id) {
+    return this.http.get<any>(`${environment.microservices.management}users/detail`, { params: { id } }).pipe(
+      map((res: any) => {
+        return res;
+      }),catchError(handleError));
+  }
+  getUsersAdminPaginate(params): Observable<any> {
+    return this.http.get<any>(`${environment.microservices.management}users/paginate`, { params }).pipe(
       map((res: any) => {
         return res;
       }),
