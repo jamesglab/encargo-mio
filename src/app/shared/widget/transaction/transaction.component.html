@@ -153,7 +153,104 @@
 
         <div class="container" *ngFor="let item of productSelected?.products">
           <div class="row">
-            <div class="col-2 d-flex justify-content-center align-items-center">
+            
+            <div class="col-3 d-flex justify-content-center">
+              <img [src]="item.image"
+                (error)="$event.src = 'https://bulma.io/images/placeholders/96x96.png'" class="avatar" />
+            </div>
+            <div class="col-4">
+              <div>
+                <a [href]="item.link" target="blank">
+                  <h5 class="text-truncate h5">{{ item.name }}</h5>
+                </a>
+              </div>
+              <div>
+                {{item.description}}
+                
+              </div>
+              <div class="mt-2">
+                {{item.aditional_info}}
+              </div>
+              <div class="form-group mt-2 h5">
+                <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1"
+                  cols="30" rows="5"
+                  placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
+              </div>
+
+
+              <div class="form-group mt-2 h5">
+                <label for="exampleFormControlTextarea1">Observaciones del cliente</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
+                  placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
+              </div>
+              <div class="mt-2 h5">
+                Cantidad: {{item.quantity}}
+              </div>
+            </div>
+            <div class="col-5">
+
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo USD *</label>
+                    <input type="text" class="form-control" placeholder="Valor en USD">
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="text-truncate h5">% Desc</label>
+                    <input type="text" class="form-control" placeholder="% descuento">
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
+                    <input type="text" class="form-control" placeholder="Tax">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="form-group col-12">
+                  <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen</label>
+                  <input type="text" class="form-control" placeholder="Envio origen">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+
+                <div class="col-6">
+                  <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
+                  <input type="text" class="form-control" placeholder="Peso en libras">
+                </div>
+                <div class="col-6">
+                  <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
+                  <input type="text" class="form-control" placeholder="Valor envio fijo">
+                </div>
+              </div>
+
+
+              
+              <div class="row mt-4">
+
+                <div class="col-6 text-truncate h5">
+                  SUB-TOTAL USD 200 / COP 300
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-switch text-truncate h5">
+                    <label for="form-group">Envio Gratis</label>
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                      >
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+            
+            <!-- <div class="col-2 d-flex justify-content-center align-items-center">
               <img [src]="item.image" alt class="avatar" />
             </div>
             <div class="col-6">
@@ -239,7 +336,7 @@
 
 
 
-            </div>
+            </div> -->
           </div>
           <hr>
         </div>
