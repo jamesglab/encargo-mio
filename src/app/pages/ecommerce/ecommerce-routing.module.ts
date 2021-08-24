@@ -9,7 +9,8 @@ import { CartComponent } from './cart/cart.component';
 import { AddproductComponent } from './addproduct/addproduct.component';
 import { CustomersComponent } from './customers/customers.component';
 import { OrdersComponent } from './orders/orders.component';
-
+import { OrdersBuysComponent } from './orders-buys/orders-buys.component';
+import { OrdersShippingsComponent } from './orders-shippings/orders-shippings.component';
 const routes: Routes = [
     {
         path: 'products',
@@ -42,11 +43,21 @@ const routes: Routes = [
     {
         path: 'orders',
         component: OrdersComponent
-    }
+    },
+    {
+        path: 'orders-buy',
+        component: OrdersBuysComponent
+    },
+    {
+        path: 'orders-shippings',
+        component: OrdersShippingsComponent
+    },
+
+
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class EcommerceRoutingModule {}
+export class EcommerceRoutingModule { }

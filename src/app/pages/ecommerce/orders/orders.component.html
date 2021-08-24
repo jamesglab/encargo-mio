@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <app-page-title title="Orders" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <app-page-title title="Cotizaciónes" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <div class="row">
     <div class="col-12">
@@ -24,7 +24,7 @@
           </div>
 
 
-          <ul class="nav nav-pills">
+          <!-- <ul class="nav nav-pills">
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active':!status}" (click)="status = null ;  getTransactions()">Por
                 Aprobar</a>
@@ -49,7 +49,7 @@
               <a class="nav-link" [ngClass]="{'active':status==6}"
                 (click)="status = 6 ;  getTransactions()">Canceladas</a>
             </li>
-          </ul>
+          </ul> -->
           <!-- Table data -->
           <hr>
           <app-transaction class="mt-1" [transactions]="transactions |  filter:term"></app-transaction>

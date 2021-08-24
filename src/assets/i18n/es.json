@@ -113,7 +113,9 @@
       "LIST": {
         "PRODUCTS": "Productos",
         "PRODUCTDETAIL": "Detalle del producto",
-        "ORDERS": "Ordenes",
+        "ORDERS": "Cotizaciónes",
+        "ORDER-BUY":"Compras",
+        "ORDER-SHIPPING":"Envios",
         "CUSTOMERS": "Pagos",
         "CART": "Carro",
         "CHECKOUT": "Revisa",

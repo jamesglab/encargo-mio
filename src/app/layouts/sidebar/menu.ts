@@ -84,16 +84,29 @@ export const MENU: MenuItem[] = [
                 link: '/ecommerce/products',
                 parentId: 12
             },
-            {
-                id: 14,
-                label: 'MENUITEMS.ECOMMERCE.LIST.PRODUCTDETAIL',
-                link: '/ecommerce/product-detail/1',
-                parentId: 12
-            },
+            // {
+            //     id: 14,
+            //     label: 'MENUITEMS.ECOMMERCE.LIST.PRODUCTDETAIL',
+            //     link: '/ecommerce/product-detail/1',
+            //     parentId: 12
+            // },
             {
                 id: 15,
                 label: 'MENUITEMS.ECOMMERCE.LIST.ORDERS',
                 link: '/ecommerce/orders',
+                parentId: 12
+            },
+
+            {
+                id: 155,
+                label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-BUY',
+                link: '/ecommerce/orders-buy',
+                parentId: 12
+            },
+            {
+                id: 153,
+                label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-SHIPPING',
+                link: '/ecommerce/orders-shippings',
                 parentId: 12
             },
             {
@@ -114,18 +127,18 @@ export const MENU: MenuItem[] = [
                 link: '/ecommerce/checkout',
                 parentId: 12
             },
-            {
-                id: 19,
-                label: 'MENUITEMS.ECOMMERCE.LIST.SHOPS',
-                link: '/ecommerce/shops',
-                parentId: 12
-            },
-            {
-                id: 20,
-                label: 'MENUITEMS.ECOMMERCE.LIST.ADDPRODUCT',
-                link: '/ecommerce/add-product',
-                parentId: 12
-            },
+            // {
+            //     id: 19,
+            //     label: 'MENUITEMS.ECOMMERCE.LIST.SHOPS',
+            //     link: '/ecommerce/shops',
+            //     parentId: 12
+            // },
+            // {
+            //     id: 20,
+            //     label: 'MENUITEMS.ECOMMERCE.LIST.ADDPRODUCT',
+            //     link: '/ecommerce/add-product',
+            //     parentId: 12
+            // },
         ]
     },
     {

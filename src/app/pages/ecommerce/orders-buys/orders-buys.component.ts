@@ -1,20 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { OrderService } from "../_services/orders.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { UserService } from "src/app/_services/users.service";
+import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from 'src/app/_services/users.service';
+import { OrderService } from '../_services/orders.service';
 
 @Component({
-  selector: "app-orders",
-  templateUrl: "./orders.component.html",
-  styleUrls: ["./orders.component.scss"],
+  selector: 'app-orders-buys',
+  templateUrl: './orders-buys.component.html',
+  styleUrls: ['./orders-buys.component.scss']
 })
-
-/**
- * Ecommerce orders component
- */
-export class OrdersComponent implements OnInit {
-  // bread crumb items
-  breadCrumbItems: Array<{}>;
+export class OrdersBuysComponent implements OnInit {
   term: any;
   public page = 1;
   public itemPerPage = 5;
@@ -29,11 +23,10 @@ export class OrdersComponent implements OnInit {
     private _userService: UserService,
     private modalService: NgbModal) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getTransactions();
     this.getUsersAdmin();
   }
-
   getUsersAdmin() {
     this._userService.getUsersAdmin().subscribe(users => {
       console.log('users', users);
@@ -44,8 +37,6 @@ export class OrdersComponent implements OnInit {
   }
 
   getTransactions(pagination?) {
-    
-
     this._orderService.getTRM().subscribe(res => {
       this.trm = res.value;
     })
@@ -54,7 +45,7 @@ export class OrdersComponent implements OnInit {
         pageSize: pagination?.pageSize ? pagination.pageSize : 10,
         page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
         status: this.status ? this.status : '0',
-        type :'quotation'
+        type :'purchase'
       })
       .subscribe((res) => {
         console.log("ORDERS RESPONSE", res);
@@ -66,7 +57,5 @@ export class OrdersComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, { size: 'xl', centered: true });
   }
-
-  createQuotation() { }
 
 }

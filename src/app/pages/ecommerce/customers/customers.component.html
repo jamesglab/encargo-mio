@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <app-page-title title="transaction" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <app-page-title title="Pagos" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <ul class="nav nav-pills mb-3">
     <li class="nav-item">
@@ -314,7 +314,7 @@
     </div>
   </div>
 
-  <div class="modal-footer">
+  <div class="modal-footer" *ngIf="status==2">
     <button class="btn btn-danger" (click)="updateTransaction(3)">Rechazar</button>
     <button class="btn btn-success" (click)="updateTransaction(1)">Aprobar</button>
   </div>
