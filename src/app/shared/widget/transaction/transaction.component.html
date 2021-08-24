@@ -68,11 +68,11 @@
           <div class="col-7">
 
             <div class="h4">
-              # 000{{productSelected.id}}
+              # 000{{productSelected?.id}}
             </div>
 
             <div class="h5">
-              {{productSelected.created_at | date }}
+              {{productSelected?.created_at | date }}
             </div>
             <div class="h5">
               TRM cotización: {{trm}}
@@ -87,8 +87,8 @@
               </div>
               <div class="col-6 h5 d-flex">
                 <div>
-                  USD {{productSelected.total_value}} / COP
-                  {{productSelected.total_value * trm}}
+                  USD {{productSelected?.total_value}} / COP
+                  {{productSelected?.total_value * trm}}
                 </div>
               </div>
             </div>
@@ -98,7 +98,7 @@
               </div>
               <div class="col-6 h5 d-flex c-gray">
                 <div>
-                  USD {{productSelected.locker_value}} / COP {{productSelected.locker_value * trm}} </div>
+                  USD {{productSelected?.locker_value}} / COP {{productSelected.locker_value * trm}} </div>
               </div>
             </div>
 
@@ -151,7 +151,7 @@
       <hr>
       <div class="table-responsive">
 
-        <div class="container" *ngFor="let item of productSelected.products">
+        <div class="container" *ngFor="let item of productSelected?.products">
           <div class="row">
             <div class="col-2 d-flex justify-content-center align-items-center">
               <img [src]="item.image" alt class="avatar" />

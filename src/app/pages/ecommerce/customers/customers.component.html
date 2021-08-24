@@ -11,9 +11,6 @@
     <li class="nav-item">
       <a class="nav-link" [ngClass]="{'active':status==3}" (click)="status = 2 ;getTransactions(3)">Rechazadas</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':!status}" (click)="status = null ;allTransactions()">Todas</a>
-    </li>
   </ul>
 
   <div class="row">
@@ -96,9 +93,9 @@
             </table>
           </div>
           <!-- pagination -->
-          <ngb-pagination [collectionSize]="50" [(page)]="currentpage"
-            class="pagination pagination-rounded justify-content-end mb-2" aria-label="Default pagination">
-          </ngb-pagination>
+          <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions(status,$event)">
+          </mat-paginator>
+
         </div>
       </div>
     </div>
@@ -106,68 +103,8 @@
   <!-- end row -->
 </div>
 
-<!-- Standard Modal -->
-<!-- <ng-template #content role="document" let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title mt-0">Add Customer</h5>
-    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <form (ngSubmit)="saveCustomer()" [formGroup]="formData">
-      <div class="row">
-        <div class="col-12">
-          <div class="mb-3">
-            <label class="control-label">Username</label>
-            <input class="form-control" placeholder="Enter Username" type="text" name="title" autocomplete="off"
-              formControlName="username" [ngClass]="{ 'is-invalid': submitted && form.username.errors }" />
-            <div *ngIf="submitted && form.username.errors" class="invalid-feedback">
-              <span *ngIf="form.username.errors.required">Username is required.</span>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="control-label">Email</label>
-            <input class="form-control" placeholder="Enter email" type="text" name="email" autocomplete="off"
-              formControlName="email" [ngClass]="{ 'is-invalid': submitted && form.email.errors }" />
-            <div *ngIf="submitted && form.email.errors" class="invalid-feedback">
-              <span *ngIf="form.email.errors.required">Email is required.</span>
-              <span *ngIf="form.email.errors.pattern">This value should be a valid email.</span>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="control-label">Phone</label>
-            <input class="form-control" placeholder="Enter phone" type="text" name="phone" autocomplete="off"
-              formControlName="phone" [ngClass]="{ 'is-invalid': submitted && form.phone.errors }" />
-            <div *ngIf="submitted && form.phone.errors" class="invalid-feedback">
-              <span *ngIf="form.phone.errors.required">Phone is required.</span>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="control-label">Address</label>
-            <input class="form-control" placeholder="Enter address" type="text" autocomplete="off" name="address"
-              formControlName="address" [ngClass]="{ 'is-invalid': submitted && form.address.errors }" />
-            <div *ngIf="submitted && form.address.errors" class="invalid-feedback">
-              <span *ngIf="form.address.errors.required">Address is required.</span>
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="control-label">Balance</label>
-            <input class="form-control" placeholder="Enter balance" type="text" autocomplete="off" name="balance"
-              formControlName="balance" [ngClass]="{ 'is-invalid': submitted && form.address.errors }" />
-            <div *ngIf="submitted && form.balance.errors" class="invalid-feedback">
-              <span *ngIf="form.balance.errors.required">balance is required.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-success" id="btn-save-event">
-        Save
-      </button>
-    </form>
-  </div>
-</ng-template> -->
 
-
-
+<!-- Modal Detalles de la orden  -->
 <ng-template #content role="document" let-modal>
   <div class="modal-header ">
     <h5 class="modal-title mt-0">Detalles de la orden</h5>
@@ -362,6 +299,7 @@
   </div>
 </ng-template>
 
+<!-- Modal Pago caso efectivo -->
 <ng-template #reference role="document" let-modal>
 
   <div class="modal-header ">

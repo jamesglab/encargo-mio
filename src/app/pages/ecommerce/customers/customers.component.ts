@@ -27,6 +27,7 @@ export class CustomersComponent implements OnInit {
   term: any;
   trm = 0;
   status: number;
+  count : number;
 
   // page
   currentpage: number;
@@ -59,19 +60,21 @@ export class CustomersComponent implements OnInit {
 
 
   /**
-   * Customers data fetches
+   * Transactions data fetches
    */
-  getTransactions(status?) {
+  getTransactions(status?, pagination?) {
     this.status = status;
-    this._transactionService.getTransactionsFilter({ status: status ? status : 2 }).subscribe(res => {
-      this.transactions = res;
+    this._transactionService.getTransactionsFilter({
+      status: status ? status : 2,
+      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
+
+    }).subscribe(res => {
+      this.transactions = res.transactions;
+      this.count = res.count;
     })
   }
-  allTransactions() {
-    this._transactionService.getTransactions().subscribe(res => {
-      this.transactions = res;
-    })
-  }
+
   get form() {
     return this.formData.controls;
   }
@@ -81,9 +84,8 @@ export class CustomersComponent implements OnInit {
    * @param content modal content
    */
   openModalOrderService(content: any, transaction) {
-    console.log('transaction', transaction)
+
     this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
-      console.log('tenemos los datos de la orden', res)
       this.orderSelected = res;
       this.modalService.open(content, { size: 'xl', centered: true });
     })
@@ -92,8 +94,10 @@ export class CustomersComponent implements OnInit {
     this.transactionSelected = transaction;
     if (transaction.image) {
       this.referenceImage = transaction.image.url;
-      console.log('url image', this.referenceImage)
+
       this.modalService.open(modale, { size: 'lg', centered: true })
+    } else {
+      window.open(transaction.response)
     }
 
   }

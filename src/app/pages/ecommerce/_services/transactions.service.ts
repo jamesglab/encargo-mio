@@ -19,19 +19,10 @@ export class TransactionService {
     private _storageService: StorageService) {
   }
 
-  getTransactions() {
-    return this.http.get<any>(
-      `${environment.microservices.management}transactions`, { headers: header }).pipe(
-        map((res: any) => {
-          return res;
-        }),
-        catchError(handleError)
-      );
-  }
 
   getTransactionsFilter(params) {
     return this.http.get<any>(
-      `${environment.microservices.management}transactions/filter`, { headers: header, params }).pipe(
+      `${environment.microservices.management}transactions`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),

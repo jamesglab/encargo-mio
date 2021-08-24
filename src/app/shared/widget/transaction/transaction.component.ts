@@ -37,8 +37,13 @@ export class TransactionComponent implements OnInit {
   openModal(order, content: any) {
     this._orderService.detailOrder({ id: order.id }).subscribe((res) => {
       console.log("la orden es ", res);
-      this.productSelected = res;
-      this.modalService.open(content, { size: 'xl', centered: true });
+      if (res){
+        this.productSelected = res;
+        this.modalService.open(content, { size: 'xl', centered: true });
+      }else {
+        Swal.fire("Error en la orden",'',"error")
+      }
+      
     });
   }
 
