@@ -11,9 +11,6 @@
     <li class="nav-item">
       <a class="nav-link" [ngClass]="{'active':status==3}" (click)="status = 2 ;getTransactions(3)">Rechazadas</a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':!status}" (click)="status = null ;allTransactions()">Todas</a>
-    </li>
   </ul>
 
   <div class="row">
