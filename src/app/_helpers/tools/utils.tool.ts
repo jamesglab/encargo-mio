@@ -11,3 +11,38 @@ export const notificationConfig = (type: number, duration: number, message?: str
         verticalPosition: "bottom"
     }
 }
+
+export const isSwitched = (item: string) => {
+
+    let isAllowed = {
+        "product_value": true,
+        "weigth": true,
+        "discount": true,
+        "shipping_origin_value_product": true,
+        "permanent_shipping_value": true
+    }
+
+    return isAllowed[item];
+
+}
+
+export const isRequired = (item: string) => {
+
+    let isRequired = {
+        "link": true,
+        "name": true,
+        "aditional_info": true,
+        "image": true,
+        "description": true
+    };
+
+    return isRequired[item];
+}
+
+export const numberOnly = (event): boolean => {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 46 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}

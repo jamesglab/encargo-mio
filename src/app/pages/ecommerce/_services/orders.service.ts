@@ -12,11 +12,14 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
+
 export class OrderService {
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private router: Router,
-    private _storageService: StorageService) {
+    private _storageService: StorageService
+  ) {
   }
 
   getProductInfo(url: string): Observable<any> {
@@ -40,7 +43,6 @@ export class OrderService {
       );
   }
 
-
   detailOrder(params) {
     return this.http.get<any>(
       `${environment.microservices.management}orders/detail`, { headers: header, params }).pipe(
@@ -50,16 +52,18 @@ export class OrderService {
         catchError(handleError)
       );
   }
+
   createQuotation(body) {
     return this.http.post<any>(
-      `${environment.microservices.management}orders`,body,
-      { headers: header}).pipe(
+      `${environment.microservices.management}orders`, body,
+      { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
         catchError(handleError));
 
   }
+
   updateOrder(order) {
     const products = order.products;
     return this.http.put<any>(
@@ -80,4 +84,16 @@ export class OrderService {
         catchError(handleError)
       );
   }
+
+  calculateShipping(products: any) {
+    return this.http.post<any>(
+      `${environment.microservices.management}orders/calculate-shipping`, { products: products, type: 'quotation' }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
 }

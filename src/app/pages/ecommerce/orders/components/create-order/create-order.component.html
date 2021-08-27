@@ -2,112 +2,110 @@
   <h5 class="modal-title mt-0">Crear Orden</h5>
   <button type="button" class="btn-close" aria-hidden="true" (click)="close_modale.emit()"></button>
 </div>
+
 <div class="modal-body">
+
   <form [formGroup]="createProductForm">
+
     <div class="container">
+
       <div class="container">
+
         <div class="row">
+
           <div class="col-7">
-            <div class="col-7 mt-2 form-group h5">
+
+            <div class="form-group h5">
               <label for="exampleInputEmail1">Link </label>
               <input type="text" class="form-control" placeholder="Pega aqui el link del producto"
                 formControlName="link" />
             </div>
 
-            <div class="form-group col-7 mt-2 h5">
+            <div class="form-group h5">
               <label for="exampleFormControlTextarea1">Información adicional</label>
               <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="aditional_info" cols="30"
                 rows="5"
                 placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
             </div>
 
+            <div class="form-group h5">
+
+              <label for="exampleInputEmail1">Usuario </label>
+              <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario" formControlName="user">
+                <option selected disabled value="">Selecciona un usuario...</option>
+                <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
+              </select>
+
+            </div>
+
             <div class="d-flex h5">
+
               <div class="d-flex align-items-center mt-2">
-                <div>Cantidad :</div>
+
+                <div>Cantidad:</div>
+
                 <div style="margin-left: 5px;">
                   <a
                     (click)="(createProductForm.get('quantity').value >=2) ? createProductForm.get('quantity').setValue(createProductForm.get('quantity').value - 1) :''"><i
                       class="fas fa-minus"></i></a>
                 </div>
+
                 <div class="mx-2">
                   {{ createProductForm.get("quantity").value }}
                 </div>
+
                 <div class="ml-2">
-                  <a (click)="
-                    createProductForm
+
+                  <a (click)="createProductForm
                       .get('quantity')
-                      .setValue(createProductForm.get('quantity').value + 1)
-                  "><i class="fas fa-plus"></i></a>
+                      .setValue(createProductForm.get('quantity').value + 1)"><i class="fas fa-plus"></i>
+                  </a>
                 </div>
+
               </div>
+
               <div class="d-flex justify-content-end mt-3" style="margin-left: 1rem;">
-                <button class="btn btn-success" [ngClass]="{ 'is-loading': isLoading }" type="button"
-                  (click)="addProduct()">AGREGAR</button>
+                <button class="btn btn-success" type="button" (click)="addProduct();" [disabled]="isLoading">
+                  <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+                  AGREGAR
+                </button>
               </div>
             </div>
           </div>
-          <div class="col-5">
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex">Valor Total :</div>
-              <div class="col-6 h5 d-flex">
-                <div>USD 228 / COP 80000</div>
-              </div>
-            </div>
+
+          <div class="col-5 d-flex justify-content-center align-items-center">
 
             <div class="row mt-2">
-              <div class="col-6 h5 d-flex c-gray">Envío a casillero:</div>
-              <div class="col-6 h5 d-flex c-gray">
-                <div>USD 0 / COP 0</div>
+
+              <div>
+                Calculadora de Totales
+
+                <div>
+                  Total de Libras: 1
+                </div>
+
+                <div>
+                  Valor de Artículos: USD: 45.55
+                </div>
+
+                <div>
+                  Valor Envio (x) : USD: 45.55
+                </div>
+
               </div>
+
             </div>
 
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex c-gray">Envío a Destino:</div>
-              <div class="col-6 h5 d-flex c-gray">
-                <div>USD 0 / COP 0</div>
-              </div>
-            </div>
-
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex c-gray">Costo del Seguro:</div>
-              <div class="col-6 h5 d-flex c-gray">
-                <div>USD 0 / COP 0</div>
-              </div>
-            </div>
-
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex c-gray">Valor asegurado:</div>
-              <div class="col-6 h5 d-flex c-gray">
-                <div>USD 0 / COP 0</div>
-              </div>
-            </div>
-
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex c-gray">Descuento:</div>
-              <div class="col-6 h5 d-flex c-gray">
-                <div>USD 0 / COP 0</div>
-              </div>
-            </div>
-
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex c-gray">Peso Total</div>
-              <div class="col-6 h5 d-flex c-gray">
-                <div> 20 Libras</div>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="col-12">
-                <select class="form-select" aria-label="Seleccióna un usuario" formControlName="user">
-                  <option disabled>Seleccióna un usuario</option>
-                  <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
-                </select>
-              </div>
-            </div>
           </div>
+
         </div>
+
       </div>
+
     </div>
+
     <div class="table-responsive p-3">
+
       <h4 class="h4">Productos</h4>
 
       <!-- se crea el bucle que crea los formularios dinamicos para el usuario -->
@@ -116,7 +114,8 @@
           <hr>
           <div class="row" [formGroupName]="i">
             <div class="col-3 d-flex justify-content-center align-items-center">
-              <img src="{{createProductForm.get('products')['controls'][i].controls.image.value }}"
+              <img style="object-fit: contain;"
+                src="{{createProductForm.get('products')['controls'][i].controls.image.value }}"
                 (error)="$event.src = 'https://bulma.io/images/placeholders/96x96.png'" class="avatar" />
             </div>
             <div class="col-4">
@@ -127,12 +126,11 @@
                   </h5>
                 </a>
               </div>
-              <div>
-                {{createProductForm.get('products')['controls'][i].controls.description.value }}
-              </div>
+
               <div class="mt-2">
                 {{item.aditional_info}}
               </div>
+
               <div class="form-group mt-2 h5">
                 <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
                 <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="aditional_info"
@@ -140,43 +138,66 @@
                   placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
               </div>
 
-
               <div class="form-group mt-2 h5">
-                <label for="exampleFormControlTextarea1">Observaciones del cliente</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
-                  placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
+                <label for="exampleFormControlTextarea2">Observaciones del cliente</label>
+                <textarea class="form-control" id="exampleFormControlTextarea2" cols="30" rows="5"
+                  formControlName="description" placeholder="Observaciones del cliente"></textarea>
               </div>
+
               <div class="mt-2 h5">
                 Cantidad: {{createProductForm.get('products')['controls'][i].controls.quantity.value}}
               </div>
+
             </div>
+
             <div class="col-5">
 
               <div class="row">
+
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo USD *</label>
-                    <input type="text" class="form-control" placeholder="Valor en USD">
+                    <input type="text" class="form-control" placeholder="Valor en USD" formControlName="product_value"
+                      (keypress)="numberOnly($event);" (blur)="getFormula();">
                   </div>
                 </div>
+
                 <div class="col-3">
                   <div class="form-group">
-                    <label for="exampleInputEmail1" class="text-truncate h5">% Desc</label>
-                    <input type="text" class="form-control" placeholder="% descuento">
+                    <label for="exampleInputEmail1" class="text-truncate h5">% Des.</label>
+                    <input type="text" class="form-control" placeholder="% descuento" formControlName="discount"
+                      (keypress)="numberOnly($event);" (blur)="getFormula();">
                   </div>
                 </div>
+
                 <div class="col-3">
+
                   <div class="form-group">
+
                     <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
-                    <input type="text" class="form-control" placeholder="Tax">
+
+                    <div>
+                      {{
+                      ((createProductForm.get('products')['controls'][i].controls.product_value.value *
+                      createProductForm.get('products')['controls'][i].controls.quantity.value) * 0.07).toFixed(2)
+                      }}
+
+                      <i class="fas fa-calculator"></i>
+
+                    </div>
+
                   </div>
+
                 </div>
+
               </div>
 
               <div class="row mt-4">
                 <div class="form-group col-12">
-                  <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen</label>
-                  <input type="text" class="form-control" placeholder="Envio origen">
+                  <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen (USD)</label>
+                  <input type="text" class="form-control" placeholder="Envio origen"
+                    formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
+                    (blur)="getFormula();">
                 </div>
               </div>
 
@@ -184,124 +205,73 @@
 
                 <div class="col-6">
                   <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
-                  <input type="text" class="form-control" placeholder="Peso en libras">
+                  <input type="text" class="form-control" placeholder="Peso en libras" formControlName="weigth"
+                    (keypress)="numberOnly($event);" (blur)="getFormula();">
                 </div>
+
                 <div class="col-6">
                   <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
-                  <input type="text" class="form-control" placeholder="Valor envio fijo">
+                  <input type="text" class="form-control" placeholder="Valor envio fijo"
+                    formControlName="permanent_shipping_value" (keypress)="numberOnly($event);" (blur)="getFormula();">
                 </div>
               </div>
 
-
-              
               <div class="row mt-4">
 
                 <div class="col-6 text-truncate h5">
-                  SUB-TOTAL USD 200 / COP 300
-                </div>
-                <div class="col-6">
-                  <div class="form-check form-switch text-truncate h5">
-                    <label for="form-group">Envio Gratis</label>
-                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                      formControlName="free_shipping_locker" (click)="resetProductValue(i)">
+
+                  <label for="total_price" class="text-truncate h5">Sub Total</label>
+
+                  <div>
+                    {{ (createProductForm.get('products')['controls'][i].controls.product_value.value *
+                    createProductForm.get('products')['controls'][i].controls.quantity.value +
+                    createProductForm.get('products')['controls'][i].controls.tax.value).toFixed(2) }}
                   </div>
+
                 </div>
+
+                <div class="col-6">
+
+                  <div class="form-check form-switch text-truncate h5">
+
+                    <label for="form-group">Envio Gratis</label>
+                    <input class="form-check-input" type="checkbox" formControlName="free_shipping"
+                      id="flexSwitchCheckChecked" (change)="resetProductValue(i);">
+                  </div>
+
+                </div>
+
               </div>
 
-
-
-
-              <!-- <div class="row">
-
-                <div class="col-6">
-                  <div class="row">
-                    <div class="col-12 h5">
-                      USD 3E123/ COP 420
-                    </div>
-                  </div>
-                  <hr>
-
-                  <div formGroupName="price">
-                    <div class="row">
-                      <div class="col-6 h5">
-                        Precio
-                      </div>
-                      <div class="col-6 h5">
-                        USD
-                      </div>
-                    </div>
-
-                    <div class="row mt-2">
-                      <div class="col-6 h5 d-flex align-items-center">
-                        Artículo:
-                      </div>
-                      <div class="col-6 h5 d-flex">
-                        <div>
-                          <input type="number" class="form-control" [min]="0" formControlName="usd">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row mt-2">
-                      <div class="col-6 h5">
-                        Envío a casillero gratis
-                      </div>
-                      <div class="col-6">
-                        <div class="form-check form-switch">
-                          <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                            formControlName="free_shipping_locker" (click)="resetProductValue(i)">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row mt-2" formGroupName="price_locker">
-                      <div class="col-6 h5 d-flex align-items-center">
-                        Envío al casillero :
-                      </div>
-                      <div class="col-6 h5 d-flex">
-                        <div>
-                          <input type="number" class="form-control" [min]="0" formControlName="usd">
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="row mt-2">
-                      <div class="col-6 h5 d-flex align-items-center">
-                        Tax :
-                      </div>
-                      <div class="col-6 h5 d-flex">
-                        <div>
-                          <input type="number" class="form-control" [min]="0" formControlName="tax">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto explicabo rerum a blanditiis non
-                  aliquid accusantium, amet ut assumenda, odit exercitationem dicta, fugiat facilis est laborum
-                  obcaecati ipsum hic aut.
-                </div>
-
-              </div> -->
-
-
             </div>
+
           </div>
+
         </div>
+
       </div>
 
-
-
-      <div *ngIf="createProductForm.get('products')['controls'].length  == 0">
+      <div *ngIf="createProductForm.get('products')['controls'].length === 0">
         <div class="mt-3 d-flex justify-content-center h6">
-          --Aun no haz agregado productos --
+          Aún no has agregado productos
         </div>
       </div>
+
     </div>
+
   </form>
+
 </div>
+
 <div class="modal-footer">
+
   <button class="btn btn-secondary" (click)="close_modale.emit()">
     Cancelar
   </button>
-  <button class="btn btn-primary" (click)="createOrder()">Aprobar</button>
+
+  <button class="btn btn-primary" (click)="createOrder()" [disabled]="isLoading">
+    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+    Aprobar
+  </button>
+
 </div>

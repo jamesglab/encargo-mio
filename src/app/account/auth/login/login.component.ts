@@ -1,13 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import { AuthenticationService } from '../../../core/services/auth.service';
-import { AuthfakeauthenticationService } from '../../../core/services/authfake.service';
-
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
-
-import { environment } from '../../../../environments/environment';
 import { AuthService } from '../_services/auth.service';
 
 @Component({
@@ -60,9 +53,9 @@ export class LoginComponent implements OnInit {
     } else {
 
       this._authService.login(this.loginForm.getRawValue()).subscribe((res: any) => {
-        console.log('llegamos al login',res)
+        console.log('llegamos al login', res)
         this.router.navigate(['/dashboard']);
-      })
+      });
 
     }
   }

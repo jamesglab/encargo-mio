@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <app-page-title title="Cotizaciónes" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <app-page-title title="Cotizaciones" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <div class="row">
     <div class="col-12">
@@ -52,7 +52,7 @@
           </ul> -->
           <!-- Table data -->
           <hr>
-          <app-transaction class="mt-1" [transactions]="transactions |  filter:term"></app-transaction>
+          <app-transaction class="mt-1" [transactions]="transactions | filter:term"></app-transaction>
           <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
           </mat-paginator>
         </div>
@@ -65,5 +65,6 @@
 <!-- Modal To create New Order -->
 
 <ng-template #content role="document" let-modal>
-  <app-create-order [trm]="trm" [users]="users" (close_modale)="modal.close('Close click')"></app-create-order>
+  <app-create-order [trm]="trm" [users]="users" (close_modale)="modal.close('Close click')"
+    (refreshTable)="refreshTableReceive($event);"></app-create-order>
 </ng-template>

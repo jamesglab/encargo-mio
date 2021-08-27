@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
   styleUrls: ["./transaction.component.scss"],
 })
 export class TransactionComponent implements OnInit {
+  
   @Input() transactions: Array<{
     id?: string;
     estimeted_value?: number;

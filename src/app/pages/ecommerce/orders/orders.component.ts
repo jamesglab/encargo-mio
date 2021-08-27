@@ -23,6 +23,7 @@ export class OrdersComponent implements OnInit {
   public status: number;
   public trm: number;
   public users = [];
+  public refreshTable: boolean = false;
 
   constructor(
     private readonly _orderService: OrderService,
@@ -36,37 +37,44 @@ export class OrdersComponent implements OnInit {
 
   getUsersAdmin() {
     this._userService.getUsersAdmin().subscribe(users => {
-      console.log('users', users);
+      // console.log('users', users);
       this.users = users;
-    },err=>{
-      console.log('error',err)
-    })
+    }, err => {
+      console.log('error', err);
+    });
   }
 
-  getTransactions(pagination?) {
-    
+  async getTransactions(pagination?) {
 
-    this._orderService.getTRM().subscribe(res => {
+    await this._orderService.getTRM().subscribe(res => {
       this.trm = res.value;
-    })
-    this._orderService
+    });
+
+    await this._orderService
       .getQuotations({
         pageSize: pagination?.pageSize ? pagination.pageSize : 10,
         page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
         status: this.status ? this.status : '0',
-        type :'quotation'
+        type: 'quotation'
       })
       .subscribe((res) => {
-        console.log("ORDERS RESPONSE", res);
+        // console.log("ORDERS RESPONSE", res);
         this.transactions = res.orders;
         this.counts = res.count;
       });
+
   }
 
   openModal(content: any) {
     this.modalService.open(content, { size: 'xl', centered: true });
   }
 
-  createQuotation() { }
+
+  refreshTableReceive(event): void {
+    this.refreshTable = event;
+    if (this.refreshTable) {
+      this.getTransactions();
+    }
+  }
 
 }
