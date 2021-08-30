@@ -34,16 +34,8 @@ export class TopbarComponent implements OnInit {
     public translate: TranslateService,
     public _cookiesService: CookieService,
     private _storage: StorageService
-    ) {
+  ) {
   }
-
-  listLang = [
-    { text: 'English', flag: 'assets/images/flags/us.jpg', lang: 'en' },
-    { text: 'Spanish', flag: 'assets/images/flags/spain.jpg', lang: 'es' },
-    { text: 'German', flag: 'assets/images/flags/germany.jpg', lang: 'de' },
-    { text: 'Italian', flag: 'assets/images/flags/italy.jpg', lang: 'it' },
-    { text: 'Russian', flag: 'assets/images/flags/russia.jpg', lang: 'ru' },
-  ];
 
   openMobileMenu: boolean;
 
@@ -57,13 +49,7 @@ export class TopbarComponent implements OnInit {
     this.element = document.documentElement;
 
     this.cookieValue = this._cookiesService.get('lang');
-    const val = this.listLang.filter(x => x.lang === this.cookieValue);
-    this.countryName = val.map(element => element.text);
-    if (val.length === 0) {
-      if (this.flagvalue === undefined) { this.valueset = 'assets/images/flags/us.jpg'; }
-    } else {
-      this.flagvalue = val.map(element => element.flag);
-    }
+
   }
 
   setLanguage(text: string, lang: string, flag: string) {

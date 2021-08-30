@@ -47,7 +47,7 @@ export class OrdersComponent implements OnInit {
   async getTransactions(pagination?) {
 
     await this._orderService.getTRM().subscribe(res => {
-      this.trm = res.value;
+      this.trm = res;
     });
 
     await this._orderService

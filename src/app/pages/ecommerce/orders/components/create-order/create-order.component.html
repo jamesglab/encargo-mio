@@ -77,20 +77,42 @@
 
             <div class="row mt-2">
 
-              <div>
+              <div class="container-calculator" *ngIf="!isLoadingFormula">
+
                 Calculadora de Totales
 
                 <div>
-                  Total de Libras: 1
+                  <strong>Total de Libras:</strong> {{ calculateTotal.weight ? calculateTotal.weight: 0 }}
                 </div>
 
                 <div>
-                  Valor de Artículos: USD: 45.55
+                  <strong>Valor de Artículos:</strong> {{ calculateTotal.total ? calculateTotal.total : 0 }} USD
                 </div>
 
                 <div>
-                  Valor Envio (x) : USD: 45.55
+                  <strong>Valor Envío ({{ calculateTotal.name ? calculateTotal.name: 'x' }}):</strong>
+                  {{ calculateTotal.value ? calculateTotal.value.toFixed(2) : 0 }} USD
                 </div>
+
+                <div>
+                  <strong>Envio a Casa (USD): </strong>
+                  {{ calculateTotal.shipping_usd ? calculateTotal.shipping_usd : 0 }}
+                </div>
+
+                <div>
+                  <strong>Envio a casa (COP): </strong>
+                  {{ calculateTotal.shipping_cop ? calculateTotal.shipping_cop : 0 }}
+                </div>
+
+              </div>
+
+              <div class="loading-calulator" *ngIf="isLoadingFormula">
+
+                <div class="spinner-border" role="status">
+                  <span class="sr-only"></span>
+                </div>
+
+                Estamos calculando el valor de envío...
 
               </div>
 
@@ -128,7 +150,7 @@
               </div>
 
               <div class="mt-2">
-                {{item.aditional_info}}
+                {{ item.aditional_info }}
               </div>
 
               <div class="form-group mt-2 h5">
@@ -145,7 +167,7 @@
               </div>
 
               <div class="mt-2 h5">
-                Cantidad: {{createProductForm.get('products')['controls'][i].controls.quantity.value}}
+                Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
               </div>
 
             </div>
@@ -157,16 +179,16 @@
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo USD *</label>
-                    <input type="text" class="form-control" placeholder="Valor en USD" formControlName="product_value"
-                      (keypress)="numberOnly($event);" (blur)="getFormula();">
+                    <input type="number" class="form-control" placeholder="Valor en USD" formControlName="product_value"
+                      (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
                   </div>
                 </div>
 
                 <div class="col-3">
                   <div class="form-group">
-                    <label for="exampleInputEmail1" class="text-truncate h5">% Des.</label>
-                    <input type="text" class="form-control" placeholder="% descuento" formControlName="discount"
-                      (keypress)="numberOnly($event);" (blur)="getFormula();">
+                    <label for="exampleInputEmail1" class="text-truncate h5">Desc. (%)</label>
+                    <input type="number" class="form-control" placeholder="% descuento" formControlName="discount"
+                      (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
                   </div>
                 </div>
 
@@ -176,13 +198,17 @@
 
                     <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
 
-                    <div>
-                      {{
-                      ((createProductForm.get('products')['controls'][i].controls.product_value.value *
-                      createProductForm.get('products')['controls'][i].controls.quantity.value) * 0.07).toFixed(2)
-                      }}
+                    <div class="container-tax">
 
-                      <i class="fas fa-calculator"></i>
+                      {{ createProductForm.get('products')['controls'][i].controls.tax.value }}
+
+                      <div class="container-calcs">
+                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': selectedTax == '1' }"
+                          (click)="changeCalculator('1', i);"></i>
+                          <br>
+                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': selectedTax == '2' }"
+                          (click)="changeCalculator('2', i);"></i>
+                      </div>
 
                     </div>
 
@@ -195,9 +221,9 @@
               <div class="row mt-4">
                 <div class="form-group col-12">
                   <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen (USD)</label>
-                  <input type="text" class="form-control" placeholder="Envio origen"
+                  <input type="number" class="form-control" placeholder="Envio origen"
                     formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
-                    (blur)="getFormula();">
+                    (blur)="getFormula(i);" min="0">
                 </div>
               </div>
 
@@ -205,14 +231,15 @@
 
                 <div class="col-6">
                   <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
-                  <input type="text" class="form-control" placeholder="Peso en libras" formControlName="weigth"
-                    (keypress)="numberOnly($event);" (blur)="getFormula();">
+                  <input type="number" class="form-control" placeholder="Peso en libras" formControlName="weigth"
+                    (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
                 </div>
 
                 <div class="col-6">
                   <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
-                  <input type="text" class="form-control" placeholder="Valor envio fijo"
-                    formControlName="permanent_shipping_value" (keypress)="numberOnly($event);" (blur)="getFormula();">
+                  <input type="number" class="form-control" placeholder="Valor envio fijo"
+                    formControlName="permanent_shipping_value" (keypress)="numberOnly($event);" (blur)="getFormula(i);"
+                    min="0">
                 </div>
               </div>
 
@@ -223,9 +250,7 @@
                   <label for="total_price" class="text-truncate h5">Sub Total</label>
 
                   <div>
-                    {{ (createProductForm.get('products')['controls'][i].controls.product_value.value *
-                    createProductForm.get('products')['controls'][i].controls.quantity.value +
-                    createProductForm.get('products')['controls'][i].controls.tax.value).toFixed(2) }}
+                    {{ createProductForm.get('products')['controls'][i].controls.sub_total.value }}
                   </div>
 
                 </div>

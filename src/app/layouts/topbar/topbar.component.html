@@ -43,8 +43,8 @@
 
       <div class="dropdown d-inline-block" ngbDropdown>
         <button type="button" class="btn header-item" ngbDropdownToggle id="page-header-user-dropdown">
-          <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg" alt="Header Avatar">
-          <span class="d-none d-xl-inline-block ms-1">
+          <!-- <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg" alt="Header Avatar"> -->
+          <span class="d-xl-inline-block ms-1">
             {{ user ? user.user.name : '' }} {{ user ? user.user.last_name : '' }}
           </span>
           <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
@@ -53,8 +53,13 @@
           <!-- item-->
           <a class="dropdown-item" routerLink="/contacts/profile"><i
               class="bx bx-user font-size-16 align-middle me-1"></i>
-            {{ 'HEADER.LOGIN.PROFILE' | translate}}</a>
+            {{ 'HEADER.LOGIN.PROFILE' | translate}}
+          </a>
           <div class="dropdown-divider"></div>
+          <a class="dropdown-item" ><i
+              class="bx bx-user font-size-16 align-middle me-1"></i>
+            Cerrar Sesión
+          </a>
         </div>
       </div>
     </div>

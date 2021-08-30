@@ -1,4 +1,4 @@
-.fas{
+.fas {
   cursor: pointer;
 }
 
@@ -9,4 +9,22 @@
 
 .c-gray {
   color: #adadad !important;
+}
+
+.container-calculator {
+  font-size: 18px;
+}
+
+.container-calcs {
+  font-size: 20px;
+  display: flex;
+}
+
+.container-tax {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.selected-tax {
+  color: #ef8921;
 }
