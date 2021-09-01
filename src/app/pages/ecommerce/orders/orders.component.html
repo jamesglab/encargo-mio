@@ -1,19 +1,26 @@
 <div class="container-fluid">
+
   <app-page-title title="Cotizaciones" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <div class="row">
+
     <div class="col-12">
+
       <div class="card">
+
         <div class="card-body">
+
           <div class="row mb-2">
+
             <div class="col-sm-4">
               <div class="search-box me-2 mb-2 d-inline-block">
                 <div class="position-relative">
-                  <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="term">
+                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
               </div>
             </div>
+
             <div class="col-sm-8">
               <div class="text-sm-end">
                 <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="openModal(content)"><i
@@ -21,46 +28,75 @@
                   Crear una Orden</button>
               </div>
             </div><!-- end col-->
+
           </div>
 
+          <ul class="nav nav-pills d-flex justify-content-center">
 
-          <!-- <ul class="nav nav-pills">
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':!status}" (click)="status = null ;  getTransactions()">Por
-                Aprobar</a>
+              <a class="nav-link" [ngClass]="{'active': status == 0 }" (click)="status = 0;  getTransactions()">
+                Por Aprobar
+              </a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status==1}"
+              <a class="nav-link" [ngClass]="{'active': status == 1}"
                 (click)="status = 1 ;  getTransactions()">Aprobadas</a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status==2}" (click)="status = 2 ;  getTransactions()">En proceso
-                de pago</a>
+              <a class="nav-link" [ngClass]="{'active':status == 2}" (click)="status = 2;  getTransactions()">
+                En proceso de pago
+              </a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status==3}" (click)="status = 3 ;  getTransactions()">En proceso
-                de compra</a>
+              <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 3;  getTransactions()">
+                En proceso de compra
+              </a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status==5}"
-                (click)="status = 5 ;  getTransactions()">Entregado</a>
+              <a class="nav-link" [ngClass]="{'active': status == 4}" (click)="status = 4;  getTransactions()">
+                En Camino a Casillero
+              </a>
             </li>
+
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status==6}"
-                (click)="status = 6 ;  getTransactions()">Canceladas</a>
+              <a class="nav-link" [ngClass]="{ 'active': status == 5 }"
+                (click)="status = 5;  getTransactions()">Finalizada</a>
             </li>
-          </ul> -->
+
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == 6}"
+                (click)="status = 6;  getTransactions()">Canceladas</a>
+            </li>
+
+          </ul>
           <!-- Table data -->
           <hr>
-          <app-transaction class="mt-1" [transactions]="transactions | filter:term" (refreshTable)="refreshTableReceive($event);"></app-transaction>
-          <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
-          </mat-paginator>
+
+          <div class="text-center" *ngIf="isLoading">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Cargando...</span>
+            </div>
+          </div>
+
+          <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
+
+            <app-transaction class="mt-1" [transactions]="transactions | filter:term"
+              (refreshTable)="refreshTableReceive($event);"></app-transaction>
+
+            <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
+            </mat-paginator>
+
+          </div>
+
         </div>
       </div>
     </div>
   </div>
 </div>
-
 
 <!-- Modal To create New Order -->
 

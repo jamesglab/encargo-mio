@@ -20,10 +20,11 @@ export class OrdersComponent implements OnInit {
   public itemPerPage = 5;
   public transactions;
   public counts: number;
-  public status: number;
+  public status: number = 0;
   public trm: number;
   public users = [];
   public refreshTable: boolean = false;
+  public isLoading: boolean = false;
 
   constructor(
     private readonly _orderService: OrderService,
@@ -45,24 +46,27 @@ export class OrdersComponent implements OnInit {
 
   async getTransactions(pagination?) {
 
+    this.isLoading = true;
+
     await this._orderService.getTRM().subscribe(res => {
       this.trm = res;
     });
 
-    await this._orderService
-      .getQuotations({
-        pageSize: pagination?.pageSize ? pagination.pageSize : 10,
-        page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
-        status: this.status ? this.status : '1',
-        type: 'quotation'
-      })
-      .subscribe((res) => {
-        // console.log("ORDERS RESPONSE", res);
-        this.transactions = res.orders;
-        this.counts = res.count;
-      }, err => {
-        throw err;
-      });
+    await this._orderService.getQuotations({
+      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
+      status: this.status ? this.status : '1',
+      type: 'quotation'
+    }).subscribe((res) => {
+      // console.log("ORDERS RESPONSE", res);
+      this.transactions = res.orders;
+      this.counts = res.count;
+      this.isLoading = false;
+    }, err => {
+      this.isLoading = false;
+      throw err;
+    });
+
 
   }
 

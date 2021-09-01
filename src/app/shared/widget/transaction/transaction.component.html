@@ -1,5 +1,9 @@
 <div class="table-responsive mb-0">
 
+  <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
+    No hay datos disponibles...
+  </div>
+
   <table class="table table-centered table-nowrap">
 
     <thead class="table-light">
