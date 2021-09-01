@@ -15,7 +15,6 @@ export const notificationConfig = (type: number, duration: number, message?: str
 export const isSwitched = (item: string) => {
 
     let isAllowed = {
-        "product_value": true,
         "weigth": true,
         "discount": true,
         "shipping_origin_value_product": true,

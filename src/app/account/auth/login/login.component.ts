@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NotifyService } from 'src/app/_services/notify.service';
 import { AuthService } from '../_services/auth.service';
 
 @Component({
@@ -9,54 +10,53 @@ import { AuthService } from '../_services/auth.service';
   styleUrls: ['./login.component.scss']
 })
 
-/**
- * Login component
- */
 export class LoginComponent implements OnInit {
 
-  loginForm: FormGroup;
-  submitted = false;
-  error = '';
-  returnUrl: string;
+  public loginForm: FormGroup;
+  public submitted: boolean = false;
+  public isLoading: boolean = false;
+  public error = '';
+  public returnUrl: string;
+  public year: number = new Date().getFullYear();
 
-  // set the currenr year
-  year: number = new Date().getFullYear();
-
-  // tslint:disable-next-line: max-line-length
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private _authService: AuthService) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
+    private _authService: AuthService,
+    private _notify: NotifyService
+  ) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
-
-    // reset login status
-    // this.authenticationService.logout();
-    // get return url from route parameters or default to '/'
-    // tslint:disable-next-line: no-string-literal
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
 
-  /**
-   * Form submit
-   */
   onSubmit() {
+
     this.submitted = true;
 
-    // stop here if form is invalid
     if (this.loginForm.invalid) {
+      this._notify.show("Atención", "No has llenado los datos de inicio de sesión corectamente", "warning");
       return;
-    } else {
-
-      this._authService.login(this.loginForm.getRawValue()).subscribe((res: any) => {
-        console.log('llegamos al login', res)
-        this.router.navigate(['/dashboard']);
-      });
-
     }
+
+    this.isLoading = true;
+    this._authService.login(this.loginForm.getRawValue()).subscribe((res: any) => {
+      this.router.navigate(['/dashboard']);
+      this.isLoading = false;
+    }, err => {
+      this._notify.show("Atención", "Hemos tenido un error al intentar loguearte.", "warning");
+      this.isLoading = false;
+      throw err;
+    });
+
   }
+
 }
