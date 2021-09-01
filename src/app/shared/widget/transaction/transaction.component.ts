@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { numberOnly } from "src/app/_helpers/tools/utils.tool";
@@ -11,6 +11,8 @@ import { NotifyService } from "src/app/_services/notify.service";
 })
 
 export class TransactionComponent implements OnInit {
+
+  @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
 
   @Input() public transactions: Array<{
     id?: string;
@@ -40,11 +42,16 @@ export class TransactionComponent implements OnInit {
     this.getTRM();
   }
 
-  openModal(order, content: any) {
+  getTRM() {
+    this._orderService.getTRM().subscribe(res => { this.trm = res; });
+  }
+
+  openModal(order: any, content: any) {
     this.isLoading = true;
     this._orderService.detailOrder({ id: order.id }).subscribe((res) => {
       if (res) {
         this.productSelected = res;
+        this.productSelected.trm = this.trm;
         this.modalService.open(content, { size: 'xl', centered: true });
       } else {
         this._notify.show('Error', 'No pudimos cargarcargar la orden.', 'warning');
@@ -54,10 +61,6 @@ export class TransactionComponent implements OnInit {
       this.isLoading = false;
       throw err;
     });
-  }
-
-  getTRM() {
-    this._orderService.getTRM().subscribe(res => { this.trm = res; });
   }
 
   changeStatus(): void {
@@ -95,7 +98,7 @@ export class TransactionComponent implements OnInit {
   calculateDiscount(position: number) {
     let discount: number;
     discount = (this.productSelected.products[position].sub_total - (this.productSelected.products[position].sub_total) * (this.productSelected.products[position].discount / 100)); // Restamos el sub_total menos el sub_total multiplicado por el valor que ingresa el administrador dividido en 100
-    this.productSelected.products[position].discount = ((this.productSelected.products[position].discount / 100).toFixed(2)); // Restamos el subtotal menos el descuento para obtener el valor que se descuenta.
+    this.productSelected.products[position].discount = (parseFloat((this.productSelected.products[position].discount / 100).toFixed(2))); // Restamos el subtotal menos el descuento para obtener el valor que se descuenta.
     this.productSelected.products[position].sub_total = (discount ? discount.toFixed(2) : 0);
   }
 
@@ -112,7 +115,6 @@ export class TransactionComponent implements OnInit {
         this.productSelected.shipping_value = res[0].value;
       }
       this.isLoadingFormula = false;
-      console.log(this.productSelected);
     }, err => {
       this.isLoadingFormula = false;
       throw err;
@@ -122,13 +124,16 @@ export class TransactionComponent implements OnInit {
   numberOnly(event): boolean { return numberOnly(event); } // Función para que sólo se permitan números en un input
 
   sendQuotation() {
-
-    console.log(this.productSelected);
-    this._notify.show('Verifica el precio de los productos', 'Uno o varios productos no tienen precio', 'warning');
+    this.isLoading = true;
     this._orderService.updateOrder(this.productSelected).subscribe((res) => {
-      console.log("RESPONSE:", res);
-      this._notify.show('Cotización Actualizada', `Aprobaste la cotización # ${this.productSelected.id}`, 'warning');
-      // this.modalService.dismissAll();
+      this._notify.show('Cotización Actualizada', `Actualizaste la cotización # ${this.productSelected.id}`, 'warning');
+      this.isLoading = false;
+      this.refreshTable.emit(true);
+      this.modalService.dismissAll();
+    }, err => {
+      this.isLoading = false;
+      this._notify.show('Error', 'Hemos tenido un error al intentar actualizar la orden.', 'warning');
+      throw err;
     });
 
   }

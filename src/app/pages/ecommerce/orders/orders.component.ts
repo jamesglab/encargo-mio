@@ -37,10 +37,9 @@ export class OrdersComponent implements OnInit {
 
   getUsersAdmin() {
     this._userService.getUsersAdmin().subscribe(users => {
-      // console.log('users', users);
       this.users = users;
     }, err => {
-      console.log('error', err);
+      throw err;
     });
   }
 
@@ -61,6 +60,8 @@ export class OrdersComponent implements OnInit {
         // console.log("ORDERS RESPONSE", res);
         this.transactions = res.orders;
         this.counts = res.count;
+      }, err => {
+        throw err;
       });
 
   }
@@ -68,7 +69,6 @@ export class OrdersComponent implements OnInit {
   openModal(content: any) {
     this.modalService.open(content, { size: 'xl', centered: true });
   }
-
 
   refreshTableReceive(event): void {
     this.refreshTable = event;

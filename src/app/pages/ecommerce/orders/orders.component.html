@@ -52,7 +52,7 @@
           </ul> -->
           <!-- Table data -->
           <hr>
-          <app-transaction class="mt-1" [transactions]="transactions | filter:term"></app-transaction>
+          <app-transaction class="mt-1" [transactions]="transactions | filter:term" (refreshTable)="refreshTableReceive($event);"></app-transaction>
           <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
           </mat-paginator>
         </div>
