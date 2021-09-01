@@ -60,13 +60,13 @@ export class CreateOrderComponent implements OnInit {
   createProduct(): FormGroup {
 
     let createProduct = this._formBuilder.group({
-      link: [this.createProductForm.value.link, []],
-      name: [this.createProductForm.value.name, [Validators.required]],
+      link: [this.createProductForm.value.link],
+      name: [this.createProductForm.value.name],
       aditional_info: [this.createProductForm.value.aditional_info],
       description: [this.createProductForm.value.description],
-      image: [this.createProductForm.value.image, [Validators.required]],
-      quantity: [this.createProductForm.value.quantity, [Validators.required]],
-      product_value: [this.createProductForm.value.price ? this.createProductForm.value.price : 0, [Validators.required]],
+      image: [this.createProductForm.value.image,],
+      quantity: [this.createProductForm.value.quantity],
+      product_value: [this.createProductForm.value.price ? this.createProductForm.value.price : 0,],
       tax: [0],
       weigth: [0],
       discount: [0],
@@ -74,8 +74,7 @@ export class CreateOrderComponent implements OnInit {
       permanent_shipping_value: [0],
       shipping_value: [0],
       free_shipping: [false],
-      sub_total: [0],
-      trm: [this.trm ? this.trm : null]
+      sub_total: [0]
     });
 
     createProduct.controls.product_value.valueChanges.subscribe((value: number) => { // NOS SUSCRIBIMOS AL CAMBIO DEL VALOR DEL PRODUCTO
@@ -83,12 +82,11 @@ export class CreateOrderComponent implements OnInit {
       this.calculateTotalPrices(createProduct, value ? value : createProduct.controls.product_value.value); // Llamamos el método de calculateTotalPrices
     });
 
-    createProduct.controls.discount.valueChanges.subscribe((value: number) => { // NOS SUSCRIBIMOS AL CAMBIO DEL VALOR DEL PRODUCTO
+    createProduct.controls.discount.valueChanges.subscribe((value: number) => { //Nos suscribimos al cambio de valor del discount
       let discount: number;
-      discount = (createProduct.controls.sub_total.value * value) / 100;
-      createProduct.controls.discount.setValue(discount);
-      createProduct.controls.sub_total.setValue(discount);
-      console.log(discount);
+      discount = (createProduct.controls.sub_total.value - (createProduct.controls.sub_total.value) * (value / 100)); // Restamos el sub_total menos el sub_total multiplicado por el valor que ingresa el administrador dividido en 100
+      createProduct.controls.discount.setValue((value / 100).toFixed(2)); // Restamos el subtotal menos el descuento para obtener el valor que se descuenta.
+      createProduct.controls.sub_total.setValue(discount); // Seteamos el resultado del descuento en el sub_total
     });
 
     return createProduct;
@@ -149,8 +147,14 @@ export class CreateOrderComponent implements OnInit {
             this.isLoading = false;
 
           }, err => {
-            console.log(err);
             this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
+            this.form.image.setValue(null);
+            this.form.name.setValue(null);
+            this.form.description.setValue(null);
+            this.form.price.setValue(null);
+            this.products.push(this.createProduct());
+            this.getFormula(this.products.controls.length - 1); // LLAMAMOS AL MÉTODO DE LA FORMULA
+            this.cleanForm(); // LLAMAMOS AL MÉTODO PARA RESETEAR EL FORMULARIO
             this.isLoading = false;
             throw err;
           });
@@ -171,10 +175,14 @@ export class CreateOrderComponent implements OnInit {
     for (const field in this.createProductForm.controls) {
       if (this.isRequired(field)) {
         this.createProductForm.controls[field].reset();
-        this.createProductForm.controls[field].setValidators([Validators.required]);
+        // this.createProductForm.controls[field].setValidators([Validators.required]);
       }
     }
     this.createProductForm.controls.quantity.setValue(1);
+  }
+
+  onImageError(event) {
+    event.target.src = "https://static.wixstatic.com/media/2cd43b_48bf185491704d8996a2d3bf2c0bbd23~mv2.png/v1/fill/w_320,h_212,q_90/2cd43b_48bf185491704d8996a2d3bf2c0bbd23~mv2.png";
   }
 
   isAllowed(item: string) { return isSwitched(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
@@ -253,7 +261,9 @@ export class CreateOrderComponent implements OnInit {
       this.quotationService.createQuotation({
         ...getInsertCreateOrder(
           this.createProductForm.getRawValue().user,
-          this.createProductForm.getRawValue().products
+          this.createProductForm.getRawValue().products,
+          this.calculateTotal,
+          this.trm
         )
       }).subscribe(res => {
         this._notify.show('Transacción Exitosa', res.message, 'success');
@@ -267,7 +277,7 @@ export class CreateOrderComponent implements OnInit {
       });
 
     } else {
-      this._notify.show('Datos incompletos', `- Selecciona el usuario \b -Seleccióna al menos un producto`, 'info');
+      this._notify.show('Datos incompletos', `Revisa que hayas llenado los campos.`, 'info');
     }
   }
 

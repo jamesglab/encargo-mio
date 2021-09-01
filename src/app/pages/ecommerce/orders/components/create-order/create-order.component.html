@@ -138,7 +138,7 @@
             <div class="col-3 d-flex justify-content-center align-items-center">
               <img style="object-fit: contain;"
                 src="{{createProductForm.get('products')['controls'][i].controls.image.value }}"
-                (error)="$event.src = 'https://bulma.io/images/placeholders/96x96.png'" class="avatar" />
+                (error)="onImageError($event);" class="avatar" />
             </div>
             <div class="col-4">
               <div>

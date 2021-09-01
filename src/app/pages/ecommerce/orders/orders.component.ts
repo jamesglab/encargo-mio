@@ -54,7 +54,7 @@ export class OrdersComponent implements OnInit {
       .getQuotations({
         pageSize: pagination?.pageSize ? pagination.pageSize : 10,
         page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
-        status: this.status ? this.status : '0',
+        status: this.status ? this.status : '1',
         type: 'quotation'
       })
       .subscribe((res) => {
