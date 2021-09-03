@@ -150,9 +150,8 @@
         <div class="col">
           <h5>Permisos</h5>
           <ul class="list-group">
-            <li class="list-group-item" *ngFor="let item of permissionsRole ;let i = index"
-              (click)="addPermisionToRole(item,i)">{{item.value}}
-              <a href="javascript: void(0);" ngbTooltip="agregar a rol"><i class="bx bx-label"></i></a>
+            <li class="list-group-item" *ngFor="let item of permissionsRole ;let i = index">{{item.value}}
+              <a href="javascript: void(0);" ngbTooltip="agregar a rol"(click)="addPermisionToRole(item,i)"><i class="bx bx-label"></i></a>
             </li>
           </ul>
         </div>
