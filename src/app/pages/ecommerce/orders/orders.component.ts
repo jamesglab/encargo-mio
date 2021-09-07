@@ -58,7 +58,6 @@ export class OrdersComponent implements OnInit {
       status: this.status,
       type: 'quotation'
     }).subscribe((res) => {
-      // console.log("ORDERS RESPONSE", res);
       this.transactions = res.orders;
       this.counts = res.count;
       this.isLoading = false;

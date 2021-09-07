@@ -33,7 +33,6 @@ export class OrderService {
   }
 
   getQuotations(params) {
-    if (!params.status) delete params.status;
     return this.http.get<any>(
       `${environment.microservices.management}orders`, { headers: header, params }).pipe(
         map((res: any) => {
