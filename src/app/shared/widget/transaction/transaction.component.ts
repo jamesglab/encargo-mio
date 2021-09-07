@@ -14,6 +14,7 @@ export class TransactionComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
 
+  @Input() public status: number;
   @Input() public transactions: Array<{
     id?: string;
     estimeted_value?: number;
@@ -40,6 +41,10 @@ export class TransactionComponent implements OnInit {
 
   ngOnInit() {
     this.getTRM();
+  }
+
+  ngOnChanges(){
+    console.log(this.status);
   }
 
   getTRM() {

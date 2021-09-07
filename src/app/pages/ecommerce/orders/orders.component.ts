@@ -55,7 +55,7 @@ export class OrdersComponent implements OnInit {
     await this._orderService.getQuotations({
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
-      status: this.status ? this.status : '1',
+      status: this.status,
       type: 'quotation'
     }).subscribe((res) => {
       // console.log("ORDERS RESPONSE", res);

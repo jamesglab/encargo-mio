@@ -52,7 +52,7 @@
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 3;  getTransactions()">
-                En proceso de compra
+                En espera de registro
               </a>
             </li>
 
@@ -84,7 +84,7 @@
 
           <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
 
-            <app-transaction class="mt-1" [transactions]="transactions | filter:term"
+            <app-transaction class="mt-1" [transactions]="transactions | filter:term" [status]="status"
               (refreshTable)="refreshTableReceive($event);"></app-transaction>
 
             <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
