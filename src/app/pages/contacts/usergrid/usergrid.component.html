@@ -159,9 +159,9 @@
           <h5>Permisos del rol</h5>
           <ul class="list-group">
             <li class="list-group-item" ngbTooltip="eliminar permiso"
-              *ngFor="let item of roleSelected.permissions; let i =index" (click)="deletePermission(item,i)">
+              *ngFor="let item of roleSelected.permissions; let i =index" >
               {{item.value}}
-              <a href="javascript: void(0);"><i class="bx bx-trash-alt"></i></a>
+              <a href="javascript: void(0);" (click)="deletePermission(item,i)" ><i class="bx bx-trash-alt"></i></a>
             </li>
           </ul>
         </div>
