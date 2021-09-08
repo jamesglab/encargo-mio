@@ -25,7 +25,7 @@ export class UserlistComponent implements OnInit {
 
   ngOnInit() {
     this.getUsers();
-    this.getRoles();
+    // this.getRoles();
   }
 
   getUsers(pagination?) {
@@ -49,5 +49,10 @@ export class UserlistComponent implements OnInit {
       this.userSelected = res
       this.modalService.open(content, { size: 'lg', centered: true });
     })
+  }
+
+  closeModal(modal){
+    modal.close('Close click');
+    this.getUsers();
   }
 }
