@@ -13,7 +13,6 @@ import { NotifyService } from "src/app/_services/notify.service";
 export class TransactionComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
-
   @Input() public status: number;
   @Input() public transactions: Array<{
     id?: string;
@@ -29,7 +28,6 @@ export class TransactionComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
   public disabledInputs: boolean = false;
-  public selectedTax: string = "1";
   public calculateTotal: any;
   public trm: { create_at: string, updated_at: string, id: number, value: number };
 
@@ -43,10 +41,6 @@ export class TransactionComponent implements OnInit {
     this.getTRM();
   }
 
-  ngOnChanges(){
-    console.log(this.status);
-  }
-
   getTRM() {
     this._orderService.getTRM().subscribe(res => { this.trm = res; });
   }
@@ -55,11 +49,12 @@ export class TransactionComponent implements OnInit {
     this.isLoading = true;
     this._orderService.detailOrder({ id: order.id }).subscribe((res) => {
       if (res) {
+        this.modalService.open(content, { size: 'xl', centered: true });
         this.productSelected = res;
         this.productSelected.trm = this.trm;
-        this.modalService.open(content, { size: 'xl', centered: true });
+        this.iterateData();
       } else {
-        this._notify.show('Error', 'No pudimos cargarcargar la orden.', 'warning');
+        this._notify.show('Error', 'No pudimos pudimos la orden.', 'warning');
       }
       this.isLoading = false;
     }, err => {
@@ -68,18 +63,20 @@ export class TransactionComponent implements OnInit {
     });
   }
 
-  changeStatus(): void {
-    this.disabledInputs = !this.disabledInputs;
+  iterateData() {
+    for (let index = 0; index < this.productSelected.products.length; index++) {
+      this.productSelected.products[index].free_shipping = (this.productSelected.products[index].free_shipping ? this.productSelected.products[index].free_shipping : false); // Volver el campo de free_shipping true y si viene null (false)
+    }
   }
 
   changeCalculator(item: string, i: number) {
-    this.selectedTax = item; // Cambiamos el tax a través de ícono
+    this.productSelected.products[i].selected_tax = item;
     this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
   }
 
   calculateTax(position: number) {
     let tax: number;
-    if (this.selectedTax == '1') { // Si selecciona el 1 ícono
+    if (this.productSelected.products[position].selected_tax === '1') { // Si selecciona el 1 ícono
       tax = (this.productSelected.products[position].product_value * this.productSelected.products[position].quantity) * 0.07;
       tax.toString();
       tax = parseFloat(tax.toFixed(2));
@@ -114,10 +111,8 @@ export class TransactionComponent implements OnInit {
     this.calculateDiscount(position);
     this._orderService.calculateShipping(this.productSelected.products).subscribe((res) => { // Llamamos al método para calcular los valores de envío
       if (res.length > 0) { // Si el length de la respuesta es mayor a 0 
-        this.calculateTotal = res[0]; // Asignamos el valor
-        this.calculateTotal.shipping_usd = parseFloat((this.calculateTotal.total + this.calculateTotal.value).toFixed(2)); // Calculamos el costo de envío en USD
-        this.calculateTotal.shipping_cop = parseFloat(((this.calculateTotal.total + this.calculateTotal.value) * this.trm.value).toFixed(0));// Calculamos el costo de envío en COP multiplicando el valor x el TRM
-        this.productSelected.shipping_value = res[0].value;
+        this.productSelected.shipping_value_admin = res;
+        this.productSelected.total_weight = res[0].weight;
       }
       this.isLoadingFormula = false;
     }, err => {
