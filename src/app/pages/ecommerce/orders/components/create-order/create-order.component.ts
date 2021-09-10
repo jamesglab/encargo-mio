@@ -67,7 +67,7 @@ export class CreateOrderComponent implements OnInit {
       quantity: [this.createProductForm.value.quantity],
       product_value: [this.createProductForm.value.price ? this.createProductForm.value.price : 0,],
       tax: [0],
-      weigth: [0],
+      weight: [0],
       discount: [0],
       shipping_origin_value_product: [0],
       permanent_shipping_value: [0],
