@@ -32,7 +32,7 @@
                   <td>
                    {{user.role_name}}
                   </td>
-                  <td style="display: flex;justify-content: center;align-items: center;">
+                  <td style="text-align: center;">
                     {{user.created_at | date:'shortDate'}}
                   </td>
                   <td>
@@ -60,5 +60,5 @@
 
 
 <ng-template #content role="document" let-modal>
-  <app-modal-user [user]="userSelected" [roles]="roles" (close_modale)="modal.close('Close click')"></app-modal-user>
+  <app-modal-user [user]="userSelected" (close_modale)="closeModal(modal)"></app-modal-user>
 </ng-template>

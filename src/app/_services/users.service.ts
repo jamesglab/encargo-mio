@@ -16,26 +16,20 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  createUser(user_type: number, user): Observable<any> {
-    return this.http.post<any>(`${environment.microservices.management}users/insert_user`, user, { headers: header, params: { user_type: (user_type == 1) ? 'client' : 'company' } }).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
-  }
   getUsersAdmin() {
     return this.http.get<any>(`${environment.microservices.management}users/`).pipe(
       map((res: any) => {
         return res;
       }), catchError(handleError));
   }
+
   getUserById(id) {
     return this.http.get<any>(`${environment.microservices.management}users/detail`, { params: { id } }).pipe(
       map((res: any) => {
         return res;
-      }),catchError(handleError));
+      }), catchError(handleError));
   }
+
   getUsersAdminPaginate(params): Observable<any> {
     return this.http.get<any>(`${environment.microservices.management}users/paginate`, { params }).pipe(
       map((res: any) => {
@@ -43,6 +37,26 @@ export class UserService {
       }),
       catchError(handleError)
     );
+  }
+
+  createUser(user_type: number, user): Observable<any> {
+    return this.http.post<any>(`${environment.microservices.management}users/insert_user`,
+      user, { headers: header, params: { user_type: (user_type == 1) ? 'client' : 'company' } }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  updateUser(user: any): Observable<any> {
+    return this.http.put<any>(`${environment.microservices.management}users/`,
+      { ...user }, { headers: header, params: { id: user.id } }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
 }
