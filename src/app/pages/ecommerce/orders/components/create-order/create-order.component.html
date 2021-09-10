@@ -203,10 +203,10 @@
                       {{ createProductForm.get('products')['controls'][i].controls.tax.value }}
 
                       <div class="container-calcs">
-                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selectedTax.value == '1' }"
+                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
                           (click)="changeCalculator('1', i);"></i>
                           <br>
-                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selectedTax.value == '2' }"
+                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
                           (click)="changeCalculator('2', i);"></i>
                       </div>
 

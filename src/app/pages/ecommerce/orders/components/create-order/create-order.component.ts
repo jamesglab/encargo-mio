@@ -74,7 +74,7 @@ export class CreateOrderComponent implements OnInit {
       shipping_value: [0],
       free_shipping: [false],
       sub_total: [0],
-      selectedTax: ["1"]
+      selected_tax: ["1"]
     });
 
     createProduct.controls.product_value.valueChanges.subscribe((value: number) => { // NOS SUSCRIBIMOS AL CAMBIO DEL VALOR DEL PRODUCTO
@@ -95,7 +95,7 @@ export class CreateOrderComponent implements OnInit {
 
   calculateTax(createProduct: any, product_value?: number) {
 
-    if (createProduct.controls.selectedTax.value === '1') { // Si selecciona el 1 ícono
+    if (createProduct.controls.selected_tax.value === '1') { // Si selecciona el 1 ícono
       let tax: any = (product_value ? product_value : createProduct.controls.product_value.value * createProduct.controls.quantity.value) * this.typeTax;
       tax.toString();
       tax = parseFloat(tax.toFixed(2));
@@ -118,7 +118,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   changeCalculator(item: string, i: number) {
-    this.products.controls[i]['controls'].selectedTax.setValue(item);
+    this.products.controls[i]['controls'].selected_tax.setValue(item);
     this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
   }
 

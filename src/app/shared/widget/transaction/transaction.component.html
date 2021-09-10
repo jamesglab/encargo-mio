@@ -100,27 +100,17 @@
 
                 <div>
                   <strong>Total de Libras:</strong> {{ productSelected.total_weight ? productSelected.total_weight: 0 }}
+                  lb.
                 </div>
 
-                <!-- <div>
-                  <strong>Valor de Artículos:</strong> {{ calculateTotal.total ? calculateTotal.total : 0 }} USD
-                </div>
-                 -->
-                <!-- 
-                <div>
-                  <strong>Valor Envío ({{ calculateTotal.name ? calculateTotal.name: 'x' }}):</strong>
-                  {{ calculateTotal.value ? calculateTotal.value.toFixed(2) : 0 }} USD
-                </div> -->
+                <ng-container *ngFor="let formula of productSelected.shipping_value_admin">
 
-                <div>
-                  <strong>Envio a Casa (USD): </strong>
-                  {{ productSelected.shipping_value ? productSelected.shipping_value : 0 }}
-                </div>
+                  <div>
+                    <strong>Envio a Casa ({{formula.name}}): </strong> {{ (formula.value ? formula.value : 0) |
+                    currency: 'USD': 'symbol' }} USD
+                  </div>
 
-                <div>
-                  <strong>Envio a casa (COP): </strong>
-                  {{ productSelected.shipping_value ? (productSelected.shipping_value * trm.value).toFixed(0) : 0 }}
-                </div>
+                </ng-container>
 
               </div>
 
@@ -201,14 +191,14 @@
                     <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo (USD) *</label>
                     <input type="number" class="form-control" placeholder="Valor en USD"
                       [(ngModel)]="item.product_value" (keypress)="numberOnly($event);" (blur)="getFormula(i);"
-                      [disabled]="disabledInputs">
+                      [disabled]="item.free_shipping">
                   </div>
                 </div>
                 <div class="col-3">
                   <div class="form-group">
                     <label for="exampleInputEmail1" class="text-truncate h5">Desc. (%)</label>
                     <input type="number" class="form-control" placeholder="% descuento" [(ngModel)]="item.discount"
-                      (keypress)="numberOnly($event);" (change)="calculateDiscount(i);" [disabled]="disabledInputs">
+                      (keypress)="numberOnly($event);" (change)="calculateDiscount(i);" [disabled]="item.free_shipping">
                   </div>
                 </div>
                 <div class="col-3">
@@ -217,14 +207,15 @@
 
                     <div class="container-tax">
 
-                      {{ item.tax }}
+                      {{ item.tax ? item.tax : 0 }}
 
                       <div class="container-calcs">
-                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': selectedTax == '1' }"
+                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': item.selected_tax === '1' }"
                           (click)="changeCalculator('1', i);">
                         </i>
                         <i class="fas fa-calculator" style="margin-left: 10px;"
-                          [ngClass]="{ 'selected-tax': selectedTax == '2' }" (click)="changeCalculator('2', i);"></i>
+                          [ngClass]="{ 'selected-tax': item.selected_tax === '2' }"
+                          (click)="changeCalculator('2', i);"></i>
                       </div>
 
                     </div>
@@ -238,7 +229,7 @@
                   <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen</label>
                   <input type="number" class="form-control" placeholder="Envio origen"
                     [(ngModel)]="item.shipping_origin_value_product" (keypress)="numberOnly($event);"
-                    (blur)="getFormula(i);" [disabled]="disabledInputs">
+                    (blur)="getFormula(i);" [disabled]="item.free_shipping">
                 </div>
               </div>
 
@@ -246,14 +237,14 @@
 
                 <div class="col-6">
                   <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
-                  <input type="number" class="form-control" placeholder="Peso en libras" [(ngModel)]="item.weigth"
-                    (keypress)="numberOnly($event);" (blur)="getFormula(i);" [disabled]="disabledInputs">
+                  <input type="number" class="form-control" placeholder="Peso en libras" [(ngModel)]="item.weight"
+                    (keypress)="numberOnly($event);" (blur)="getFormula(i);" [disabled]="item.free_shipping">
                 </div>
                 <div class="col-6">
                   <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
                   <input type="number" class="form-control" placeholder="Valor envio fijo"
                     [(ngModel)]="item.permanent_shipping_value" (keypress)="numberOnly($event);" (blur)="getFormula(i);"
-                    [disabled]="disabledInputs">
+                    [disabled]="item.free_shipping">
                 </div>
               </div>
 
@@ -264,11 +255,13 @@
                 </div>
 
                 <div class="col-6">
+
                   <div class="form-check form-switch text-truncate h5">
                     <label for="form-group">Envio Gratis</label>
                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                      [(ngModel)]="item.free_shipping" (change)="changeStatus();">
+                      [(ngModel)]="item.free_shipping">
                   </div>
+
                 </div>
 
               </div>
