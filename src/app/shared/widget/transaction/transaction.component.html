@@ -78,11 +78,11 @@
           <div class="col-7">
 
             <div class="h4">
-              # 000{{productSelected?.id}}
+              # 000{{orderSelected?.id}}
             </div>
 
             <div class="h5">
-              {{productSelected?.created_at | date }}
+              {{orderSelected?.created_at | date }}
             </div>
             <div class="h5">
               TRM cotización: {{ trm.value }}
@@ -98,15 +98,26 @@
 
                 Calculadora de Totales
 
+                <div><strong>Valor artículos:</strong> {{ calculateTotal }}</div>
+
                 <div>
-                  <strong>Total de Libras:</strong> {{ productSelected.total_weight ? productSelected.total_weight: 0 }}
+                  <strong>Total de Libras:</strong> {{  orderSelected.total_weight }}
                   lb.
                 </div>
 
-                <ng-container *ngFor="let formula of productSelected.shipping_value_admin">
+                <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
 
                   <div>
-                    <strong>Envio a Casa ({{formula.name}}): </strong> {{ (formula.value ? formula.value : 0) |
+                    <strong>Valor del envío ({{formula.name}}): </strong> {{ (formula.value ? formula.value : 0) |
+                    currency: 'USD': 'symbol' }} USD
+                  </div>
+
+                </ng-container>
+
+                <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
+
+                  <div>
+                    <strong>Envío a casa ({{formula.name}}): </strong> {{ (formula.value ? (formula.value + calculateTotal) : 0) |
                     currency: 'USD': 'symbol' }} USD
                   </div>
 
@@ -136,7 +147,7 @@
 
       <div class="table-responsive">
 
-        <div class="container" *ngFor="let item of productSelected?.products; let i = index;">
+        <div class="container" *ngFor="let item of orderSelected?.products; let i = index;">
 
           <div class="row">
 

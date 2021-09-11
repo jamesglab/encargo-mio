@@ -22,13 +22,13 @@ export class TransactionComponent implements OnInit {
     updated_at?: string;
     is_shipping_locker?: boolean;
   }>;
-  public productSelected: any;
+  public orderSelected: any;
   public subTotalPrice: number = 0;
   public totalPrice: number = 0;
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
   public disabledInputs: boolean = false;
-  public calculateTotal: any;
+  public calculateTotal: number = 0;//TOTAL VALUE ARTICLES
   public trm: { create_at: string, updated_at: string, id: number, value: number };
 
   constructor(
@@ -50,8 +50,8 @@ export class TransactionComponent implements OnInit {
     this._orderService.detailOrder({ id: order.id }).subscribe((res) => {
       if (res) {
         this.modalService.open(content, { size: 'xl', centered: true });
-        this.productSelected = res;
-        this.productSelected.trm = this.trm;
+        this.orderSelected = res;
+        this.orderSelected.trm = this.trm;
         this.iterateData();
       } else {
         this._notify.show('Error', 'No pudimos pudimos la orden.', 'warning');
@@ -64,44 +64,44 @@ export class TransactionComponent implements OnInit {
   }
 
   iterateData() {
-    for (let index = 0; index < this.productSelected.products.length; index++) {
-      this.productSelected.products[index].free_shipping = (this.productSelected.products[index].free_shipping ? this.productSelected.products[index].free_shipping : false); // Volver el campo de free_shipping true y si viene null (false)
+    for (let index = 0; index < this.orderSelected.products.length; index++) {
+      this.orderSelected.products[index].free_shipping = (this.orderSelected.products[index].free_shipping ? this.orderSelected.products[index].free_shipping : false); // Volver el campo de free_shipping true y si viene null (false)
     }
   }
 
   changeCalculator(item: string, i: number) {
-    this.productSelected.products[i].selected_tax = item;
+    this.orderSelected.products[i].selected_tax = item;
     this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
   }
 
   calculateTax(position: number) {
     let tax: number;
-    if (this.productSelected.products[position].selected_tax === '1') { // Si selecciona el 1 ícono
-      tax = (this.productSelected.products[position].product_value * this.productSelected.products[position].quantity) * 0.07;
+    if (this.orderSelected.products[position].selected_tax === '1') { // Si selecciona el 1 ícono
+      tax = (this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) * 0.07;
       tax.toString();
       tax = parseFloat(tax.toFixed(2));
-      this.productSelected.products[position].tax = tax;
+      this.orderSelected.products[position].tax = tax;
     } else {  // Si selecciona el 2 ícono
-      tax = ((this.productSelected.products[position].product_value * this.productSelected.products[position].quantity) + this.productSelected.products[position].shipping_origin_value_product) * 0.07;
+      tax = ((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].shipping_origin_value_product) * 0.07;
       tax.toString();
       tax = parseFloat(tax.toFixed(2));
-      this.productSelected.products[position].tax = tax;
+      this.orderSelected.products[position].tax = tax;
     }
   }
 
   calculateTotalPrices(position: number) { // Calculamos el valor total aplicando la fórmula
     let subTotal: number;
-    subTotal = (this.productSelected.products[position].product_value * this.productSelected.products[position].quantity) + this.productSelected.products[position].tax;
+    subTotal = (this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].tax;
     subTotal.toString();
     subTotal = parseFloat(subTotal.toFixed(2));
-    this.productSelected.products[position].sub_total = subTotal;
+    this.orderSelected.products[position].sub_total = subTotal;
   }
 
   calculateDiscount(position: number) {
     let discount: number;
-    discount = (this.productSelected.products[position].sub_total - (this.productSelected.products[position].sub_total) * (this.productSelected.products[position].discount / 100)); // Restamos el sub_total menos el sub_total multiplicado por el valor que ingresa el administrador dividido en 100
-    this.productSelected.products[position].discount = (parseFloat((this.productSelected.products[position].discount / 100).toFixed(2))); // Restamos el subtotal menos el descuento para obtener el valor que se descuenta.
-    this.productSelected.products[position].sub_total = (discount ? discount.toFixed(2) : 0);
+    discount = (this.orderSelected.products[position].sub_total - (this.orderSelected.products[position].sub_total) * (this.orderSelected.products[position].discount / 100)); // Restamos el sub_total menos el sub_total multiplicado por el valor que ingresa el administrador dividido en 100
+    this.orderSelected.products[position].discount = (parseFloat((this.orderSelected.products[position].discount / 100).toFixed(2))); // Restamos el subtotal menos el descuento para obtener el valor que se descuenta.
+    this.orderSelected.products[position].sub_total = (discount ? discount.toFixed(2) : 0);
   }
 
   getFormula(position: number) {
@@ -109,10 +109,11 @@ export class TransactionComponent implements OnInit {
     this.calculateTax(position); // Calculamos el tax
     this.calculateTotalPrices(position); // Calcular el total de precios
     this.calculateDiscount(position);
-    this._orderService.calculateShipping(this.productSelected.products).subscribe((res) => { // Llamamos al método para calcular los valores de envío
+    this.calculateTotalArticles();
+    this._orderService.calculateShipping(this.orderSelected.products).subscribe((res) => { // Llamamos al método para calcular los valores de envío
       if (res.length > 0) { // Si el length de la respuesta es mayor a 0 
-        this.productSelected.shipping_value_admin = res;
-        this.productSelected.total_weight = res[0].weight;
+        this.orderSelected.shipping_value_admin = res;
+        this.orderSelected.total_weight = res[0].weight;
       }
       this.isLoadingFormula = false;
     }, err => {
@@ -125,8 +126,8 @@ export class TransactionComponent implements OnInit {
 
   sendQuotation() {
     this.isLoading = true;
-    this._orderService.updateOrder(this.productSelected).subscribe((res) => {
-      this._notify.show('Cotización Actualizada', `Actualizaste la cotización # ${this.productSelected.id}`, 'warning');
+    this._orderService.updateOrder(this.orderSelected).subscribe((res) => {
+      this._notify.show('Cotización Actualizada', `Actualizaste la cotización # ${this.orderSelected.id}`, 'warning');
       this.isLoading = false;
       this.refreshTable.emit(true);
       this.modalService.dismissAll();
@@ -136,6 +137,14 @@ export class TransactionComponent implements OnInit {
       throw err;
     });
 
+  }
+
+  //VALOR ARTICULOS
+  calculateTotalArticles() {
+    this.calculateTotal = 0;
+    this.orderSelected.products.map((product) => {
+      this.calculateTotal += product.product_value;
+    })
   }
 
 }

@@ -89,6 +89,7 @@ export class OrderService {
       `${environment.microservices.management}orders/calculate-shipping`, { products: products, type: 'quotation' }
     ).pipe(
       map((res: any) => {
+        console.log("RESPONSEE", res);
         return res;
       }),
       catchError(handleError)
