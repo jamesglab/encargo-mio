@@ -96,4 +96,15 @@ export class OrderService {
     )
   }
 
+  // HACEMOS CONSULTA PARA TENER LAS TIENDAS ASOCIADAS A ENCARGOMIO
+  getStores(){
+    return this.http.get<any>(
+      `${environment.microservices.management}store`, { headers: header, }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
 }
