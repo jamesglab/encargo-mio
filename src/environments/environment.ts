@@ -9,8 +9,8 @@ export const environment = {
   url_api: '',
   microservices: {
     user: "https://dev-api.encargomio.com/api/v1/user/",
-    management: "https://dev-api.encargomio.com/api/v1/management/",
-    orders:"https://dev-api.encargomio.com/api/v1/orders/"
+    management: "http://localhost:4004/api/v1/management/",
+    orders: "https://dev-api.encargomio.com/api/v1/orders/"
   },
   firebaseConfig: {
     apiKey: '',
