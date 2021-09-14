@@ -1,0 +1,27 @@
+a {
+  cursor: pointer;
+}
+
+.avatar {
+  width: 10rem;
+  height: 10rem;
+}
+
+.c-gray {
+  color: #adadad !important;
+}
+
+.container-tax {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.container-calcs {
+  font-size: 20px;
+  display: flex;
+  cursor: pointer;
+}
+
+.selected-tax {
+  color: #ef8921;
+}

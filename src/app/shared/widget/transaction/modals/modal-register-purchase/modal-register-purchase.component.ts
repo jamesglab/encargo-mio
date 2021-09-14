@@ -1,11 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
+import { NotifyService } from "src/app/_services/notify.service";
 
 @Component({
-  selector: 'app-modal-register-purchase',
-  templateUrl: './modal-register-purchase.component.html',
-  styleUrls: ['./modal-register-purchase.component.scss']
+  selector: "app-modal-register-purchase",
+  templateUrl: "./modal-register-purchase.component.html",
+  styleUrls: ["./modal-register-purchase.component.scss"],
 })
 export class ModalRegisterPurchaseComponent implements OnInit {
   @Input() orderSelected;
@@ -15,7 +17,9 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   public purchaseForm: FormGroup;
   constructor(
     private _orderService: OrderService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public _notify: NotifyService,
+    public modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -23,30 +27,84 @@ export class ModalRegisterPurchaseComponent implements OnInit {
     this.buildForm();
   }
 
-
+  // CREACION DE FORMULARIO Y ENVIO DE DATOS NO EDITABLES
   buildForm() {
-
     this.purchaseForm = this.fb.group({
-      product: [null],
-      store: [null],
-      paymentType: [null],
-      totalPurchase: [{ value: this.orderSelected.total_value, disabled: true }],
-      order: [{ value: this.orderSelected.id, disabled: true }],
-      datePurchase: [null],
-      observations: [null],
-      dateLocker: [null]
+      order_service: [
+        { value: this.orderSelected.id, disabled: true },
+        Validators.required,
+      ],
+      product: [null, Validators.required],
+      payment_type: [null, Validators.required],
+      observations: [null, Validators.required],
+      store: [null, Validators.required],
+      total_price: [{ value: this.orderSelected.total_value, disabled: true }],
+      purchase_date: [null, Validators.required],
+      locker_entry_date: [null, Validators.required],
     });
-
   }
 
   // CONSUMIMOS END-POINT DE LAS TIENDAS ASOCIADAS A ENCARGOMIO
   getStores() {
-    this._orderService.getStores().subscribe(res => {
+    this._orderService.getStores().subscribe((res) => {
       this.stores = res;
     });
   }
 
-  closeModale(){
+  closeModale() {
     this.closeModaleOut.emit(true);
+  }
+
+  // ENVIAMOS LA SOLICITUD
+  registerPurchase() {
+    this.isLoading = true;
+    if (this.purchaseForm.valid) {
+      // CREAMOS LAS FECHAS CON EL METODO TOINSERTDATES
+      const purchase_date = this.toInsertDates()[0];
+      const locker_entry_date = this.toInsertDates()[1];
+      // ENVIAMOS LOS DATOS AL ENDPOINT
+      this._orderService
+        .registerPurchase({
+          ...this.purchaseForm.getRawValue(),
+          purchase_date,
+          locker_entry_date,
+        })
+        .subscribe(
+          (res) => {
+            this._notify.show(
+              `Orden de Compra Creada #${res.order_purchase.id}`,
+              res.message,
+              "success"
+            );
+            this.modalService.dismissAll();
+          },
+          (err) => {
+            this._notify.show(
+              "Error",
+              err ? err : "Ocurrio un error",
+              "warning"
+            );
+            this.isLoading = false;
+          }
+        );
+    } else {
+      this._notify.show("Campos incompletos", "", "info");
+      this.isLoading = false;
+    }
+  }
+
+  toInsertDates() {
+    return [
+      new Date(
+        this.purchaseForm.getRawValue().purchase_date.year,
+        this.purchaseForm.getRawValue().purchase_date.month,
+        this.purchaseForm.getRawValue().purchase_date.day
+      ),
+      new Date(
+        this.purchaseForm.getRawValue().locker_entry_date.year,
+        this.purchaseForm.getRawValue().locker_entry_date.month,
+        this.purchaseForm.getRawValue().locker_entry_date.day
+      ),
+    ];
   }
 }

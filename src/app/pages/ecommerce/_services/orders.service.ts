@@ -107,4 +107,16 @@ export class OrderService {
       );
   }
 
+  registerPurchase(purchase){
+    return this.http.post<any>(
+      `${environment.microservices.management}order-purchase`, purchase
+    ).pipe(
+      map((res: any) => {
+        console.log("RESPONSEE", res);
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
 }
