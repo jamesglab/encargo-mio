@@ -1,16 +1,15 @@
 <div class="modal-header ">
-  <h5 class="modal-title mt-0">Registrar Compra</h5>
+  <h5 class="modal-title mt-0">Ingreso a Casillero </h5>
   <button type="button" class="btn-close" aria-hidden="true" (click)="closeModale()"></button>
 </div>
 
 <div class="container p-4">
-  <form>
-
+  <form [formGroup]="lockerForm">
     <div class="row">
       <div class="col-6">
         <div class="form-group">
           <label for="lockers">Casillero</label>
-          <select class="form-control" id="lockers" formControlName="">
+          <select class="form-control" id="lockers" formControlName="locker" >
             <option [value]="null" disabled>Seleccióna casillero</option>
             <option *ngFor="let locker of lockers" [ngValue]="locker.id">
               {{ (locker.name.length > 50) ? (locker.name | slice:0:50 ) + '...' :  locker.name }}</option>
@@ -20,10 +19,10 @@
       <div class="col-6">
         <div class="form-group">
           <label for="orders">Orden</label>
-          <select class="form-control" id="orders" formControlName="">
+          <select class="form-control" id="orders" >
             <option [value]="null" disabled>Seleccióna una orden</option>
-            <option *ngFor="let order of orders" [ngValue]="order.id">
-              {{ (order.name.length > 50) ? (order.name | slice:0:50 ) + '...' :  order.name }}</option>
+            <option *ngFor="let order of orders_purchase" [ngValue]="order.id">
+              {{ (order.product.name.length > 50) ? (order.id + ' | ' + order.product.name  | slice:0:50 ) + '...' :  order.id + ' | ' + order.product.name }}</option>
           </select>
         </div>
       </div>
@@ -32,13 +31,13 @@
       <div class="col-6">
         <div class="form-group">
           <label for="name">Nombre</label>
-          <input type="text" class="form-control" id="name" formControlName="">
+          <input type="text" class="form-control" id="name" >
         </div>
       </div>
       <div class="col-6">
         <div class="form-group">
           <label for="weight">Peso Libras</label>
-          <input type="number" class="form-control" id="weight" formControlName="">
+          <input type="number" class="form-control" id="weight" >
         </div>
       </div>
     </div>
@@ -46,7 +45,7 @@
       <div class="col-6">
         <div class="form-group">
           <label for="volume">Volumen</label>
-          <input type="number" class="form-control" id="volume" formControlName="">
+          <input type="number" class="form-control" id="volume" >
         </div>
       </div>
 
@@ -55,7 +54,7 @@
           <label for="dateLocker">Fecha de Recibido</label>
           <div class="input-group clockpicker">
             <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
-              formControlName="">
+              >
             <div class="input-group-append" (click)="dl.toggle()">
               <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
             </div>
@@ -68,7 +67,7 @@
       <div class="col-6">
         <div class="form-group">
           <label for="conveyor">Transportadora Origen</label>
-          <select class="form-control" id="conveyor" formControlName="">
+          <select class="form-control" id="conveyor" >
             <option [value]="null" disabled>Seleccióna una transportadora</option>
             <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
               {{ (conveyor.name.length > 50) ? (conveyor.name | slice:0:50 ) + '...' :  conveyor.name }}</option>
@@ -78,7 +77,7 @@
       <div class="col-6">
         <div class="form-group">
           <label for="guia">Número Guia Origen</label>
-          <input type="number" class="form-control" id="guia" formControlName="">
+          <input type="number" class="form-control" id="guia" >
         </div>
       </div>
     </div>
@@ -86,13 +85,13 @@
       <div class="col-6">
         <div class="form-group">
           <label for="envio">Valor Envío</label>
-          <input type="number" class="form-control" id="envio" formControlName="">
+          <input type="number" class="form-control" id="envio" >
         </div>
       </div>
       <div class="col-6">
         <div class="form-group">
           <label for="vA">Valor Declarado(Administrador)</label>
-          <input type="number" class="form-control" id="vA" formControlName="">
+          <input type="number" class="form-control" id="vA" >
         </div>
       </div>
     </div>
@@ -102,7 +101,7 @@
       <div class="col-6">
         <div class="form-group">
           <label for="description">Descripción del Producto</label>
-          <textarea class="form-control" id="description" rows="3" formControlName="observations"></textarea>
+          <textarea class="form-control" id="description" rows="3" ></textarea>
         </div>
       </div>
       <div class="col-6">

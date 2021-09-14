@@ -9,7 +9,7 @@ export const environment = {
   url_api: '',
   microservices: {
     user: "https://dev-api.encargomio.com/api/v1/user/",
-    management: "https://fac7-181-141-36-226.ngrok.io/api/v1/management/",
+    management: "https://dev-api.encargomio.com/api/v1/management/",
     orders: "https://dev-api.encargomio.com/api/v1/orders/"
   },
   firebaseConfig: {

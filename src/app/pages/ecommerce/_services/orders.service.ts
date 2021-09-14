@@ -97,7 +97,7 @@ export class OrderService {
   }
 
   // HACEMOS CONSULTA PARA TENER LAS TIENDAS ASOCIADAS A ENCARGOMIO
-  getStores(){
+  getStores() {
     return this.http.get<any>(
       `${environment.microservices.management}store`, { headers: header, }).pipe(
         map((res: any) => {
@@ -107,7 +107,7 @@ export class OrderService {
       );
   }
 
-  registerPurchase(purchase){
+  registerPurchase(purchase) {
     return this.http.post<any>(
       `${environment.microservices.management}order-purchase`, purchase
     ).pipe(
@@ -117,6 +117,27 @@ export class OrderService {
       }),
       catchError(handleError)
     )
+  }
+
+  getLockerByUser(params) {
+
+    return this.http.get<any>(
+      `${environment.microservices.management}locker/user`, { headers: header, params }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getPurchaseByOrder(params){
+    return this.http.get<any>(
+      `${environment.microservices.management}order-purchase/filter`, { headers: header, params }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
 }
