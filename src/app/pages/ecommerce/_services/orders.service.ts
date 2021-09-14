@@ -130,7 +130,7 @@ export class OrderService {
       );
   }
 
-  getPurchaseByOrder(params){
+  getPurchaseByOrder(params) {
     return this.http.get<any>(
       `${environment.microservices.management}order-purchase/filter`, { headers: header, params }).pipe(
         map((res: any) => {
@@ -140,4 +140,13 @@ export class OrderService {
       );
   }
 
+  getConvenyor() {
+    return this.http.get<any>(
+      `${environment.microservices.management}conveyor`, { headers: header }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

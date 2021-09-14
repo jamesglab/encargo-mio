@@ -30,6 +30,7 @@ export class ModalLockerEntryComponent implements OnInit {
     this.buildForm();
     this.getLockerByUser();
     this.getPurchaseByOrder();
+    this.getConvenyor();
   }
 
   buildForm() {
@@ -59,6 +60,11 @@ export class ModalLockerEntryComponent implements OnInit {
   getPurchaseByOrder() {
     this._orderService.getPurchaseByOrder({ order_service: this.orderSelected.id }).subscribe(res => {
       this.orders_purchase = res;
+    });
+  }
+  getConvenyor(){
+    this._orderService.getConvenyor().subscribe(res=>{
+      this.conveyors = res;
     })
   }
   closeModale() {
