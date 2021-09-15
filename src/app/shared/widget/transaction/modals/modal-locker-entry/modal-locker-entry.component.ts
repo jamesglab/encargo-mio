@@ -70,30 +70,35 @@ export class ModalLockerEntryComponent implements OnInit {
       this.orders_purchase = res;
     });
   }
-
+// AGREGAMOS LAS TRANSPORTADORAS
   getConvenyor() {
     this._orderService.getConvenyor().subscribe(res => {
       this.conveyors = res;
     })
   }
-
+// CERRAMOS EL MODAL
   closeModale() {
     this.modalService.dismissAll();
   }
-
+// AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
   onSelect(event) {
     this.files.push(...event.addedFiles);
   }
-
+// ELIMINAMOS LA IMAGEN
   onRemove(event) {
     this.files.splice(this.files.indexOf(event), 1);
   }
+  // AGREGAMOS AL LOCKER
   addLocker() {
-    console.log('form',this.lockerForm)
+    // VALIDAMOS QUE EXISTAN IMAGENES Y ADICIONAL QUE EXISTAN LOS CAMPOS OBLIGATORIOS
     if (this.lockerForm.valid && this.files.length > 0) {
+      // CREAMOS EL FORM DATA
       var formData = new FormData();
+      // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
       this.files.forEach((file) => { formData.append('images', file) });
+      // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
       formData.append("payload", JSON.stringify(this.createFormToSendApi(this.lockerForm.getRawValue())));
+      // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 
       this._orderService.insertProductLocker(formData).subscribe(res => {
         this._notify.show(
           `Producto #${this.lockerForm.getRawValue().order_purchase_object.id.replace("==","")} Agregado`,
@@ -135,14 +140,5 @@ export class ModalLockerEntryComponent implements OnInit {
   createReceiptDate(date) {
     return new Date(date.year, date.month, date.day)
   }
-  // onSelect(event){
-  //   console.log('event',event);
-  //   this.files.push(event.addedFiles[0])
-
-  // }
-
-  // onRemove(event){
-
-  // }
 
 }
