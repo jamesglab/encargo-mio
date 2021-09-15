@@ -6,55 +6,91 @@
 <div class="container p-4">
   <form [formGroup]="lockerForm">
     <div class="row">
-      <div class="col-6">
+      <div class="col-12 col-sm-6">
+
+        <div class="form-group">
+          <label for="guia">Número Guia Origen</label>
+          <input type="number" class="form-control" id="guia" formControlName="guide_number">
+        </div>
+
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="orders">Orden</label>
+          <select class="form-control" id="orders" formControlName="order_purchase_object" (change)="lockerForm.get('product_description').setValue(lockerForm.get('order_purchase_object').value.product.description)">
+            <option [value]="null" disabled>Seleccióna una orden</option>
+            <option *ngFor="let order of orders_purchase" [ngValue]="order">
+              {{ (order.product.name.length > 50) ? (order.id.replace('==','') + ' | ' + order.product.name  | slice:0:50 ) + '...' :  order.id + ' | ' + order.product.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12 col-sm-6">
+
+        <div class="doc">
+          <div class="box">
+            <img [src]="lockerForm.get('order_purchase_object')?.value?.product?.image ?
+               lockerForm.get('order_purchase_object').value.product.image :'assets/images/default.png'">
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+
+        <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+          <ngx-dropzone-label>
+            <div>
+              <h2>Inserta las Imagenes del Producto</h2>
+            </div>
+          </ngx-dropzone-label>
+          <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
+            [removable]="true" (removed)="onRemove(f)">
+          </ngx-dropzone-image-preview>
+        </div>
+
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12 col-sm-6">
+
         <div class="form-group">
           <label for="lockers">Casillero</label>
-          <select class="form-control" id="lockers" formControlName="locker" >
+          <select class="form-control" id="lockers" formControlName="locker">
             <option [value]="null" disabled>Seleccióna casillero</option>
             <option *ngFor="let locker of lockers" [ngValue]="locker.id">
               {{ (locker.name.length > 50) ? (locker.name | slice:0:50 ) + '...' :  locker.name }}</option>
           </select>
         </div>
+
+
       </div>
-      <div class="col-6">
+      <div class="col-12 col-sm-6">
+
         <div class="form-group">
-          <label for="orders">Orden</label>
-          <select class="form-control" id="orders" >
-            <option [value]="null" disabled>Seleccióna una orden</option>
-            <option *ngFor="let order of orders_purchase" [ngValue]="order.id">
-              {{ (order.product.name.length > 50) ? (order.id + ' | ' + order.product.name  | slice:0:50 ) + '...' :  order.id + ' | ' + order.product.name }}</option>
-          </select>
+          <label for="description-product">Descripción del Producto </label>
+          <textarea class="form-control" id="description-product" rows="3" formControlName="product_description"></textarea>
         </div>
       </div>
     </div>
+
     <div class="row mt-3">
-      <div class="col-6">
-        <div class="form-group">
-          <label for="name">Nombre</label>
-          <input type="text" class="form-control" id="name" >
-        </div>
-      </div>
-      <div class="col-6">
+      <div class="col-12 col-sm-6">
+
         <div class="form-group">
           <label for="weight">Peso Libras</label>
-          <input type="number" class="form-control" id="weight" >
+          <input type="number" class="form-control" id="weight" formControlName="weight_in_pounds">
         </div>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-6">
-        <div class="form-group">
-          <label for="volume">Volumen</label>
-          <input type="number" class="form-control" id="volume" >
-        </div>
-      </div>
 
-      <div class="col-6">
+      </div>
+      <div class="col-12 col-sm-6">
+
+
         <div class="form-group">
           <label for="dateLocker">Fecha de Recibido</label>
           <div class="input-group clockpicker">
             <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
-              >
+              formControlName="receipt_date">
             <div class="input-group-append" (click)="dl.toggle()">
               <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
             </div>
@@ -62,53 +98,49 @@
         </div>
       </div>
     </div>
+    <div class="row mt-3">
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="envio">Valor Envío</label>
+          <input type="number" class="form-control" id="envio" formControlName="shipping_value">
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="vA">Valor Declarado(Administrador)</label>
+          <input type="number" class="form-control" id="vA" formControlName="admin_value">
+        </div>
+      </div>
+    </div>
+
 
     <div class="row mt-3">
-      <div class="col-6">
+      <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="conveyor">Transportadora Origen</label>
-          <select class="form-control" id="conveyor" >
+          <select class="form-control" id="conveyor" formControlName="conveyor">
             <option [value]="null" disabled>Seleccióna una transportadora</option>
             <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
               {{ (conveyor.name.length > 50) ? (conveyor.name | slice:0:50 ) + '...' :  conveyor.name }}</option>
           </select>
         </div>
-      </div>
-      <div class="col-6">
-        <div class="form-group">
-          <label for="guia">Número Guia Origen</label>
-          <input type="number" class="form-control" id="guia" >
-        </div>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-6">
-        <div class="form-group">
-          <label for="envio">Valor Envío</label>
-          <input type="number" class="form-control" id="envio" >
-        </div>
-      </div>
-      <div class="col-6">
-        <div class="form-group">
-          <label for="vA">Valor Declarado(Administrador)</label>
-          <input type="number" class="form-control" id="vA" >
-        </div>
-      </div>
-    </div>
 
-
-    <div class="row mt-3">
-      <div class="col-6">
-        <div class="form-group">
-          <label for="description">Descripción del Producto</label>
-          <textarea class="form-control" id="description" rows="3" ></textarea>
-        </div>
       </div>
-      <div class="col-6">
-        <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+      <div class="col-12 col-sm-6">
+        <div class="form-check form-switch mt-3">
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+            formControlName="force_commercial_shipping">
           <label class="form-check-label" for="flexSwitchCheckDefault">Forzar Envío Comercial</label>
-          <p>los productos que se envíen en compañía de este articulo, aplicaran el calculo bajo la formula de envío comercial </p>
+          <p>los productos que se envíen en compañía de este articulo, aplicaran el calculo bajo la formula de envío
+            comercial </p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="description">Observaciones</label>
+          <textarea class="form-control" id="description" rows="3" formControlName="product_observations"></textarea>
         </div>
       </div>
     </div>
@@ -124,7 +156,7 @@
     Cancelar
   </button>
 
-  <button class="btn btn-primary">
+  <button class="btn btn-primary" (click)="addLocker()">
 
     <ng-container *ngIf="isLoading">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
