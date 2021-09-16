@@ -9,8 +9,10 @@ import { NotifyService } from "src/app/_services/notify.service";
   styleUrls: ["./transaction.component.scss"],
 })
 export class TransactionComponent implements OnInit {
+
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Input() public status: number;
+  
   @Input() public transactions: Array<{
     id?: string;
     estimeted_value?: number;
@@ -28,6 +30,8 @@ export class TransactionComponent implements OnInit {
     value: number;
   };
 
+  public statusTab: number = 0;
+
   constructor(
     private modalService: NgbModal,
     private _orderService: OrderService,
@@ -36,6 +40,10 @@ export class TransactionComponent implements OnInit {
 
   ngOnInit() {
     this.getTRM();
+  }
+
+  ngOnChanges(){
+    this.statusTab = this.status;
   }
 
   getTRM() {

@@ -1,205 +1,221 @@
-  <div class="modal-header ">
-    <h5 class="modal-title mt-0">Detalles de la Orden</h5>
-    <button type="button" class="btn-close" aria-hidden="true" (click)="modalService.dismissAll()" ></button>
+<div class="modal-header ">
+  <h5 class="modal-title mt-0">Detalles de la Orden</h5>
+  <button type="button" class="btn-close" aria-hidden="true" (click)="modalService.dismissAll()"></button>
+</div>
+
+<div class="modal-body">
+
+  <div class="container">
+
+    <div class="row">
+
+      <div class="col-7">
+
+        <div class="h4">
+          # 000{{orderSelected?.id}}
+        </div>
+
+        <div class="h5">
+          {{orderSelected?.created_at | date }}
+        </div>
+        <div class="h5">
+          TRM cotización: {{ trm.value }}
+        </div>
+      </div>
+
+      <div class="col-5 d-flex justify-content-center align-items-center">
+
+        <div class="row mt-2">
+
+          <div class="container-calculator" *ngIf="!isLoadingFormula">
+
+            Calculadora de Totales
+
+            <div>
+              <strong>Valor artículos:</strong>
+              {{ (orderSelected.total_value ? orderSelected.total_value : 0) | currency: 'USD' }} USD
+            </div>
+
+            <div>
+              <strong>Total de Libras:</strong>
+              {{ orderSelected.total_weight ? orderSelected.total_weight: 0 }} lb.
+            </div>
+
+            <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
+              <div>
+                <strong>Valor del envío ({{formula.name}}): </strong>
+                {{ (formula.value ? formula.value : 0) | currency: 'USD' }} USD
+              </div>
+            </ng-container>
+
+
+            <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
+              <div>
+                <strong>Envio a casa ({{formula.name}})</strong>
+                {{ (orderSelected.total_value ? orderSelected.total_value : 0) + (formula.value ? formula.value : 0) |
+                currency: 'USD' }}
+                USD
+              </div>
+            </ng-container>
+
+          </div>
+
+          <div class="loading-calulator" *ngIf="isLoadingFormula">
+
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+            Estamos calculando el valor de envío...
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
 
-  <div class="modal-body">
+  <hr>
 
-    <div class="container">
+  <div class="table-responsive">
+
+    <div class="container" *ngFor="let item of orderSelected.products; let i = index;">
 
       <div class="row">
 
-        <div class="col-7">
+        <div class="col-3 d-flex justify-content-center">
 
-          <div class="h4">
-            # 000{{orderSelected?.id}}
-          </div>
+          <img [src]="item.image" (error)="$event.target.src = 'https://bulma.io/images/placeholders/96x96.png'"
+            class="avatar" />
 
-          <div class="h5">
-            {{orderSelected?.created_at | date }}
-          </div>
-          <div class="h5">
-            TRM cotización: {{ trm.value }}
-          </div>
         </div>
 
-        <div class="col-5 d-flex justify-content-center align-items-center">
+        <div class="col-4">
 
-          <div class="row mt-2">
+          <div>
+            <a [href]="item.link" target="blank">
+              <h5 class="text-truncate h5">{{ item.name }}</h5>
+            </a>
+          </div>
 
-            <div class="container-calculator" *ngIf="!isLoadingFormula">
+          <div>
+            {{ item.description }}
+          </div>
 
-              Calculadora de Totales
+          <div class="mt-2">
+            {{ item.aditional_info }}
+          </div>
 
-              <div><strong>Valor artículos:</strong> {{ calculateTotal }}</div>
+          <div class="form-group mt-2 h5">
+            <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
+              [(ngModel)]="item.aditional_info"
+              placeholder="Escribenos la información adicional de producto como talla, color, etc.">
+            </textarea>
+          </div>
 
-              <div>
-                <strong>Total de Libras:</strong> {{  orderSelected.total_weight }}
-                lb.
-              </div>
+          <div class="form-group mt-2 h5">
+            <label for="exampleFormControlTextarea1">Observaciones del cliente</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
+              [(ngModel)]="item.description"
+              placeholder="Escribenos la información adicional de producto como talla, color, etc.">
+            </textarea>
+          </div>
 
-              <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
-                <div>
-                  <strong>Valor del envío ({{formula.name}}): </strong> {{ (formula.value ? formula.value : 0) |
-                  currency: 'USD': 'symbol' }} USD
-                </div>
-              </ng-container>
-
-              <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
-                <div>
-                  <strong>Envío a casa ({{formula.name}}): </strong> {{ (formula.value ? (formula.value + calculateTotal) : 0) |
-                  currency: 'USD': 'symbol' }} USD
-                </div>
-              </ng-container>
-
-            </div>
-
-            <div class="loading-calulator" *ngIf="isLoadingFormula">
-
-              <div class="spinner-border" role="status">
-                <span class="sr-only"></span>
-              </div>
-
-              Estamos calculando el valor de envío...
-
-            </div>
-
+          <div class="mt-2 h5">
+            Cantidad: {{ item.quantity }}
           </div>
 
         </div>
 
-      </div>
+        <div class="col-5">
 
-    </div>
+          <div class="row">
 
-    <hr>
-
-    <div class="table-responsive">
-      <div class="container" *ngFor="let item of orderSelected?.products; let i = index;">
-        <div class="row">
-
-          <div class="col-3 d-flex justify-content-center">
-
-            <img [src]="item.image" (error)="$event.target.src = 'https://bulma.io/images/placeholders/96x96.png'"
-              class="avatar" />
-
-          </div>
-
-          <div class="col-4">
-
-            <div>
-              <a [href]="item.link" target="blank">
-                <h5 class="text-truncate h5">{{ item.name }}</h5>
-              </a>
-            </div>
-
-            <div>
-              {{ item.description }}
-            </div>
-
-            <div class="mt-2">
-              {{ item.aditional_info }}
-            </div>
-
-            <div class="form-group mt-2 h5">
-              <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
-                [(ngModel)]="item.aditional_info"
-                placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
-            </div>
-
-            <div class="form-group mt-2 h5">
-              <label for="exampleFormControlTextarea1">Observaciones del cliente</label>
-              <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
-                [(ngModel)]="item.description"
-                placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
-            </div>
-
-            <div class="mt-2 h5">
-              Cantidad: {{ item.quantity }}
-            </div>
-
-          </div>
-
-          <div class="col-5">
-
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group">
-                  <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo (USD) *</label>
-                  <input type="number" class="form-control" placeholder="Valor en USD"
-                    [(ngModel)]="item.product_value" (keypress)="numberOnly($event);" (blur)="getFormula(i);"
-                    [disabled]="item.free_shipping">
-                </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo (USD) *</label>
+                <input type="number" class="form-control" placeholder="Valor en USD" [(ngModel)]="item.product_value"
+                  (keypress)="numberOnly($event);" (blur)="getFormula(i);" [disabled]="item.free_shipping">
               </div>
-              <div class="col-3">
-                <div class="form-group">
-                  <label for="exampleInputEmail1" class="text-truncate h5">Desc. (%)</label>
-                  <input type="number" class="form-control" placeholder="% descuento" [(ngModel)]="item.discount"
-                    (keypress)="numberOnly($event);" (change)="calculateDiscount(i);" [disabled]="item.free_shipping">
-                </div>
+            </div>
+
+            <div class="col-3">
+              <div class="form-group">
+                <label for="exampleInputEmail1" class="text-truncate h5">Desc. (%)</label>
+                <input type="number" class="form-control" placeholder="% descuento" [(ngModel)]="item.discount"
+                  (keypress)="numberOnly($event);" (change)="calculateDiscount(i);" [disabled]="item.free_shipping">
               </div>
-              <div class="col-3">
-                <div class="form-group">
-                  <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
+            </div>
 
-                  <div class="container-tax">
+            <div class="col-3">
 
-                    {{ item.tax ? item.tax : 0 }}
+              <div class="form-group">
 
-                    <div class="container-calcs">
-                      <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': item.selected_tax === '1' }"
-                        (click)="changeCalculator('1', i);">
-                      </i>
-                      <i class="fas fa-calculator" style="margin-left: 10px;"
-                        [ngClass]="{ 'selected-tax': item.selected_tax === '2' }"
-                        (click)="changeCalculator('2', i);"></i>
-                    </div>
+                <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
 
+                <div>
+
+                  <input type="number" class="form-control" placeholder="Tax" [ngModel]="item.tax | number: '1.2-2'"
+                    (ngModelChange)="item.tax = $event" min="0" (keypress)="numberOnly($event);"
+                    (change)="calculateTaxManually(i);" [disabled]="item.free_shipping">
+
+                  <br>
+
+                  <div class="container-calcs">
+                    <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': item.selected_tax === '1' }"
+                      (click)="changeCalculator('1', i);">
+                    </i>
+                    <i class="fas fa-calculator" style="margin-left: 10px;"
+                      [ngClass]="{ 'selected-tax': item.selected_tax === '2' }" (click)="changeCalculator('2', i);"></i>
                   </div>
 
                 </div>
+
               </div>
             </div>
+          </div>
 
-            <div class="row mt-4">
-              <div class="form-group col-12">
-                <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen</label>
-                <input type="number" class="form-control" placeholder="Envio origen"
-                  [(ngModel)]="item.shipping_origin_value_product" (keypress)="numberOnly($event);"
-                  (blur)="getFormula(i);" [disabled]="item.free_shipping">
-              </div>
+          <div class="row mt-4">
+            <div class="form-group col-12">
+              <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen</label>
+              <input type="number" class="form-control" placeholder="Envio origen"
+                [(ngModel)]="item.shipping_origin_value_product" (keypress)="numberOnly($event);"
+                (blur)="getFormula(i);" [disabled]="item.free_shipping">
+            </div>
+          </div>
+
+          <div class="row mt-4">
+
+            <div class="col-6">
+              <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
+              <input type="number" class="form-control" placeholder="Peso en libras" [(ngModel)]="item.weight"
+                (keypress)="numberOnly($event);" (blur)="getFormula(i);" [disabled]="item.free_shipping">
             </div>
 
-            <div class="row mt-4">
-
-              <div class="col-6">
-                <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
-                <input type="number" class="form-control" placeholder="Peso en libras" [(ngModel)]="item.weight"
-                  (keypress)="numberOnly($event);" (blur)="getFormula(i);" [disabled]="item.free_shipping">
-              </div>
-              <div class="col-6">
-                <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
-                <input type="number" class="form-control" placeholder="Valor envio fijo"
-                  [(ngModel)]="item.permanent_shipping_value" (keypress)="numberOnly($event);" (blur)="getFormula(i);"
-                  [disabled]="item.free_shipping">
-              </div>
+            <div class="col-6">
+              <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
+              <input type="number" class="form-control" placeholder="Valor envio fijo"
+                [(ngModel)]="item.permanent_shipping_value" (keypress)="numberOnly($event);" (blur)="getFormula(i);"
+                [disabled]="item.free_shipping">
             </div>
 
-            <div class="row mt-4">
+          </div>
 
-              <div class="col-6 text-truncate h5">
-                Sub Total: {{ item.sub_total }} USD
-              </div>
+          <div class="row mt-4">
 
-              <div class="col-6">
+            <div class="col-6 text-truncate h5">
+              Sub Total: {{ (item.sub_total ? item.sub_total : 0) | currency: 'USD' }}
+            </div>
 
-                <div class="form-check form-switch text-truncate h5">
-                  <label for="form-group">Envio Gratis</label>
-                  <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                    [(ngModel)]="item.free_shipping">
-                </div>
+            <div class="col-6">
 
+              <div class="form-check form-switch text-truncate h5">
+                <label for="form-group">Envio Gratis</label>
+
+                <input class="form-check-input" type="checkbox" (change)="getFormula(i);" id="flexSwitchCheckChecked"
+                  [(ngModel)]="item.free_shipping">
               </div>
 
             </div>
@@ -208,19 +224,23 @@
 
         </div>
 
-        <hr>
-
       </div>
+
+      <hr>
 
     </div>
 
   </div>
 
-  <div class="modal-footer">
+</div>
 
-    <button class="btn btn-secondary"  [disabled]="isLoading" (click)="modalService.dismissAll()">
-      Cancelar
-    </button>
+<div class="modal-footer">
+
+  <button class="btn btn-secondary" [disabled]="isLoading" (click)="modalService.dismissAll()">
+    Cancelar
+  </button>
+
+  <ng-container *ngIf="status != 6">
 
     <button class="btn btn-primary" (click)="sendQuotation();" [disabled]="isLoading">
 
@@ -232,6 +252,9 @@
       <ng-container *ngIf="!isLoading">
         Guardar
       </ng-container>
-    </button>
-  </div>
 
+    </button>
+
+  </ng-container>
+
+</div>

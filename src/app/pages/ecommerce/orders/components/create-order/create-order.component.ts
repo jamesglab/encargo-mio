@@ -196,27 +196,27 @@ export class CreateOrderComponent implements OnInit {
 
     let freeShipping = this.products.controls[position]["controls"].free_shipping.value; // Traemos el valor del free_shipping
     this.products = this.createProductForm.get('products') as FormArray; // Convertimos los productos en un FormArray
+    this.getFormula(position);
+    // for (const field in this.products.controls[position]["controls"]) { // Recorremos todos los controls del formulario para obtener su nombre
 
-    for (const field in this.products.controls[position]["controls"]) { // Recorremos todos los controls del formulario para obtener su nombre
+    //   if (freeShipping) { // Si el envío es gratis 
 
-      if (freeShipping) { // Si el envío es gratis 
+    //     if (this.isAllowed(field)) { // Llamamos al método para saber cuales campos del formulario se permiten deshabilitar
+    //       this.products.controls[position].get(field).disable(); // Deshabilitamos el control
+    //       this.products.controls[position].get(field).setValue(0); // Volvemos su valor 0
+    //     }
 
-        if (this.isAllowed(field)) { // Llamamos al método para saber cuales campos del formulario se permiten deshabilitar
-          this.products.controls[position].get(field).disable(); // Deshabilitamos el control
-          this.products.controls[position].get(field).setValue(0); // Volvemos su valor 0
-        }
+    //     this.products.controls[position].get('sub_total').setValue(0); // Volvemos el sub_total en 0
 
-        this.products.controls[position].get('sub_total').setValue(0); // Volvemos el sub_total en 0
+    //   } else {
 
-      } else {
+    //     if (this.isAllowed(field)) { // Si es falso simplemente volvemos la propiedad enable() (activo)
+    //       this.products.controls[position].get(field).enable(); // Habilitamos el controlador si freeShipping es verdadero
+    //     }
 
-        if (this.isAllowed(field)) { // Si es falso simplemente volvemos la propiedad enable() (activo)
-          this.products.controls[position].get(field).enable(); // Habilitamos el controlador si freeShipping es verdadero
-        }
+    //   }
 
-      }
-
-    }
+    // }
 
   }
 

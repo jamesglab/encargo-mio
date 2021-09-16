@@ -86,7 +86,7 @@
                 </div>
 
                 <div>
-                  <strong>Valor de Artículos:</strong> {{ calculateTotal.total ? calculateTotal.total : 0 }} USD
+                  <strong>Valor de Artículos:</strong> {{ (calculateTotal.total ? calculateTotal.total : 0) | currency: 'USD' }}
                 </div>
 
                 <div>
@@ -96,12 +96,12 @@
 
                 <div>
                   <strong>Envio a Casa (USD): </strong>
-                  {{ calculateTotal.shipping_usd ? calculateTotal.shipping_usd : 0 }}
+                  {{ (calculateTotal.shipping_usd ? calculateTotal.shipping_usd : 0) | currency: 'USD' }}
                 </div>
 
                 <div>
                   <strong>Envio a casa (COP): </strong>
-                  {{ calculateTotal.shipping_cop ? calculateTotal.shipping_cop : 0 }}
+                  {{ (calculateTotal.shipping_cop ? calculateTotal.shipping_cop : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
                 </div>
 
               </div>
