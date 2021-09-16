@@ -26,6 +26,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { CreateOrderComponent } from './orders/components/create-order/create-order.component';
 import { OrdersBuysComponent } from './orders-buys/orders-buys.component';
 import { OrdersShippingsComponent } from './orders-shippings/orders-shippings.component';
+import { ModalCreateShippingComponent } from './orders-shippings/components/modal-create-shipping/modal-create-shipping.component';
 
 
 const config: DropzoneConfigInterface = {
@@ -36,7 +37,7 @@ const config: DropzoneConfigInterface = {
 
 @NgModule({
   // tslint:disable-next-line: max-line-length
-  declarations: [ProductsComponent, ProductdetailComponent, ShopsComponent, CheckoutComponent, CartComponent, AddproductComponent, CustomersComponent, OrdersComponent, CreateOrderComponent, OrdersBuysComponent, OrdersShippingsComponent],
+  declarations: [ProductsComponent, ProductdetailComponent, ShopsComponent, CheckoutComponent, CartComponent, AddproductComponent, CustomersComponent, OrdersComponent, CreateOrderComponent, OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent],
   imports: [
     CommonModule,
     EcommerceRoutingModule,

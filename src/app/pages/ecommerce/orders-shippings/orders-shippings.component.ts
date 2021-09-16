@@ -31,8 +31,8 @@ export class OrdersShippingsComponent implements OnInit {
   getUsersAdmin() {
     this._userService.getUsersAdmin().subscribe(users => {
       this.users = users;
-    },err=>{
-      console.log('error',err)
+    }, err => {
+      console.log('error', err)
     })
   }
 
@@ -45,7 +45,7 @@ export class OrdersShippingsComponent implements OnInit {
         pageSize: pagination?.pageSize ? pagination.pageSize : 10,
         page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
         status: this.status ? this.status : '0',
-        type :"shipping"
+        type: "shipping"
       })
       .subscribe((res) => {
         this.transactions = res.orders;
@@ -53,7 +53,7 @@ export class OrdersShippingsComponent implements OnInit {
       });
   }
 
-  openModal(content: any) {
-    this.modalService.open(content, { size: 'xl', centered: true });
+  openModal(modal: any, sizeModale: string) {
+    this.modalService.open(modal, { size: sizeModale, centered: true });
   }
 }

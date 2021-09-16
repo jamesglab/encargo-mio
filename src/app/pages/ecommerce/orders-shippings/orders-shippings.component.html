@@ -15,7 +15,11 @@
               </div>
             </div>
             <div class="col-sm-8">
-            
+              <div class="text-sm-end">
+                <button type="button" class="btn btn-success btn-rounded mb-2 me-2"><i
+                    class="mdi mdi-plus mr-1"></i>
+                  Crear un Envío</button>
+              </div><!-- end col-->
             </div><!-- end col-->
           </div>
           <!-- Table data -->
@@ -28,3 +32,7 @@
     </div>
   </div>
 </div>
+
+<ng-template #createModale role="document" let-modal>
+  <app-modal-create-shipping></app-modal-create-shipping>
+</ng-template>
