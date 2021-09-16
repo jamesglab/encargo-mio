@@ -49,8 +49,15 @@ export class ModalEditOrderComponent implements OnInit {
     this.isLoadingFormula = true;
     this._orderService.calculateShipping(this.orderSelected.products)
       .subscribe((res: any) => {
-        if (res.length > 0) {
-          this.orderSelected.shipping_value_admin = res; // Almacenamos las formulas
+        if (res[0].name === 'No aplica') {
+          this.orderSelected.shipping_value_admin = null; // Si todos los productos tienen free_shipping = true volvemos el valor de las formulas nulo
+          this.orderSelected.products.map((product: any, i: number) => { // Mapeamos todos los productos 
+            product.tax = 0; // Volver el tax 0
+            this.calculateTotalPrices(i); // Calculamos el total de prices
+            this.calculateTotalArticles(); // Luego calculamos el total de los articulos
+          });
+        } else {
+          this.orderSelected.shipping_value_admin = res; //Asignamos el valor de la respuesta al shipping value admin
           this.calculateTax(position); // Calculamos el tax
           this.calculateTotalPrices(position); // Calcular el total de precios
           this.calculateDiscount(position); // Calculamos el descuento
@@ -64,10 +71,14 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   calculateTax(position?: number) {
-    if (this.orderSelected.products[position].selected_tax === "1" || this.orderSelected.products[position].selected_tax != null) {
-      this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity * 0.07;
-    } else {
-      this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].shipping_origin_value_product * 0.07;
+    if (this.orderSelected.products[position].free_shipping) { // Si el free_shipping es true
+      this.orderSelected.products[position].tax = 0; // Volvemos el tax 0
+    } else { // Si no calculamos el tax normalmente
+      if (this.orderSelected.products[position].selected_tax === "1" || this.orderSelected.products[position].selected_tax != null) {
+        this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity * 0.07;
+      } else {
+        this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].shipping_origin_value_product * 0.07;
+      }
     }
   }
 
