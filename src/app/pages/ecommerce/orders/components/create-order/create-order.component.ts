@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { OrderService } from '../../../_services/orders.service';
-import { isSwitched, numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
+import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
 
 @Component({
   selector: 'app-create-order',
@@ -15,7 +15,7 @@ export class CreateOrderComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Output() public close_modale = new EventEmitter<any>();
-  @Input() public trm;
+  @Input() public trm: any;
   @Input() public users: any = [];
 
   public typeTax: number = 0.07;
@@ -23,7 +23,8 @@ export class CreateOrderComponent implements OnInit {
   public products: FormArray;
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
-  public calculateTotal: any = {};
+  public totalFormulas: any = [];
+  public totalValues: any = [];
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -71,55 +72,13 @@ export class CreateOrderComponent implements OnInit {
       discount: [0],
       shipping_origin_value_product: [0],
       permanent_shipping_value: [0],
-      shipping_value: [0],
       free_shipping: [false],
       sub_total: [0],
       selected_tax: ["1"]
     });
 
-    createProduct.controls.product_value.valueChanges.subscribe((value: number) => { // NOS SUSCRIBIMOS AL CAMBIO DEL VALOR DEL PRODUCTO
-      this.calculateTax(createProduct, value ? value : createProduct.controls.product_value.value); // Llamamos al método de calculateTax
-      this.calculateTotalPrices(createProduct, value ? value : createProduct.controls.product_value.value); // Llamamos el método de calculateTotalPrices
-    });
-
-    createProduct.controls.discount.valueChanges.subscribe((value: number) => { //Nos suscribimos al cambio de valor del discount
-      let discount: number;
-      discount = (createProduct.controls.sub_total.value - (createProduct.controls.sub_total.value) * (value / 100)); // Restamos el sub_total menos el sub_total multiplicado por el valor que ingresa el administrador dividido en 100
-      createProduct.controls.discount.setValue((value / 100).toFixed(2)); // Restamos el subtotal menos el descuento para obtener el valor que se descuenta.
-      createProduct.controls.sub_total.setValue(discount); // Seteamos el resultado del descuento en el sub_total
-    });
-
     return createProduct;
 
-  }
-
-  calculateTax(createProduct: any, product_value?: number) {
-
-    if (createProduct.controls.selected_tax.value === '1') { // Si selecciona el 1 ícono
-      let tax: any = (product_value ? product_value : createProduct.controls.product_value.value * createProduct.controls.quantity.value) * this.typeTax;
-      tax.toString();
-      tax = parseFloat(tax.toFixed(2));
-      createProduct.controls.tax.setValue(tax);
-    } else {  // Si selecciona el 2 ícono
-      let tax = ((product_value ? product_value : createProduct.controls.product_value.value * createProduct.controls.quantity.value) + createProduct.controls.shipping_origin_value_product.value) * this.typeTax;
-      tax.toString();
-      tax = parseFloat(tax.toFixed(2));
-      createProduct.controls.tax.setValue(tax);
-    }
-  }
-
-  calculateTotalPrices(createProduct: any, value?: number) { // Calculamos el valor total aplicando la fórmula
-    let subTotal: any = (value ? value : createProduct.controls.product_value.value * createProduct.controls.quantity.value) + createProduct.controls.tax.value;
-    if (subTotal) {
-      subTotal.toString();
-      subTotal = parseFloat(subTotal.toFixed(2));
-      createProduct.controls.sub_total.setValue(subTotal);
-    }
-  }
-
-  changeCalculator(item: string, i: number) {
-    this.products.controls[i]['controls'].selected_tax.setValue(item);
-    this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
   }
 
   //creamos un producto nuevo que sera pusheado en los formArray
@@ -146,7 +105,6 @@ export class CreateOrderComponent implements OnInit {
               this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
             }
             this.isLoading = false;
-
           }, err => {
             this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
             this.form.image.setValue(null);
@@ -176,7 +134,6 @@ export class CreateOrderComponent implements OnInit {
     for (const field in this.createProductForm.controls) {
       if (this.isRequired(field)) {
         this.createProductForm.controls[field].reset();
-        // this.createProductForm.controls[field].setValidators([Validators.required]);
       }
     }
     this.createProductForm.controls.quantity.setValue(1);
@@ -186,58 +143,73 @@ export class CreateOrderComponent implements OnInit {
     event.target.src = "https://static.wixstatic.com/media/2cd43b_48bf185491704d8996a2d3bf2c0bbd23~mv2.png/v1/fill/w_320,h_212,q_90/2cd43b_48bf185491704d8996a2d3bf2c0bbd23~mv2.png";
   }
 
-  isAllowed(item: string) { return isSwitched(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
-
   isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
 
   numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
 
-  resetProductValue(position: number) {
-
-    let freeShipping = this.products.controls[position]["controls"].free_shipping.value; // Traemos el valor del free_shipping
-    this.products = this.createProductForm.get('products') as FormArray; // Convertimos los productos en un FormArray
-    this.getFormula(position);
-    // for (const field in this.products.controls[position]["controls"]) { // Recorremos todos los controls del formulario para obtener su nombre
-
-    //   if (freeShipping) { // Si el envío es gratis 
-
-    //     if (this.isAllowed(field)) { // Llamamos al método para saber cuales campos del formulario se permiten deshabilitar
-    //       this.products.controls[position].get(field).disable(); // Deshabilitamos el control
-    //       this.products.controls[position].get(field).setValue(0); // Volvemos su valor 0
-    //     }
-
-    //     this.products.controls[position].get('sub_total').setValue(0); // Volvemos el sub_total en 0
-
-    //   } else {
-
-    //     if (this.isAllowed(field)) { // Si es falso simplemente volvemos la propiedad enable() (activo)
-    //       this.products.controls[position].get(field).enable(); // Habilitamos el controlador si freeShipping es verdadero
-    //     }
-
-    //   }
-
-    // }
-
+  resetProductValue(i: number) {
+    this.getFormula(i);
   }
 
-  getFormula(index?: number) {
-    this.isLoadingFormula = true;
-    this.calculateTax(this.products.controls[index]); // Calculamos el tax
-    this.calculateTotalPrices(this.products.controls[index]); // Calcular el total de precios
-    this.quotationService.calculateShipping(this.products.value).subscribe((res) => { // Llamamos al método para calcular los valores de envío
+  calculateTaxManually(i: number): void {
+    this.calculateTotalPrices(i); // Calcular el total de precios
+    this.calculateTotalArticles(); // Llamamos la función para obtener los valores totales
+  }
 
-      if (res.length > 0) { // Si el length de la respuesta es mayor a 0 
-        this.calculateTotal = res[0]; // Asignamos el valor
-        this.calculateTotal.shipping_usd = parseFloat(parseFloat(this.calculateTotal.total + this.calculateTotal.value).toString()).toFixed(2); // Calculamos el costo de envío en USD
-        this.calculateTotal.shipping_cop = parseFloat(parseFloat(((this.calculateTotal.total + this.calculateTotal.value) * this.trm.value).toString()).toFixed(0)); // Calculamos el costo de envío en COP multiplicando el valor x el TRM
-        this.products.controls[index]['controls'].shipping_value.setValue(res[0].value); // Seteamos el valor del shipping value al backend
+  calculateTax(i: number) {
+    if (this.products.controls[i]['controls'].free_shipping.value) { // Si el valor del shipping está verdadero
+      this.products.controls[i]['controls'].tax.setValue(0); // Seteamos el valor del tax en 0
+    } else {
+      var total_tax: number = 0;
+      if (this.products.controls[i]['controls'].free_shipping.value === "1" || this.products.controls[i]['controls'].free_shipping.value != null) { // Si elige la primer calculadora
+        total_tax = parseFloat((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value * 0.07).toFixed(2)); // Se obtiene el product_value * la quantity * 7%
+        this.products.controls[i]['controls'].tax.setValue(total_tax); // Seteamos en el tax el valor calculado (total_tax)
+      } else {
+        total_tax = parseFloat((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value + this.products.controls[i]['controls'].shipping_origin_value_product.value * 0.07).toFixed(2)); // Se obtiene el product_value * la quantity + shipping_origin_value_product * 7%
+        this.products.controls[i]['controls'].tax.setValue(total_tax); // Seteamos en el tax el valor calculado (total_tax)
+      }
+    }
+  }
+
+  calculateTotalPrices(i: number) { // Calculamos el valor total aplicando la fórmula
+    this.products.controls[i]['controls'].sub_total.setValue(this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value + this.products.controls[i]['controls'].tax.value); // Calculamos el sub_total de un producto (product_value * quantity + tax)
+  }
+
+  changeCalculator(item: string, i: number) {
+    this.products.controls[i]['controls'].selected_tax.setValue(item);
+    this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
+  }
+
+  getFormula(i: number) {
+    this.isLoadingFormula = true;
+    this.quotationService.calculateShipping(this.products.value).subscribe((res: any) => { // Llamamos al método para calcular los valores de envío
+      if (res[0].name === 'No aplica') {
+        this.totalFormulas = null; // Asignamos al total de las fórmulas el valor nulo
+        this.products.value.map((product: any, i: number) => {
+          this.products.controls[i]['controls'].tax.setValue(0);
+          this.calculateTotalPrices(i); // Calcular el total de precios
+          this.calculateTotalArticles(); // Calcular el valor de todos los artículos
+        });
+      } else {
+        this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
+        this.calculateTax(i); // Calculamos el tax
+        this.calculateTotalPrices(i); // Calcular el total de precios
+        this.calculateTotalArticles(); // Calcular el valor de todos los artículos
       }
       this.isLoadingFormula = false;
-
     }, err => {
       this.isLoadingFormula = false;
       throw err;
     });
+
+  }
+
+  calculateTotalArticles() {
+    var sub_total: number = 0;
+    var total_weight: number = 0;
+    this.products.value.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; }); // Hacemos la sumatoria del sub_total y weight
+    this.totalValues.total_value = sub_total;
+    this.totalValues.total_weight = total_weight;
   }
 
   // Consumimos el endPoint de creación de orden por parte del administrador 
@@ -263,7 +235,7 @@ export class CreateOrderComponent implements OnInit {
         ...getInsertCreateOrder(
           this.createProductForm.getRawValue().user,
           this.createProductForm.getRawValue().products,
-          this.calculateTotal,
+          this.totalFormulas,
           this.trm
         )
       }).subscribe(res => {
@@ -280,6 +252,7 @@ export class CreateOrderComponent implements OnInit {
     } else {
       this._notify.show('Datos incompletos', `Revisa que hayas llenado los campos.`, 'info');
     }
+
   }
 
 }

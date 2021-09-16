@@ -12,12 +12,14 @@
 }
 
 .container-calculator {
-  font-size: 18px;
+  font-size: 15px;
 }
 
 .container-calcs {
   font-size: 20px;
   display: flex;
+  justify-content: space-around;
+  padding: 10px;
 }
 
 .container-tax {
