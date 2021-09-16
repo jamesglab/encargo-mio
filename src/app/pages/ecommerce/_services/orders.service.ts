@@ -148,4 +148,16 @@ export class OrderService {
         catchError(handleError)
       );
   }
+
+  insertProductLocker(payload){
+    return this.http.post<any>(
+      `${environment.microservices.management}locker`, payload
+    ).pipe(
+      map((res: any) => {
+        console.log("RESPONSEE", res);
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
 }
