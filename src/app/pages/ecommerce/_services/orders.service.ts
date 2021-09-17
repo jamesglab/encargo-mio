@@ -149,7 +149,7 @@ export class OrderService {
       );
   }
 
-  insertProductLocker(payload){
+  insertProductLocker(payload) {
     return this.http.post<any>(
       `${environment.microservices.management}locker`, payload
     ).pipe(
@@ -160,4 +160,24 @@ export class OrderService {
       catchError(handleError)
     )
   }
+
+  getProductsByLocker(params) {
+    return this.http.get<any>(
+      `${environment.microservices.management}locker/products`, { headers: header, params }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+  getShippingTypes(){
+    return this.http.get<any>(
+      `${environment.microservices.management}shipping-types`, { headers: header }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
 }

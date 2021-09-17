@@ -40,6 +40,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       store: [null, Validators.required],
       total_price: [{ value: this.orderSelected.total_value, disabled: true }],
       purchase_date: [null, Validators.required],
+      invoice_number:[null,Validators.required],
       locker_entry_date: [null, Validators.required],
     });
   }
@@ -72,7 +73,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
         .subscribe(
           (res) => {
             this._notify.show(
-              `Orden de Compra Creada #${res.order_purchase.id}`,
+              `Orden de Compra Creada #${res.order_purchase.id.replace(/=/g,"")}`,
               res.message,
               "success"
             );

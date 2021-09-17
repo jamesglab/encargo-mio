@@ -1,1 +1,115 @@
-<p>modal-create-shipping works!</p>
+<div class="modal-header">
+  <h5 class="modal-title mt-0">Crear Envios</h5>
+  <button type="button" class="btn-close" aria-hidden="true"></button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="createShippingForm">
+
+    <div class="row mt-3">
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="international_guide">Guia Internacional</label>
+          <input type="number" class="form-control"
+           id="international_guide" formControlName="international_guide">
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="conveyor">Transportadora Internacional</label>
+          <select class="form-control" id="conveyor">
+            <option [value]="null" disabled>Seleccióna transportadora</option>
+            <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
+              {{conveyor.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="date_delivery">Fecha de Entrega</label>
+          <div class="input-group clockpicker">
+            <input ngbDatepicker class="form-control" id="date_delivery"
+             placeholder="yyyy-mm-dd" #dl="ngbDatepicker" formControlName="date_delivery">
+            <div class="input-group-append" (click)="dl.toggle()">
+              <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="shipping_value">Valor Envio</label>
+          <input type="number" class="form-control" id="shipping_value" formControlName="shipping_value">
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="store">Tipo de Envio</label>
+          <select class="form-control" id="store" formControlName="shipping_type">
+            <option [value]="null" disabled>Seleccióna tipo de envío</option>
+            <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
+              {{shipping.name}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6">
+        <div class="form-group ">
+          <label for="exampleInputEmail1">Usuario </label>
+          <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario" formControlName="user"
+            (change)="getAddresByUser()">
+            <option selected disabled value="">Selecciona un usuario...</option>
+            <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
+          </select>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="row mt-3 mt-3">
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="store">Dirección de Envio</label>
+          <select class="form-control" id="store" formControlName="address">
+            <option [value]="null" disabled>Seleccióna direccion de envio</option>
+            <option *ngFor="let addres of address" [ngValue]="addres.id">
+              {{addres.address}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-12 col-sm-6">
+        <div class="form-group">
+          <label for="observations">Observaciones de Compra</label>
+          <textarea class="form-control" id="observations" row mt-3s="3"formControlName="purchase_observations"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12 col-sm-12">
+        <label for="observations">Productos en Envio</label>
+        <ng-select [multiple]="true" formControlName="pruducts">
+          <ng-option *ngFor="let product of products" [value]="product.id">
+            {{('CA'+product.locker.id + ' | ') + ((product.product.name.length > 50) ? (product.product.name | slice:0:50 ) + '...' :  product.product.name)}}
+          </ng-option>
+      </ng-select>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+
+  <button class="btn btn-secondary">
+    Cancelar
+  </button>
+
+  <button class="btn btn-primary" [disabled]="isLoading" (click)="createShipping()">
+    <span class="spinner-grow mt-3 spinner-grow mt-3-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+    Aprobar
+  </button>
+
+</div>

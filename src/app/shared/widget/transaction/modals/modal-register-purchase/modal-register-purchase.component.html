@@ -6,7 +6,15 @@
 <div class="container p-4">
 <form [formGroup]="purchaseForm">
   <div class="row">
-    <div class="col-6">
+    <div class="col-12 col-sm-12">
+      <div class="form-group">
+        <label for="order_value">Numero de Factura</label>
+        <input type="text" class="form-control" id="order_value" formControlName="invoice_number" [maxlength]="20">
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12 col-sm-6">
       <div class="form-group">
         <label for="products">Producto</label>
         <select class="form-control" id="products" formControlName="product">
@@ -16,7 +24,7 @@
         </select>
       </div>
     </div>
-    <div class="col-6">
+    <div class="col-12 col-sm-6">
       <div class="form-group">
         <label for="store">Tienda</label>
         <select class="form-control" id="store" formControlName="store">
@@ -28,7 +36,7 @@
     </div>
   </div>
   <div class="row mt-3">
-    <div class="col-6">
+    <div class="col-12 col-sm-6">
       <label for="payment">Tipo de Pago</label>
       <select class="form-control" id="payment" formControlName="payment_type">
         <option [value]="null" disabled>Seleccióna tipo de pago</option>
@@ -38,7 +46,7 @@
       </select>
     </div>
 
-    <div class="col-6">
+    <div class="col-12 col-sm-6">
       <div class="form-group">
         <label for="order_value">Total Compra</label>
         <input type="number" class="form-control" id="order_value" formControlName="total_price">
@@ -48,7 +56,7 @@
 
   <div class="row mt-3">
   
-    <div class="col-6">
+    <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="date">Fecha Compra</label>
           <div class="input-group clockpicker">
@@ -60,7 +68,7 @@
         </div>
     </div>
 
-    <div class="col-6">
+    <div class="col-12 col-sm-6">
       <div class="form-group">
         <label for="dateLocker">Fecha Estimada de Ingreso a Casillero </label>
         <div class="input-group clockpicker">
