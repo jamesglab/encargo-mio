@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output ,EventEmitter} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NotifyService } from 'src/app/_services/notify.service';
@@ -11,15 +11,18 @@ import { OrderService } from '../../../_services/orders.service';
   styleUrls: ['./modal-create-shipping.component.scss']
 })
 export class ModalCreateShippingComponent implements OnInit {
-  public isLoading: boolean = false;
-  public conveyors: [] = [];
-
+  
+  
   @Input() public users: any = [];
   @Input() public trm : any ;
+  @Output() getTransactions =  new EventEmitter<any>();
+
+
+  public isLoading: boolean = false;
+  public conveyors: [] = [];
   public address: [] = [];
   public products: [] = [];
   public shipping_types: [] = [];
-
   public createShippingForm: FormGroup;
 
   constructor(
@@ -39,9 +42,9 @@ export class ModalCreateShippingComponent implements OnInit {
   buildForm() {
     this.createShippingForm = this._formBuilder.group({
       trm:[this.trm],
-      international_guide: [null, Validators.required],
+      guide_number: [null, Validators.required],
       conveyor: [null, Validators.required],
-      date_delivery: [null, Validators.required],
+      delivery_date: [null, Validators.required],
       shipping_value: [null, Validators.required],
       shipping_type: [null, Validators.required],
       user: [null, Validators.required],
@@ -56,7 +59,6 @@ export class ModalCreateShippingComponent implements OnInit {
       this.address = res;
     });
     this._orderService.getProductsByLocker({ locker: this.createShippingForm.get('user').value.locker_id }).subscribe(res => {
-      console.log('products',res)
       this.products = res;
     })
   }
@@ -77,12 +79,12 @@ export class ModalCreateShippingComponent implements OnInit {
     
     if (this.createShippingForm.valid) {
       this.isLoading = true;
-      const date_delivery = new Date(this.createShippingForm.value.date_delivery.year,
-        this.createShippingForm.value.date_delivery.month,
-        this.createShippingForm.value.date_delivery.day);
+      const delivery_date = new Date(this.createShippingForm.value.delivery_date.year,
+        this.createShippingForm.value.delivery_date.month,
+        this.createShippingForm.value.delivery_date.day);
       this._orderService.createShipping({
         ...this.createShippingForm.getRawValue(),
-        date_delivery
+        delivery_date
 
       }).subscribe(res => {
         this._notify.show(
@@ -91,6 +93,7 @@ export class ModalCreateShippingComponent implements OnInit {
           "success"
         );
         this.modalService.dismissAll();
+        this.getTransactions.emit(true);
       },err=>{
         this.isLoading = false;
         this._notify.show(

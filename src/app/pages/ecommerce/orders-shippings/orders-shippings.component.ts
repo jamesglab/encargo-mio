@@ -15,10 +15,10 @@ export class OrdersShippingsComponent implements OnInit {
   public itemPerPage = 5;
   public transactions;
   public counts: number;
-  public status: number;
-  public trm: number;
+  public status: number = 0;
+  public trm: any;
   public users = [];
-
+  public shippingToUpdate ;
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
@@ -37,18 +37,18 @@ export class OrdersShippingsComponent implements OnInit {
   }
 
   getTransactions(pagination?) {
+
     this._orderService.getTRM().subscribe(res => {
-      this.trm = res.value;
+      this.trm = res;
     })
     this._orderService
-      .getQuotations({
+      .getAllShippings({
         pageSize: pagination?.pageSize ? pagination.pageSize : 10,
         page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
         status: this.status ? this.status : '0',
-        type: "shipping"
       })
       .subscribe((res) => {
-        this.transactions = res.orders;
+        this.transactions = res.shipping_orders;
         this.counts = res.count;
       });
   }
@@ -56,4 +56,10 @@ export class OrdersShippingsComponent implements OnInit {
   openModal(modal: any, sizeModale: string) {
     this.modalService.open(modal, { size: sizeModale, centered: true });
   }
+
+
+  updateShipping() {
+
+  }
+
 }

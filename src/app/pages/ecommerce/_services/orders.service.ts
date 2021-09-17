@@ -170,7 +170,7 @@ export class OrderService {
         catchError(handleError)
       );
   }
-  getShippingTypes(){
+  getShippingTypes() {
     return this.http.get<any>(
       `${environment.microservices.management}shipping-types`, { headers: header }).pipe(
         map((res: any) => {
@@ -180,9 +180,9 @@ export class OrderService {
       );
   }
 
-  createShipping(){
-    return this.http.get<any>(
-      `${environment.microservices.management}shipping-types`, { headers: header }).pipe(
+  createShipping(payload) {
+    return this.http.post<any>(
+      `${environment.microservices.management}shipping-order`, payload, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -190,4 +190,23 @@ export class OrderService {
       );
   }
 
+  getAllShippings(params) {
+    return this.http.get<any>(
+      `${environment.microservices.management}shipping-order`, { headers: header, params }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getShippingById(params) {
+    return this.http.get<any>(
+      `${environment.microservices.management}shipping-order/detail`, { headers: header, params }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

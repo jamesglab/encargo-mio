@@ -11,9 +11,9 @@
       <tr>
         <th style="width: 20px"></th>
         <th class="align-middle"># de Orden</th>
-        <th class="align-middle">Precio Estimado</th>
+        <th class="align-middle">Nombre del Cliente</th>
         <th class="align-middle">Fecha de Creación</th>
-        <th class="align-middle">TRM</th>
+        <th class="align-middle">Productos</th>
         <th class="align-middle">Total</th>
         <th class="align-middle">Opciones</th>
       </tr>
@@ -37,15 +37,15 @@
           </a>
         </td>
 
-        <td>{{ data.estimated_value?.usd ? data.estimated_value.usd : "" }}</td>
+        <td>{{ (data.user?.name ? data.user?.name: "") + ' ' + (data.user?.last_name ? data.user?.last_name: "") }}</td>
 
         <td>
           {{ data.created_at ? (data.created_at | date: "medium") : "" }}
         </td>
 
-        <td>{{ data.trm ? data.trm.value : "" }}</td>
+        <td>{{ data.total_products ? data.total_products : "" }}</td>
 
-        <td>{{ data.is_shipping_locker ? data.is_shipping_locker : "" }}</td>
+        <td>{{ data.total_value ? data.total_value : "" }}</td>
 
         <td>
           <!-- validamos el boton que se muestra dependiendo del estado de la orden -->
