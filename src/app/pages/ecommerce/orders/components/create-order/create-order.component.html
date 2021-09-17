@@ -82,27 +82,31 @@
                 Calculadora de Totales
 
                 <div>
-                  <strong>Total de Libras:</strong> {{ calculateTotal.weight ? calculateTotal.weight: 0 }}
+                  <strong>Valor de Artículos:</strong>
+                  {{ (totalValues.total_value ? totalValues.total_value : 0) | number : '1.2-2' }} USD
                 </div>
 
                 <div>
-                  <strong>Valor de Artículos:</strong> {{ (calculateTotal.total ? calculateTotal.total : 0) | currency: 'USD' }}
+                  <strong>Total de Libras:</strong>
+                  {{ (totalValues.total_weight ? totalValues.total_weight : 0) }} lb.
                 </div>
 
-                <div>
-                  <strong>Valor Envío ({{ calculateTotal.name ? calculateTotal.name: 'x' }}):</strong>
-                  {{ calculateTotal.value ? calculateTotal.value.toFixed(2) : 0 }} USD
-                </div>
 
-                <div>
-                  <strong>Envio a Casa (USD): </strong>
-                  {{ (calculateTotal.shipping_usd ? calculateTotal.shipping_usd : 0) | currency: 'USD' }}
-                </div>
+                <ng-container *ngFor="let formula of totalFormulas">
+                  <div>
+                    <strong>Valor del envío ({{formula.name}}): </strong>
+                    {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} USD
+                  </div>
+                </ng-container>
 
-                <div>
-                  <strong>Envio a casa (COP): </strong>
-                  {{ (calculateTotal.shipping_cop ? calculateTotal.shipping_cop : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
-                </div>
+                <ng-container *ngFor="let formula of totalFormulas">
+                  <div>
+                    <strong>Envio a casa ({{formula.name}})</strong>
+                    {{ (totalValues.total_value ? totalValues.total_value : 0)
+                    + (formula.value ? formula.value : 0) | number : '1.2-2' }}
+                    USD
+                  </div>
+                </ng-container>
 
               </div>
 
@@ -196,17 +200,20 @@
 
                   <div class="form-group">
 
-                    <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
+                    <label class="text-truncate h5">Tax</label>
 
-                    <div class="container-tax">
+                    <div>
 
-                      {{ createProductForm.get('products')['controls'][i].controls.tax.value }}
+                      <input type="number" class="form-control" placeholder="Tax" formControlName="tax" min="0"
+                        (keypress)="numberOnly($event);" (blur)="calculateTaxManually(i);">
 
                       <div class="container-calcs">
-                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
+                        <i class="fas fa-calculator"
+                          [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
                           (click)="changeCalculator('1', i);"></i>
-                          <br>
-                        <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
+                        <br>
+                        <i class="fas fa-calculator"
+                          [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
                           (click)="changeCalculator('2', i);"></i>
                       </div>
 
@@ -219,12 +226,14 @@
               </div>
 
               <div class="row mt-4">
+
                 <div class="form-group col-12">
                   <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen (USD)</label>
                   <input type="number" class="form-control" placeholder="Envio origen"
                     formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
                     (blur)="getFormula(i);" min="0">
                 </div>
+
               </div>
 
               <div class="row mt-4">
@@ -241,6 +250,7 @@
                     formControlName="permanent_shipping_value" (keypress)="numberOnly($event);" (blur)="getFormula(i);"
                     min="0">
                 </div>
+
               </div>
 
               <div class="row mt-4">

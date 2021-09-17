@@ -44,7 +44,7 @@
             <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
               <div>
                 <strong>Valor del envío ({{formula.name}}): </strong>
-                {{ (formula.value ? formula.value : 0) | currency: 'USD' }} USD
+                {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} USD
               </div>
             </ng-container>
 
@@ -52,8 +52,7 @@
             <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
               <div>
                 <strong>Envio a casa ({{formula.name}})</strong>
-                {{ (orderSelected.total_value ? orderSelected.total_value : 0) + (formula.value ? formula.value : 0) |
-                currency: 'USD' }}
+                {{ (orderSelected.total_value ? orderSelected.total_value : 0) + (formula.value ? formula.value : 0) | number : '1.2-2' }}
                 USD
               </div>
             </ng-container>
