@@ -16,15 +16,47 @@
             </div>
             <div class="col-sm-8">
               <div class="text-sm-end">
-                <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="openModal(createModale,'xl')"><i
-                    class="mdi mdi-plus mr-1"></i>
+                <button type="button" class="btn btn-success btn-rounded mb-2 me-2"
+                  (click)="openModal(createShipping,'xl')"><i class="mdi mdi-plus mr-1"></i>
                   Crear un Envío</button>
               </div><!-- end col-->
             </div><!-- end col-->
           </div>
+          <!-- 0 En espera => (En espera de que el administrador realice el envío)
+            1 Enviadas => (La orden ha sido enviada y depende de la transportadora)
+            -------------------- EN ESTE PUNTO RENDERIZAMOS ESTADOS DE LA TRANSPORTADORA--------
+            2 Finalizada o Entregada
+            3 Cancelada => (La orden ha sido cancelada)  -->
+          <ul class="nav nav-pills d-flex justify-content-center">
+
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == 0 }" (click)="status = 0;  getTransactions()">
+                En Espera
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == 1}"
+                (click)="status = 1 ;  getTransactions()">Enviadas</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active':status == 2}" (click)="status = 2;  getTransactions()">
+                Finalizada o Entregada
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 3;  getTransactions()">
+                Cancelada </a>
+            </li>
+
+
+          </ul>
           <!-- Table data -->
           <hr>
-          <app-transaction class="mt-1" [transactions]="transactions |  filter:term"></app-transaction>
+          <app-shippings-table class="mt-1" [transactions]="transactions |  filter:term"
+            (shippingSelected)="shippingToUpdate=$event ;openModal(updateShipping,'xl')"></app-shippings-table>
           <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
           </mat-paginator>
         </div>
@@ -33,6 +65,14 @@
   </div>
 </div>
 
-<ng-template #createModale role="document" let-modal>
-  <app-modal-create-shipping [users]="users"></app-modal-create-shipping>
+<ng-template #createShipping role="document" let-modal>
+  <app-modal-create-shipping [users]="users" [trm]="trm" (getTransactions)="getTransactions()">
+  </app-modal-create-shipping>
+</ng-template>
+
+
+<ng-template #updateShipping role="document" let-modal>
+  <app-modal-update-shipping [users]="users" [trm]="trm" [shippingToUpdate]="shippingToUpdate"
+    (getTransactions)="getTransactions()">
+  </app-modal-update-shipping>
 </ng-template>

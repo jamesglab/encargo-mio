@@ -13,8 +13,9 @@
         <th class="align-middle"># de Orden</th>
         <th class="align-middle">Nombre del Cliente</th>
         <th class="align-middle">Dirección</th>
-        <th class="align-middle">Productos</th>
-        <th class="align-middle">Total</th>
+        <th class="align-middle">Tipo de Envío</th>
+        <th class="align-middle">Fecha de solicitud</th>
+        <th class="align-middle">Valor de Envío</th>
         <th class="align-middle">Opciones</th>
       </tr>
 
@@ -43,12 +44,18 @@
           {{ data.address.address ? data.address.address :'' }}
         </td>
 
-        <td>{{ data.total_products ? data.total_products : "" }}</td>
+        <td>{{ data.shipping_type ? data.shipping_type : "" }}</td>
+        <td>{{ data.created_at ? (data.created_at | date ) : "" }}</td>
+
 
         <td>{{ data.total_value ? data.total_value : "" }}</td>
 
         <td>
           <!-- btns options -->
+          <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="getOrderById(data.id)"
+            [disabled]="isLoading">
+            Editar
+          </button>
         </td>
       </tr>
     </tbody>
