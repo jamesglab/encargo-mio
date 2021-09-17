@@ -16,7 +16,7 @@
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="conveyor">Transportadora Internacional</label>
-          <select class="form-control" id="conveyor">
+          <select class="form-control" id="conveyor" formControlName="conveyor">
             <option [value]="null" disabled>Seleccióna transportadora</option>
             <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
               {{conveyor.name}}</option>
@@ -60,7 +60,8 @@
       <div class="col-12 col-sm-6">
         <div class="form-group ">
           <label for="exampleInputEmail1">Usuario </label>
-          <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario" formControlName="user"
+          <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario"
+           formControlName="user"
             (change)="getAddresByUser()">
             <option selected disabled value="">Selecciona un usuario...</option>
             <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
@@ -84,16 +85,17 @@
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="observations">Observaciones de Compra</label>
-          <textarea class="form-control" id="observations" row mt-3s="3"formControlName="purchase_observations"></textarea>
+          <textarea class="form-control" id="observations" row mt-3s="3"
+          formControlName="purchase_observations"></textarea>
         </div>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-12 col-sm-12">
         <label for="observations">Productos en Envio</label>
-        <ng-select [multiple]="true" formControlName="pruducts">
-          <ng-option *ngFor="let product of products" [value]="product.id">
-            {{('CA'+product.locker.id + ' | ') + ((product.product.name.length > 50) ? (product.product.name | slice:0:50 ) + '...' :  product.product.name)}}
+        <ng-select [multiple]="true" formControlName="products">
+          <ng-option *ngFor="let product of products" [value]="product">
+            {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :  product.name)}}
           </ng-option>
       </ng-select>
       </div>

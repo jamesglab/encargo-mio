@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
+import { numberOnly } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 
 @Component({
@@ -38,9 +39,9 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       payment_type: [null, Validators.required],
       observations: [null, Validators.required],
       store: [null, Validators.required],
-      total_price: [{ value: this.orderSelected.total_value, disabled: true }],
+      product_price: [null],
       purchase_date: [null, Validators.required],
-      invoice_number:[null,Validators.required],
+      invoice_number: [null, Validators.required],
       locker_entry_date: [null, Validators.required],
     });
   }
@@ -73,7 +74,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
         .subscribe(
           (res) => {
             this._notify.show(
-              `Orden de Compra Creada #${res.order_purchase.id.replace(/=/g,"")}`,
+              `Orden de Compra Creada #${res.order_purchase.id.replace(/=/g, "")}`,
               res.message,
               "success"
             );
@@ -93,7 +94,10 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       this.isLoading = false;
     }
   }
-
+  setProductValue() {
+    console.log(this.purchaseForm.value.product)
+    this.purchaseForm.get('product_price').setValue(this.orderSelected.products.find(item =>  item.id == this.purchaseForm.value.product ).sub_total)
+  }
   toInsertDates() {
     return [
       new Date(
@@ -107,5 +111,8 @@ export class ModalRegisterPurchaseComponent implements OnInit {
         this.purchaseForm.getRawValue().locker_entry_date.day
       ),
     ];
+  }
+  numberOnly(event): boolean { // Función para que sólo se permitan números en un input
+    return numberOnly(event);
   }
 }
