@@ -180,4 +180,14 @@ export class OrderService {
       );
   }
 
+  createShipping(){
+    return this.http.get<any>(
+      `${environment.microservices.management}shipping-types`, { headers: header }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
 }

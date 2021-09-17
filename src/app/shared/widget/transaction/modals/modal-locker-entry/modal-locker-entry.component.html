@@ -10,7 +10,7 @@
 
         <div class="form-group">
           <label for="guia">Número Guia Origen</label>
-          <input type="number" class="form-control" id="guia" formControlName="guide_number">
+          <input type="number" class="form-control" id="guia" (keypress)="numberOnly($event);"   min="0" formControlName="guide_number">
         </div>
 
       </div>
@@ -79,7 +79,7 @@
 
         <div class="form-group">
           <label for="weight">Peso Libras</label>
-          <input type="number" class="form-control" id="weight" formControlName="weight_in_pounds">
+          <input type="number" class="form-control" id="weight"   (keypress)="numberOnly($event);" min="0"formControlName="weight_in_pounds">
         </div>
 
       </div>
@@ -102,13 +102,13 @@
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="envio">Valor Envío</label>
-          <input type="number" class="form-control" id="envio" formControlName="shipping_value">
+          <input type="number" class="form-control" id="envio"   (keypress)="numberOnly($event);"min="0" formControlName="shipping_value">
         </div>
       </div>
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="vA">Valor Declarado(Administrador)</label>
-          <input type="number" class="form-control" id="vA" formControlName="admin_value">
+          <input type="number" class="form-control" id="vA"  (keypress)="numberOnly($event);"min="0" formControlName="admin_value">
         </div>
       </div>
     </div>
@@ -156,7 +156,7 @@
     Cancelar
   </button>
 
-  <button class="btn btn-primary" (click)="addLocker()">
+  <button class="btn btn-primary" (click)="addLocker()" [disabled]="isLoading">
 
     <ng-container *ngIf="isLoading">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

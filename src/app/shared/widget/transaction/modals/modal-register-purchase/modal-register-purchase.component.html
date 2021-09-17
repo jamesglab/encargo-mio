@@ -17,9 +17,9 @@
     <div class="col-12 col-sm-6">
       <div class="form-group">
         <label for="products">Producto</label>
-        <select class="form-control" id="products" formControlName="product">
+        <select class="form-control" id="products" formControlName="product"(change)="setProductValue()">
           <option [value]="null" disabled>Seleccióna producto</option>
-          <option *ngFor="let product of orderSelected.products" [ngValue]="product.id">
+          <option *ngFor="let product of orderSelected.products" [ngValue]="product.id" >
             {{ (product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :  product.name }}</option>
         </select>
       </div>
@@ -49,7 +49,7 @@
     <div class="col-12 col-sm-6">
       <div class="form-group">
         <label for="order_value">Total Compra</label>
-        <input type="number" class="form-control" id="order_value" formControlName="total_price">
+        <input type="number" class="form-control" id="order_value"  (keypress)="numberOnly($event);"formControlName="product_price">
       </div>
     </div>
   </div>
@@ -98,7 +98,7 @@
     Cancelar
   </button>
 
-  <button class="btn btn-primary" (click)="registerPurchase()" >
+  <button class="btn btn-primary" (click)="registerPurchase()" [disabled]="isLoading">
 
     <ng-container *ngIf="isLoading">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

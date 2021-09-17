@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { UserService } from 'src/app/_services/users.service';
 import { OrderService } from '../../../_services/orders.service';
@@ -14,6 +15,7 @@ export class ModalCreateShippingComponent implements OnInit {
   public conveyors: [] = [];
 
   @Input() public users: any = [];
+  @Input() public trm : any ;
   public address: [] = [];
   public products: [] = [];
   public shipping_types: [] = [];
@@ -24,8 +26,8 @@ export class ModalCreateShippingComponent implements OnInit {
     private _userService: UserService,
     private _orderService: OrderService,
     private _formBuilder: FormBuilder,
-    private _notify: NotifyService
-
+    private _notify: NotifyService,
+    public modalService: NgbModal,
   ) { }
 
   ngOnInit(): void {
@@ -36,6 +38,7 @@ export class ModalCreateShippingComponent implements OnInit {
 
   buildForm() {
     this.createShippingForm = this._formBuilder.group({
+      trm:[this.trm],
       international_guide: [null, Validators.required],
       conveyor: [null, Validators.required],
       date_delivery: [null, Validators.required],
@@ -44,7 +47,7 @@ export class ModalCreateShippingComponent implements OnInit {
       user: [null, Validators.required],
       address: [null, Validators.required],
       purchase_observations: [null, Validators.required],
-      pruducts: [null, Validators.required],
+      products: [null, Validators.required],
     });
   }
 
@@ -53,6 +56,7 @@ export class ModalCreateShippingComponent implements OnInit {
       this.address = res;
     });
     this._orderService.getProductsByLocker({ locker: this.createShippingForm.get('user').value.locker_id }).subscribe(res => {
+      console.log('products',res)
       this.products = res;
     })
   }
@@ -70,10 +74,33 @@ export class ModalCreateShippingComponent implements OnInit {
 
   createShipping() {
 
+    
     if (this.createShippingForm.valid) {
+      this.isLoading = true;
+      const date_delivery = new Date(this.createShippingForm.value.date_delivery.year,
+        this.createShippingForm.value.date_delivery.month,
+        this.createShippingForm.value.date_delivery.day);
+      this._orderService.createShipping({
+        ...this.createShippingForm.getRawValue(),
+        date_delivery
 
+      }).subscribe(res => {
+        this._notify.show(
+          `Envio Creado`,
+          res.message,
+          "success"
+        );
+        this.modalService.dismissAll();
+      },err=>{
+        this.isLoading = false;
+        this._notify.show(
+          "Error",
+          err ? err : "Ocurrio un error",
+          "warning"
+        );
+      })
     } else {
-      this._notify.show('Error','Valida El fomulario','warning')
+      this._notify.show('Error', 'Valida El fomulario', 'warning')
     }
 
   }

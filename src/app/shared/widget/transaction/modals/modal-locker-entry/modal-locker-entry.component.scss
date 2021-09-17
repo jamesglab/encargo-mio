@@ -14,10 +14,10 @@
   width: 100%;
   height: auto;
 }
-@supports(object-fit: cover){
+@supports(object-fit: contain){
     .box img{
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       object-position: center center;
     }
 }

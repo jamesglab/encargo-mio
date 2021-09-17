@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
+import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 
 @Component({
@@ -93,6 +94,7 @@ export class ModalLockerEntryComponent implements OnInit {
     // VALIDAMOS QUE EXISTAN IMAGENES Y ADICIONAL QUE EXISTAN LOS CAMPOS OBLIGATORIOS
     if (this.lockerForm.valid && this.files.length > 0) {
       // CREAMOS EL FORM DATA
+      this.isLoading = true;
       var formData = new FormData();
       // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
       this.files.forEach((file) => { formData.append('images', file) });
@@ -101,12 +103,13 @@ export class ModalLockerEntryComponent implements OnInit {
       // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 
       this._orderService.insertProductLocker(formData).subscribe(res => {
         this._notify.show(
-          `Producto #${this.lockerForm.getRawValue().order_purchase_object.id.replace("==","")} Agregado`,
+          `Producto #${this.lockerForm.getRawValue().order_purchase_object.id.replace(/=/g,"")} Agregado`,
           res.message,
           "success"
         );
         this.modalService.dismissAll();
       }, err => {
+        this.isLoading = false;
         this._notify.show(
           "Error",
           err ? err : "Ocurrio un error",
@@ -140,5 +143,7 @@ export class ModalLockerEntryComponent implements OnInit {
   createReceiptDate(date) {
     return new Date(date.year, date.month, date.day)
   }
-
+  numberOnly(event): boolean { // Función para que sólo se permitan números en un input
+    return numberOnly(event);
+  }
 }
