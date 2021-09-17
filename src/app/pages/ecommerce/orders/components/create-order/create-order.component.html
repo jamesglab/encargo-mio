@@ -260,7 +260,8 @@
                   <label for="total_price" class="text-truncate h5">Sub Total</label>
 
                   <div>
-                    {{ createProductForm.get('products')['controls'][i].controls.sub_total.value }}
+                    {{ createProductForm.get('products')['controls'][i].controls.sub_total.value | number : '1.2-2' }}
+                    USD
                   </div>
 
                 </div>
