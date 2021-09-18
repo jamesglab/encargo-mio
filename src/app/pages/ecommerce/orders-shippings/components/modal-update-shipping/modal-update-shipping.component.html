@@ -62,7 +62,7 @@
           <label for="exampleInputEmail1">Usuario </label>
           <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario"
            formControlName="user"
-            (change)="getAddresByUser()">
+            (change)="getInfoUser()">
             <option selected disabled value="">Selecciona un usuario...</option>
             <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
           </select>

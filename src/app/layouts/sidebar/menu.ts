@@ -30,6 +30,12 @@ export const MENU: MenuItem[] = [
                 label: 'MENUITEMS.ECOMMERCE.LIST.CUSTOMERS',
                 link: '/ecommerce/customers',
                 parentId: 12
+            },
+            {
+                id: 17,
+                label: 'MENUITEMS.ECOMMERCE.LIST.CUPONS',
+                link: '/cupons',
+                parentId: 12
             }
         ]
     },

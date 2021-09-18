@@ -22,7 +22,8 @@ export class OrdersShippingsComponent implements OnInit {
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal
+    ) { }
 
   ngOnInit(): void {
     this.getTransactions();
@@ -60,6 +61,7 @@ export class OrdersShippingsComponent implements OnInit {
 
   updateShipping() {
 
+    
   }
 
 }

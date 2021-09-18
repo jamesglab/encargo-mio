@@ -1,0 +1,75 @@
+<div class="modal-header">
+  <h5 class="modal-title mt-0">Actualizar Cupon</h5>
+  <button type="button" class="btn-close" aria-hidden="true"></button>
+</div>
+<div class="modal-body">
+
+  <form [formGroup]="updateCuponForm">
+    <div class="form-group  ">
+      <label for="availability">Disponibilidad</label>
+      <input type="number" [min]="0" class="form-control" id="availability" aria-describedby="emailHelp"
+        placeholder="Disponibilidad" formControlName="availability">
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="price">Precio</label>
+      <input type="number" [min]="0" class="form-control" id="price" aria-describedby="emailHelp" placeholder="Precio"
+        formControlName="price">
+    </div>
+
+    <div class="form-group mt-3 mt-3">
+      <div class="form-check form-switch">
+        <label class="form-check-label" for="percentage">¿Valor en porcentaje ?</label>
+        <input class="form-check-input" type="checkbox" id="percentage" formControlName="percentage">
+      </div>
+    </div>
+
+
+
+    <div class="form-group mt-3">
+      <label for="date_init">Fecha de Inicio</label>
+      <div class="input-group clockpicker">
+        <input ngbDatepicker class="form-control" id="date_init" placeholder="yyyy-mm-dd" #d="ngbDatepicker"
+          formControlName="date_init">
+        <div class="input-group-append" (click)="d.toggle()">
+          <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group mt-3">
+      <label for="date_finish">Fecha de Finalización</label>
+      <div class="input-group clockpicker">
+        <input ngbDatepicker class="form-control" id="date_finish" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
+          formControlName="date_finish">
+        <div class="input-group-append" (click)="dl.toggle()">
+          <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group mt-3 ">
+      <div class="form-check form-switch">
+        <label class="form-check-label" for="is_active">Activo</label>
+        <input class="form-check-input" type="checkbox" id="is_active" formControlName="is_active">
+      </div>
+    </div>
+
+
+
+  </form>
+</div>
+
+<div class="modal-footer">
+
+  <button class="btn btn-secondary" [disabled]="isLoading">
+    Cancelar
+  </button>
+
+  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateCupons()">
+    <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+    Actualizar
+  </button>
+
+
+</div>

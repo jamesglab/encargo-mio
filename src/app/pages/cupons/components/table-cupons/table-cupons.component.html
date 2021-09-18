@@ -1,0 +1,56 @@
+<div class="table-responsive mb-0">
+
+  <div class="alert alert-primary" role="alert" *ngIf="cupons && cupons.length === 0">
+    No hay datos disponibles...
+  </div>
+
+  <table class="table table-centered table-nowrap">
+
+    <thead class="table-light">
+
+      <tr>
+        <th style="width: 20px"></th>
+        <th class="align-middle"># de Cupon</th>
+        <th class="align-middle">Codigo</th>
+        <th class="align-middle">Disponibilidad</th>
+        <th class="align-middle">Precio</th>
+        <th class="align-middle">Fecha Creado</th>
+        <th class="align-middle">Fecha de Finalizado</th>
+        <th class="align-middle">Opciones</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let data of cupons">
+        <td>
+          <div class="form-check font-size-16">
+            <input class="form-check-input" type="checkbox" id="transactionCheck{{ data.index }}" />
+            <label class="form-check-label" for="transactionCheck{{ data.index }}"></label>
+          </div>
+        </td>
+        <td>
+          <a href="javascript: void(0);" class="text-body fw-bold">
+            {{ data.id }}
+          </a>
+        </td>
+        <td>{{ data.code }}</td>
+        <td>
+          {{ data.availability}}
+        </td>
+        <td>{{ data.price}}</td>
+        <td>{{ data.date_init ? (data.date_init | date ) : "" }}</td>
+        <td>{{ data.date_finish ? (data.date_finish | date ) : "" }}</td>
+        <td>
+          <!-- btns options -->
+          <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading" (click)="selectCupon(data)">
+            Editar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+</div>
+<!-- end table -->
