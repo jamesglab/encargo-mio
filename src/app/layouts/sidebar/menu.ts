@@ -13,12 +13,12 @@ export const MENU: MenuItem[] = [
                 parentId: 12
             },
 
-            {
-                id: 155,
-                label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-BUY',
-                link: '/ecommerce/orders-buy',
-                parentId: 12
-            },
+            // {
+            //     id: 155,
+            //     label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-BUY',
+            //     link: '/ecommerce/orders-buy',
+            //     parentId: 12
+            // },
             {
                 id: 153,
                 label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-SHIPPING',

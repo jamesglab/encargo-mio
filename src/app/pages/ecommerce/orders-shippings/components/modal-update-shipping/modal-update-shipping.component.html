@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title mt-0">Actualizar Envio</h5>
-  <button type="button" class="btn-close" aria-hidden="true"></button>
+  <button type="button" class="btn-close" (click)="closeModale()" aria-hidden="true"></button>
 </div>
 <div class="modal-body">
   <form [formGroup]="updateShippingForm">
@@ -9,8 +9,7 @@
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="guide_number">Guia Internacional</label>
-          <input type="number" class="form-control"
-           id="guide_number" formControlName="guide_number">
+          <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
         </div>
       </div>
       <div class="col-12 col-sm-6">
@@ -30,8 +29,8 @@
         <div class="form-group">
           <label for="delivery_date">Fecha de Entrega</label>
           <div class="input-group clockpicker">
-            <input ngbDatepicker class="form-control" id="delivery_date"
-             placeholder="yyyy-mm-dd" #dl="ngbDatepicker" formControlName="delivery_date">
+            <input ngbDatepicker class="form-control" id="delivery_date" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
+              formControlName="delivery_date">
             <div class="input-group-append" (click)="dl.toggle()">
               <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
             </div>
@@ -40,8 +39,8 @@
       </div>
       <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="shipping_value">Valor Envio</label>
-          <input type="number" class="form-control" id="shipping_value" formControlName="shipping_value">
+          <label for="total_value">Valor Envio</label>
+          <input type="number" class="form-control" id="total_value" formControlName="total_value">
         </div>
       </div>
     </div>
@@ -60,8 +59,7 @@
       <div class="col-12 col-sm-6">
         <div class="form-group ">
           <label for="exampleInputEmail1">Usuario </label>
-          <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario"
-           formControlName="user"
+          <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario" formControlName="user"
             (change)="getInfoUser()">
             <option selected disabled value="">Selecciona un usuario...</option>
             <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
@@ -85,19 +83,19 @@
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="observations">Observaciones de Compra</label>
-          <textarea class="form-control" id="observations" row mt-3s="3"
-          formControlName="purchase_observations"></textarea>
+          <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
         </div>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-12 col-sm-12">
-        <label for="observations">Productos en Envio</label>
-        <ng-select [multiple]="true" formControlName="products">
+        <label for="product">Productos en Envio</label>
+        <ng-select [multiple]="true" id="product" formControlName="products" (remove)="removeProduct($event.value)"
+          (add)="addProduct($event)">
           <ng-option *ngFor="let product of products" [value]="product">
             {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :  product.name)}}
           </ng-option>
-      </ng-select>
+        </ng-select>
       </div>
     </div>
   </form>
@@ -105,7 +103,7 @@
 
 <div class="modal-footer">
 
-  <button class="btn btn-secondary">
+  <button class="btn btn-secondary" (click)="closeModale()">
     Cancelar
   </button>
 
@@ -114,6 +112,3 @@
     Actualizar
   </button>
 </div>
-
-
-

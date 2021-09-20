@@ -37,7 +37,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       ],
       product: [null, Validators.required],
       payment_type: [null, Validators.required],
-      observations: [null, Validators.required],
+      observations: [null],
       store: [null, Validators.required],
       product_price: [null],
       purchase_date: [null, Validators.required],

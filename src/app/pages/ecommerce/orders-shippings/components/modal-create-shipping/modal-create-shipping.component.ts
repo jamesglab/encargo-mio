@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output ,EventEmitter} from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NotifyService } from 'src/app/_services/notify.service';
@@ -11,11 +11,11 @@ import { OrderService } from '../../../_services/orders.service';
   styleUrls: ['./modal-create-shipping.component.scss']
 })
 export class ModalCreateShippingComponent implements OnInit {
-  
-  
+
+
   @Input() public users: any = [];
-  @Input() public trm : any ;
-  @Output() getTransactions =  new EventEmitter<any>();
+  @Input() public trm: any;
+  @Output() getTransactions = new EventEmitter<any>();
 
 
   public isLoading: boolean = false;
@@ -41,15 +41,15 @@ export class ModalCreateShippingComponent implements OnInit {
 
   buildForm() {
     this.createShippingForm = this._formBuilder.group({
-      trm:[this.trm],
+      trm: [this.trm],
       guide_number: [null, Validators.required],
       conveyor: [null, Validators.required],
       delivery_date: [null, Validators.required],
-      shipping_value: [null, Validators.required],
+      total_value: [null, Validators.required],
       shipping_type: [null, Validators.required],
       user: [null, Validators.required],
       address: [null, Validators.required],
-      purchase_observations: [null, Validators.required],
+      observations: [null],
       products: [null, Validators.required],
     });
   }
@@ -75,8 +75,6 @@ export class ModalCreateShippingComponent implements OnInit {
   }
 
   createShipping() {
-
-    
     if (this.createShippingForm.valid) {
       this.isLoading = true;
       const delivery_date = new Date(this.createShippingForm.value.delivery_date.year,
@@ -94,17 +92,21 @@ export class ModalCreateShippingComponent implements OnInit {
         );
         this.modalService.dismissAll();
         this.getTransactions.emit(true);
-      },err=>{
+      }, err => {
         this.isLoading = false;
         this._notify.show(
           "Error",
-          err ? err : "Ocurrio un error",
+          err ? err : 
+          "Ocurrio un error intenta de nuevo mas tarde",
           "warning"
         );
       })
     } else {
       this._notify.show('Error', 'Valida El fomulario', 'warning')
     }
+  }
 
+  closeModale() {
+    this.modalService.dismissAll();
   }
 }
