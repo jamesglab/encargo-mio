@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { OrderService } from '../_services/orders.service';
@@ -11,123 +10,82 @@ import { TransactionService } from '../_services/transactions.service';
   styleUrls: ['./customers.component.scss']
 })
 
-/**
- * Ecomerce Customers component
- */
 export class CustomersComponent implements OnInit {
 
-  // bread crumb items
-  breadCrumbItems: Array<{}>;
-  formData: FormGroup;
-  submitted = false;
-  transactions = [];
-  referenceImage: any;
-  orderSelected: any;
-  transactionSelected: any;
-  term: any;
-  trm = 0;
-  status: number;
-  count : number;
+  public breadCrumbItems: Array<{}>;
+  public submitted: boolean = false;
+  public transactions: any = [];
+  public referenceImage: any;
+  public orderSelected: any;
+  public transactionSelected: any;
+  public term: any;
+  public trm: number = 0;
+  public status: number;
+  public count: number;
+  public currentpage: number;
+  public isLoading: boolean = false;
+  public isLoadingTransaction: boolean = false;
 
-  // page
-  currentpage: number;
-
-  constructor(private modalService: NgbModal,
-    private formBuilder: FormBuilder,
+  constructor(
+    private modalService: NgbModal,
     private _transactionService: TransactionService,
     private _orderService: OrderService
-
   ) { }
 
   ngOnInit() {
     this.breadCrumbItems = [{ label: 'Ecommerce' }, { label: 'Customers', active: true }];
-
-    this.formData = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]],
-      address: ['', [Validators.required]],
-      balance: ['', [Validators.required]]
-    });
-
     this.currentpage = 1;
-
-    /**
-     * Fetches the data
-     */
     this.getTransactions(2);
   }
 
-
-  /**
-   * Transactions data fetches
-   */
   getTransactions(status?, pagination?) {
+    this.isLoading = true;
     this.status = status;
     this._transactionService.getTransactionsFilter({
       status: status ? status : 2,
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
-      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
-
+      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1
     }).subscribe(res => {
       this.transactions = res.transactions;
       this.count = res.count;
-    })
+      this.isLoading = false;
+    }, err => {
+      this.isLoading = false;
+      throw err;
+    });
   }
 
-  get form() {
-    return this.formData.controls;
-  }
-
-  /**
-   * Open modal
-   * @param content modal content
-   */
-  openModalOrderService(content: any, transaction) {
-
+  openModalOrderService(content: any, transaction: any) {
+    this.transactionSelected = transaction;
     this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
       this.orderSelected = res;
       this.modalService.open(content, { size: 'xl', centered: true });
-    })
+    });
   }
-  openModalReference(modale, transaction) {
+
+  openModalReference(modale: any, transaction: any) {
     this.transactionSelected = transaction;
     if (transaction.image) {
       this.referenceImage = transaction.image.url;
-
       this.modalService.open(modale, { size: 'lg', centered: true })
     } else {
-      window.open(transaction.response)
+      window.open(transaction.response);
     }
-
   }
-  saveCustomer() {
-    const currentDate = new Date();
-    if (this.formData.valid) {
-      const username = this.formData.get('username').value;
-      const email = this.formData.get('email').value;
-      const phone = this.formData.get('phone').value;
-      const address = this.formData.get('address').value;
-      const balance = this.formData.get('balance').value;
 
-      this.transactions.push({
-        id: this.transactions.length + 1,
-        username,
-        email,
-        phone,
-        address,
-        balance,
-        rating: '4.3',
-        date: currentDate + ':'
-      })
-      this.modalService.dismissAll()
-    }
-    this.submitted = true
-  }
   updateTransaction(status) {
-    this._transactionService.updateTransaction(this.transactionSelected.id, status).subscribe(res => {
-      Swal.fire('Transaccion actualizada', `La transacción quedo ${res.status == 1 ? 'Aprobada' : 'Rechazada'}`, 'success');
-      this.modalService.dismissAll();
-    })
+    this.isLoadingTransaction = true;
+    this._transactionService.updateTransaction(this.transactionSelected, status)
+      .subscribe(res => {
+        Swal.fire('Transacción Actualizada', `La transacción fue actualizada.`, 'success');
+        this.modalService.dismissAll();
+        this.isLoadingTransaction = false;
+        this.getTransactions();
+      }, err => {
+        Swal.fire('Error', `No pudimos actualizar la transacción.`, 'error');
+        this.isLoadingTransaction = false;
+        throw err;
+      });
   }
+
 }

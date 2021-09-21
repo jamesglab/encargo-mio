@@ -3,9 +3,9 @@ export const environment = {
   defaultauth: '',
   url_api: '',
   microservices: {
-    user: "https://dev-api.encargomio.com/api/v1/user/",
-    management: "https://dev-api.encargomio.com/api/v1/management/",
-    orders:"https://dev-api.encargomio.com/api/v1/orders/"
+    user: "https://api.encargomio.com/api/v1/user/",
+    management: "https://api.encargomio.com/api/v1/management/",
+    orders:"https://api.encargomio.com/api/v1/orders/"
   },
   firebaseConfig: {
     apiKey: '',

@@ -21,6 +21,7 @@ export class ModalEditOrderComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
   public disabledInputs: boolean = false;
+  public disabledAllInputs: boolean = false;
 
   constructor(
     private _orderService: OrderService,
@@ -44,55 +45,66 @@ export class ModalEditOrderComponent implements OnInit {
       this.calculateDiscount(index);
       this.calculateTotalArticles();
     });
+    if (this.status === 2) {
+      this.disabledAllInputs = true;
+    }
   }
 
   getFormula(position?: number) {
-    this.isLoadingFormula = true;
-    this._orderService.calculateShipping(this.orderSelected.products)
-      .subscribe((res: any) => {
-        if (res[0].name === 'No aplica') {
-          this.orderSelected.shipping_value_admin = null; // Si todos los productos tienen free_shipping = true volvemos el valor de las formulas nulo
-          this.orderSelected.products.map((product: any, i: number) => { // Mapeamos todos los productos 
-            product.tax = 0; // Volver el tax 0
-            this.calculateTotalPrices(i); // Calculamos el total de prices
-            this.calculateTotalArticles(); // Luego calculamos el total de los articulos
-          });
-        } else {
-          this.orderSelected.shipping_value_admin = res; //Asignamos el valor de la respuesta al shipping value admin
-          this.calculateTax(position); // Calculamos el tax
-          this.calculateTotalPrices(position); // Calcular el total de precios
-          this.calculateDiscount(position); // Calculamos el descuento
-          this.calculateTotalArticles();
-        }
-        this.isLoadingFormula = false;
-      }, err => {
-        this.isLoadingFormula = false;
-        throw err;
-      });
+    if (this.status == 0 || this.status == 1) {
+      this.isLoadingFormula = true;
+      this._orderService.calculateShipping(this.orderSelected.products)
+        .subscribe((res: any) => {
+          if (res[0].name === 'No aplica') {
+            this.orderSelected.shipping_value_admin = null; // Si todos los productos tienen free_shipping = true volvemos el valor de las formulas nulo
+            this.orderSelected.products.map((product: any, i: number) => { // Mapeamos todos los productos 
+              product.tax = 0; // Volver el tax 0
+              this.calculateTotalPrices(i); // Calculamos el total de prices
+              this.calculateTotalArticles(); // Luego calculamos el total de los articulos
+            });
+          } else {
+            this.orderSelected.shipping_value_admin = res; //Asignamos el valor de la respuesta al shipping value admin
+            this.calculateTax(position); // Calculamos el tax
+            this.calculateTotalPrices(position); // Calcular el total de precios
+            this.calculateDiscount(position); // Calculamos el descuento
+            this.calculateTotalArticles();
+          }
+          this.isLoadingFormula = false;
+        }, err => {
+          this.isLoadingFormula = false;
+          throw err;
+        });
+    }
   }
 
   calculateTax(position?: number) {
-    if (this.orderSelected.products[position].free_shipping) { // Si el free_shipping es true
-      this.orderSelected.products[position].tax = 0; // Volvemos el tax 0
-    } else { // Si no calculamos el tax normalmente
-      if (!this.orderSelected.products[position].tax_manually) { // Validar si el tax se calcula manual o automatico
-        if (this.orderSelected.products[position].selected_tax === "1" || this.orderSelected.products[position].selected_tax != null) {
-          this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity * 0.07;
-        } else {
-          this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].shipping_origin_value_product * 0.07;
+    if (this.status == 0 || this.status == 1) {
+      if (this.orderSelected.products[position].free_shipping) { // Si el free_shipping es true
+        this.orderSelected.products[position].tax = 0; // Volvemos el tax 0
+      } else { // Si no calculamos el tax normalmente
+        if (!this.orderSelected.products[position].tax_manually) { // Validar si el tax se calcula manual o automatico
+          if (this.orderSelected.products[position].selected_tax === "1" || this.orderSelected.products[position].selected_tax != null) {
+            this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity * 0.07;
+          } else {
+            this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].shipping_origin_value_product * 0.07;
+          }
         }
       }
     }
   }
 
   calculateTotalPrices(position: number) {
-    this.orderSelected.products[position].sub_total = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].tax;
+    if (this.status == 0 || this.status == 1) {
+      this.orderSelected.products[position].sub_total = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].tax;
+    }
   }
 
   calculateDiscount(position: number) {
-    if (this.orderSelected.products[position].discount > 0) {
-      this.orderSelected.products[position].discount = this.orderSelected.products[position].sub_total - this.orderSelected.products[position].sub_total * (this.orderSelected.products[position].discount / 100);
-      this.orderSelected.products[position].discount = this.orderSelected.products[position].discount / 100
+    if (this.status == 0 || this.status == 1) {
+      if (this.orderSelected.products[position].discount > 0) {
+        this.orderSelected.products[position].discount = this.orderSelected.products[position].sub_total - this.orderSelected.products[position].sub_total * (this.orderSelected.products[position].discount / 100);
+        this.orderSelected.products[position].discount = this.orderSelected.products[position].discount / 100
+      }
     }
   }
 
@@ -115,6 +127,11 @@ export class ModalEditOrderComponent implements OnInit {
     this.calculateTotalPrices(i); // Calcular el total de precios
     this.calculateDiscount(i); // Calculamos el descuento
     this.calculateTotalArticles(); // Llamamos la función para obtener los valores totales
+  }
+
+  setPermanentShipping(i: number): void {
+    console.log("PERMANENT SHIPPING", i);
+    console.log(this.orderSelected);
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
