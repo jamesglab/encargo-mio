@@ -242,7 +242,7 @@
     Cancelar
   </button>
 
-  <ng-container *ngIf="status == 1">
+  <ng-container *ngIf="status == 0 || status == 1">
 
     <button class="btn btn-primary" (click)="sendQuotation();" [disabled]="isLoading">
 
