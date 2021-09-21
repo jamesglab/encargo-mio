@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h5 class="modal-title mt-0">Crear Envio</h5>
-  <button type="button" class="btn-close" aria-hidden="true"></button>
+  <button type="button" class="btn-close" (click)="closeModale()" aria-hidden="true"></button>
 </div>
 <div class="modal-body">
   <form [formGroup]="createShippingForm">
@@ -40,8 +40,8 @@
       </div>
       <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="shipping_value">Valor Envio</label>
-          <input type="number" class="form-control" id="shipping_value" formControlName="shipping_value">
+          <label for="total_value">Valor Envio</label>
+          <input type="number" class="form-control" id="total_value" formControlName="total_value">
         </div>
       </div>
     </div>
@@ -86,13 +86,13 @@
         <div class="form-group">
           <label for="observations">Observaciones de Compra</label>
           <textarea class="form-control" id="observations" row mt-3s="3"
-          formControlName="purchase_observations"></textarea>
+          formControlName="observations"></textarea>
         </div>
       </div>
     </div>
     <div class="row mt-3">
       <div class="col-12 col-sm-12">
-        <label for="observations">Productos en Envio</label>
+        <label for="">Productos en Envio</label>
         <ng-select [multiple]="true" formControlName="products">
           <ng-option *ngFor="let product of products" [value]="product">
             {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :  product.name)}}
@@ -105,7 +105,7 @@
 
 <div class="modal-footer">
 
-  <button class="btn btn-secondary">
+  <button class="btn btn-secondary"(click)="closeModale()">
     Cancelar
   </button>
 

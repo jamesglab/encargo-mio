@@ -142,7 +142,7 @@ export class ModalEditOrderComponent implements OnInit {
     this.isLoading = true;
     this._orderService.updateOrder(this.orderSelected)
       .subscribe(res => {
-        this._notify.show("Cotización Actualizada", `Actualizaste la cotización # ${this.orderSelected.id}`, "warning");
+        this._notify.show("Cotización Actualizada", `Actualizaste la cotización # ${this.orderSelected.id}`, "success");
         this.isLoading = false;
         this.refreshTable.emit(true);
         this.modalService.dismissAll();

@@ -40,7 +40,7 @@ export class CreateCuponsComponent implements OnInit {
 
 
   createCupons() {
-    if (this.createCuponsForm.valid){
+    if (this.createCuponsForm.valid) {
       this.isLoading = true;
       const date_init = new Date(
         this.createCuponsForm.value.date_init.year,
@@ -61,12 +61,14 @@ export class CreateCuponsComponent implements OnInit {
         this.modalService.dismissAll();
         this.searchTransactions.emit(true)
       })
-    }else{
-      this._notify.show('Error','valida los campos del fomulario','error');
+    } else {
+      this._notify.show('Error', 'valida los campos del fomulario', 'error');
       this.isLoading = false;
     }
-    
-  }
 
+  }
+  closeModale() {
+    this.modalService.dismissAll();
+  }
 
 }

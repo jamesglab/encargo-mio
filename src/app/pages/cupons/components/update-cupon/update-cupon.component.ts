@@ -73,7 +73,10 @@ export class UpdateCuponComponent implements OnInit {
       this._notify.show('Error', 'valida los campos del fomulario', 'error');
       this.isLoading = false;
     }
+  }
 
+  closeModale(){
+    this.modalService.dismissAll();
   }
 
 }
