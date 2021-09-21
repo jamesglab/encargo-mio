@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { NgbNavModule, NgbDropdownModule, NgbModalModule, NgbTooltipModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgApexchartsModule } from 'ng-apexcharts';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin
@@ -38,7 +37,6 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     NgbDropdownModule,
     NgbModalModule,
     PagesRoutingModule,
-    NgApexchartsModule,
     ReactiveFormsModule,
     EcommerceModule,
     HttpClientModule,
