@@ -62,6 +62,9 @@ export class ModalEditOrderComponent implements OnInit {
               this.calculateTotalPrices(i); // Calculamos el total de prices
               this.calculateTotalArticles(); // Luego calculamos el total de los articulos
             });
+          } else if (res[0].name === 'Envío Fijo') {
+            this.orderSelected.shipping_value_admin = null;
+            this.orderSelected.total_permanent_shipping_value = res[0].value;
           } else {
             this.orderSelected.shipping_value_admin = res; //Asignamos el valor de la respuesta al shipping value admin
             this.calculateTax(position); // Calculamos el tax
@@ -130,8 +133,7 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   setPermanentShipping(i: number): void {
-    console.log("PERMANENT SHIPPING", i);
-    console.log(this.orderSelected);
+    this.getFormula(i);
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
