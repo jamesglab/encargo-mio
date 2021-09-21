@@ -29,4 +29,5 @@ export class CuponsComponent implements OnInit {
   openModal(modal: any, sizeModale: string) {
     this.modalService.open(modal, { size: sizeModale, centered: true });
   }
+  
 }
