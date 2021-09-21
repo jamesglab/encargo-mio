@@ -1,12 +1,9 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
-
 import { header, handleError } from 'src/app/_helpers/tools/header.tool';
-import { StorageService } from '../../../_services/storage.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -14,13 +11,11 @@ import { environment } from 'src/environments/environment';
 })
 export class TransactionService {
 
-  constructor(private http: HttpClient,
-    private router: Router,
-    private _storageService: StorageService) {
-  }
+  constructor(
+    private http: HttpClient
+  ) { }
 
-
-  getTransactionsFilter(params) {
+  getTransactionsFilter(params): Observable<any> {
     return this.http.get<any>(
       `${environment.microservices.management}transactions`, { headers: header, params }).pipe(
         map((res: any) => {
@@ -30,10 +25,11 @@ export class TransactionService {
       );
   }
 
-  updateTransaction(id, status) {
-
+  updateTransaction(transaction: any, status): Observable<any> {
     return this.http.put<any>(
-      `${environment.microservices.management}transactions`, { status }, { headers: header, params: { id } }).pipe(
+      `${environment.microservices.management}transactions`,
+      { status, order_service: transaction.order_service },
+      { headers: header, params: { id: transaction.id, } }).pipe(
         map((res: any) => {
           return res;
         }),

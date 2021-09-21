@@ -6,12 +6,20 @@
       <a class="nav-link" [ngClass]="{'active':status==2}" (click)="getTransactions(2)">Pendientes</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':status==1}" (click)="status = 1 ;  getTransactions(1)">Aprobadas</a>
+      <a class="nav-link" [ngClass]="{'active':status==1}" (click)="status = 1; getTransactions(1)">Aprobadas</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" [ngClass]="{'active':status==3}" (click)="status = 2 ;getTransactions(3)">Rechazadas</a>
     </li>
   </ul>
+
+  <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
+    No hay datos de pagos activos...
+  </div>
+
+  <div *ngIf="isLoading">
+    Cargando...
+  </div>
 
   <div class="row">
     <div class="col-12">
@@ -30,7 +38,9 @@
             <!-- end col-->
           </div>
           <div class="table-responsive">
+
             <table class="table align-middle table-nowrap">
+
               <thead>
                 <tr>
                   <th>#</th>
@@ -43,279 +53,228 @@
                   <th>Opciones</th>
                 </tr>
               </thead>
+
               <tbody>
-                <tr *ngFor="
-                    let transaction of transactions | filter: term;
-                    let i = index
-                  ">
+
+                <tr *ngFor="let transaction of transactions | filter: term; let i = index">
+
                   <td>
                     <div class="form-check font-size-16">
                       {{ transaction.id }}
                     </div>
                   </td>
+
                   <td>{{ transaction.order_service }}</td>
+
                   <td>
                     <p class="mb-1">{{ transaction.payment_method }}</p>
                   </td>
+
                   <td>{{ transaction.payment_gateway }}</td>
 
                   <td>{{ transaction.reference }}</td>
+
                   <td>
-                    <!-- <span class="badge bg-success font-size-12">
-                      <i class="mdi mdi-star me-1"></i> -->
                     {{ transaction.status }}
-                    <!-- </span> -->
                   </td>
+
                   <td>{{ transaction.value }}</td>
-                  <!-- <td>{{transaction.date | date: 'dd MMM, YYYY'}}</td> -->
+
                   <td>
                     <div class="dropdown" ngbDropdown placement="bottom-right">
+
                       <a href="javascript: void(0);" class="dropdown-toggle card-drop" data-toggle="dropdown"
                         ngbDropdownToggle aria-expanded="false">
                         <i class="mdi mdi-dots-horizontal font-size-18"></i>
                       </a>
+
                       <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
                         <li>
                           <a href="javascript: void(0);" class="dropdown-item"
-                            (click)="openModalReference(reference,transaction)"><i
+                            (click)="openModalReference(reference, transaction)"><i
                               class="far fa-clipboard me-1"></i>Comprobante</a>
                         </li>
                         <li>
                           <a href="javascript: void(0);" class="dropdown-item"
-                            (click)="openModalOrderService(content,transaction)"><i
-                              class="fas fa-eye me-1"></i>Detalles</a>
+                            (click)="openModalOrderService(content, transaction)">
+                            <i class="fas fa-eye me-1"> </i>
+                            Detalles
+                          </a>
                         </li>
                       </ul>
+
                     </div>
+
                   </td>
+
                 </tr>
+
               </tbody>
+
             </table>
+
           </div>
           <!-- pagination -->
           <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions(status,$event)">
           </mat-paginator>
-
         </div>
       </div>
     </div>
   </div>
-  <!-- end row -->
-</div>
 
+  <!-- Modal Detalles de la orden  -->
+  <ng-template #content role="document" let-modal>
 
-<!-- Modal Detalles de la orden  -->
-<ng-template #content role="document" let-modal>
-  <div class="modal-header ">
-    <h5 class="modal-title mt-0">Detalles de la orden</h5>
-    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-
-    <div class="container">
-      <div class="row">
-        <div class="col-7">
-
-          <div class="h4">
-            # 000{{orderSelected.id}}
-          </div>
-
-          <div class="h5">
-            {{orderSelected.created_at | date :'MM/d/y' }}
-          </div>
-          <div class="h5">
-            TRM cotización: {{trm}}
-          </div>
-
-        </div>
-        <div class="col-5">
-
-          <div class="row mt-2">
-            <div class="col-6 h5 d-flex ">
-              Valor Total :
-            </div>
-            <div class="col-6 h5 d-flex">
-              <div>
-                USD {{orderSelected.total_value}} / COP
-                {{orderSelected.total_value * trm}}
-              </div>
-            </div>
-          </div>
-          <div class="row mt-2">
-            <div class="col-6 h5 d-flex  c-gray">
-              Envío a casillero:
-            </div>
-            <div class="col-6 h5 d-flex c-gray">
-              <div>
-                USD {{orderSelected.locker_value}} / COP {{orderSelected.locker_value * trm}} </div>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-6 h5 d-flex  c-gray">
-              Envío a Destino:
-            </div>
-            <div class="col-6 h5 d-flex c-gray">
-              <div>
-                USD 0 / COP 0 </div>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-6 h5 d-flex  c-gray">
-              Costo del Seguro:
-            </div>
-            <div class="col-6 h5 d-flex c-gray">
-              <div>
-                USD 0 / COP 0 </div>
-            </div>
-          </div>
-
-
-          <div class="row mt-2">
-            <div class="col-6 h5 d-flex  c-gray">
-              Valor asegurado:
-            </div>
-            <div class="col-6 h5 d-flex c-gray">
-              <div>
-                USD 0 / COP 0 </div>
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-6 h5 d-flex  c-gray">
-              Descuento:
-            </div>
-            <div class="col-6 h5 d-flex c-gray">
-              <div>
-                USD 0 / COP 0 </div>
-            </div>
-          </div>
-
-
-
-        </div>
-      </div>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Detalles de la orden</h5>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
-    <hr>
-    <div class="table-responsive">
 
-      <div class="container" *ngFor="let item of orderSelected.products">
+    <div class="modal-body">
+
+      <div class="container">
+
         <div class="row">
-          <div class="col-2 d-flex justify-content-center align-items-center">
-            <img [src]="item.image" alt class="avatar" />
-          </div>
-          <div class="col-6">
-            <div>
-              <a [href]="item.link" target="blank">
-                <h5 class="text-truncate h5">{{ item.name }}</h5>
-              </a>
-            </div>
-            <div>
-              {{item.description}}
-            </div>
-            <div class="mt-2">
-              {{item.aditional_info}}
-            </div>
-            <div class="mt-2 h5">
-              Cantidad: {{item.quantity}}
-            </div>
-          </div>
-          <div class="col-4">
 
-            <div class="row">
-              <div class="col-12 h5">
-                USD {{(item.price.usd + item.price.price_locker.usd + item.price.tax) * item.quantity }} / COP
-                {{((item.price.usd + item.price.price_locker.usd + item.price.tax) * item.quantity)*trm}}
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-6 h5">
-                Precio
-              </div>
-              <div class="col-6 h5">
-                USD
-              </div>
+          <div class="col-7">
+
+            <div class="h4">
+              #000{{orderSelected.id ? orderSelected.id : 0 }}
             </div>
 
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex align-items-center">
-                Artículo:
-              </div>
-              <div class="col-6 h5 d-flex">
-                <div>
-                  {{item.price.usd}}
-                </div>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="col-6 h5">
-                Envío a casillero gratis
-              </div>
-              <div class="col-6">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
-                    (click)="item.free_shipping_locker =!item.free_shipping_locker; item.price.price_locker.usd = 0 "
-                    [checked]="item.free_shipping_locker" disabled>
-                </div>
-              </div>
-            </div>
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex align-items-center">
-                Envío al casillero :
-              </div>
-              <div class="col-6 h5 d-flex">
-                <div>
-                  {{item.price.price_locker.usd}}
-                </div>
-              </div>
+            <div class="h5">
+              Fecha de Pago: {{ orderSelected.updated_at | date :'MM/d/y hh:mm a' }}
             </div>
 
-            <div class="row mt-2">
-              <div class="col-6 h5 d-flex align-items-center">
-                Tax :
-              </div>
-              <div class="col-6 h5 d-flex">
-                <div>
-                  {{item.price.tax}}
-                </div>
-              </div>
+            <div class="h5">
+              TRM cotización: {{ orderSelected.trm ? orderSelected.trm : 0 }} COP
             </div>
 
-
+            <div class="h5">
+              Usuario: {{ orderSelected.user ? orderSelected.user.name : '' }}
+              {{ orderSelected.user ? orderSelected.user.last_name : '' }}
+            </div>
 
           </div>
+
+          <div class="col-5">
+
+            <div class="row mt-2">
+
+              <div class="col-6 h5 d-flex ">
+                Valor Pagado:
+              </div>
+
+              <div class="col-6 h5 d-flex">
+                <div>
+                  USD {{ orderSelected.total_value ? orderSelected.total_value : 0 }}
+                  / {{
+                  ((orderSelected.total_value ? orderSelected.total_value : 0) * orderSelected.trm) | currency: 'COP' :
+                  'symbol' : '1.0-0'
+                  }}
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
-        <hr>
+
+      </div>
+
+      <hr>
+
+      <div class="table-responsive">
+
+        <div class="container" *ngFor="let item of orderSelected.products">
+
+          <div class="row">
+
+            <div class="col-2 d-flex justify-content-center align-items-center">
+              <img [src]="item.image" alt class="avatar" />
+            </div>
+
+            <div class="col-6">
+
+              <div>
+                <a [href]="item.link" target="blank">
+                  <h5 class="text-truncate h5">{{ item.name }}</h5>
+                </a>
+              </div>
+
+              <div>
+                {{ item.description ? item.description: 'El artículo no tiene descripción' }}
+              </div>
+
+              <div class="mt-2 h5">
+                Precio del Artículo: {{ item.product_value ? item.product_value : 0 }} USD
+              </div>
+
+              <div class="mt-2 h5">
+                Cantidad: {{ item.quantity ? item.quantity : 0 }}
+              </div>
+
+            </div>
+
+          </div>
+
+          <hr>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+
+      <button class="btn btn-secondary" (click)="modal.close('Close click'); transactionSelected = null">
+        Cerrar
+      </button>
+
+      <ng-container *ngIf="transactionSelected.payment_gateway != 'stripe'">
+
+        <button type="button" class="btn btn-danger" (click)="updateTransaction(3);" *ngIf="status == 2">
+          Rechazar Pago
+        </button>
+
+        <button class="btn btn-primary" (click)="updateTransaction(1);" *ngIf="status == 2">
+          Aprobar Pago
+        </button>
+
+      </ng-container>
+
+    </div>
+
+  </ng-template>
+
+  <!-- Modal Pago caso efectivo -->
+  <ng-template #reference role="document" let-modal>
+
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Comprobante de Pago</h5>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+      <div class="center">
+        <div>
+          <img [src]="referenceImage" alt="" class="img-reference">
+        </div>
       </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="modal.close('Close click')">
-      Cancelar
-    </button>
-    <button class="btn btn-primary">Aprobar</button>
-  </div>
-</ng-template>
 
-<!-- Modal Pago caso efectivo -->
-<ng-template #reference role="document" let-modal>
+    <div class="modal-footer" *ngIf="status == 2">
 
-  <div class="modal-header ">
-    <h5 class="modal-title mt-0">Comprobante de Pago</h5>
-    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <div class="center">
-      <div>
-        <img [src]="referenceImage" alt="" class="img-reference">
-      </div>
+      <button class="btn btn-danger" (click)="updateTransaction(3);" [disabled]="isLoadingTransaction">
+        Rechazar Pago
+      </button>
+
+      <button class="btn btn-success" (click)="updateTransaction(1);" [disabled]="isLoadingTransaction">
+        Aprobar Pago
+      </button>
+
     </div>
-  </div>
 
-  <div class="modal-footer" *ngIf="status==2">
-    <button class="btn btn-danger" (click)="updateTransaction(3)">Rechazar</button>
-    <button class="btn btn-success" (click)="updateTransaction(1)">Aprobar</button>
-  </div>
-</ng-template>
+  </ng-template>
