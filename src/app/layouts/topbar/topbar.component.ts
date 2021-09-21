@@ -1,8 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
-import { AuthenticationService } from '../../core/services/auth.service';
-import { AuthfakeauthenticationService } from '../../core/services/authfake.service';
+
 import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { LanguageService } from '../../core/services/language.service';
@@ -28,8 +27,7 @@ export class TopbarComponent implements OnInit {
   public user: any;
 
   constructor(
-    @Inject(DOCUMENT) private document: any, private router: Router, private authService: AuthenticationService,
-    private authFackservice: AuthfakeauthenticationService,
+    @Inject(DOCUMENT) private document: any, private router: Router,
     public languageService: LanguageService,
     public translate: TranslateService,
     public _cookiesService: CookieService,
@@ -78,11 +76,7 @@ export class TopbarComponent implements OnInit {
    * Logout the user
    */
   logout() {
-    if (environment.defaultauth === 'firebase') {
-      this.authService.logout();
-    } else {
-      this.authFackservice.logout();
-    }
+    localStorage.clear();
     this.router.navigate(['/account/login']);
   }
 
