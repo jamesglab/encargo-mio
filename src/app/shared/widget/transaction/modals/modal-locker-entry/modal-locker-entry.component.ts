@@ -53,7 +53,7 @@ export class ModalLockerEntryComponent implements OnInit {
           ? this.orderSelected?.shipping_value_client?.value : 0
       ],
       admin_value: [null, Validators.required],
-      product_observations: [null, Validators.required],
+      product_observations: [null],
       force_commercial_shipping: [null],
     });
   }
