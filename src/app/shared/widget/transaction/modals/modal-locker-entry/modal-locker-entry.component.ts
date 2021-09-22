@@ -71,21 +71,21 @@ export class ModalLockerEntryComponent implements OnInit {
       this.orders_purchase = res;
     });
   }
-// AGREGAMOS LAS TRANSPORTADORAS
+  // AGREGAMOS LAS TRANSPORTADORAS
   getConvenyor() {
     this._orderService.getConvenyor().subscribe(res => {
       this.conveyors = res;
     })
   }
-// CERRAMOS EL MODAL
+  // CERRAMOS EL MODAL
   closeModale() {
     this.modalService.dismissAll();
   }
-// AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
+  // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
   onSelect(event) {
     this.files.push(...event.addedFiles);
   }
-// ELIMINAMOS LA IMAGEN
+  // ELIMINAMOS LA IMAGEN
   onRemove(event) {
     this.files.splice(this.files.indexOf(event), 1);
   }
@@ -103,18 +103,15 @@ export class ModalLockerEntryComponent implements OnInit {
       // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 
       this._orderService.insertProductLocker(formData).subscribe(res => {
         this._notify.show(
-          `Producto #${this.lockerForm.getRawValue().order_purchase_object.id.replace(/=/g,"")} Agregado`,
+          `Producto #${this.lockerForm.getRawValue().order_purchase_object.id.replace(/=/g, "")} Agregado`,
           res.message,
           "success"
         );
         this.modalService.dismissAll();
       }, err => {
+        console.log("ERROR", err);
         this.isLoading = false;
-        this._notify.show(
-          "Error",
-          err ? err : "Ocurrio un error",
-          "warning"
-        );
+        this._notify.show("Error", err.error ? err.error.message : "Ocurrió un error al intentar registrar el producto.", "warning");
       })
     } else {
       this._notify.show('Datos incompletos', 'Revisa los datos o las imagenes del producto', 'warning')
@@ -143,7 +140,9 @@ export class ModalLockerEntryComponent implements OnInit {
   createReceiptDate(date) {
     return new Date(date.year, date.month, date.day)
   }
+
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
     return numberOnly(event);
   }
+
 }
