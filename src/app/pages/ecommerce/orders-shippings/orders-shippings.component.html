@@ -17,7 +17,7 @@
             <div class="col-sm-8">
               <div class="text-sm-end">
                 <button type="button" class="btn btn-success btn-rounded mb-2 me-2"
-                  (click)="openModal(createShipping,'xl')"><i class="mdi mdi-plus mr-1"></i>
+                  (click)="openModal(createShipping,'xl')" [disabled]="!trm"><i class="mdi mdi-plus mr-1" ></i>
                   Crear un Envío</button>
               </div><!-- end col-->
             </div><!-- end col-->

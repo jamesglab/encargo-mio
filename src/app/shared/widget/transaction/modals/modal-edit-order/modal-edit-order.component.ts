@@ -22,6 +22,7 @@ export class ModalEditOrderComponent implements OnInit {
   public isLoadingFormula: boolean = false;
   public disabledInputs: boolean = false;
   public disabledAllInputs: boolean = false;
+  public productSelected: any;
 
   constructor(
     private _orderService: OrderService,
@@ -154,5 +155,12 @@ export class ModalEditOrderComponent implements OnInit {
         throw err;
       });
   }
-
+  upadteImageByProduct(image) {
+    this.productSelected.image = image;
+  }
+  
+  openModal(product: any, modal: any, sizeModale: string) {
+    this.productSelected = product;
+    this.modalService.open(modal, { size: sizeModale, centered: true });
+  }
 }

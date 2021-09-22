@@ -20,7 +20,8 @@
           <select class="form-control" id="orders" formControlName="order_purchase_object" (change)="lockerForm.get('product_description').setValue(lockerForm.get('order_purchase_object').value.product.description)">
             <option [value]="null" disabled>Seleccióna una orden</option>
             <option *ngFor="let order of orders_purchase" [ngValue]="order">
-              {{ (order.product.name.length > 50) ? (order.id.replace('==','') + ' | ' + order.product.name  | slice:0:50 ) + '...' :  order.id + ' | ' + order.product.name }}
+              {{ (order.product.name.length > 50) ? (order.id.replace('/=/g', "") + ' | ' +
+               order.product.name  | slice:0:50 ) + '...' :  order.id.replace('/=/g', "") + ' | ' + order.product.name }}
             </option>
           </select>
         </div>

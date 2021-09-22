@@ -211,18 +211,18 @@ export class OrderService {
   }
 
 
-  addProductByShipping(payload,params){
+  addProductByShipping(payload, params) {
     return this.http.post<any>(
-      `${environment.microservices.management}shipping-order/add-product`, payload, { headers: header ,params }).pipe(
+      `${environment.microservices.management}shipping-order/add-product`, payload, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
         catchError(handleError)
       );
   }
-  deleteProductByShipping(payload,params){
+  deleteProductByShipping(payload, params) {
     return this.http.put<any>(
-      `${environment.microservices.management}shipping-order/delete-product`, payload, { headers: header ,params }).pipe(
+      `${environment.microservices.management}shipping-order/delete-product`, payload, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -230,14 +230,22 @@ export class OrderService {
       );
   }
 
-updateShipping(payload){
-  return this.http.put<any>(
-    `${environment.microservices.management}shipping-order/`, payload, { headers: header }).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
-  
-}
+  updateShipping(payload) {
+    return this.http.put<any>(
+      `${environment.microservices.management}shipping-order/`, payload, { headers: header }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+  updateImageByProduct(payload) {
+    return this.http.post<any>(
+      `${environment.microservices.management}orders/update-image`, payload).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }

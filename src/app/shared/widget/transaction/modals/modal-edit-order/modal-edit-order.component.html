@@ -65,7 +65,6 @@
                 number : '1.2-2' }}
                 USD
               </div>
-
             </ng-container>
 
           </div>
@@ -95,12 +94,14 @@
       <div class="row">
 
         <div class="col-3 d-flex justify-content-center">
-
-          <img [src]="item.image" (error)="$event.target.src = 'https://bulma.io/images/placeholders/96x96.png'"
-            class="avatar" style="    object-fit: contain;" />
-
+          <div class="edit-image">
+            <a (click)="openModal(item,createImage,'md ')"><i class="far fa-edit"></i></a>
+          </div>
+          <div>
+            <img [src]="item.image" (error)="$event.target.src = 'assets/images/default.png'" class="avatar"
+              style="object-fit: contain;" />
+          </div>
         </div>
-
         <div class="col-4">
 
           <div>
@@ -177,11 +178,8 @@
             <div class="col-3">
 
               <div class="form-group">
-
                 <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
-
                 <div>
-
                   <input type="number" class="form-control" placeholder="Tax" [ngModel]="item.tax | number: '1.2-2'"
                     (ngModelChange)="item.tax = $event" min="0" (keypress)="numberOnly($event);"
                     (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || disabledAllInputs">
@@ -284,3 +282,7 @@
   </ng-container>
 
 </div>
+<ng-template #createImage role="document" let-modal>
+  <app-create-image [product]="productSelected" (close)="modal.close()"
+    (imageUpdated)="upadteImageByProduct($event);modal.close()"></app-create-image>
+</ng-template>
