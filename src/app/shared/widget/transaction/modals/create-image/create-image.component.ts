@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import { NotifyService } from 'src/app/_services/notify.service';
 
 @Component({
   selector: 'app-create-image',
@@ -16,7 +17,10 @@ export class CreateImageComponent implements OnInit {
   loaderImage = false;
   imgURL;
 
-  constructor(private _orderService: OrderService, private imageCompress: NgxImageCompressService) { }
+  constructor(private _orderService: OrderService,
+    private imageCompress: NgxImageCompressService,
+    private _notifyService : NotifyService
+    ) { }
 
   ngOnInit(): void {
   }
@@ -35,6 +39,10 @@ export class CreateImageComponent implements OnInit {
   }
 
   createImage() {
+    if (!this.imgURL){
+      this._notifyService.show('Error','Selecciona una imagen','warning')
+      return
+    }
     const formData = new FormData();
     const imageBlob = this.dataURItoBlob(this.imgURL.split(',')[1]);
     formData.append('image', imageBlob);
@@ -42,6 +50,8 @@ export class CreateImageComponent implements OnInit {
     this.isLoading = true;
     this._orderService.updateImageByProduct(formData).subscribe(res => {
       this.imageUpdated.emit(res.image);
+    },err=>{
+      this._notifyService.show('Error','No se pudo actualizar la imagen del producto','error')
     })
   }
 
