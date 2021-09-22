@@ -141,7 +141,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   onImageError(event) {
-    event.target.src = "https://static.wixstatic.com/media/2cd43b_48bf185491704d8996a2d3bf2c0bbd23~mv2.png/v1/fill/w_320,h_212,q_90/2cd43b_48bf185491704d8996a2d3bf2c0bbd23~mv2.png";
+    event.target.src = "assets/images/default.jpg";
   }
 
   isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
