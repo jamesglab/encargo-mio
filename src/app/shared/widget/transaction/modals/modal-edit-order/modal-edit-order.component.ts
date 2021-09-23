@@ -56,18 +56,16 @@ export class ModalEditOrderComponent implements OnInit {
       this.isLoadingFormula = true;
       this._orderService.calculateShipping(this.orderSelected.products)
         .subscribe((res: any) => {
+          this.orderSelected.shipping_value_admin = res; //Asignamos el valor de la respuesta al shipping value admin
           if (res[0].name === 'No aplica') {
-            this.orderSelected.shipping_value_admin = null; // Si todos los productos tienen free_shipping = true volvemos el valor de las formulas nulo
             this.orderSelected.products.map((product: any, i: number) => { // Mapeamos todos los productos 
               product.tax = 0; // Volver el tax 0
               this.calculateTotalPrices(i); // Calculamos el total de prices
               this.calculateTotalArticles(); // Luego calculamos el total de los articulos
             });
           } else if (res[0].name === 'Envío Fijo') {
-            this.orderSelected.shipping_value_admin = null;
             this.orderSelected.total_permanent_shipping_value = res[0].value;
           } else {
-            this.orderSelected.shipping_value_admin = res; //Asignamos el valor de la respuesta al shipping value admin
             this.calculateTax(position); // Calculamos el tax
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
@@ -158,7 +156,7 @@ export class ModalEditOrderComponent implements OnInit {
   upadteImageByProduct(image) {
     this.productSelected.image = image;
   }
-  
+
   openModal(product: any, modal: any, sizeModale: string) {
     this.productSelected = product;
     this.modalService.open(modal, { size: sizeModale, centered: true });
