@@ -26,11 +26,16 @@ export class CreateImageComponent implements OnInit {
   }
 
   preview() {
+    // ACCEDEMOS A LAS IMAGENES
     this.imageCompress.uploadFile().then(({ image, orientation }) => {
+      // PONEMOS EL LOADER DEPENDIENDO DE LO QUE TARDE LA COMPRESION DE LA IMAGEN
       this.loaderImage = true;
+      // PONEMOS LA IMAGEN EN NULL POR SI LA CAMBIAN PARA PODER VISUALIZAR EL LOADER
       this.imgURL = null;
+      // COMPIMIMOS LA IMAGEN PONIENDOLE LA ORIENZACION QUE TRAIGA
       this.imageCompress.compressFile(image, orientation, 75, 50).then(
         result => {
+          // CREAMOS LA IMAGEN
           this.imgURL = result;
           this.loaderImage = false;
         }
@@ -40,14 +45,20 @@ export class CreateImageComponent implements OnInit {
 
   createImage() {
     if (!this.imgURL){
+      // MOSTRAMOS ERROR POR SI NO HAN SELECCIONADO IMAGEN
       this._notifyService.show('Error','Selecciona una imagen','warning')
       return
     }
+    // ABRIMOS EL FORM DATA
     const formData = new FormData();
+    //CREAMOS LA IMAGEN DEL DATA URI PARA OBETNER LA IMAGEN EN TIPO ARCHIVO Y NO BASE 64 
     const imageBlob = this.dataURItoBlob(this.imgURL.split(',')[1]);
+    //ANEXAMOS  LA IMAGEN EN EL FORM DATA 
     formData.append('image', imageBlob);
+    // ANEXAMOS EL ID DEL PRODUCTO
     formData.append('id', this.product.id);
     this.isLoading = true;
+    // ACTAUALIZAMOS LA IMAGEN
     this._orderService.updateImageByProduct(formData).subscribe(res => {
       this.imageUpdated.emit(res.image);
     },err=>{

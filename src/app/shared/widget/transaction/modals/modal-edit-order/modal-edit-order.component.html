@@ -283,6 +283,9 @@
 
 </div>
 <ng-template #createImage role="document" let-modal>
+  <!--[product]  ANEXAMOS PRODUCTO SELECCIONADO -->
+  <!-- (close) CERRAMOS EL MODALE CUANDO LO QUEIRAN CERRAR -->
+  <!--  (imageUpdated) SELECCIONAMOS EL METODO DE ACTUALIZAR IMAGEN DEL PRODUCTO SELECCIONADO-->
   <app-create-image [product]="productSelected" (close)="modal.close()"
     (imageUpdated)="upadteImageByProduct($event);modal.close()"></app-create-image>
 </ng-template>
