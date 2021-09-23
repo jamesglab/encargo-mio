@@ -1,0 +1,8 @@
+<app-page-title title="Compras"></app-page-title>
+<app-table-purchases [purchases]="purchases" (editPurchase)="receivePurchase($event , updateCupon, 'lg')">
+</app-table-purchases>
+
+<ng-template #updateCupon role="document" let-modal>
+  <app-modal-edit-purchase [purchaseSelected]="purchaseSelected" (successUpload)="modal.close();getPurchases()">
+  </app-modal-edit-purchase>
+</ng-template>

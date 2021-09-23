@@ -13,6 +13,8 @@ import { NotifyService } from "src/app/_services/notify.service";
 export class ModalRegisterPurchaseComponent implements OnInit {
   @Input() orderSelected;
   @Output() closeModaleOut = new EventEmitter<any>();
+  @Output() refreshTable = new EventEmitter<any>();
+
   public stores = [];
   public isLoading: boolean = false;
   public purchaseForm: FormGroup;
@@ -78,6 +80,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
               res.message,
               "success"
             );
+            this.refreshTable.emit(true);
             this.modalService.dismissAll();
           },
           (err) => {
@@ -98,6 +101,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
     console.log(this.purchaseForm.value.product)
     this.purchaseForm.get('product_price').setValue(this.orderSelected.products.find(item =>  item.id == this.purchaseForm.value.product ).sub_total)
   }
+  
   toInsertDates() {
     return [
       new Date(
@@ -112,6 +116,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       ),
     ];
   }
+
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
     return numberOnly(event);
   }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
@@ -13,6 +13,7 @@ import { NotifyService } from 'src/app/_services/notify.service';
 export class ModalLockerEntryComponent implements OnInit {
 
   @Input() orderSelected;
+  @Output() refreshTable = new EventEmitter<any>();
   public isLoading: boolean;
   public lockers = [];
   public orders_purchase: [] = [];
@@ -107,6 +108,7 @@ export class ModalLockerEntryComponent implements OnInit {
           res.message,
           "success"
         );
+        this.refreshTable.emit(true);
         this.modalService.dismissAll();
       }, err => {
         console.log("ERROR", err);

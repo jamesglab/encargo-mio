@@ -1,0 +1,50 @@
+<div class="table-responsive mb-0">
+
+  <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
+    No hay datos disponibles...
+  </div>
+
+  <table class="table table-centered table-nowrap">
+
+    <thead class="table-light">
+
+      <tr>
+        <th class="align-middle">Fecha</th>
+        <th class="align-middle">Código Orden</th>
+        <th class="align-middle">Detalle del Articulo</th>
+        <th class="align-middle">Numero de Compra</th>
+        <th class="align-middle">Total de la Compra</th>
+        <th class="align-middle">Opciones</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let data of purchases">
+        <td>
+          {{data.purchase_date | date :'YY/d/M'}} </td>
+        <td>
+          <a class="text-body fw-bold">
+            CC{{ data.id.replaceAll('=',"") }}
+          </a>
+        </td>
+        <td>
+          {{ (data.product?.name ? (data.product?.name.length > 50) ? (data.product.name | slice:0:50 ) + '...' :  data.product.name : '' )   }}
+        </td>
+        <td>
+          {{ data.invoice_number}}
+        </td>
+        <td>{{ data.product_price }}</td>
+        <td>
+          <!-- btns options -->
+          <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
+            (click)="selectPurchase(data)">
+            Editar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<!-- end table -->

@@ -239,9 +239,30 @@ export class OrderService {
         catchError(handleError)
       );
   }
+
   updateImageByProduct(payload) {
     return this.http.post<any>(
       `${environment.microservices.management}orders/update-image`, payload).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getOrderPurchase() {
+    return this.http.get<any>(
+      `${environment.microservices.management}order-purchase`, { headers: header }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  updatePurchase(payload){
+    return this.http.put<any>(
+      `${environment.microservices.management}order-purchase`, payload).pipe(
         map((res: any) => {
           return res;
         }),

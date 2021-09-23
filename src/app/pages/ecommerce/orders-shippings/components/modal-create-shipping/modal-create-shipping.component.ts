@@ -68,6 +68,7 @@ export class ModalCreateShippingComponent implements OnInit {
       this.conveyors = res;
     })
   }
+  
   getShippingTypes() {
     this._orderService.getShippingTypes().subscribe(res => {
       this.shipping_types = res;
