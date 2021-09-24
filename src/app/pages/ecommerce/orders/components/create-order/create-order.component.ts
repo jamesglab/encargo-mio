@@ -188,8 +188,8 @@ export class CreateOrderComponent implements OnInit {
   getFormula(i: number) {
     this.isLoadingFormula = true;
     this.quotationService.calculateShipping(this.products.value).subscribe((res: any) => { // Llamamos al método para calcular los valores de envío
+      this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
       if (res[0].name === 'No aplica') {
-        this.totalFormulas = null; // Asignamos al total de las fórmulas el valor nulo
         this.totalValues.total_permanent_shipping_value = null;
         this.products.value.map((product: any, i: number) => {
           this.products.controls[i]['controls'].tax.setValue(0);
@@ -197,10 +197,8 @@ export class CreateOrderComponent implements OnInit {
           this.calculateTotalArticles(); // Calcular el valor de todos los artículos
         });
       } else if (res[0].name === 'Envío Fijo') {
-        this.totalFormulas = null; // Asignamos al total de las fórmulas el valor nulo
         this.totalValues.total_permanent_shipping_value = res[0].value;
       } else {
-        this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
         this.calculateTax(i); // Calculamos el tax
         this.calculateTotalPrices(i); // Calcular el total de precios
         this.calculateTotalArticles(); // Calcular el valor de todos los artículos
@@ -210,7 +208,6 @@ export class CreateOrderComponent implements OnInit {
       this.isLoadingFormula = false;
       throw err;
     });
-
   }
 
   calculateTotalArticles() {
