@@ -1,0 +1,107 @@
+<div class="card" cdkDropListGroup>
+  <div class="card-body">
+    <!-- CONTENEDOR DE LOS PRODUCTOS -->
+    <div class="row px-3">
+      <!-- CONTENTEDOR DE LOS PRODUCTOS DE ENVIO -->
+      <div class="col-sm-4 col-12 ">
+
+        <h5 class="h5 font-weight-bold">Productos Actuales de Envío </h5>
+        <!-- PRODUCTOS CON EL DRAG  -->
+        <div cdkDropList [cdkDropListData]="products" class="example-list mt-4" (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let item of products" cdkDrag>
+            <div class="row">
+              <div class="col-6">
+                <img [src]="item.image" class="img-cont" alt="">
+              </div>
+              <div class="col-6 pt-3">
+                <div>
+                  {{item.name}}
+                </div>
+                <div>
+                  {{item.weight}} /Libras
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-sm-8 col-12">
+        <h5 class="h5 font-weight-bold">Fracmentos de Envío</h5>
+        <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="addFragment()"><i
+            class="mdi mdi-plus mr-1"></i>
+          Crear Fragmento</button>
+        <!-- CREAMOS FROMULARIO PARA ACCEDER AL FORMBUILDER ARRAY  -->
+        <form [formGroup]="form">
+          <!-- ACCEDEMOS DINIAMICAMENTE A LOS FRAGMENTOS -->
+          <div class="list-group-item" formArrayName="fragments"
+            *ngFor="let product of form.get('fragments')['controls']; let i = index;">
+            <!-- LE DAMOS UN POSICIONAMIENTO DEL LINK  -->
+            <div [formGroupName]="i" class="row">
+              <div class="col-2">
+                <div class="form-group">
+                  <!-- PRODUCTOS DRAGEABLES -->
+                  <label>Imágenes de Envío</label>
+                  <div cdkDropList [cdkDropListData]="form.get('fragments')['controls'][i].get('products').value"
+                    class="example-list" (cdkDropListDropped)="drop($event)">
+                    <div class="example-box example-box-fragment"
+                      *ngFor="let item of form.get('fragments')['controls'][i].get('products').value; let i  = index"
+                      cdkDrag>
+                      <div>
+                      </div>
+                      <div class="col-12">
+                        <img [src]="item.image" class="img-cont" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- CAMPOS DEL FRAGMENTO ADICIONALES -->
+              </div>
+              <div class="col-10">
+                <div class="row">
+                  <div class="col-sm-6 col-12">
+                    <div class="form-group">
+                      <label for="guide_number">Número de guia *</label>
+                      <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-12">
+                    <div class="form-group">
+                      <label for="conveyor">Transportadora Internacional *</label>
+                      <select class="form-control" id="conveyor" formControlName="conveyor">
+                        <option [value]="null" disabled>Seleccióna transportadora</option>
+                        <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
+                          {{conveyor.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-sm-3 col-12">
+                    <div class="form-group">
+                      <label for="guide_number">Valor Envío *</label>
+                      <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
+                    </div>
+
+                  </div>
+                  <div class="col-sm-3 col-12">
+                    <div class="form-group">
+                      <label for="weight">Peso en libras</label>
+                      <input type="number" class="form-control" id="weight" formControlName="weight">
+                    </div>
+                  </div>
+                  <div class="col-sm-6 col-12">
+                    <div class="form-group">
+                      <label for="direction">Direccion de Entrega </label>
+                      <input type="number" class="form-control" id="direction" formControlName="direction">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
