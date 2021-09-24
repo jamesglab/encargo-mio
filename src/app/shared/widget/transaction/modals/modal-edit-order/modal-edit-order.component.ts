@@ -42,12 +42,14 @@ export class ModalEditOrderComponent implements OnInit {
   calculateValuesInit() {
     this.orderSelected.products.map((products: any, index: number) => {
       products.tax_manually = false; // Asignamos el valor del tax manual a automático.
-      if (products.tax > 0) {
-        this.calculateTax(index);
-      } // Si el tax es mayor a 0 cuando inicie lo calculamos, si no, no.
+      this.calculateTax(index);
       this.calculateTotalPrices(index);
       this.calculateDiscount(index);
       this.calculateTotalArticles();
+      // if (index == (this.orderSelected.products.length - 1)) {
+      //   console.log("XD",index)
+      // }
+      this.getFormula(index);
     });
     if (this.status === 2) {
       this.disabledAllInputs = true;
@@ -66,13 +68,11 @@ export class ModalEditOrderComponent implements OnInit {
               this.calculateTotalPrices(i); // Calculamos el total de prices
               this.calculateTotalArticles(); // Luego calculamos el total de los articulos
             });
-          } else if (res[0].name === "Envío Fijo") {
-            this.orderSelected.total_permanent_shipping_value = res[0].value;
           } else {
             this.calculateTax(position); // Calculamos el tax
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
-            this.calculateTotalArticles();
+            this.calculateTotalArticles(); // Luego calculamos el total de los articulos
           }
           this.isLoadingFormula = false;
         }, err => {

@@ -73,19 +73,20 @@
 
 <!-- ABRIMOS EL MODAL ENVIANDO LA ORDEN SELECCIONADA -->
 <ng-template #editOrder role="document" let-modal>
-  <app-modal-edit-order [orderSelected]="orderSelected" (refreshTable)="refreshTable.emit(true)" [trm]="trm"
-    [status]="status">
+  <app-modal-edit-order [orderSelected]="orderSelected" (refreshTable)="refreshTable.emit(true)" [status]="status">
   </app-modal-edit-order>
 </ng-template>
 
 <!-- MODAL PARA REGISTRAR COMPRAS #registerPurchase  aprobe order-->
 <ng-template #registerPurchase role="document" let-modal>
-  <app-modal-register-purchase [orderSelected]="orderSelected" (closeModaleOut)="modal.close('Close click')"(refreshTable)="refreshTable.emit(true)">
+  <app-modal-register-purchase [orderSelected]="orderSelected" (closeModaleOut)="modal.close('Close click')"
+    (refreshTable)="refreshTable.emit(true)">
   </app-modal-register-purchase>
 </ng-template>
 
 <!-- MODAL PARA INGRESO A CASILLERO -->
 
 <ng-template #modalLockerEntry role="document" let-modal>
-  <app-modal-locker-entry [orderSelected]="orderSelected" (refreshTable)="refreshTable.emit(true)"></app-modal-locker-entry>
+  <app-modal-locker-entry [orderSelected]="orderSelected" (refreshTable)="refreshTable.emit(true)">
+  </app-modal-locker-entry>
 </ng-template>

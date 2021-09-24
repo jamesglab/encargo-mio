@@ -55,16 +55,6 @@
               </div>
             </ng-container>
 
-            <ng-container *ngIf="orderSelected.total_permanent_shipping_value">
-
-              <div>
-                <strong>Valor del Envio:</strong>
-                {{ (orderSelected.total_permanent_shipping_value ? orderSelected.total_permanent_shipping_value : 0 ) |
-                number : '1.2-2' }}
-                USD
-              </div>
-            </ng-container>
-
           </div>
 
           <div class="loading-calulator" *ngIf="isLoadingFormula">
