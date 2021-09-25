@@ -18,7 +18,7 @@ export class OrderService {
 
   getProductInfo(url: string): Observable<any> {
     return this.http.post<any>(
-      `${environment.microservices.orders}product-url`, { url }, { headers: header }).pipe(
+      `${environment.microservices.scraping}`, { url }, { headers: header }).pipe(
         map((res: any) => {
           return res;
         }),

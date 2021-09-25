@@ -10,7 +10,8 @@ export const environment = {
   microservices: {
     user: "https://dev-api.encargomio.com/api/v1/user/",
     management: "https://dev-api.encargomio.com/api/v1/management/",
-    orders: "https://dev-api.encargomio.com/api/v1/orders/"
+    orders: "https://dev-api.encargomio.com/api/v1/orders/",
+    scraping: 'https://sokcofda3j.execute-api.us-east-1.amazonaws.com/dev/web-scrapping-page'
   },
   firebaseConfig: {
     apiKey: '',
