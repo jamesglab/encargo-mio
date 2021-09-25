@@ -38,7 +38,8 @@ export class TransactionComponent implements OnInit {
 
   openModal(order: any, modal: any, sizeModale: string) {
     this.modalService.open(modal, { size: sizeModale, centered: true });
-    this.orderSelected = order;
+    this.orderSelected = order
+    this.orderSelected.trm = 0;
   }
 
 }

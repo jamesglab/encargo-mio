@@ -14,17 +14,19 @@ import { AppComponent } from './app.component';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
 
+registerLocaleData(localeEs, 'es');
+
 @NgModule({
   declarations: [
     AppComponent,
-    
+
   ],
   imports: [
     BrowserModule,
@@ -39,7 +41,7 @@ export function createTranslateLoader(http: HttpClient): any {
     }),
     LayoutsModule,
     AppRoutingModule,
-    
+
     CarouselModule,
     NgbAccordionModule,
     NgbNavModule,

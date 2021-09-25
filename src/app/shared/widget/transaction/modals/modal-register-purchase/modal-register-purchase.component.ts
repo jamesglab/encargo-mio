@@ -53,7 +53,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       order_service: [{ value: this.orderSelected.id, disabled: true }, Validators.required],
       guide_number: [null],
       product: [{ value: null, disabled: true }, [Validators.required]],
-      payment_type: [null, Validators.required],
+      // payment_type: [null, Validators.required],
       observations: [null],
       store: [{ value: null, disabled: true }, [Validators.required]],
       product_price: [null],
@@ -109,7 +109,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   registerPurchase() {
     this.isLoading = true;
     if (this.purchaseForm.valid) {
-      // CREAMOS LAS FECHAS CON EL METODO TOINSERTDATES
+      // CREAMOS LAS FECHAS CON EL METODO TO INSERT DATES
       const purchase_date = this.toInsertDates()[0];
       const locker_entry_date = this.toInsertDates()[1];
       // ENVIAMOS LOS DATOS AL ENDPOINT
@@ -134,7 +134,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
 
   setProductValue() {
     this.purchaseForm.get('product_price').setValue(
-      this.orderSelected.products.find(item => item.id == this.purchaseForm.value.product).sub_total
+      this.orderSelected.products.find(item => item.id == this.purchaseForm.value.product.id).sub_total
     );
   }
 

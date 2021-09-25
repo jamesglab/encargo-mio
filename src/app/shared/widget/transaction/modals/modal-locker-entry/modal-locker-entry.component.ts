@@ -10,16 +10,17 @@ import { NotifyService } from 'src/app/_services/notify.service';
   templateUrl: './modal-locker-entry.component.html',
   styleUrls: ['./modal-locker-entry.component.scss']
 })
+
 export class ModalLockerEntryComponent implements OnInit {
 
-  @Input() orderSelected;
   @Output() refreshTable = new EventEmitter<any>();
+
   public isLoading: boolean;
   public lockers = [];
   public orders_purchase: [] = [];
   public conveyors: [] = [];
-  lockerForm: FormGroup;
-  files: File[] = [];
+  public lockerForm: FormGroup;
+  public files: File[] = [];
 
   constructor(
     public modalService: NgbModal,
@@ -39,7 +40,7 @@ export class ModalLockerEntryComponent implements OnInit {
   buildForm() {
     this.lockerForm = this.fb.group({
       order_service: [
-        { value: this.orderSelected.id, disabled: true },
+        // { value: this.orderSelected.id, disabled: true },
         Validators.required,
       ],
       order_purchase_object: [null, Validators.required],
@@ -50,8 +51,8 @@ export class ModalLockerEntryComponent implements OnInit {
       conveyor: [null, Validators.required],
       guide_number: [null, Validators.required],
       shipping_value: [
-        this.orderSelected?.shipping_value_client
-          ? this.orderSelected?.shipping_value_client?.value : 0
+        // this.orderSelected?.shipping_value_client
+        //   ? this.orderSelected?.shipping_value_client?.value : 0
       ],
       admin_value: [null, Validators.required],
       product_observations: [null],
@@ -60,17 +61,17 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   getLockerByUser() {
-    this._orderService.getLockerByUser({ user: this.orderSelected.user.id }).subscribe((res: any) => {
-      // ASIGNAMOS EL LOCKER DEL USUARIO... PUEDEN EXISTIR MAS LOCKERS
-      this.lockers.push(res);
-    })
+    // this._orderService.getLockerByUser({ user: this.orderSelected.user.id }).subscribe((res: any) => {
+    //   // ASIGNAMOS EL LOCKER DEL USUARIO... PUEDEN EXISTIR MAS LOCKERS
+    //   this.lockers.push(res);
+    // })
   }
 
   getPurchaseByOrder() {
-    this._orderService.getPurchaseByOrder({ order_service: this.orderSelected.id }).subscribe(res => {
-      // ADINGNAMOS LAS ORDENES QUE TIENEN LOS PRODUCTOS
-      this.orders_purchase = res;
-    });
+    // this._orderService.getPurchaseByOrder({ order_service: this.orderSelected.id }).subscribe(res => {
+    //   // ADINGNAMOS LAS ORDENES QUE TIENEN LOS PRODUCTOS
+    //   this.orders_purchase = res;
+    // });
   }
   // AGREGAMOS LAS TRANSPORTADORAS
   getConvenyor() {
@@ -78,18 +79,22 @@ export class ModalLockerEntryComponent implements OnInit {
       this.conveyors = res;
     })
   }
+
   // CERRAMOS EL MODAL
   closeModale() {
     this.modalService.dismissAll();
   }
+
   // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
   onSelect(event) {
     this.files.push(...event.addedFiles);
   }
+
   // ELIMINAMOS LA IMAGEN
   onRemove(event) {
     this.files.splice(this.files.indexOf(event), 1);
   }
+
   // AGREGAMOS AL LOCKER
   addLocker() {
     // VALIDAMOS QUE EXISTAN IMAGENES Y ADICIONAL QUE EXISTAN LOS CAMPOS OBLIGATORIOS

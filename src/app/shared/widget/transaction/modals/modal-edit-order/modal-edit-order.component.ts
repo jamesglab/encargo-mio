@@ -13,7 +13,6 @@ import { NotifyService } from "src/app/_services/notify.service";
 export class ModalEditOrderComponent implements OnInit {
 
   @Input() public orderSelected: any;
-  @Input() public trm: any;
   @Input() public status: any;
   @Output() public refreshTable = new EventEmitter<any>();
 
@@ -23,10 +22,11 @@ export class ModalEditOrderComponent implements OnInit {
   public isLoadingFormula: boolean = false;
   public disabledInputs: boolean = false;
   public disabledAllInputs: boolean = false;
+  public isLoadingQuery: boolean = false;
   public productSelected: any;
 
   constructor(
-    private _orderService: OrderService,
+    private _orders: OrderService,
     public _notify: NotifyService,
     public modalService: NgbModal
   ) { }
@@ -40,17 +40,26 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   calculateValuesInit() {
-    this.orderSelected.products.map((products: any, index: number) => {
-      products.tax_manually = false; // Asignamos el valor del tax manual a automático.
-      this.calculateTax(index);
-      this.calculateTotalPrices(index);
-      this.calculateDiscount(index);
-      this.calculateTotalArticles();
-      // if (index == (this.orderSelected.products.length - 1)) {
-      //   console.log("XD",index)
-      // }
-      this.getFormula(index);
-    });
+    this.isLoadingQuery = true;
+    this._orders.detailOrder({ id: this.orderSelected.id })
+      .subscribe((res: any) => {
+        if (res) {
+          this.orderSelected.trm = res.trm;
+          this.orderSelected.products = res.products;
+          this.orderSelected.products.map((products: any, index: number) => {
+            products.tax_manually = false; // Asignamos el valor del tax manual a automático.
+            this.calculateTax(index);
+            this.calculateTotalPrices(index);
+            this.calculateDiscount(index);
+            this.calculateTotalArticles();
+            this.getFormula(index);
+          });
+        }
+        this.isLoadingQuery = false;
+      }, err => {
+        this.isLoadingQuery = false;
+        throw err;
+      });
     if (this.status === 2) {
       this.disabledAllInputs = true;
     }
@@ -59,7 +68,7 @@ export class ModalEditOrderComponent implements OnInit {
   getFormula(position?: number) {
     if (this.status == 0 || this.status == 1) {
       this.isLoadingFormula = true;
-      this._orderService.calculateShipping(this.orderSelected.products)
+      this._orders.calculateShipping(this.orderSelected.products)
         .subscribe((res: any) => {
           this.orderSelected.shipping_value_admin = res;
           if (res[0].name === "No aplica") {
@@ -117,7 +126,7 @@ export class ModalEditOrderComponent implements OnInit {
     var sub_total: number = 0;
     var total_weight: number = 0;
     this.orderSelected.products.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; });
-    this.orderSelected.total_value = sub_total;
+    this.orderSelected.sub_total = sub_total;
     this.orderSelected.total_weight = total_weight;
   }
 
@@ -142,9 +151,18 @@ export class ModalEditOrderComponent implements OnInit {
     return numberOnly(event);
   }
 
+  upadteImageByProduct(image) {
+    this.productSelected.image = image;
+  }
+
+  openModal(product: any, modal: any, sizeModale: string) {
+    this.productSelected = product;
+    this.modalService.open(modal, { size: sizeModale, centered: true });
+  }
+
   sendQuotation() {
     this.isLoading = true;
-    this._orderService.updateOrder(this.orderSelected)
+    this._orders.updateOrder(this.orderSelected)
       .subscribe(res => {
         this._notify.show("Cotización Actualizada", `Actualizaste la cotización # ${this.orderSelected.id}`, "success");
         this.isLoading = false;
@@ -155,15 +173,6 @@ export class ModalEditOrderComponent implements OnInit {
         this._notify.show("Error", "Hemos tenido un error al intentar actualizar la orden.", "warning");
         throw err;
       });
-  }
-
-  upadteImageByProduct(image) {
-    this.productSelected.image = image;
-  }
-
-  openModal(product: any, modal: any, sizeModale: string) {
-    this.productSelected = product;
-    this.modalService.open(modal, { size: sizeModale, centered: true });
   }
 
 }
