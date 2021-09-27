@@ -133,20 +133,19 @@
           </div>
 
           <div class="mt-2 h5 d-flex">
-            <div class="mx-2" *ngIf="item.quantity > 1">
-              <a (click)=" item.quantity = item.quantity - 1 ">
+            <div class="mx-2" *ngIf="item.quantity > 1 && status == 0 || status == 1" >
+              <a (click)=" item.quantity = item.quantity - 1 ; getFormula(i)">
                 <i class="fas fa-minus"></i>
               </a>
             </div>
             <div class="item-quantity">
               Cantidad: {{ item.quantity }}
             </div>
-            <div class="mx-2">
-              <a (click)="item.quantity = item.quantity +  1 ">
+            <div class="mx-2" *ngIf="status == 0 || status == 1">
+              <a (click)="item.quantity = item.quantity + 1; getFormula(i)">
                 <i class="fas fa-plus"></i>
               </a>
             </div>
-
           </div>
 
         </div>

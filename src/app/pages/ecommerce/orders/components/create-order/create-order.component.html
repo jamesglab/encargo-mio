@@ -179,8 +179,22 @@
                   formControlName="description" placeholder="Observaciones del cliente"></textarea>
               </div>
 
-              <div class="mt-2 h5">
-                Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
+              <div class="mt-2 h5 d-flex">
+                <div class="mx-2" *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value > 1">
+                  <a (click)="createProductForm.get('products')['controls'][i].controls.quantity.value = 
+                  createProductForm.get('products')['controls'][i].controls.quantity.value - 1 ; getFormula(i)">
+                    <i class="fas fa-minus"></i>
+                  </a>
+                </div>
+                <div class="item-quantity">
+                  Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
+                </div>
+                <div class="mx-2">
+                  <a (click)="createProductForm.get('products')['controls'][i].controls.quantity.value = 
+                  createProductForm.get('products')['controls'][i].controls.quantity.value + 1; getFormula(i)">
+                    <i class="fas fa-plus"></i>
+                  </a>
+                </div>
               </div>
 
             </div>
