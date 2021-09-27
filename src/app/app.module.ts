@@ -25,8 +25,7 @@ registerLocaleData(localeEs, 'es');
 
 @NgModule({
   declarations: [
-    AppComponent,
-
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +40,6 @@ registerLocaleData(localeEs, 'es');
     }),
     LayoutsModule,
     AppRoutingModule,
-
     CarouselModule,
     NgbAccordionModule,
     NgbNavModule,
@@ -49,7 +47,6 @@ registerLocaleData(localeEs, 'es');
     NgbModule
   ],
   bootstrap: [AppComponent],
-  providers: [
-  ],
+  providers: [],
 })
 export class AppModule { }

@@ -32,6 +32,9 @@ import { ModalUpdateShippingComponent } from './orders-shippings/components/moda
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ModalLockerEntryComponent } from 'src/app/shared/widget/transaction/modals/modal-locker-entry/modal-locker-entry.component';
 import { NgxDropzoneModule } from 'ngx-dropzone';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 const config: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -65,7 +68,14 @@ const config: DropzoneConfigInterface = {
     MatPaginatorModule,
     NgbDatepickerModule,
     NgxDropzoneModule,
+    MatSelectModule,
+    MatInputModule,
+    MatAutocompleteModule,
     SharedModule
+  ],
+  exports: [
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   providers: [
     {

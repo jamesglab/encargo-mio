@@ -10,6 +10,7 @@ import { ModalEditOrderComponent } from './transaction/modals/modal-edit-order/m
 import { ModalRegisterPurchaseComponent } from './transaction/modals/modal-register-purchase/modal-register-purchase.component';
 import { CreateImageComponent } from './transaction/modals/create-image/create-image.component';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [StatComponent, TransactionComponent,
@@ -21,7 +22,7 @@ import { NgxImageCompressService } from 'ngx-image-compress';
     NgbDatepickerModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxDropzoneModule
+    NgxDropzoneModule,
   ],
   exports: [StatComponent, TransactionComponent],
   providers: [NgxImageCompressService]

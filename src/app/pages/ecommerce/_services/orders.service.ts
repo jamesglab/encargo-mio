@@ -275,4 +275,16 @@ export class OrderService {
     )
   }
 
+  getDataByGuide(data: any): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}locker/guide-number`,
+      { headers: header, params: { guide_number: data }}
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
 }
