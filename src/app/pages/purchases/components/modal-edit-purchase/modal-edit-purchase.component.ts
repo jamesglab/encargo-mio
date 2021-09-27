@@ -69,6 +69,7 @@ export class ModalEditPurchaseComponent implements OnInit {
   }
 
   closeModale() {
+    this.modalService.dismissAll();
 
   }
 
