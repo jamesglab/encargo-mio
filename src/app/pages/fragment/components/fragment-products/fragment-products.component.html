@@ -3,7 +3,7 @@
     <!-- CONTENEDOR DE LOS PRODUCTOS -->
     <div class="row px-3">
       <!-- CONTENTEDOR DE LOS PRODUCTOS DE ENVIO -->
-      <div class="col-sm-4 col-12 ">
+      <div class="col-sm-3 col-12 ">
 
         <h5 class="h5 font-weight-bold">Productos Actuales de Envío </h5>
         <!-- PRODUCTOS CON EL DRAG  -->
@@ -27,29 +27,48 @@
 
       </div>
 
-      <div class="col-sm-8 col-12">
+      <div class="col-sm-9 col-12">
         <h5 class="h5 font-weight-bold">Fracmentos de Envío</h5>
-        <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="addFragment()"><i
-            class="mdi mdi-plus mr-1"></i>
-          Crear Fragmento</button>
+
+
+        <div class="row">
+          <div class="col-12" style="text-align: end;">
+            <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="addFragment()"><i
+                class="mdi mdi-plus mr-1"></i>
+              Crear Fragmento</button>
+            <button type="button" class="btn btn-success btn-rounded mb-2 me-2" >
+              <i class="fas fa-save mr-1"></i> 
+              Guardar </button>
+          </div>
+        </div>
+
+
         <!-- CREAMOS FROMULARIO PARA ACCEDER AL FORMBUILDER ARRAY  -->
-        <form [formGroup]="form">
+        <form [formGroup]="form" class="mt-2">
           <!-- ACCEDEMOS DINIAMICAMENTE A LOS FRAGMENTOS -->
-          <div class="list-group-item" formArrayName="fragments"
+          <div class="list-group-item p-3" formArrayName="fragments"
             *ngFor="let product of form.get('fragments')['controls']; let i = index;">
             <!-- LE DAMOS UN POSICIONAMIENTO DEL LINK  -->
-            <div [formGroupName]="i" class="row">
-              <div class="col-2">
+            <div class="cont-close">
+              <a  (click)="removeFragment(i)">
+                <i class="fas fa-trash"></i>
+              </a>
+            </div>
+
+            <div [formGroupName]="i" class="row mt-2" >
+              <div class="col-sm-2 col-12">
                 <div class="form-group">
                   <!-- PRODUCTOS DRAGEABLES -->
                   <label>Imágenes de Envío</label>
                   <div cdkDropList [cdkDropListData]="form.get('fragments')['controls'][i].get('products').value"
                     class="example-list" (cdkDropListDropped)="drop($event)">
+                    <div *ngIf="form.get('fragments')['controls'][i].get('products').value.length == 0"
+                      class="add-product">
+                      Arrasta Productos
+                    </div>
                     <div class="example-box example-box-fragment"
                       *ngFor="let item of form.get('fragments')['controls'][i].get('products').value; let i  = index"
                       cdkDrag>
-                      <div>
-                      </div>
                       <div class="col-12">
                         <img [src]="item.image" class="img-cont" alt="">
                       </div>
@@ -58,7 +77,7 @@
                 </div>
                 <!-- CAMPOS DEL FRAGMENTO ADICIONALES -->
               </div>
-              <div class="col-10">
+              <div class="col-sm-10 col-12">
                 <div class="row">
                   <div class="col-sm-6 col-12">
                     <div class="form-group">
@@ -68,7 +87,7 @@
                   </div>
                   <div class="col-sm-6 col-12">
                     <div class="form-group">
-                      <label for="conveyor">Transportadora Internacional *</label>
+                      <label for="conveyor">Transportadora Internacional</label>
                       <select class="form-control" id="conveyor" formControlName="conveyor">
                         <option [value]="null" disabled>Seleccióna transportadora</option>
                         <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
@@ -93,8 +112,12 @@
                   </div>
                   <div class="col-sm-6 col-12">
                     <div class="form-group">
-                      <label for="direction">Direccion de Entrega </label>
-                      <input type="number" class="form-control" id="direction" formControlName="direction">
+                      <label for="address"> Direccion</label>
+                      <select class="form-control" id="address" formControlName="address">
+                        <option [value]="null" disabled>Seleccióna Direccion</option>
+                        <option *ngFor="let address of addresses" [ngValue]="address.id">
+                          {{address.name}}</option>
+                      </select>
                     </div>
                   </div>
                 </div>
