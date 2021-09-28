@@ -14,8 +14,9 @@
         <div class="form-group">
 
           <label for="guia">Número Guia Origen</label>
-          <input matInput type="text" class="form-control" placeholder="Busca el número de guía"
-            formControlName="guide_number" [matAutocomplete]="auto" (input)="autoCompleteGuide($event.target.value);">
+          <input matInput type="text" id="guia" class="form-control" placeholder="Busca el número de guía"
+            formControlName="guide_number" [matAutocomplete]="auto" (input)="autoCompleteGuide($event.target.value);"
+            title="{{ lockerForm.controls.guide_number.value ? lockerForm.controls.guide_number.value : '' }}">
 
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let guide of allGuides" [value]="guide">
@@ -33,8 +34,16 @@
 
           <label for="orders">Orden</label>
 
-          <input class="form-control" id="orders" formControlName="guide_order"
-            title="{{ lockerForm.controls.guide_order.value ? lockerForm.controls.guide_order.value : '' }}" readonly>
+          <input matInput type="text" id="orders" class="form-control" placeholder="Busca la orden..."
+            formControlName="guide_order" [matAutocomplete]="auto_order"
+            (input)="autoCompleteGuide($event.target.value);"
+            title="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : '' }}">
+
+          <mat-autocomplete #auto_order="matAutocomplete">
+            <mat-option *ngFor="let order of allOrders" [value]="order">
+              {{ order.id ? order.id : '' }} | {{ order.product.name ? order.product.name : '' }}
+            </mat-option>
+          </mat-autocomplete>
 
         </div>
 
@@ -69,8 +78,19 @@
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
+
           <label for="lockers">Casillero</label>
-          <input class="form-control" id="lockers" formControlName="locker_info" readonly>
+
+          <input matInput class="form-control" id="lockers" formControlName="locker_info"
+            (input)="autoCompleteLocker($event.target.value);" [matAutocomplete]="auto_locker"
+            placeholder="Búsqueda de casillero...">
+
+          <mat-autocomplete #auto_locker="matAutocomplete">
+            <mat-option *ngFor="let locker of allLockers" [value]="locker">
+              CA{{ locker.locker ? locker.locker.id : 0 }} | {{ locker.name }} {{ locker.last_name }}
+            </mat-option>
+          </mat-autocomplete>
+
         </div>
 
       </div>

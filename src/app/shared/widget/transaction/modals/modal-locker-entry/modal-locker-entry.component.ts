@@ -24,6 +24,8 @@ export class ModalLockerEntryComponent implements OnInit {
   public lockerForm: FormGroup;
   public files: File[] = [];
   public allGuides: any[] = [];
+  public allLockers: any[] = [];
+  public allOrders: any[] = [];
 
   constructor(
     public modalService: NgbModal,
@@ -39,6 +41,7 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   buildForm() {
+
     this.lockerForm = this.fb.group({
       guide_number: [null, [Validators.required]],
       guide_order: [null],
@@ -53,8 +56,12 @@ export class ModalLockerEntryComponent implements OnInit {
       declared_value_admin: [0, [Validators.required]],
       conveyor: [null, [Validators.required]],
       force_commercial_shipping: [false],
-      product_observations: [null]
+      product_observations: [null],
+      user: [null]
     });
+
+    this.lockerForm.controls.guide_order.disable();
+
     this.lockerForm.controls.guide_number.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
@@ -64,9 +71,33 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.locker_info.setValue(`CA${(guide.locker.id ? guide.locker.id : 0)} | ${guide.user.name} ${guide.user.last_name}`);
         this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
-        this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : 0));
+        this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
+        this.lockerForm.controls.user.setValue((guide.user.id ? guide.user.id : null))
       }
     });
+
+    this.lockerForm.controls.locker_info.valueChanges.subscribe((data: any) => {
+      if (data && data.id) {
+        this.cleanData();
+        this.lockerForm.controls.locker_info.setValue((`CA${data.locker.id} | ${data.name} ${data.last_name}`));
+        this.lockerForm.controls.locker.setValue(data.locker.id);
+        this.lockerForm.controls.user.setValue(data.id);
+        this.autoCompleteUsers(data.id);
+      }
+    });
+
+    this.lockerForm.controls.guide_order.valueChanges.subscribe((guide: any) => {
+      if (guide && guide.id) {
+        this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
+        this.lockerForm.controls.guide_number.setValue(guide.guide_number);
+        this.lockerForm.controls.order_purchase.setValue(guide.id);
+        this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
+        this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
+        this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
+        this.lockerForm.controls.user.setValue((guide.order_service.user.id ? guide.order_service.user.id : null));
+      }
+    });
+
   }
 
   getConvenyors() { // AGREGAMOS LAS TRANSPORTADORAS
@@ -84,18 +115,6 @@ export class ModalLockerEntryComponent implements OnInit {
   onRemove(event) { // ELIMINAMOS LA IMAGEN
     this.files.splice(this.files.indexOf(event), 1);
   }
-
-  // getLockerByUser() {
-  //   this._orderService.getLockerByUser({ user: this.orderSelected.user.id }).subscribe((res: any) => { // ASIGNAMOS EL LOCKER DEL USUARIO... PUEDEN EXISTIR MAS LOCKERS
-  //     this.lockers.push(res);
-  //   })
-  // }
-
-  // getPurchaseByOrder() {
-  //   this._orderService.getPurchaseByOrder({ order_service: this.orderSelected.id }).subscribe(res => { // ADINGNAMOS LAS ORDENES QUE TIENEN LOS PRODUCTOS
-  //     this.orders_purchase = res;
-  //   });
-  // }
 
   createReceiptDate(date) { //Formato de fechas recibidas
     return new Date(date.year, date.month, date.day);
@@ -123,6 +142,52 @@ export class ModalLockerEntryComponent implements OnInit {
     }
   }
 
+  autoCompleteLocker(params: any) {
+    if (params.length >= 2) {
+      this.getQueries = true;
+      this.lockerForm.controls.locker_info.disable();
+      this.lockerForm.controls.guide_order.disable();
+      this._orderService.getUsersByName(params)
+        .subscribe((res: any) => {
+          this.allLockers = res;
+          this.lockerForm.controls.locker_info.enable();
+          this.lockerForm.controls.guide_order.enable();
+          this.getQueries = false;
+        }, err => {
+          this.lockerForm.controls.locker_info.disable();
+          this.lockerForm.controls.guide_order.disable();
+          this.getQueries = false;
+          throw err;
+        });
+    }
+  }
+
+  autoCompleteUsers(params: any) {
+    this.getQueries = true;
+    this.lockerForm.controls.guide_order.disable();
+    this._orderService.getLockersByUser(params)
+      .subscribe((res: any) => {
+        if (res.length > 0) {
+          this.allOrders = res;
+        } else {
+          this._notify.show('', 'No hay ordenes asociadas al casillero.', 'info');
+        }
+        this.lockerForm.controls.guide_order.enable();
+        this.getQueries = false;
+      }, err => {
+        this.lockerForm.controls.guide_order.disable();
+        this.getQueries = false;
+        throw err;
+      });
+  }
+
+  cleanData() {
+    this.allOrders = [];
+    this.allGuides = [];
+    this.lockerForm.controls.guide_number.setValue(null);
+    this.lockerForm.controls.guide_order.setValue(null);
+  }
+
   closeModal(): void { // Función para cerrar el modal
     this.modalService.dismissAll();
   }
@@ -146,13 +211,12 @@ export class ModalLockerEntryComponent implements OnInit {
     this.isLoading = true;
     this._orderService.insertProductLocker(formData)  // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 
       .subscribe((res: any) => {
-        console.log(res);
         this._notify.show(`Producto #${this.lockerForm.getRawValue().order_purchase.replace(/=/g, "")} Agregado`, res.message, "success");
         this.refreshTable.emit(true);
         this.modalService.dismissAll();
         this.isLoading = false;
       }, err => {
-        this._notify.show("Error", err.error ? err.error.message : "Ocurrió un error al intentar registrar el producto.", "warning");
+        this._notify.show('', err.error ? err.error.message : "Ocurrió un error al intentar registrar el producto.", "info");
         this.isLoading = false;
         throw err;
       });

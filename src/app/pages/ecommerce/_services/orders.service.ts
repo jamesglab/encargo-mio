@@ -278,7 +278,31 @@ export class OrderService {
   getDataByGuide(data: any): Observable<any> {
     return this.http.get<any>(
       `${environment.microservices.management}locker/guide-number`,
-      { headers: header, params: { guide_number: data }}
+      { headers: header, params: { guide_number: data } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  getUsersByName(data: any): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}users/by-name`,
+      { headers: header, params: { name: data } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  getLockersByUser(data: any): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}locker/user-locker`,
+      { headers: header, params: { user: data } }
     ).pipe(
       map((res: any) => {
         return res;
