@@ -2,6 +2,10 @@
 
 .img-cont {
   max-width: 7rem;
+  max-height: 81px;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
 }
 
 // ESTILOS DEL DRAG AND DROP
@@ -22,6 +26,22 @@
   display: block;
 }
 
+.cont-close {
+  position: absolute;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 10;
+  right: 13px;
+  top: 5px;
+}
+
+.add-product {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #b5b5b5;
+  padding-top: 19px;
+}
 .example-box {
   border-bottom: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);

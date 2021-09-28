@@ -16,7 +16,7 @@
             <p class="font-weight-bold">Nombre (Quien Recibe)</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>Leonor casallas</p>
+            <p>{{shipping?.user?.name}}</p>
           </div>
         </div>
         <div class="row mt-2">
@@ -24,7 +24,7 @@
             <p class="font-weight-bold">Dirección</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>asdsadasd</p>
+            <p>{{shipping?.address?.address ?(shipping?.address?.address + shipping?.address?.description) : ''}}</p>
           </div>
         </div>
         <div class="row mt-2">
@@ -32,7 +32,7 @@
             <p class="font-weight-bold">Localidad</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>Colombia</p>
+            <p>{{shipping?.locality?.name}}</p>
           </div>
         </div>
         <div class="row mt-2">
@@ -40,7 +40,7 @@
             <p class="font-weight-bold">Teléfono/Celular</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>3175720090</p>
+            <p>{{shipping?.user?.phone}}</p>
           </div>
         </div>
       </div>
@@ -57,7 +57,7 @@
             <p class="font-weight-bold">Codigo</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>Envío # 5462</p>
+            <p>Envío # {{shipping?.id}}</p>
           </div>
         </div>
 
@@ -66,7 +66,7 @@
             <p class="font-weight-bold">Valor Envío</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>USD $22,50</p>
+            <p>USD {{shipping?.total_value}}</p>
           </div>
         </div>
 
@@ -75,16 +75,17 @@
             <p class="font-weight-bold">Tipo de Envío</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>Envío Bajo Costo</p>
+            <p>{{shipping?.shipping_type}}</p>
           </div>
         </div>
-        
+
         <div class="row">
           <div class="col-sm-6 col-6">
             <p class="font-weight-bold">Estado</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>Activo</p>
+            <p>{{validateShippingstatus(shipping?.status)}}</p>
+            <!-- pendi -->
           </div>
         </div>
       </div>

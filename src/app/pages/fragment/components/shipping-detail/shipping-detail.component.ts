@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { validateShippingstatus } from 'src/app/_helpers/tools/utils.tool';
 
 @Component({
   selector: 'app-shipping-detail',
@@ -6,10 +7,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./shipping-detail.component.scss']
 })
 export class ShippingDetailComponent implements OnInit {
-
+  @Input() shipping;
   constructor() { }
 
   ngOnInit(): void {
+    
   }
 
+  validateShippingstatus(status){
+    return validateShippingstatus(status)
+  }
 }

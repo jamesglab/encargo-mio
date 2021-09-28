@@ -31,7 +31,7 @@
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 0 }" (click)="status = 0;  getTransactions()">
-                En Espera
+                Por Preparar {{this.counts}}
               </a>
             </li>
 
