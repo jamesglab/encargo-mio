@@ -4,47 +4,6 @@
       <!-- creamos las columnas -->
 
       <div class="col-sm-6 col-12">
-        <!-- CONTENEDOR DE DIRECCION DE DE ENVIO -->
-        <div class="row">
-          <div class="col-sm-12 col-6">
-            <h5 class="h5 font-weight-bold">Dirección de Envío </h5>
-          </div>
-        </div>
-
-        <div class="row mt-2">
-          <div class="col-sm-6 col-6">
-            <p class="font-weight-bold">Nombre (Quien Recibe)</p>
-          </div>
-          <div class="col-sm-6 col-6">
-            <p>{{shipping?.user?.name}}</p>
-          </div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-sm-6 col-6">
-            <p class="font-weight-bold">Dirección</p>
-          </div>
-          <div class="col-sm-6 col-6">
-            <p>{{shipping?.address?.address ?(shipping?.address?.address + shipping?.address?.description) : ''}}</p>
-          </div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-sm-6 col-6">
-            <p class="font-weight-bold">Localidad</p>
-          </div>
-          <div class="col-sm-6 col-6">
-            <p>{{shipping?.locality?.name}}</p>
-          </div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-sm-6 col-6">
-            <p class="font-weight-bold">Teléfono/Celular</p>
-          </div>
-          <div class="col-sm-6 col-6">
-            <p>{{shipping?.user?.phone}}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-12">
         <!-- CONTENEDOR DE INFORMACION DE ENVIO -->
         <div class="row">
           <div class="col-sm-12 col-12">
@@ -86,6 +45,48 @@
           <div class="col-sm-6 col-6">
             <p>{{validateShippingstatus(shipping?.status)}}</p>
             <!-- pendi -->
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-12">
+        <!-- CONTENEDOR DE DIRECCION DE DE ENVIO -->
+        <div class="row">
+          <div class="col-sm-12 col-6">
+            <h5 class="h5 font-weight-bold">Dirección de Envío </h5>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-sm-6 col-6">
+            <p class="font-weight-bold">Nombre (Quien Recibe)</p>
+          </div>
+          <div class="col-sm-6 col-6">
+            <p>{{shipping?.user?.name}}</p>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-6 col-6">
+            <p class="font-weight-bold">Dirección</p>
+          </div>
+          <div class="col-sm-6 col-6">
+            <p>{{shipping?.address?.address ?(shipping?.address?.address + shipping?.address?.description) : ''}}</p>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-6 col-6">
+            <p class="font-weight-bold">Localidad</p>
+          </div>
+          <div class="col-sm-6 col-6">
+            <p>{{shipping?.locality?.name}}</p>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-sm-6 col-6">
+            <p class="font-weight-bold">Teléfono/Celular</p>
+          </div>
+          <div class="col-sm-6 col-6">
+            <p>{{shipping?.user?.phone}}</p>
           </div>
         </div>
       </div>

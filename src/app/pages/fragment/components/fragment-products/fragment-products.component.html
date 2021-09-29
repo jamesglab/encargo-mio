@@ -9,11 +9,14 @@
         <!-- PRODUCTOS CON EL DRAG  -->
         <div cdkDropList [cdkDropListData]="products" class="example-list mt-4" (cdkDropListDropped)="drop($event)">
           <div class="example-box" *ngFor="let item of products" cdkDrag>
+
             <div class="row">
-              <div class="col-6">
-                <img [src]="item.image" class="img-cont" alt="">
+
+              <div class="col-4">
+                <img [src]="item.image" class="img-cont" title="{{item.name}}">
               </div>
-              <div class="col-6 pt-3">
+
+              <div class="col-8 pt-3">
                 <div>
                   {{item.name}}
                 </div>
@@ -22,13 +25,14 @@
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
       </div>
 
       <div class="col-sm-9 col-12">
-        <h5 class="h5 font-weight-bold">Fracmentos de Envío</h5>
+        <h5 class="h5 font-weight-bold">Fragmentos de Envío ({{fragmentsArray.length}})</h5>
 
 
         <div class="row">
@@ -36,8 +40,9 @@
             <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="addFragment()"><i
                 class="mdi mdi-plus mr-1"></i>
               Crear Fragmento</button>
-            <button type="button" class="btn btn-success btn-rounded mb-2 me-2" >
-              <i class="fas fa-save mr-1"></i> 
+            <button *ngIf="form.get('fragments').value.length > 0" type="button" 
+              class="btn btn-success btn-rounded mb-2 me-2" (click)="onSubmit();" [disabled]="isLoading">
+              <i class="fas fa-save mr-1"></i>
               Guardar </button>
           </div>
         </div>
@@ -50,34 +55,45 @@
             *ngFor="let product of form.get('fragments')['controls']; let i = index;">
             <!-- LE DAMOS UN POSICIONAMIENTO DEL LINK  -->
             <div class="cont-close">
-              <a  (click)="removeFragment(i)">
+              <a (click)="removeFragment(i)">
                 <i class="fas fa-trash"></i>
               </a>
             </div>
 
-            <div [formGroupName]="i" class="row mt-2" >
-              <div class="col-sm-2 col-12">
+            <div [formGroupName]="i" class="row mt-2">
+
+              <div class="col-xl-12 col-sm-12">
+               <label>Envio # {{shipping.id}}-{{i + 1}}</label>
+              </div>
+
+              <div class="col-sm-3 col-12">
                 <div class="form-group">
                   <!-- PRODUCTOS DRAGEABLES -->
-                  <label>Imágenes de Envío</label>
+                  <label>Productos de Envío</label>
+
                   <div cdkDropList [cdkDropListData]="form.get('fragments')['controls'][i].get('products').value"
                     class="example-list" (cdkDropListDropped)="drop($event)">
                     <div *ngIf="form.get('fragments')['controls'][i].get('products').value.length == 0"
                       class="add-product">
-                      Arrasta Productos
+                      <p class="p-4">Arrastra aquí los productos pertenecientes al fragmento</p>
                     </div>
                     <div class="example-box example-box-fragment"
                       *ngFor="let item of form.get('fragments')['controls'][i].get('products').value; let i  = index"
                       cdkDrag>
-                      <div class="col-12">
-                        <img [src]="item.image" class="img-cont" alt="">
+
+                      <div style="text-align: center; align-items: center; width: 100%;">
+                        <img [src]="item.image" class="img-fragment" alt="">
                       </div>
+
                     </div>
                   </div>
+
                 </div>
-                <!-- CAMPOS DEL FRAGMENTO ADICIONALES -->
+
               </div>
-              <div class="col-sm-10 col-12">
+              <!-- CAMPOS DEL FRAGMENTO ADICIONALES -->
+              <div class="col-sm-9 col-12">
+
                 <div class="row">
                   <div class="col-sm-6 col-12">
                     <div class="form-group">
@@ -85,6 +101,7 @@
                       <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
                     </div>
                   </div>
+
                   <div class="col-sm-6 col-12">
                     <div class="form-group">
                       <label for="conveyor">Transportadora Internacional</label>
@@ -95,22 +112,30 @@
                       </select>
                     </div>
                   </div>
+
                 </div>
+
                 <div class="row mt-2">
                   <div class="col-sm-3 col-12">
                     <div class="form-group">
-                      <label for="guide_number">Valor Envío *</label>
-                      <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
+                      <label for="shipping_value">Valor Envío *</label>
+                      <input type="text" class="form-control" id="shipping_value" formControlName="shipping_value" readonly>
+                      <span *ngIf="submit && obtainForm(i).get('shipping_value').errors" class="text-danger small">El valor ingresado no es correcto</span>
                     </div>
 
                   </div>
+
                   <div class="col-sm-3 col-12">
                     <div class="form-group">
                       <label for="weight">Peso en libras</label>
-                      <input type="number" class="form-control" id="weight" formControlName="weight">
+                      <input type="number" class="form-control" id="weight" formControlName="weight"
+                        (blur)="setShippingValue()">
+                      <span *ngIf="submit && obtainForm(i).get('weight').errors" class="text-danger small">Verifica el peso ingresado</span>
                     </div>
                   </div>
+
                   <div class="col-sm-6 col-12">
+
                     <div class="form-group">
                       <label for="address"> Direccion</label>
                       <select class="form-control" id="address" formControlName="address">
@@ -118,13 +143,20 @@
                         <option *ngFor="let address of addresses" [ngValue]="address.id">
                           {{address.name}}</option>
                       </select>
+                      <span *ngIf="submit && obtainForm(i).get('address').errors" class="text-danger small">
+                        Es necesario que selecciones una dirección.
+                      </span>
                     </div>
+
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
+
         </form>
+
       </div>
     </div>
   </div>

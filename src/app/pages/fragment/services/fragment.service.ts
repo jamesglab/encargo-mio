@@ -47,4 +47,15 @@ export class FragmentService {
         catchError(handleError)
       );
   }
+
+  insert(payload) {
+    return this.http.post<any>(
+      `${environment.microservices.management}shipping-order/fragment`, payload, { headers: header }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
 }

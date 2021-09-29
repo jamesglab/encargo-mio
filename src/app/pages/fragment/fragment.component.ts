@@ -16,7 +16,6 @@ export class FragmentComponent implements OnInit {
   constructor(private _fragmentService: FragmentService, private router: ActivatedRoute) { }
 
   ngOnInit(): void {
-
     this.getConveyors();
     this.getShippingById();
   }
