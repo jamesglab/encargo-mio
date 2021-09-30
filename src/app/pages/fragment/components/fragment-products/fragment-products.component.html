@@ -139,13 +139,8 @@
                     <div class="form-group">
                       <label for="address"> Direccion</label>
                       <select class="form-control" id="address" formControlName="address">
-<<<<<<< HEAD
-                        <option [value]="null" disabled>Selecciona Direccion</option>
-                        <option *ngFor="let address of addresses" [ngValue]="address.id">
-=======
                         <option [value]="null" disabled>Seleccióna Direccion</option>
                         <option *ngFor="let address of addresses" [ngValue]="address">
->>>>>>> cris
                           {{address.name}}</option>
                       </select>
                       <span *ngIf="submit && obtainForm(i).get('address').errors" class="text-danger small">
