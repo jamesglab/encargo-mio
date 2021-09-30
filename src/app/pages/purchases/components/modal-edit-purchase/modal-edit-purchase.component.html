@@ -27,7 +27,7 @@
 
           <label for="conveyor">Transportadora Internacional</label>
           <select class="form-control" id="conveyor" formControlName="conveyor">
-            <option [value]="null" disabled>Seleccióna transportadora</option>
+            <option [value]="null" disabled>Selecciona transportadora</option>
             <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
               {{conveyor.name}}</option>
           </select>

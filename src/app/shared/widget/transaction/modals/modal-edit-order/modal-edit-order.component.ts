@@ -47,8 +47,8 @@ export class ModalEditOrderComponent implements OnInit {
           this.orderSelected.trm = res.trm;
           this.orderSelected.products = res.products;
           this.orderSelected.products.map((products: any, index: number) => {
+            products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.
-            this.calculateTax(index);
             this.calculateTotalPrices(index);
             this.calculateDiscount(index);
             this.calculateTotalArticles();
@@ -78,7 +78,6 @@ export class ModalEditOrderComponent implements OnInit {
               this.calculateTotalArticles(); // Luego calculamos el total de los articulos
             });
           } else {
-            this.calculateTax(position); // Calculamos el tax
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
             this.calculateTotalArticles(); // Luego calculamos el total de los articulos
@@ -133,6 +132,7 @@ export class ModalEditOrderComponent implements OnInit {
   changeCalculator(item: string, i: number) {
     this.orderSelected.products[i].tax_manually = false; // Setear que el tax_manually estará automatico
     this.orderSelected.products[i].selected_tax = item;
+    this.calculateTax(i);
     this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
   }
 

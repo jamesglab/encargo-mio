@@ -107,7 +107,8 @@ export class CreateOrderComponent implements OnInit {
             }
             this.isLoading = false;
           }, err => {
-            this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
+            // this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
+            this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
             this.form.image.setValue(null);
             this.form.name.setValue(null);
             this.form.description.setValue(null);

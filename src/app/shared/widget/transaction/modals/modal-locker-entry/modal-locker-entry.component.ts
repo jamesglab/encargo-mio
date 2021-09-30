@@ -52,7 +52,7 @@ export class ModalLockerEntryComponent implements OnInit {
       product_description: [null],
       weight: [0, [Validators.required]],
       receipt_date: [null, [Validators.required]],
-      shipping_value: [0, [Validators.required]],
+      shipping_value: [0],
       declared_value_admin: [0, [Validators.required]],
       conveyor: [null, [Validators.required]],
       force_commercial_shipping: [false],

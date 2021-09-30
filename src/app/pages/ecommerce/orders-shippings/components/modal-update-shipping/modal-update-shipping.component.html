@@ -2,7 +2,14 @@
   <h5 class="modal-title mt-0">Actualizar Envio</h5>
   <button type="button" class="btn-close" (click)="closeModale()" aria-hidden="true"></button>
 </div>
+
 <div class="modal-body">
+
+  <div class="d-flex justify-content-around">
+    <button class="btn btn-success" (click)="generateLabel();" [disabled]="isLoadingLabel">Generar Rótulo</button>
+    <button class="btn btn-warning" (click)="goToFragment();">Fraccionar Envío</button>
+  </div>
+
   <form [formGroup]="updateShippingForm">
 
     <div class="row mt-3">
@@ -16,7 +23,7 @@
         <div class="form-group">
           <label for="conveyor">Transportadora Internacional</label>
           <select class="form-control" id="conveyor" formControlName="conveyor">
-            <option [value]="null" disabled>Seleccióna transportadora</option>
+            <option [value]="null" disabled>Selecciona transportadora</option>
             <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
               {{conveyor.name}}</option>
           </select>
@@ -49,7 +56,7 @@
         <div class="form-group">
           <label for="store">Tipo de Envio</label>
           <select class="form-control" id="store" formControlName="shipping_type">
-            <option [value]="null" disabled>Seleccióna tipo de envío</option>
+            <option [value]="null" disabled>Selecciona tipo de envío</option>
             <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
               {{shipping.name}}</option>
           </select>
@@ -74,7 +81,7 @@
         <div class="form-group">
           <label for="store">Dirección de Envio</label>
           <select class="form-control" id="store" formControlName="address">
-            <option [value]="null" disabled>Seleccióna direccion de envio</option>
+            <option [value]="null" disabled>Selecciona direccion de envio</option>
             <option *ngFor="let addres of address" [ngValue]="addres.id">
               {{addres.address}}</option>
           </select>
@@ -93,7 +100,8 @@
         <ng-select [multiple]="true" id="product" formControlName="products" (remove)="removeProduct($event.value)"
           (add)="addProduct($event)">
           <ng-option *ngFor="let product of products" [value]="product">
-            {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :  product.name)}}
+            {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :
+            product.name)}}
           </ng-option>
         </ng-select>
       </div>

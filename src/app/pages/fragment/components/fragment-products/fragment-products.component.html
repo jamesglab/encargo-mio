@@ -106,7 +106,7 @@
                     <div class="form-group">
                       <label for="conveyor">Transportadora Internacional</label>
                       <select class="form-control" id="conveyor" formControlName="conveyor">
-                        <option [value]="null" disabled>Seleccióna transportadora</option>
+                        <option [value]="null" disabled>Selecciona transportadora</option>
                         <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
                           {{conveyor.name}}</option>
                       </select>
@@ -139,7 +139,7 @@
                     <div class="form-group">
                       <label for="address"> Direccion</label>
                       <select class="form-control" id="address" formControlName="address">
-                        <option [value]="null" disabled>Seleccióna Direccion</option>
+                        <option [value]="null" disabled>Selecciona Direccion</option>
                         <option *ngFor="let address of addresses" [ngValue]="address.id">
                           {{address.name}}</option>
                       </select>

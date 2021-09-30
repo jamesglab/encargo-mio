@@ -30,3 +30,25 @@
 .selected-tax {
   color: #ef8921;
 }
+
+.tooltip-encargomio {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-encargomio .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #ef8921;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: fixed;
+  z-index: 1051;
+  font-size: 13px;
+}
+
+.tooltip-encargomio:hover .tooltiptext {
+  visibility: visible;
+}

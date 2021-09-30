@@ -10,6 +10,7 @@ import { OrderService } from '../../../_services/orders.service';
   templateUrl: './modal-create-shipping.component.html',
   styleUrls: ['./modal-create-shipping.component.scss']
 })
+
 export class ModalCreateShippingComponent implements OnInit {
 
 
@@ -45,7 +46,7 @@ export class ModalCreateShippingComponent implements OnInit {
       guide_number: [null, Validators.required],
       conveyor: [null, Validators.required],
       delivery_date: [null, Validators.required],
-      total_value: [null, Validators.required],
+      total_value: [null],
       shipping_type: [null, Validators.required],
       user: [null, Validators.required],
       address: [null, Validators.required],

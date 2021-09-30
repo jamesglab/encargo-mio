@@ -132,7 +132,7 @@
           </div>
 
           <div class="mt-2 h5 d-flex">
-            <div class="mx-2" *ngIf="item.quantity > 1 && status == 0 || status == 1" >
+            <div class="mx-2" *ngIf="item.quantity > 1 && status == 0 || status == 1">
               <a (click)=" item.quantity = item.quantity - 1 ; getFormula(i)">
                 <i class="fas fa-minus"></i>
               </a>
@@ -183,11 +183,22 @@
                   <br>
 
                   <div class="container-calcs">
-                    <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': item.selected_tax === '1' }"
-                      (click)="changeCalculator('1', i);">
-                    </i>
-                    <i class="fas fa-calculator" style="margin-left: 10px;"
-                      [ngClass]="{ 'selected-tax': item.selected_tax === '2' }" (click)="changeCalculator('2', i);"></i>
+
+                    <div class="tooltip-encargomio">
+                      <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': item.selected_tax === '1' }"
+                        (click)="changeCalculator('1', i);">
+                      </i>
+                      <span class="tooltiptext">Sin envío Origen</span>
+                    </div>
+
+                    <div class="tooltip-encargomio">
+                      <i class="fas fa-calculator" style="margin-left: 10px;"
+                        [ngClass]="{ 'selected-tax': item.selected_tax === '2' }" (click)="changeCalculator('2', i);"
+                        title="Con envío Origen">
+                      </i>
+                      <span class="tooltiptext">Con envío Origen</span>
+                    </div>
+
                   </div>
 
                 </div>

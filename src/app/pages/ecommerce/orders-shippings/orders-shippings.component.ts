@@ -8,60 +8,66 @@ import { OrderService } from '../_services/orders.service';
   templateUrl: './orders-shippings.component.html',
   styleUrls: ['./orders-shippings.component.scss']
 })
+
 export class OrdersShippingsComponent implements OnInit {
 
-  term: any;
+  public term: any;
   public page = 1;
   public itemPerPage = 5;
   public transactions;
-  public counts: number;
+  public counts: any = [];
   public status: number = 0;
   public trm: any;
   public users = [];
-  public shippingToUpdate ;
+  public shippingToUpdate;
+  public isLoading: boolean = false;
+
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
     private modalService: NgbModal
-    ) { }
+  ) { }
 
   ngOnInit(): void {
     this.getTransactions();
     this.getUsersAdmin();
+    this.getTRM();
   }
+
   getUsersAdmin() {
-    this._userService.getUsersAdmin().subscribe(users => {
+    this._userService.getUsersAdmin().subscribe((users: any) => {
       this.users = users;
     }, err => {
-      console.log('error', err)
-    })
+      throw err;
+    });
+  }
+
+  getTRM() {
+    this._orderService.getTRM().subscribe(res => {
+      this.trm = res;
+    });
   }
 
   getTransactions(pagination?) {
-
-    this._orderService.getTRM().subscribe(res => {
-      this.trm = res;
-    })
-    this._orderService
-      .getAllShippings({
-        pageSize: pagination?.pageSize ? pagination.pageSize : 10,
-        page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
-        status: this.status ? this.status : '0',
-      })
-      .subscribe((res) => {
-        this.transactions = res.shipping_orders;
-        this.counts = res.count;
-      });
+    this.isLoading = true;
+    this._orderService.getAllShippings({
+      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
+      status: this.status ? this.status : '0',
+    }).subscribe((res) => {
+      this.transactions = res.shipping_orders;
+      this.counts[this.status] = res.count;
+      this.isLoading = false;
+    }, err => {
+      this.isLoading = false;
+      throw err;
+    });
   }
 
   openModal(modal: any, sizeModale: string) {
     this.modalService.open(modal, { size: sizeModale, centered: true });
   }
 
-
-  updateShipping() {
-
-    
-  }
+  updateShipping() { }
 
 }

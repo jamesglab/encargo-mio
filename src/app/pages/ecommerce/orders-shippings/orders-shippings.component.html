@@ -17,47 +17,76 @@
             <div class="col-sm-8">
               <div class="text-sm-end">
                 <button type="button" class="btn btn-success btn-rounded mb-2 me-2"
-                  (click)="openModal(createShipping,'xl')" [disabled]="!trm"><i class="mdi mdi-plus mr-1" ></i>
+                  (click)="openModal(createShipping,'xl')" [disabled]="!trm"><i class="mdi mdi-plus mr-1"></i>
                   Crear un Envío</button>
               </div><!-- end col-->
             </div><!-- end col-->
           </div>
-          <!-- 0 En espera => (En espera de que el administrador realice el envío)
-            1 Enviadas => (La orden ha sido enviada y depende de la transportadora)
-            -------------------- EN ESTE PUNTO RENDERIZAMOS ESTADOS DE LA TRANSPORTADORA--------
-            2 Finalizada o Entregada
-            3 Cancelada => (La orden ha sido cancelada)  -->
+          <!-- 0 Consolidación (Viene de ordenes de compra)
+          1 Por empacar (En espera de que el administrador realice el envío) (INCLUIR BOTON DE EMPACADO)
+          2 En generación de guía (Alistamiento o Por preparar)
+          3 Enviado (La orden ha sido enviada y depende de la transportadora)
+          -------------------- EN ESTE PUNTO RENDERIZAMOS ESTADOS DE LA TRANSPORTADORA--------
+          4 Cancelado (La orden ha sido cancelada)
+          5 Pago en revisión (El Pago esta pendiente)
+          6 Fragmentado -->
           <ul class="nav nav-pills d-flex justify-content-center">
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 0 }" (click)="status = 0;  getTransactions()">
-                Por Preparar {{this.counts}}
+                Consolidación {{ counts[0] }}
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 1}"
-                (click)="status = 1 ;  getTransactions()">Enviadas</a>
+              <a class="nav-link" [ngClass]="{'active': status == 1}" (click)="status = 1 ;  getTransactions()">
+                Por empacar {{ counts[1] }}
+              </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active':status == 2}" (click)="status = 2;  getTransactions()">
-                Finalizada o Entregada
+                En Generación de Guía {{ counts[2] }}
               </a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 3;  getTransactions()">
-                Cancelada </a>
+              <a class="nav-link" [ngClass]="{'active':status == 3}" (click)="status = 3;  getTransactions()">
+                Enviado {{ counts[3] }}
+              </a>
             </li>
 
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == 4 }" (click)="status = 4;  getTransactions()">
+                Cancelado {{ counts[4] }}
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == 5 }" (click)="status = 5;  getTransactions()">
+                Pago en revisión {{ counts[5] }}
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == 6 }" (click)="status = 6;  getTransactions()">
+                Fragmentado {{ counts[6] }}
+              </a>
+            </li>
 
           </ul>
           <!-- Table data -->
+
+          <div class="d-flex justify-content-center" *ngIf="isLoading">
+            <div class="spinner-border" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+
           <hr>
           <app-shippings-table class="mt-1" [transactions]="transactions |  filter:term"
             (shippingSelected)="shippingToUpdate=$event ;openModal(updateShipping,'xl')"></app-shippings-table>
-          <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
+          <mat-paginator [length]="counts[status]" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
           </mat-paginator>
         </div>
       </div>
