@@ -119,7 +119,7 @@
                   <div class="col-sm-3 col-12">
                     <div class="form-group">
                       <label for="shipping_value">Valor Envío *</label>
-                      <input type="text" class="form-control" id="shipping_value" formControlName="shipping_value" readonly>
+                      <input type="number" class="form-control" id="shipping_value" formControlName="shipping_value" readonly>
                       <span *ngIf="submit && obtainForm(i).get('shipping_value').errors" class="text-danger small">El valor ingresado no es correcto</span>
                     </div>
 
@@ -139,8 +139,13 @@
                     <div class="form-group">
                       <label for="address"> Direccion</label>
                       <select class="form-control" id="address" formControlName="address">
+<<<<<<< HEAD
                         <option [value]="null" disabled>Selecciona Direccion</option>
                         <option *ngFor="let address of addresses" [ngValue]="address.id">
+=======
+                        <option [value]="null" disabled>Seleccióna Direccion</option>
+                        <option *ngFor="let address of addresses" [ngValue]="address">
+>>>>>>> cris
                           {{address.name}}</option>
                       </select>
                       <span *ngIf="submit && obtainForm(i).get('address').errors" class="text-danger small">

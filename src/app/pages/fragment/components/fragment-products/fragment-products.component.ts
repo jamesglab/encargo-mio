@@ -167,13 +167,11 @@ export class FragmentProductsComponent implements OnInit {
       return;
     }
 
-    console.log("SE FUE COLEGA", this.form.getRawValue());
     const { fragments } = this.form.getRawValue(); //DESCTRUCTING FRAGMENTS, AND SEND REQUEST
     const insertFragmentsSubscr = this.fragmentService.insert({ fragments, shipping: this.shipping })
     .subscribe((res) => {
-      console.log("RESSSS", res);
       this._notifyService.show('!hecho¡', 'El envío ha sido fragmentado con exito.', 'success');
-      this.router.navigate([''])
+      this.router.navigate(['/ecommerce/orders-shippings'])
     }, err => {
       throw err;
     })
