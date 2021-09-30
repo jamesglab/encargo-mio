@@ -102,9 +102,10 @@
         <div class="col-4">
 
           <div>
-            <a [href]="item.link" target="blank">
-              <h5 class="text-truncate h5">{{ item.name }}</h5>
-            </a>
+            <div class="form-group">
+              <label for="exampleInputEmail1" class="text-truncate h5">Nombre * </label>
+              <input type="text" class="form-control" placeholder="escribe el nombre del producto" [(ngModel)]="item.name">
+            </div>
           </div>
 
           <div>

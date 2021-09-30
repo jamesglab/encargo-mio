@@ -87,3 +87,13 @@ export const validateShippingstatus = (status) => {
     return status_name
 
 }
+// MEOTODO QUE RECIBE UN ARRAY Y LOS CAMPOS QUE SON REQUERIDOS EN LA SOLICITUD
+// objectsValidate : [{},{},{}]
+// validators : ['name',description,'value'...etc]
+export const validateErrors = (objectsValidate, validators) => {
+    let validate = false;
+    objectsValidate.map(p => {
+        validators.map(validator => { if (p[validator] == null || p[validator] == undefined || p[validator] == '') { validate = true } })
+    });
+    return validate
+}

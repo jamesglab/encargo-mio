@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
-import { numberOnly } from "src/app/_helpers/tools/utils.tool";
+import { numberOnly, validateErrors } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-modal-edit-order",
@@ -58,6 +59,8 @@ export class ModalEditOrderComponent implements OnInit {
         this.isLoadingQuery = false;
       }, err => {
         this.isLoadingQuery = false;
+        this._notify.show('Intenta mas tarde', 'No pudimos consultar la order', 'error');
+        this.modalService.dismissAll()
         throw err;
       });
     if (this.status === 2) {
@@ -161,6 +164,11 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   sendQuotation() {
+    // VALIDAMOS LOS CAMPOS QUE SON REQUERIDOS EN EL INPUT
+    if (validateErrors(this.orderSelected.products, ['name', 'weight', 'product_value'])) {
+      Swal.fire('Error', 'Campos requeridos incompletos', 'warning')
+      return
+    }
     this.isLoading = true;
     this._orders.updateOrder(this.orderSelected)
       .subscribe(res => {
@@ -174,5 +182,13 @@ export class ModalEditOrderComponent implements OnInit {
         throw err;
       });
   }
+
+  // validateErrors(objectsValidate, validators) {
+  //   let validate = false;
+  //   // let validators = ['name', 'weight', 'product_value'];
+  //   objectsValidate.map(p => {
+  //     validators.map(validator => { if (p[validator] == null || p[validator] == undefined || p[validator] == '') { validate = true } })
+  //   });
+  // }
 
 }
