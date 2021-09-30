@@ -7,9 +7,9 @@
         <div class="card-body">
           <div class="row mb-2">
             <div class="col-sm-4">
-              <div class="search-box me-2 mb-2 d-inline-block">
+              <div class="search-box me-2 mb-2 d-inline-block" style="width:100%">
                 <div class="position-relative">
-                  <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="term">
+                  <input type="text" class="form-control" placeholder="Busca por producto o guia..." [(ngModel)]="term">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
               </div>
@@ -84,7 +84,7 @@
           </div>
 
           <hr>
-          <app-shippings-table class="mt-1" [transactions]="transactions |  filter:term"
+          <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term"
             (shippingSelected)="shippingToUpdate=$event ;openModal(updateShipping,'xl')"></app-shippings-table>
           <mat-paginator [length]="counts[status]" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
           </mat-paginator>

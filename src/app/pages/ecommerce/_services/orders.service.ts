@@ -311,4 +311,16 @@ export class OrderService {
     )
   }
 
+  updateShippingPacked(payload){
+    delete payload.products
+    return this.http.put<any>(
+      `${environment.microservices.management}shipping-order`, payload).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+  
+
 }

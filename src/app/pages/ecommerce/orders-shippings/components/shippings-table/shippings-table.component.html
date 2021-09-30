@@ -1,6 +1,6 @@
 <div class="table-responsive mb-0">
 
-  <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
+  <div class="alert alert-primary" role="alert" *ngIf="shippings && shippings.length === 0">
     No hay datos disponibles...
   </div>
 
@@ -23,7 +23,7 @@
 
     <tbody>
 
-      <tr *ngFor="let data of transactions">
+      <tr *ngFor="let data of shippings">
 
         <td>
           <div class="form-check font-size-16">
@@ -44,8 +44,8 @@
           {{ data.address.address ? data.address.address :'' }}
         </td>
 
-        <td>{{ data.shipping_type ? data.shipping_type : "" }}</td>
-        <td>{{ data.created_at ? (data.created_at | date ) : "" }}</td>
+        <td>{{ data.shipping_type ? data.shipping_type : "-" }}</td>
+        <td>{{ data.delivery_date ? (data.delivery_date | date ) : "" }}</td>
 
 
         <td>{{ data.total_value ? data.total_value : "" }}</td>

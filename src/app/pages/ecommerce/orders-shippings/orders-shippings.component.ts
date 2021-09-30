@@ -14,7 +14,7 @@ export class OrdersShippingsComponent implements OnInit {
   public term: any;
   public page = 1;
   public itemPerPage = 5;
-  public transactions;
+  public shippings;
   public counts: any = [];
   public status: number = 0;
   public trm: any;
@@ -55,7 +55,7 @@ export class OrdersShippingsComponent implements OnInit {
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
       status: this.status ? this.status : '0',
     }).subscribe((res) => {
-      this.transactions = res.shipping_orders;
+      this.shippings = res.shipping_orders;
       this.counts[this.status] = res.count;
       this.isLoading = false;
     }, err => {

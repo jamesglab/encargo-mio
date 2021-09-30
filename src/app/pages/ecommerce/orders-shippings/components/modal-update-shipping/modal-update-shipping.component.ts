@@ -30,7 +30,7 @@ export class ModalUpdateShippingComponent implements OnInit {
   public deleted_products: any = [];
   public updateShippingForm: FormGroup;
   public addressSelected: any = {};
-
+  public validateAllProductsInLocker: boolean = false;
   constructor(
     private _userService: UserService,
     private _orderService: OrderService,
@@ -45,6 +45,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.buildForm(this.shippingToUpdate);
     this.getConvenyor();
     this.getShippingTypes();
+    this.validateProductsInLocker()
   }
 
   buildForm(shipping) {
@@ -109,6 +110,14 @@ export class ModalUpdateShippingComponent implements OnInit {
       });
   }
 
+
+  validateProductsInLocker() {
+    this.shippingToUpdate.products.map(p => {
+      if (p.status != 1) {
+        this.validateAllProductsInLocker = true;
+      }
+    })
+  }
   // AGREGAMOS LAS TRANSPORTADORAS
   getConvenyor() {
     this._orderService.getConvenyor().subscribe((res) => {
@@ -146,10 +155,8 @@ export class ModalUpdateShippingComponent implements OnInit {
           this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
         });
     } else {
-      this._notify.show('Error', 'Revisa el formulario /n Debes poner al menos un producto en el envio', 'error');
-
+      this._notify.show('Error', 'Revisa el formulario hay campos requeridos incompletos', 'error');
     }
-
   }
 
   closeModale() {
@@ -180,6 +187,23 @@ export class ModalUpdateShippingComponent implements OnInit {
     });
   }
 
+  updateShippingPackcage() {
+      this.isLoading = true;
+      this._orderService
+        .updateShippingPacked({
+          status: '2',
+          id : this.shippingToUpdate.id 
+        })
+        .subscribe((res) => {
+          this.modalService.dismissAll();
+          this.getTransactions.emit(true);
+          this._notify.show('Orden de envio Actualizada', '', 'success');
+        }, err => {
+          this.isLoading = false;
+          this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
+        });
+
+  }
   goToFragment() {
     if (this.updateShippingForm.getRawValue().id) {
       this._router.navigate(["/fragment/" + this.updateShippingForm.getRawValue().id]);
