@@ -34,7 +34,7 @@
             <p class="font-weight-bold">Tipo de Envío</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>{{shipping?.shipping_type}}</p>
+            <p>{{shipping?.shipping_type ? shipping?.shipping_type : '-'}}</p>
           </div>
         </div>
 
@@ -62,7 +62,7 @@
             <p class="font-weight-bold">Nombre (Quien Recibe)</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>{{shipping?.user?.name}}</p>
+            <p>{{shipping?.address?.name}}</p>
           </div>
         </div>
         <div class="row mt-2">
@@ -78,7 +78,7 @@
             <p class="font-weight-bold">Localidad</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>{{shipping?.locality?.name}}</p>
+            <p>{{shipping?.address.locality?.name}}</p>
           </div>
         </div>
         <div class="row mt-2">
