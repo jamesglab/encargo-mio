@@ -224,21 +224,15 @@
 
                       <div class="container-calcs">
 
-                        <div class="tooltip-encargomio">
-                          <i class="fas fa-calculator"
-                            [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
-                            (click)="changeCalculator('1', i);">
-                          </i>
-                          <span class="tooltiptext">Sin envío Origen</span>
-                        </div>
+                        <i class="fas fa-calculator"
+                          [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
+                          (click)="changeCalculator('1', i);" title="Sin envío Origen">
+                        </i>
 
-                        <div class="tooltip-encargomio">
-                          <i class="fas fa-calculator"
-                            [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
-                            (click)="changeCalculator('2', i);">
-                          </i>
-                          <span class="tooltiptext">Con envío Origen</span>
-                        </div>
+                        <i class="fas fa-calculator"
+                          [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
+                          (click)="changeCalculator('2', i);" title="Con envío Origen">
+                        </i>
 
                       </div>
 
