@@ -53,6 +53,11 @@ const routes: Routes = [
         component: OrdersShippingsComponent
     },
 
+    {
+        path: '',
+        redirectTo :'orders'
+    },
+
 
 ];
 

@@ -12,14 +12,15 @@
       <div class="col-7">
 
         <div class="h4">
-          # 000{{orderSelected?.id}}
+          #000{{orderSelected?.id}}
         </div>
 
         <div class="h5">
           {{orderSelected?.created_at | date }}
         </div>
         <div class="h5">
-          TRM cotización: {{ trm.value }}
+          TRM cotización:
+          {{ (orderSelected ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
         </div>
       </div>
 
@@ -29,11 +30,13 @@
 
           <div class="container-calculator" *ngIf="!isLoadingFormula">
 
-            Calculadora de Totales
+            <div class="h4">
+              Calculadora de Totales
+            </div>
 
             <div>
               <strong>Valor artículos:</strong>
-              {{ (orderSelected.total_value ? orderSelected.total_value : 0) | currency: 'USD' }} USD
+              {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }} USD
             </div>
 
             <div>
@@ -46,26 +49,13 @@
                 <strong>Valor del envío ({{formula.name}}): </strong>
                 {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} USD
               </div>
-            </ng-container>
-
-            <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
               <div>
                 <strong>Envio a casa ({{formula.name}})</strong>
-                {{ (orderSelected.total_value ? orderSelected.total_value : 0) + (formula.value ? formula.value : 0) |
+                {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) +
+                (formula.value ? formula.value : 0) |
                 number : '1.2-2' }}
                 USD
               </div>
-            </ng-container>
-
-            <ng-container *ngIf="orderSelected.total_permanent_shipping_value">
-
-              <div>
-                <strong>Valor del Envio:</strong>
-                {{ (orderSelected.total_permanent_shipping_value ? orderSelected.total_permanent_shipping_value : 0 ) |
-                number : '1.2-2' }}
-                USD
-              </div>
-
             </ng-container>
 
           </div>
@@ -88,6 +78,12 @@
 
   <hr>
 
+  <div class="d-flex justify-content-center" *ngIf="isLoadingQuery">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
   <div class="table-responsive">
 
     <div class="container" *ngFor="let item of orderSelected.products; let i = index;">
@@ -95,18 +91,22 @@
       <div class="row">
 
         <div class="col-3 d-flex justify-content-center">
-
-          <img [src]="item.image" (error)="$event.target.src = 'https://bulma.io/images/placeholders/96x96.png'"
-            class="avatar" style="    object-fit: contain;" />
-
+          <div class="edit-image">
+            <a (click)="openModal(item,createImage,'md ')"><i class="far fa-edit"></i></a>
+          </div>
+          <div>
+            <img [src]="item.image" (error)="$event.target.src = 'assets/images/default.jpg'" class="avatar"
+              style="object-fit: contain;" />
+          </div>
         </div>
-
         <div class="col-4">
 
           <div>
-            <a [href]="item.link" target="blank">
-              <h5 class="text-truncate h5">{{ item.name }}</h5>
-            </a>
+            <div class="form-group">
+              <label for="exampleInputEmail1" class="text-truncate h5">Nombre * </label>
+              <input type="text" class="form-control" placeholder="escribe el nombre del producto"
+                [(ngModel)]="item.name">
+            </div>
           </div>
 
           <div>
@@ -133,8 +133,20 @@
             </textarea>
           </div>
 
-          <div class="mt-2 h5">
-            Cantidad: {{ item.quantity }}
+          <div class="mt-2 h5 d-flex">
+            <div class="mx-2" *ngIf="item.quantity > 1 && status == 0 || status == 1">
+              <a (click)=" item.quantity = item.quantity - 1 ; getFormula(i)">
+                <i class="fas fa-minus"></i>
+              </a>
+            </div>
+            <div class="item-quantity">
+              Cantidad: {{ item.quantity }}
+            </div>
+            <div class="mx-2" *ngIf="status == 0 || status == 1">
+              <a (click)="item.quantity = item.quantity + 1; getFormula(i)">
+                <i class="fas fa-plus"></i>
+              </a>
+            </div>
           </div>
 
         </div>
@@ -164,11 +176,8 @@
             <div class="col-3">
 
               <div class="form-group">
-
                 <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
-
                 <div>
-
                   <input type="number" class="form-control" placeholder="Tax" [ngModel]="item.tax | number: '1.2-2'"
                     (ngModelChange)="item.tax = $event" min="0" (keypress)="numberOnly($event);"
                     (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || disabledAllInputs">
@@ -176,11 +185,16 @@
                   <br>
 
                   <div class="container-calcs">
+
                     <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': item.selected_tax === '1' }"
-                      (click)="changeCalculator('1', i);">
+                      (click)="changeCalculator('1', i);" title="Sin envío Origen">
                     </i>
+
                     <i class="fas fa-calculator" style="margin-left: 10px;"
-                      [ngClass]="{ 'selected-tax': item.selected_tax === '2' }" (click)="changeCalculator('2', i);"></i>
+                      [ngClass]="{ 'selected-tax': item.selected_tax === '2' }" (click)="changeCalculator('2', i);"
+                      title="Con envío Origen">
+                    </i>
+
                   </div>
 
                 </div>
@@ -249,13 +263,13 @@
 
 <div class="modal-footer">
 
-  <button class="btn btn-secondary" [disabled]="isLoading" (click)="modalService.dismissAll()">
+  <button class="btn btn-secondary" [disabled]="isLoading || isLoadingQuery" (click)="modalService.dismissAll()">
     Cancelar
   </button>
 
   <ng-container *ngIf="status == 0 || status == 1">
 
-    <button class="btn btn-primary" (click)="sendQuotation();" [disabled]="isLoading">
+    <button class="btn btn-primary" (click)="sendQuotation();" [disabled]="isLoading || isLoadingQuery">
 
       <ng-container *ngIf="isLoading">
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -271,3 +285,11 @@
   </ng-container>
 
 </div>
+
+<ng-template #createImage role="document" let-modal>
+  <!--[product]  ANEXAMOS PRODUCTO SELECCIONADO -->
+  <!-- (close) CERRAMOS EL MODALE CUANDO LO QUEIRAN CERRAR -->
+  <!--  (imageUpdated) SELECCIONAMOS EL METODO DE ACTUALIZAR IMAGEN DEL PRODUCTO SELECCIONADO-->
+  <app-create-image [product]="productSelected" (close)="modal.close()"
+    (imageUpdated)="upadteImageByProduct($event);modal.close()"></app-create-image>
+</ng-template>

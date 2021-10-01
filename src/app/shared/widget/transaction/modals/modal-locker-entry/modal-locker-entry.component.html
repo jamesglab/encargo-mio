@@ -1,90 +1,126 @@
-<div class="modal-header ">
-  <h5 class="modal-title mt-0">Ingreso a Casillero </h5>
-  <button type="button" class="btn-close" aria-hidden="true" (click)="closeModale()"></button>
+<div class="modal-header">
+  <h5 class="modal-title mt-0">Ingreso a Casillero</h5>
+  <button type="button" class="btn-close" aria-hidden="true" (click)="closeModal()"></button>
 </div>
 
 <div class="container p-4">
+
   <form [formGroup]="lockerForm">
+
     <div class="row">
+
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
+
           <label for="guia">Número Guia Origen</label>
-          <input type="number" class="form-control" id="guia" (keypress)="numberOnly($event);"   min="0" formControlName="guide_number">
+          <input matInput type="text" id="guia" class="form-control" placeholder="Busca el número de guía"
+            formControlName="guide_number" [matAutocomplete]="auto" (input)="autoCompleteGuide($event.target.value);"
+            title="{{ lockerForm.controls.guide_number.value ? lockerForm.controls.guide_number.value : '' }}">
+
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let guide of allGuides" [value]="guide">
+              {{ guide.guide_number ? guide.guide_number : '' }}
+            </mat-option>
+          </mat-autocomplete>
+
         </div>
 
       </div>
+
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
-          <label for="orders">Orden</label>
-          <select class="form-control" id="orders" formControlName="order_purchase_object" (change)="lockerForm.get('product_description').setValue(lockerForm.get('order_purchase_object').value.product.description)">
-            <option [value]="null" disabled>Seleccióna una orden</option>
-            <option *ngFor="let order of orders_purchase" [ngValue]="order">
-              {{ (order.product.name.length > 50) ? (order.id.replace('==','') + ' | ' + order.product.name  | slice:0:50 ) + '...' :  order.id + ' | ' + order.product.name }}
-            </option>
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-12 col-sm-6">
 
-        <div class="doc">
-          <div class="box">
-            <img [src]="lockerForm.get('order_purchase_object')?.value?.product?.image ?
-               lockerForm.get('order_purchase_object').value.product.image :'assets/images/default.png'">
-          </div>
+          <label for="orders">Orden</label>
+
+          <input matInput type="text" id="orders" class="form-control" placeholder="Busca la orden..."
+            formControlName="guide_order" [matAutocomplete]="auto_order"
+            (input)="autoCompleteGuide($event.target.value);"
+            title="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : '' }}">
+
+          <mat-autocomplete #auto_order="matAutocomplete">
+            <mat-option *ngFor="let order of allOrders" [value]="order">
+              {{ order.id ? order.id : '' }} | {{ order.product.name ? order.product.name : '' }}
+            </mat-option>
+          </mat-autocomplete>
+
         </div>
+
       </div>
-      <div class="col-12 col-sm-6">
+
+    </div>
+
+    <div class="row mt-3">
+
+      <div class="col-12">
 
         <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+
           <ngx-dropzone-label>
             <div>
               <h2>Inserta las Imagenes del Producto</h2>
             </div>
           </ngx-dropzone-label>
+
           <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
             [removable]="true" (removed)="onRemove(f)">
           </ngx-dropzone-image-preview>
+
         </div>
 
       </div>
+
     </div>
+
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
+
           <label for="lockers">Casillero</label>
-          <select class="form-control" id="lockers" formControlName="locker">
-            <option [value]="null" disabled>Seleccióna casillero</option>
-            <option *ngFor="let locker of lockers" [ngValue]="locker.id">
-              {{ (locker.name.length > 50) ? (locker.name | slice:0:50 ) + '...' :  locker.name }}</option>
-          </select>
+
+          <input matInput class="form-control" id="lockers" formControlName="locker_info"
+            (input)="autoCompleteLocker($event.target.value);" [matAutocomplete]="auto_locker"
+            placeholder="Búsqueda de casillero...">
+
+          <mat-autocomplete #auto_locker="matAutocomplete">
+            <mat-option *ngFor="let locker of allLockers" [value]="locker">
+              CA{{ locker.locker ? locker.locker.id : 0 }} | {{ locker.name }} {{ locker.last_name }}
+            </mat-option>
+          </mat-autocomplete>
+
         </div>
 
-
       </div>
+
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
           <label for="description-product">Descripción del Producto </label>
-          <textarea class="form-control" id="description-product" rows="3" formControlName="product_description"></textarea>
+          <textarea class="form-control" id="description-product" formControlName="product_description"
+            style="height: 37px; min-height: 37px !important; max-height: 300px !important;">
+          </textarea>
         </div>
+
       </div>
+
     </div>
 
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
-          <label for="weight">Peso Libras</label>
-          <input type="number" class="form-control" id="weight"   (keypress)="numberOnly($event);" min="0"formControlName="weight_in_pounds">
+          <label for="weight">Peso (libras)</label>
+          <input type="number" class="form-control" id="weight" (keypress)="numberOnly($event);" min="0"
+            formControlName="weight">
         </div>
 
       </div>
-      <div class="col-12 col-sm-6">
 
+      <div class="col-12 col-sm-6">
 
         <div class="form-group">
           <label for="dateLocker">Fecha de Recibido</label>
@@ -96,46 +132,67 @@
             </div>
           </div>
         </div>
+
       </div>
+
     </div>
+
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
           <label for="envio">Valor Envío</label>
-          <input type="number" class="form-control" id="envio"   (keypress)="numberOnly($event);"min="0" formControlName="shipping_value">
+          <input type="number" class="form-control" id="envio" (keypress)="numberOnly($event);" min="0"
+            formControlName="shipping_value">
         </div>
+
       </div>
+
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
           <label for="vA">Valor Declarado(Administrador)</label>
-          <input type="number" class="form-control" id="vA"  (keypress)="numberOnly($event);"min="0" formControlName="admin_value">
+          <input type="number" class="form-control" id="vA" (keypress)="numberOnly($event);" min="0"
+            formControlName="declared_value_admin">
         </div>
+
       </div>
+
     </div>
 
-
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
+
           <label for="conveyor">Transportadora Origen</label>
           <select class="form-control" id="conveyor" formControlName="conveyor">
-            <option [value]="null" disabled>Seleccióna una transportadora</option>
+            <option [value]="null" disabled>Selecciona una transportadora</option>
             <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
-              {{ (conveyor.name.length > 50) ? (conveyor.name | slice:0:50 ) + '...' :  conveyor.name }}</option>
+              {{ (conveyor.name.length > 50) ? (conveyor.name | slice:0:50 ) + '...' : conveyor.name }}
+            </option>
           </select>
+
         </div>
 
       </div>
+
       <div class="col-12 col-sm-6">
+
         <div class="form-check form-switch mt-3">
           <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
             formControlName="force_commercial_shipping">
           <label class="form-check-label" for="flexSwitchCheckDefault">Forzar Envío Comercial</label>
-          <p>los productos que se envíen en compañía de este articulo, aplicaran el calculo bajo la formula de envío
-            comercial </p>
+          <p>Los productos que se envíen en compañía de este articulo, aplicaran el cálculo bajo la fórmula de envío
+            comercial.</p>
         </div>
+
       </div>
+
     </div>
+
     <div class="row">
       <div class="col-12">
         <div class="form-group">
@@ -149,14 +206,13 @@
 
 </div>
 
-
 <div class="modal-footer">
 
-  <button class="btn btn-secondary" (click)="closeModale()" [disabled]="isLoading">
+  <button class="btn btn-secondary" (click)="closeModal();" [disabled]="isLoading || getQueries">
     Cancelar
   </button>
 
-  <button class="btn btn-primary" (click)="addLocker()" [disabled]="isLoading">
+  <button class="btn btn-primary" (click)="addLocker();" [disabled]="isLoading || getQueries">
 
     <ng-container *ngIf="isLoading">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -166,5 +222,7 @@
     <ng-container *ngIf="!isLoading">
       Guardar
     </ng-container>
+
   </button>
+
 </div>

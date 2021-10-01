@@ -107,7 +107,8 @@ export class CreateOrderComponent implements OnInit {
             }
             this.isLoading = false;
           }, err => {
-            this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
+            // this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
+            this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
             this.form.image.setValue(null);
             this.form.name.setValue(null);
             this.form.description.setValue(null);
@@ -141,7 +142,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   onImageError(event) {
-    event.target.src = "https://static.wixstatic.com/media/2cd43b_48bf185491704d8996a2d3bf2c0bbd23~mv2.png/v1/fill/w_320,h_212,q_90/2cd43b_48bf185491704d8996a2d3bf2c0bbd23~mv2.png";
+    event.target.src = "assets/images/default.jpg";
   }
 
   isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
@@ -188,19 +189,14 @@ export class CreateOrderComponent implements OnInit {
   getFormula(i: number) {
     this.isLoadingFormula = true;
     this.quotationService.calculateShipping(this.products.value).subscribe((res: any) => { // Llamamos al método para calcular los valores de envío
+      this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
       if (res[0].name === 'No aplica') {
-        this.totalFormulas = null; // Asignamos al total de las fórmulas el valor nulo
-        this.totalValues.total_permanent_shipping_value = null;
         this.products.value.map((product: any, i: number) => {
           this.products.controls[i]['controls'].tax.setValue(0);
           this.calculateTotalPrices(i); // Calcular el total de precios
           this.calculateTotalArticles(); // Calcular el valor de todos los artículos
         });
-      } else if (res[0].name === 'Envío Fijo') {
-        this.totalFormulas = null; // Asignamos al total de las fórmulas el valor nulo
-        this.totalValues.total_permanent_shipping_value = res[0].value;
       } else {
-        this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
         this.calculateTax(i); // Calculamos el tax
         this.calculateTotalPrices(i); // Calcular el total de precios
         this.calculateTotalArticles(); // Calcular el valor de todos los artículos
@@ -210,7 +206,6 @@ export class CreateOrderComponent implements OnInit {
       this.isLoadingFormula = false;
       throw err;
     });
-
   }
 
   calculateTotalArticles() {

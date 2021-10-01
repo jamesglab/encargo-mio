@@ -79,7 +79,9 @@
 
               <div class="container-calculator" *ngIf="!isLoadingFormula">
 
-                Calculadora de Totales
+                <div class="h4">
+                  Calculadora de Totales
+                </div>
 
                 <div>
                   <strong>Valor de Artículos:</strong>
@@ -103,16 +105,6 @@
                     <strong>Envio a casa ({{formula.name}})</strong>
                     {{ (totalValues.total_value ? totalValues.total_value : 0)
                     + (formula.value ? formula.value : 0) | number : '1.2-2' }}
-                    USD
-                  </div>
-                </ng-container>
-
-                <ng-container *ngIf="totalValues.total_permanent_shipping_value">
-                  <div>
-                    <strong>Valor del Envio:</strong>
-                    {{
-                    (totalValues.total_permanent_shipping_value ? totalValues.total_permanent_shipping_value : 0
-                    ) | number : '1.2-2' }}
                     USD
                   </div>
                 </ng-container>
@@ -179,8 +171,22 @@
                   formControlName="description" placeholder="Observaciones del cliente"></textarea>
               </div>
 
-              <div class="mt-2 h5">
-                Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
+              <div class="mt-2 h5 d-flex">
+                <div class="mx-2" *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value > 1">
+                  <a (click)="createProductForm.get('products')['controls'][i].controls.quantity.value = 
+                  createProductForm.get('products')['controls'][i].controls.quantity.value - 1 ; getFormula(i)">
+                    <i class="fas fa-minus"></i>
+                  </a>
+                </div>
+                <div class="item-quantity">
+                  Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
+                </div>
+                <div class="mx-2">
+                  <a (click)="createProductForm.get('products')['controls'][i].controls.quantity.value = 
+                  createProductForm.get('products')['controls'][i].controls.quantity.value + 1; getFormula(i)">
+                    <i class="fas fa-plus"></i>
+                  </a>
+                </div>
               </div>
 
             </div>
@@ -217,13 +223,17 @@
                         (keypress)="numberOnly($event);" (blur)="calculateTaxManually(i);">
 
                       <div class="container-calcs">
+
                         <i class="fas fa-calculator"
                           [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
-                          (click)="changeCalculator('1', i);"></i>
-                        <br>
+                          (click)="changeCalculator('1', i);" title="Sin envío Origen">
+                        </i>
+
                         <i class="fas fa-calculator"
                           [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
-                          (click)="changeCalculator('2', i);"></i>
+                          (click)="changeCalculator('2', i);" title="Con envío Origen">
+                        </i>
+
                       </div>
 
                     </div>

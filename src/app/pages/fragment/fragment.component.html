@@ -1,0 +1,10 @@
+<app-page-title [title]="'Fracionar Envío #5462'"></app-page-title>
+
+<!-- <p>En esta vista usted podra crear nuevos envíos derivados del envío actual, de tal modo que permita fracciónar los porductos cotenidos actual envío</p> -->
+
+<!-- COMPONENTE DE INFORMACION DE ENVIO  -->
+<app-shipping-detail [shipping]="shipping"> </app-shipping-detail>
+<!-- COMPONENTE DE PRODUCTOS Y FRAGMENTOS -->
+<app-fragment-products [conveyors]="conveyors" [addresses]="addresses"
+[products_quantity]="products_quantity" [shipping]="shipping" [products]="shipping?.products">
+</app-fragment-products>

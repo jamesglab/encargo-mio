@@ -45,3 +45,55 @@ export const numberOnly = (event): boolean => {
     }
     return true;
 }
+
+export const validateShippingstatus = (status) => {
+    // 0 Consolidación (Viene de ordenes de compra)
+    // 1 Por empacar (En espera de que el administrador realice el envío) (INCLUIR BOTON DE EMPACADO)
+    // 2 En generación de guía (Alistamiento o Por preparar)
+    // 3 Enviado (La orden ha sido enviada y depende de la transportadora)
+    //  -------------------- EN ESTE PUNTO RENDERIZAMOS ESTADOS DE LA TRANSPORTADORA--------
+    // 4 Cancelado (La orden ha sido cancelada)
+    // 5 Pago en revisión (El Pago esta pendiente)
+    // 6 Fragmentado
+    let status_name;
+    switch (status) {
+        case '0':
+            status_name = 'Consolidación'
+            break
+        case '1':
+            status_name = 'Por empacar'
+            break
+
+
+        case '2':
+            status_name = 'En generación de guía'
+            break
+        case '3':
+            status_name = 'Enviado'
+            break
+        case '4':
+            status_name = 'Cancelado'
+            break
+        case '5':
+            status_name = 'Pago en revisión'
+            break
+
+        case '6':
+            status_name = 'Fragmentado'
+            break
+        default:
+            break;
+    }
+    return status_name
+
+}
+// MEOTODO QUE RECIBE UN ARRAY Y LOS CAMPOS QUE SON REQUERIDOS EN LA SOLICITUD
+// objectsValidate : [{},{},{}]
+// validators : ['name',description,'value'...etc]
+export const validateErrors = (objectsValidate, validators) => {
+    let validate = false;
+    objectsValidate.map(p => {
+        validators.map(validator => { if (p[validator] == null || p[validator] == undefined || p[validator] == '') { validate = true } })
+    });
+    return validate
+}

@@ -9,11 +9,9 @@ import { UserService } from "src/app/_services/users.service";
   styleUrls: ["./orders.component.scss"],
 })
 
-/**
- * Ecommerce orders component
- */
+
 export class OrdersComponent implements OnInit {
-  // bread crumb items
+
   breadCrumbItems: Array<{}>;
   term: any;
   public page = 1;
@@ -29,7 +27,8 @@ export class OrdersComponent implements OnInit {
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal
+  ) { }
 
   ngOnInit() {
     this.getTransactions();
@@ -65,7 +64,6 @@ export class OrdersComponent implements OnInit {
       this.isLoading = false;
       throw err;
     });
-
 
   }
 

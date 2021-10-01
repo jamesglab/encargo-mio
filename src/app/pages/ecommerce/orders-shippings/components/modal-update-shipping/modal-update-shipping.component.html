@@ -2,21 +2,28 @@
   <h5 class="modal-title mt-0">Actualizar Envio</h5>
   <button type="button" class="btn-close" (click)="closeModale()" aria-hidden="true"></button>
 </div>
+
 <div class="modal-body">
+
+  <div class="d-flex justify-content-around">
+    <button class="btn btn-success" (click)="generateLabel();" [disabled]="isLoadingLabel">Generar Rótulo</button>
+    <button class="btn btn-warning" (click)="goToFragment();">Fraccionar Envío</button>
+  </div>
+
   <form [formGroup]="updateShippingForm">
 
     <div class="row mt-3">
       <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="guide_number">Guia Internacional</label>
+          <label for="guide_number">Guia Internacional *</label>
           <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
         </div>
       </div>
       <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="conveyor">Transportadora Internacional</label>
+          <label for="conveyor">Transportadora Internacional * </label>
           <select class="form-control" id="conveyor" formControlName="conveyor">
-            <option [value]="null" disabled>Seleccióna transportadora</option>
+            <option [value]="null" disabled>Selecciona transportadora</option>
             <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
               {{conveyor.name}}</option>
           </select>
@@ -27,7 +34,7 @@
     <div class="row mt-3">
       <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="delivery_date">Fecha de Entrega</label>
+          <label for="delivery_date">Fecha de Entrega *</label>
           <div class="input-group clockpicker">
             <input ngbDatepicker class="form-control" id="delivery_date" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
               formControlName="delivery_date">
@@ -47,9 +54,9 @@
     <div class="row mt-3">
       <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="store">Tipo de Envio</label>
+          <label for="store">Tipo de Envio *</label>
           <select class="form-control" id="store" formControlName="shipping_type">
-            <option [value]="null" disabled>Seleccióna tipo de envío</option>
+            <option [value]="null" disabled>Selecciona tipo de envío</option>
             <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
               {{shipping.name}}</option>
           </select>
@@ -58,7 +65,7 @@
 
       <div class="col-12 col-sm-6">
         <div class="form-group ">
-          <label for="exampleInputEmail1">Usuario </label>
+          <label for="exampleInputEmail1">Usuario *</label>
           <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario" formControlName="user"
             (change)="getInfoUser()">
             <option selected disabled value="">Selecciona un usuario...</option>
@@ -72,9 +79,9 @@
     <div class="row mt-3 mt-3">
       <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="store">Dirección de Envio</label>
+          <label for="store">Dirección de Envio *</label>
           <select class="form-control" id="store" formControlName="address">
-            <option [value]="null" disabled>Seleccióna direccion de envio</option>
+            <option [value]="null" disabled>Selecciona direccion de envio</option>
             <option *ngFor="let addres of address" [ngValue]="addres.id">
               {{addres.address}}</option>
           </select>
@@ -88,14 +95,21 @@
       </div>
     </div>
     <div class="row mt-3">
-      <div class="col-12 col-sm-12">
-        <label for="product">Productos en Envio</label>
+      <div class="col-12 col-sm-12"> 
+        <label for="product">Productos en Envio *</label>
         <ng-select [multiple]="true" id="product" formControlName="products" (remove)="removeProduct($event.value)"
           (add)="addProduct($event)">
           <ng-option *ngFor="let product of products" [value]="product">
-            {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :  product.name)}}
+            {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :
+            product.name)}}
           </ng-option>
         </ng-select>
+      </div>
+      <div class="col-12 col-sm-12 p-3 px-4 const-warning"*ngIf="validateAllProductsInLocker">
+        <a href="" style="color:red">
+          <i class="fas fa-exclamation-triangle fa-2x" ></i> 
+        </a>
+        <span class="mx-2"> Aún no estan todos los productos del envío en el casillero</span>
       </div>
     </div>
   </form>
@@ -106,7 +120,11 @@
   <button class="btn btn-secondary" (click)="closeModale()">
     Cancelar
   </button>
-
+  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPackcage()" *ngIf="shippingToUpdate.status =='1'">
+    <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+    Empacado
+  </button>
+  
   <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Actualizar

@@ -22,14 +22,19 @@ import { CartComponent } from './cart/cart.component';
 import { AddproductComponent } from './addproduct/addproduct.component';
 import { CustomersComponent } from './customers/customers.component';
 import { OrdersComponent } from './orders/orders.component';
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { CreateOrderComponent } from './orders/components/create-order/create-order.component';
 import { OrdersBuysComponent } from './orders-buys/orders-buys.component';
 import { OrdersShippingsComponent } from './orders-shippings/orders-shippings.component';
 import { ModalCreateShippingComponent } from './orders-shippings/components/modal-create-shipping/modal-create-shipping.component';
 import { ShippingsTableComponent } from './orders-shippings/components/shippings-table/shippings-table.component';
 import { ModalUpdateShippingComponent } from './orders-shippings/components/modal-update-shipping/modal-update-shipping.component';
-
+import { SharedModule } from 'src/app/shared/shared.module';
+import { ModalLockerEntryComponent } from 'src/app/shared/widget/transaction/modals/modal-locker-entry/modal-locker-entry.component';
+import { NgxDropzoneModule } from 'ngx-dropzone';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 const config: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -39,7 +44,12 @@ const config: DropzoneConfigInterface = {
 
 @NgModule({
   // tslint:disable-next-line: max-line-length
-  declarations: [ProductsComponent, ProductdetailComponent, ShopsComponent, CheckoutComponent, CartComponent, AddproductComponent, CustomersComponent, OrdersComponent, CreateOrderComponent, OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent, ShippingsTableComponent, ModalUpdateShippingComponent],
+  declarations: [ProductsComponent,
+    ProductdetailComponent, ShopsComponent,
+    CheckoutComponent, CartComponent, AddproductComponent,
+    CustomersComponent, OrdersComponent, CreateOrderComponent,
+    OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent,
+    ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent],
   imports: [
     CommonModule,
     EcommerceRoutingModule,
@@ -57,7 +67,15 @@ const config: DropzoneConfigInterface = {
     NgbPaginationModule,
     MatPaginatorModule,
     NgbDatepickerModule,
-
+    NgxDropzoneModule,
+    MatSelectModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    SharedModule
+  ],
+  exports: [
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   providers: [
     {
@@ -66,4 +84,5 @@ const config: DropzoneConfigInterface = {
     }
   ]
 })
+
 export class EcommerceModule { }

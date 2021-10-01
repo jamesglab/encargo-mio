@@ -1,10 +1,11 @@
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
+import { ExportPdfService } from "../../../_services/export-pdf.service";
 import { OrderService } from "../../../_services/orders.service";
 
 @Component({
@@ -12,34 +13,43 @@ import { OrderService } from "../../../_services/orders.service";
   templateUrl: "./modal-update-shipping.component.html",
   styleUrls: ["./modal-update-shipping.component.scss"],
 })
+
 export class ModalUpdateShippingComponent implements OnInit {
+
   @Input() public users: any = [];
   @Input() public trm: any;
   @Input() public shippingToUpdate: any;
   @Output() getTransactions = new EventEmitter<any>();
 
   public isLoading: boolean = false;
+  public isLoadingLabel: boolean = false;
   public conveyors: [] = [];
   public address: [] = [];
   public products: [] = [];
   public shipping_types: [] = [];
   public deleted_products: any = [];
-  updateShippingForm: FormGroup;
+  public updateShippingForm: FormGroup;
+  public addressSelected: any = {};
+  public validateAllProductsInLocker: boolean = false;
   constructor(
     private _userService: UserService,
     private _orderService: OrderService,
     private _formBuilder: FormBuilder,
     private _notify: NotifyService,
-    public modalService: NgbModal
+    public modalService: NgbModal,
+    public _label: ExportPdfService,
+    public _router: Router
   ) { }
 
   ngOnInit(): void {
     this.buildForm(this.shippingToUpdate);
     this.getConvenyor();
     this.getShippingTypes();
+    this.validateProductsInLocker()
   }
 
   buildForm(shipping) {
+    this.addressSelected = shipping.address;
     // SETEAMOS LOS VALORES AL FORMULARIO QUE ENCUENTRA EL USUARIO
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
@@ -68,7 +78,6 @@ export class ModalUpdateShippingComponent implements OnInit {
     });
     // DEBIDO AL CAMBIO EN LA ESTRUCTURA DE LOS DATOS ENVIAMOS EL ID DEL LOCKER Y LOS PRODUCTOS
     this.getInfoUser(shipping.user.locker.id, shipping.products);
-    console.log("products form", this.updateShippingForm);
   }
 
   getInfoUser(locker_id?, products?) {
@@ -100,12 +109,22 @@ export class ModalUpdateShippingComponent implements OnInit {
         this.updateShippingForm.get("products").setValue(totalProducts);
       });
   }
+
+
+  validateProductsInLocker() {
+    this.shippingToUpdate.products.map(p => {
+      if (p.status != 1) {
+        this.validateAllProductsInLocker = true;
+      }
+    })
+  }
   // AGREGAMOS LAS TRANSPORTADORAS
   getConvenyor() {
     this._orderService.getConvenyor().subscribe((res) => {
       this.conveyors = res;
     });
   }
+
   getShippingTypes() {
     this._orderService.getShippingTypes().subscribe((res) => {
       this.shipping_types = res;
@@ -128,7 +147,6 @@ export class ModalUpdateShippingComponent implements OnInit {
           delivery_date
         })
         .subscribe((res) => {
-          console.log("update is", res);
           this.modalService.dismissAll();
           this.getTransactions.emit(true);
           this._notify.show('Orden de envio Actualizada', '', 'success');
@@ -137,11 +155,10 @@ export class ModalUpdateShippingComponent implements OnInit {
           this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
         });
     } else {
-      this._notify.show('Error', 'Revisa el formulario /n Debes poner al menos un producto en el envio', 'error');
-
+      this._notify.show('Error', 'Revisa el formulario hay campos requeridos incompletos', 'error');
     }
-
   }
+
   closeModale() {
     this.modalService.dismissAll();
   }
@@ -157,4 +174,43 @@ export class ModalUpdateShippingComponent implements OnInit {
       }
     });
   }
+
+  generateLabel() {
+    this.isLoadingLabel = true;
+    let UID: string = "";
+    UID = this.updateShippingForm.getRawValue().id;
+    for (let index = 0; index < this.updateShippingForm.getRawValue().products.length; index++) {
+      UID = UID + '-' + this.updateShippingForm.getRawValue().products[index].id;
+    }
+    this._label.exportToLabel(this.updateShippingForm.getRawValue(), this.addressSelected, UID).then(() => {
+      this.isLoadingLabel = false;
+    });
+  }
+
+  updateShippingPackcage() {
+      this.isLoading = true;
+      this._orderService
+        .updateShippingPacked({
+          status: '2',
+          id : this.shippingToUpdate.id 
+        })
+        .subscribe((res) => {
+          this.modalService.dismissAll();
+          this.getTransactions.emit(true);
+          this._notify.show('Orden de envio Actualizada', '', 'success');
+        }, err => {
+          this.isLoading = false;
+          this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
+        });
+
+  }
+  goToFragment() {
+    if (this.updateShippingForm.getRawValue().id) {
+      this._router.navigate(["/fragment/" + this.updateShippingForm.getRawValue().id]);
+      this.modalService.dismissAll();
+    } else {
+      return;
+    }
+  }
+
 }

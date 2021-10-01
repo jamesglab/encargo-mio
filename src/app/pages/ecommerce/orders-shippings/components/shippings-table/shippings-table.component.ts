@@ -7,7 +7,7 @@ import { OrderService } from '../../../_services/orders.service';
   styleUrls: ['./shippings-table.component.scss']
 })
 export class ShippingsTableComponent implements OnInit {
-  @Input() transactions;
+  @Input() shippings = [];
   @Output() shippingSelected = new EventEmitter<any>();
   isLoading: boolean;
   constructor(

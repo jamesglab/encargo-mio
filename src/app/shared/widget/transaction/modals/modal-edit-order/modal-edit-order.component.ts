@@ -1,18 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
-import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
-import { NotifyService } from 'src/app/_services/notify.service';
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
+import { numberOnly, validateErrors } from "src/app/_helpers/tools/utils.tool";
+import { NotifyService } from "src/app/_services/notify.service";
+import Swal from "sweetalert2";
 
 @Component({
-  selector: 'app-modal-edit-order',
-  templateUrl: './modal-edit-order.component.html',
-  styleUrls: ['./modal-edit-order.component.scss']
+  selector: "app-modal-edit-order",
+  templateUrl: "./modal-edit-order.component.html",
+  styleUrls: ["./modal-edit-order.component.scss"],
 })
+
 export class ModalEditOrderComponent implements OnInit {
 
   @Input() public orderSelected: any;
-  @Input() public trm: any;
   @Input() public status: any;
   @Output() public refreshTable = new EventEmitter<any>();
 
@@ -22,9 +23,11 @@ export class ModalEditOrderComponent implements OnInit {
   public isLoadingFormula: boolean = false;
   public disabledInputs: boolean = false;
   public disabledAllInputs: boolean = false;
+  public isLoadingQuery: boolean = false;
+  public productSelected: any;
 
   constructor(
-    private _orderService: OrderService,
+    private _orders: OrderService,
     public _notify: NotifyService,
     public modalService: NgbModal
   ) { }
@@ -38,13 +41,28 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   calculateValuesInit() {
-    this.orderSelected.products.map((products: any, index: number) => {
-      products.tax_manually = false; // Asignamos el valor del tax manual a automático.
-      if (products.tax > 0) { this.calculateTax(index); } // Si el tax es mayor a 0 cuando inicie lo calculamos, si no, no.
-      this.calculateTotalPrices(index);
-      this.calculateDiscount(index);
-      this.calculateTotalArticles();
-    });
+    this.isLoadingQuery = true;
+    this._orders.detailOrder({ id: this.orderSelected.id })
+      .subscribe((res: any) => {
+        if (res) {
+          this.orderSelected.trm = res.trm;
+          this.orderSelected.products = res.products;
+          this.orderSelected.products.map((products: any, index: number) => {
+            products.free_shipping = (products.free_shipping ? products.free_shipping : false);
+            products.tax_manually = false; // Asignamos el valor del tax manual a automático.
+            this.calculateTotalPrices(index);
+            this.calculateDiscount(index);
+            this.calculateTotalArticles();
+            this.getFormula(index);
+          });
+        }
+        this.isLoadingQuery = false;
+      }, err => {
+        this.isLoadingQuery = false;
+        this._notify.show('Intenta mas tarde', 'No pudimos consultar la order', 'error');
+        this.modalService.dismissAll()
+        throw err;
+      });
     if (this.status === 2) {
       this.disabledAllInputs = true;
     }
@@ -53,24 +71,19 @@ export class ModalEditOrderComponent implements OnInit {
   getFormula(position?: number) {
     if (this.status == 0 || this.status == 1) {
       this.isLoadingFormula = true;
-      this._orderService.calculateShipping(this.orderSelected.products)
+      this._orders.calculateShipping(this.orderSelected.products)
         .subscribe((res: any) => {
-          if (res[0].name === 'No aplica') {
-            this.orderSelected.shipping_value_admin = null; // Si todos los productos tienen free_shipping = true volvemos el valor de las formulas nulo
-            this.orderSelected.products.map((product: any, i: number) => { // Mapeamos todos los productos 
+          this.orderSelected.shipping_value_admin = res;
+          if (res[0].name === "No aplica") {
+            this.orderSelected.products.map((product: any, i: number) => {// Mapeamos todos los productos
               product.tax = 0; // Volver el tax 0
               this.calculateTotalPrices(i); // Calculamos el total de prices
               this.calculateTotalArticles(); // Luego calculamos el total de los articulos
             });
-          } else if (res[0].name === 'Envío Fijo') {
-            this.orderSelected.shipping_value_admin = null;
-            this.orderSelected.total_permanent_shipping_value = res[0].value;
           } else {
-            this.orderSelected.shipping_value_admin = res; //Asignamos el valor de la respuesta al shipping value admin
-            this.calculateTax(position); // Calculamos el tax
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
-            this.calculateTotalArticles();
+            this.calculateTotalArticles(); // Luego calculamos el total de los articulos
           }
           this.isLoadingFormula = false;
         }, err => {
@@ -115,13 +128,14 @@ export class ModalEditOrderComponent implements OnInit {
     var sub_total: number = 0;
     var total_weight: number = 0;
     this.orderSelected.products.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; });
-    this.orderSelected.total_value = sub_total;
+    this.orderSelected.sub_total = sub_total;
     this.orderSelected.total_weight = total_weight;
   }
 
   changeCalculator(item: string, i: number) {
     this.orderSelected.products[i].tax_manually = false; // Setear que el tax_manually estará automatico
     this.orderSelected.products[i].selected_tax = item;
+    this.calculateTax(i);
     this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
   }
 
@@ -136,13 +150,27 @@ export class ModalEditOrderComponent implements OnInit {
     this.getFormula(i);
   }
 
-  numberOnly(event): boolean { // Función para que sólo se permitan números en un input
+  numberOnly(event): boolean {  // Función para que sólo se permitan números en un input
     return numberOnly(event);
   }
 
+  upadteImageByProduct(image) {
+    this.productSelected.image = image;
+  }
+
+  openModal(product: any, modal: any, sizeModale: string) {
+    this.productSelected = product;
+    this.modalService.open(modal, { size: sizeModale, centered: true });
+  }
+
   sendQuotation() {
+    // VALIDAMOS LOS CAMPOS QUE SON REQUERIDOS EN EL INPUT
+    if (validateErrors(this.orderSelected.products, ['name', 'weight', 'product_value'])) {
+      Swal.fire('Error', 'Campos requeridos incompletos', 'warning')
+      return
+    }
     this.isLoading = true;
-    this._orderService.updateOrder(this.orderSelected)
+    this._orders.updateOrder(this.orderSelected)
       .subscribe(res => {
         this._notify.show("Cotización Actualizada", `Actualizaste la cotización # ${this.orderSelected.id}`, "success");
         this.isLoading = false;
@@ -154,5 +182,13 @@ export class ModalEditOrderComponent implements OnInit {
         throw err;
       });
   }
+
+  // validateErrors(objectsValidate, validators) {
+  //   let validate = false;
+  //   // let validators = ['name', 'weight', 'product_value'];
+  //   objectsValidate.map(p => {
+  //     validators.map(validator => { if (p[validator] == null || p[validator] == undefined || p[validator] == '') { validate = true } })
+  //   });
+  // }
 
 }
