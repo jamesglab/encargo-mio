@@ -18,10 +18,7 @@ import { EcommerceModule } from './ecommerce/ecommerce.module';
 import { TasksModule } from './tasks/tasks.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { TablesModule } from './tables/tables.module';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'
-
-
-
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin,
@@ -31,7 +28,6 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 
 @NgModule({
   declarations: [
-    
   ],
   imports: [
     CommonModule,

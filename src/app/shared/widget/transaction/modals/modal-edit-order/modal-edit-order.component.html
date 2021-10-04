@@ -95,8 +95,10 @@
             <a (click)="openModal(item,createImage,'md ')"><i class="far fa-edit"></i></a>
           </div>
           <div>
-            <img [src]="item.image" (error)="$event.target.src = 'assets/images/default.jpg'" class="avatar"
-              style="object-fit: contain;" />
+            <a [href]="item.link" target="_blank">
+              <img [src]="item.image" (error)="$event.target.src = 'assets/images/default.jpg'" class="avatar"
+                style="object-fit: contain;" />
+            </a>
           </div>
         </div>
         <div class="col-4">
