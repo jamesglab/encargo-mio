@@ -46,7 +46,7 @@
                 <td>{{ data.weight ? data.weight + ' lb' : 0 }}</td>
 
                 <td>
-                    <button class="btn btn-primary btn-sm btn-rounded" (click)="viewDetail(data, modalLocker, 'md');">
+                    <button class="btn btn-primary btn-sm btn-rounded" (click)="viewDetail(data, modalLocker, 'xl');">
                         Editar
                     </button>
                 </td>
@@ -60,5 +60,15 @@
 </div>
 
 <ng-template #modalLocker role="document" let-modal>
-    test
+
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Casillero</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+        <app-modal-edit-lockers [lockerSelected]="lockerSelected"
+            (closeModalEditLockers)="closeModalEditLockers($event);"></app-modal-edit-lockers>
+    </div>
+
 </ng-template>

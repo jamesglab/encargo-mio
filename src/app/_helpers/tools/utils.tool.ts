@@ -97,3 +97,12 @@ export const validateErrors = (objectsValidate, validators) => {
     });
     return validate
 }
+
+export const dataURLtoFile = (dataurl, filename) => { // Método para convertir una URL en un tipo File para la librería ngx dropzone
+    var arr = dataurl.split(','),
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: "image/jpeg" });
+}

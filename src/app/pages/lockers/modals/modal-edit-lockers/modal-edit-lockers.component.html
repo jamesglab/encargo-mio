@@ -1,1 +1,178 @@
-<p>modal-edit-lockers works!</p>
+<div class="d-flex justify-content-center" *ngIf="isLoading">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<form [formGroup]="lockerEditForm" *ngIf="!isLoading">
+
+    <div class="form-row form-flex">
+
+        <div class="form-group col-md-6">
+            <label for="guide">Número Guía Origen</label>
+            <input type="text" class="form-control" id="guide" placeholder="Ingresa el Número Guía Origen..."
+                formControlName="guide_number">
+        </div>
+
+        <div class="form-group col-md-6 margin-left-10 ">
+
+            <label for="conveyor">Transportadora Origen</label>
+
+            <input matInput class="form-control" id="conveyor" formControlName="conveyor"
+                [matAutocomplete]="auto_conveyor" placeholder="Búsqueda de transportadora...">
+
+            <mat-autocomplete #auto_conveyor="matAutocomplete" [displayWith]="displayWith">
+                <mat-option *ngFor="let conveyor of allConveyors" [value]="conveyor">
+                    {{conveyor.name}}
+                </mat-option>
+            </mat-autocomplete>
+
+        </div>
+
+    </div>
+
+    <div class="form-row form-flex">
+
+        <div class="form-group col-md-6">
+            <label for="locker">Casillero*</label>
+            <input type="text" class="form-control" id="locker" placeholder="Selecciona el casillero..."
+                formControlName="locker" readonly>
+        </div>
+
+        <div class="form-group col-md-6 margin-left-10 ">
+            <label for="order">Orden</label>
+            <input type="text" class="form-control" id="order" placeholder="Selecciona la orden..."
+                formControlName="order" readonly>
+        </div>
+
+    </div>
+
+    <div class="form-row form-flex">
+
+        <div class="form-group col-md-6">
+            <label for="name">Nombre*</label>
+            <input type="text" class="form-control" id="name" placeholder="Ingresa el nombre..." formControlName="name">
+        </div>
+
+        <div class="form-group col-md-6 margin-left-10 ">
+            <label for="weight">Peso Libras*</label>
+            <input type="number" class="form-control" id="weight" placeholder="Ingresa el peso en libras..."
+                formControlName="weight" (keypress)="numberOnly($event);">
+        </div>
+
+    </div>
+
+    <div class="form-row form-flex">
+
+        <div class="form-group col-md-6">
+            <label for="shipping_value">Valor Envío</label>
+            <input type="number" class="form-control" id="shipping_value" placeholder="Ingresa el valor de envío..."
+                formControlName="shipping_value" (keypress)="numberOnly($event);">
+        </div>
+
+        <div class="form-group col-md-6 margin-left-10 ">
+
+            <label for="date_recieved">Fecha de Recibido</label>
+
+            <div class="input-group clockpicker">
+                <input ngbDatepicker class="form-control" id="date_recieved" placeholder="yyyy-mm-dd"
+                    #dl="ngbDatepicker" formControlName="date_recieved">
+                <div class="input-group-append" (click)="dl.toggle()">
+                    <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="form-row form-flex">
+
+        <div class="form-group col-md-6">
+            <label for="product_description">Descripción del Producto</label>
+            <textarea class="form-control" id="product_description" rows="3"
+                placeholder="Ingresa la descripción del producto..." formControlName="product_description"></textarea>
+        </div>
+
+        <div class="form-group col-md-6 margin-left-10 ">
+            <label for="declared_value_admin">Valor declarado (Administrador)*</label>
+            <input type="number" class="form-control" id="declared_value_admin"
+                placeholder="Ingresa el valor declarado..." formControlName="declared_value_admin"
+                (keypress)="numberOnly($event);">
+        </div>
+
+    </div>
+
+    <div class="form-row form-flex">
+
+        <div class="form-group col-md-6">
+
+            <label for="estimated_delivery_date">Fecha Estimada de Entrega</label>
+
+            <div class="input-group clockpicker">
+                <input ngbDatepicker class="form-control" id="estimated_delivery_date" placeholder="yyyy-mm-dd"
+                    #dl="ngbDatepicker" formControlName="estimated_delivery_date">
+                <div class="input-group-append" (click)="dl.toggle()">
+                    <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group col-md-6 margin-left-10 ">
+
+            <div class="form-check form-switch mt-3">
+                <input class="form-check-input" for="force_commercial_shipping" type="checkbox"
+                    id="flexSwitchCheckDefault" formControlName="force_commercial_shipping">
+                <label class="form-check-label" for="flexSwitchCheckDefault">¿Forzar Envio Comercial?</label>
+                <p>Los productos que se envíen en compañía de este articulo, aplicaran el cálculo bajo la fórmula de
+                    envío comercial.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- <div class="form-row form-flex">
+
+        <div class="form-group col-md-6">
+            <label for="national_conveyor">Transportadora Nacional</label>
+            <input type="text" class="form-control" id="national_conveyor"
+                placeholder="Selecciona la transportadora Nacional..." formControlName="national_conveyor">
+        </div>
+
+        <div class="form-group col-md-6 margin-left-10 ">
+            <label for="guide_number_national">Número de Guía Nacional</label>
+            <input type="number" class="form-control" id="guide_number_national"
+                placeholder="Ingresa el número de guía nacional..." formControlName="guide_number_national">
+        </div>
+
+    </div> -->
+
+    <div class="form-row">
+
+        <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="onSelectImage($event)">
+
+            <ngx-dropzone-label>
+                <div>
+                    <h2>Inserta las Imagenes del Producto</h2>
+                </div>
+            </ngx-dropzone-label>
+
+            <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
+                [removable]="true" (removed)="onRemoveImage(f);">
+            </ngx-dropzone-image-preview>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="container-buttons">
+        <button type="submit" class="btn" (click)="closeModal();" [disabled]="isLoadingQuery">Cancelar</button>
+        <button type="submit" class="btn btn-primary" (click)="onSubmit();" [disabled]="isLoadingQuery">Guardar</button>
+    </div>
+
+</form>

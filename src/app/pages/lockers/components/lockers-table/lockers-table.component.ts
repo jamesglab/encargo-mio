@@ -17,12 +17,17 @@ export class LockersTableComponent implements OnInit {
     public modalService: NgbModal
   ) { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   viewDetail(locker: any, modal: any, sizeModale: string) {
     this.lockerSelected = locker;
     this.modalService.open(modal, { size: sizeModale, centered: true });
+  }
+
+  closeModalEditLockers(event: any) {
+    if (!event) {
+      this.modalService.dismissAll();
+    }
   }
 
 }
