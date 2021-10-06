@@ -10,6 +10,17 @@
 
 .container-buttons {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     flex-wrap: wrap;
+}
+
+.container-imagen {
+    text-align: center;
+    div {
+        font-weight: 500;
+        margin-top: 20px;
+    }
+    img {
+        height: 200px;
+    }
 }

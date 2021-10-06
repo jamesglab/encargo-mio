@@ -142,8 +142,19 @@ export class OrderService {
       );
   }
 
-  insertProductLocker(payload) {
+  insertProductLocker(payload: any) {
     return this.http.post<any>(
+      `${environment.microservices.management}locker`, payload
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  updateProductLocker(payload: any) {
+    return this.http.put<any>(
       `${environment.microservices.management}locker`, payload
     ).pipe(
       map((res: any) => {

@@ -65,9 +65,10 @@
     <div class="form-row form-flex">
 
         <div class="form-group col-md-6">
-            <label for="shipping_value">Valor Envío</label>
-            <input type="number" class="form-control" id="shipping_value" placeholder="Ingresa el valor de envío..."
-                formControlName="shipping_value" (keypress)="numberOnly($event);">
+            <label for="permanent_shipping_value">Valor Envío Fijo</label>
+            <input type="number" class="form-control" id="permanent_shipping_value"
+                placeholder="Ingresa el valor de envío..." formControlName="permanent_shipping_value"
+                (keypress)="numberOnly($event);">
         </div>
 
         <div class="form-group col-md-6 margin-left-10 ">
@@ -104,20 +105,6 @@
     </div>
 
     <div class="form-row form-flex">
-
-        <div class="form-group col-md-6">
-
-            <label for="estimated_delivery_date">Fecha Estimada de Entrega</label>
-
-            <div class="input-group clockpicker">
-                <input ngbDatepicker class="form-control" id="estimated_delivery_date" placeholder="yyyy-mm-dd"
-                    #dl="ngbDatepicker" formControlName="estimated_delivery_date">
-                <div class="input-group-append" (click)="dl.toggle()">
-                    <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                </div>
-            </div>
-
-        </div>
 
         <div class="form-group col-md-6 margin-left-10 ">
 
@@ -168,10 +155,18 @@
 
     </div>
 
+    <div class="container-imagen">
+        <div>Imagen de Origen:</div>
+        <a [href]="form.product.value.link" target="_blank" >
+            <img [src]="form.product.value.image" alt=""
+                title="{{ form.product.value.name ? form.product.value.name : '' }}" draggable="false">
+        </a>
+    </div>
+
     <br>
 
     <div class="container-buttons">
-        <button type="submit" class="btn" (click)="closeModal();" [disabled]="isLoadingQuery">Cancelar</button>
+        <button type="submit" class="btn" (click)="cancelModal();" [disabled]="isLoadingQuery">Cancelar</button>
         <button type="submit" class="btn btn-primary" (click)="onSubmit();" [disabled]="isLoadingQuery">Guardar</button>
     </div>
 

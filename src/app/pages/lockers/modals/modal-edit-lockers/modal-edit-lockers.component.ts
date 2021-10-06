@@ -4,6 +4,8 @@ import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { LockersService } from '../../_services/lockers.service';
 import { dataURLtoFile, numberOnly } from '../../../../_helpers/tools/utils.tool'
 import * as moment from 'moment';
+import { updateLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
+import { NotifyService } from 'src/app/_services/notify.service';
 
 @Component({
   selector: 'app-modal-edit-lockers',
@@ -14,6 +16,7 @@ import * as moment from 'moment';
 export class ModalEditLockersComponent implements OnInit {
 
   @Output() public closeModalEditLockers: EventEmitter<boolean> = new EventEmitter();
+  @Output() public cancelModalStatus: EventEmitter<boolean> = new EventEmitter();
   @Input() public lockerSelected: any = {};
 
   public isLoading: boolean = false;
@@ -25,7 +28,8 @@ export class ModalEditLockersComponent implements OnInit {
   constructor(
     private _lockers: LockersService,
     public _fb: FormBuilder,
-    private _orders: OrderService
+    private _orders: OrderService,
+    private _notify: NotifyService
   ) { }
 
   ngOnInit(): void {
@@ -52,8 +56,9 @@ export class ModalEditLockersComponent implements OnInit {
 
   buildForm(res: any): void {
     this.lockerEditForm = this._fb.group({
+      id: [res.id ? res.id : null],
       guide_number: [res.guide_number ? res.guide_number : null],
-      conveyor: [null], // Ojo a esto
+      conveyor: [null],
       locker: [res.locker ? `CA${res.locker.id} | ${res.locker.user.name} ${res.locker.user.last_name}` : '', [Validators.required]],
       locker_info: [res.locker ? res.locker : null],
       order: [res.order_purchase ? `${res.order_purchase.id} | ${res.product.name}` : null],
@@ -61,17 +66,16 @@ export class ModalEditLockersComponent implements OnInit {
       name: [res.product ? res.product.name : null],
       weight: [res.weight ? res.weight : 0, [Validators.required]],
       date_recieved: [res.receipt_date ? { day: parseInt(moment(res.receipt_date).format("D")), month: parseInt(moment(res.receipt_date).format("M")), year: parseInt(moment(res.receipt_date).format("YYYY")) } : null],
-      shipping_value: [res.shipping_value ? res.shipping_value : 0],
+      permanent_shipping_value: [res.permanent_shipping_value ? res.permanent_shipping_value : 0],
       declared_value_admin: [res.declared_value_admin ? res.declared_value_admin : 0, [Validators.required]],
       product_description: [res.product_description ? res.product_description : null],
       force_commercial_shipping: [false],
-      estimated_delivery_date: [null],
+      images: [res.images ? res.images : []],
+      product: [res.product ? res.product : null]
+      // estimated_delivery_date: [null],
       // national_conveyor: [null],
       // guide_number_national: [null],
     });
-    // if (res.image) {
-    //   res.images.splice(0, 0, { Location: res.image });
-    // }
     this.pushConveyorSelected(res.conveyor);
     this.pushImagesResponse(res.images);
   }
@@ -123,18 +127,38 @@ export class ModalEditLockersComponent implements OnInit {
     });
   }
 
+  cancelModal(): void {
+    this.cancelModalStatus.emit(true);
+  }
+
   closeModal(): void {
     this.closeModalEditLockers.emit(false);
   }
 
   onSubmit(): void {
+
     if (this.lockerEditForm.invalid) {
-      console.log("EL FORMULARIO ES INVÁLIDO");
+      this._notify.show('', 'El formulario no se ha completado correctamente.', 'info');
       return;
     }
+
     this.isLoadingQuery = true;
-    console.log("READY TO RACE", this.lockerEditForm.getRawValue());
-    this.isLoadingQuery = false;
+    var formData = new FormData();
+    this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+    let payload = updateLocker(this.lockerEditForm.getRawValue());
+    formData.append("payload", JSON.stringify(payload));
+
+    this._orders.updateProductLocker(formData).subscribe((res: any) => {
+      if (res) {
+        this._notify.show('', res.message ? res.message : 'Se ha actualizado correctamente.', 'success');
+      }
+      this.isLoadingQuery = false;
+      this.closeModal();
+    }, err => {
+      this._notify.show('', err.error.message ? err.error.message : 'Ha ocurrido un error.', 'info');
+      this.isLoadingQuery = false;
+      throw err;
+    });
 
   }
 

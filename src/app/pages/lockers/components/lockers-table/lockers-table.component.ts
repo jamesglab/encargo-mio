@@ -11,6 +11,7 @@ export class LockersTableComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Input() public lockers: any = [];
+
   public lockerSelected: any = {};
 
   constructor(
@@ -27,7 +28,12 @@ export class LockersTableComponent implements OnInit {
   closeModalEditLockers(event: any) {
     if (!event) {
       this.modalService.dismissAll();
+      this.refreshTable.emit(true);
     }
+  }
+
+  cancelModalReceive(event?: any) {
+    this.modalService.dismissAll();
   }
 
 }
