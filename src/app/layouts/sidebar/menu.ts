@@ -63,6 +63,19 @@ export const MENU: MenuItem[] = [
                 parentId: 48
             }
         ]
+    },
+    {
+        id: 1,
+        label: 'Casillero',
+        icon: 'bxs-box',
+        subItems: [
+            {
+                id: 2,
+                label: 'Casilleros',
+                parentId: 1,
+                link: '/lockers/locker'
+            }
+        ]
     }
 ];
 

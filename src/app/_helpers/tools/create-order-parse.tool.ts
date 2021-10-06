@@ -48,3 +48,22 @@ export const insertInLocker = (data: any): any => {
     return locker;
 
 }
+
+export const updateLocker = (data: any): any => {
+
+    let locker = {
+        "id": (data.id ? data.id : null),
+        "conveyor": (data.conveyor ? data.conveyor : null),
+        "receipt_date": new Date(data.date_recieved.year, data.date_recieved.month, data.date_recieved.day),
+        "declared_value_admin": (data.declared_value_admin ? data.declared_value_admin : 0),
+        "force_commercial_shipping": (data.force_commercial_shipping ? data.force_commercial_shipping : 0),
+        "guide_number": (data.guide_number ? data.guide_number : null),
+        "product_description": (data.product_description ? data.product_description : null),
+        "permanent_shipping_value": (data.permanent_shipping_value ? data.permanent_shipping_value : 0),
+        "weight": (data.weight ? data.weight : 0),
+        "images": (data.images ? data.images : [])
+    };
+
+    return locker;
+
+}

@@ -142,8 +142,19 @@ export class OrderService {
       );
   }
 
-  insertProductLocker(payload) {
+  insertProductLocker(payload: any) {
     return this.http.post<any>(
+      `${environment.microservices.management}locker`, payload
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  updateProductLocker(payload: any) {
+    return this.http.put<any>(
       `${environment.microservices.management}locker`, payload
     ).pipe(
       map((res: any) => {
@@ -223,7 +234,11 @@ export class OrderService {
       );
   }
 
-  updateShipping(payload) {
+  updateShipping(payload: any) {
+    if (payload.status === 3) {
+      delete payload.deleted_products;
+      delete payload.products;
+    }
     return this.http.put<any>(
       `${environment.microservices.management}shipping-order/`, payload, { headers: header }).pipe(
         map((res: any) => {
@@ -311,7 +326,7 @@ export class OrderService {
     )
   }
 
-  updateShippingPacked(payload){
+  updateShippingPacked(payload) {
     delete payload.products
     return this.http.put<any>(
       `${environment.microservices.management}shipping-order`, payload).pipe(
@@ -321,6 +336,6 @@ export class OrderService {
         catchError(handleError)
       );
   }
-  
+
 
 }

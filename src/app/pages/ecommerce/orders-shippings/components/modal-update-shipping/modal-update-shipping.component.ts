@@ -19,10 +19,15 @@ export class ModalUpdateShippingComponent implements OnInit {
   @Input() public users: any = [];
   @Input() public trm: any;
   @Input() public shippingToUpdate: any;
+  @Input() public status: number;
+
   @Output() getTransactions = new EventEmitter<any>();
 
   public isLoading: boolean = false;
   public isLoadingLabel: boolean = false;
+  public validateAllProductsInLocker: boolean = false;
+  public isLoadingProducts: boolean = false;
+
   public conveyors: [] = [];
   public address: [] = [];
   public products: [] = [];
@@ -30,7 +35,7 @@ export class ModalUpdateShippingComponent implements OnInit {
   public deleted_products: any = [];
   public updateShippingForm: FormGroup;
   public addressSelected: any = {};
-  public validateAllProductsInLocker: boolean = false;
+
   constructor(
     private _userService: UserService,
     private _orderService: OrderService,
@@ -56,83 +61,92 @@ export class ModalUpdateShippingComponent implements OnInit {
       trm: [this.trm],
       guide_number: [shipping.guide_number, Validators.required],
       conveyor: [shipping.conveyor, Validators.required],
-      delivery_date: [
-        {
-          day: parseInt(moment(shipping.delivery_date).format("D")),
-          month: parseInt(moment(shipping.delivery_date).format("M")),
-          year: parseInt(moment(shipping.delivery_date).format("YYYY")),
-        },
-        Validators.required,
-      ],
+      delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")), }, Validators.required,],
       total_value: [shipping.total_value, Validators.required],
       shipping_type: [shipping.shipping_type, Validators.required],
       // HACEMOS UN FIND SOBRE LOS EL USUARIO PARA RENDEREIZAR EL USUARIO AL QUE SE LE CREO EL ENVIO
       // ESTO SE DEBE A UN CAMBIO EN LA ESTRUCTURA DE LOS USUARIOS locker_id y locker{} SI NO NO SE MUESTRA EL USUARIO
-      user: [
-        this.users.find((item) => item.id == shipping.user.id),
-        Validators.required,
-      ],
+      user: [this.users.find((item) => item.id == shipping.user.id), Validators.required,],
       address: [shipping.address.id, Validators.required],
       observations: [shipping.observations],
       products: [null, Validators.required],
     });
     // DEBIDO AL CAMBIO EN LA ESTRUCTURA DE LOS DATOS ENVIAMOS EL ID DEL LOCKER Y LOS PRODUCTOS
     this.getInfoUser(shipping.user.locker.id, shipping.products);
+    this.disabledInputs();
   }
 
-  getInfoUser(locker_id?, products?) {
-    this._userService
-      .getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
-      .subscribe((res) => {
+  async getInfoUser(locker_id?, products?) {
+
+    await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
+      .subscribe((res: any) => {
         this.address = res;
+      }, err => {
+        throw err;
       });
-    // VALIDAMOS EL LOCKER ID Y ENVIAMOS LA CONSULTA PARA OBTENER LOS PRODUCTOS
-    this._orderService
-      .getProductsByLocker({
-        locker: locker_id
-          ? locker_id
-          : this.updateShippingForm.get("user").value.locker_id,
-      })
-      .subscribe((res) => {
-        let totalProducts = [];
-        if (products) {
-          products.map((product) => {
-            // BUSCAMOS LOS PRODUCTOS DENTRO DE LA RESPUESTA PARA QUE PUEDAN SER RENDERIZADOS EN EL SELECTOR PUES SUS ESTRUCTURAS SON DIFERENTES EN LAS COSULTAS
-            const find_product = res.find((p) => p.id == product.id);
-            if (find_product) {
-              totalProducts.push(find_product);
-            }
-          });
-        }
-        this.products = res;
-        // AGREGAMOS LOS VALORES QUE ESTABAN SELECCIONADOS EN EL FORMULARIO
-        this.updateShippingForm.get("products").setValue(totalProducts);
-      });
-  }
 
+    // VALIDAMOS EL LOCKER ID Y ENVIAMOS LA CONSULTA PARA OBTENER LOS PRODUCTOS
+    this.isLoadingProducts = true;
+    this.updateShippingForm.controls.products.disable();
+
+    await this._orderService.getProductsByLocker({
+      locker: locker_id ? locker_id : this.updateShippingForm.get("user").value.locker_id,
+    }).subscribe((res: any) => {
+      let totalProducts = [];
+      if (products) {
+        products.map((product: any) => {
+          // BUSCAMOS LOS PRODUCTOS DENTRO DE LA RESPUESTA PARA QUE PUEDAN SER RENDERIZADOS EN EL SELECTOR PUES SUS ESTRUCTURAS SON DIFERENTES EN LAS COSULTAS
+          const find_product = res.find((p) => p.id == product.id);
+          if (find_product) {
+            totalProducts.push(find_product);
+          }
+        });
+      }
+      this.products = res;
+
+      // AGREGAMOS LOS VALORES QUE ESTABAN SELECCIONADOS EN EL FORMULARIO
+      this.updateShippingForm.controls.products.setValue(totalProducts);
+      if (this.status === 3) {
+        this.updateShippingForm.controls.products.disable();
+      } else {
+        this.updateShippingForm.controls.products.enable();
+      }
+
+      this.isLoadingProducts = false;
+    }, err => {
+      this.isLoadingProducts = false;
+      throw err;
+    });
+  }
 
   validateProductsInLocker() {
     this.shippingToUpdate.products.map(p => {
       if (p.status != 1) {
         this.validateAllProductsInLocker = true;
       }
-    })
+    });
   }
+
   // AGREGAMOS LAS TRANSPORTADORAS
   getConvenyor() {
     this._orderService.getConvenyor().subscribe((res) => {
       this.conveyors = res;
+    }, err => {
+      throw err;
     });
   }
 
   getShippingTypes() {
     this._orderService.getShippingTypes().subscribe((res) => {
       this.shipping_types = res;
+    }, err => {
+      throw err;
     });
   }
 
   // METODO PARA ACTUALIZAR LA ORDEN
   updateShipping() {
+    this.updateShippingForm.controls.products.enable();
     if (this.updateShippingForm.valid && this.updateShippingForm.value.products.length > 0) {
       const delivery_date = new Date(
         this.updateShippingForm.getRawValue().delivery_date.year,
@@ -144,15 +158,16 @@ export class ModalUpdateShippingComponent implements OnInit {
         .updateShipping({
           ...this.updateShippingForm.getRawValue(),
           deleted_products: this.deleted_products,
-          delivery_date
-        })
-        .subscribe((res) => {
+          delivery_date,
+          status: this.status
+        }).subscribe((res: any) => {
           this.modalService.dismissAll();
           this.getTransactions.emit(true);
           this._notify.show('Orden de envio Actualizada', '', 'success');
         }, err => {
           this.isLoading = false;
           this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
+          throw err;
         });
     } else {
       this._notify.show('Error', 'Revisa el formulario hay campos requeridos incompletos', 'error');
@@ -188,22 +203,32 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   updateShippingPackcage() {
-      this.isLoading = true;
-      this._orderService
-        .updateShippingPacked({
-          status: '2',
-          id : this.shippingToUpdate.id 
-        })
-        .subscribe((res) => {
-          this.modalService.dismissAll();
-          this.getTransactions.emit(true);
-          this._notify.show('Orden de envio Actualizada', '', 'success');
-        }, err => {
-          this.isLoading = false;
-          this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
-        });
-
+    this.isLoading = true;
+    this._orderService.updateShippingPacked({
+      status: '2',
+      id: this.shippingToUpdate.id
+    }).subscribe((res: any) => {
+      this.modalService.dismissAll();
+      this.getTransactions.emit(true);
+      this._notify.show('Orden de envio Actualizada', '', 'success');
+    }, err => {
+      this.isLoading = false;
+      this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
+      throw err;
+    });
   }
+
+  disabledInputs() {
+    if (this.status === 3) {
+      this.updateShippingForm.controls.delivery_date.disable();
+      this.updateShippingForm.controls.total_value.disable();
+      this.updateShippingForm.controls.shipping_type.disable();
+      this.updateShippingForm.controls.user.disable();
+      this.updateShippingForm.controls.address.disable();
+      this.updateShippingForm.controls.observations.disable();
+    }
+  }
+
   goToFragment() {
     if (this.updateShippingForm.getRawValue().id) {
       this._router.navigate(["/fragment/" + this.updateShippingForm.getRawValue().id]);

@@ -183,12 +183,4 @@ export class ModalEditOrderComponent implements OnInit {
       });
   }
 
-  // validateErrors(objectsValidate, validators) {
-  //   let validate = false;
-  //   // let validators = ['name', 'weight', 'product_value'];
-  //   objectsValidate.map(p => {
-  //     validators.map(validator => { if (p[validator] == null || p[validator] == undefined || p[validator] == '') { validate = true } })
-  //   });
-  // }
-
 }

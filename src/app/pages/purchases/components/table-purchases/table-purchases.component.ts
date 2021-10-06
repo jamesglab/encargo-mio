@@ -6,6 +6,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./table-purchases.component.scss']
 })
 export class TablePurchasesComponent implements OnInit {
+  
   @Input() public purchases: [] = [];
   @Output() public editPurchase: EventEmitter<any> = new EventEmitter<any>();
   public isLoading: boolean = false;

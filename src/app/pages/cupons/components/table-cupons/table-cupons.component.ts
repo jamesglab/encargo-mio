@@ -5,10 +5,14 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   templateUrl: './table-cupons.component.html',
   styleUrls: ['./table-cupons.component.scss']
 })
+
 export class TableCuponsComponent implements OnInit {
-  @Input() cupons;
-  @Output() selectCuponEmit = new EventEmitter<any>();
-  isLoading: boolean;
+
+  @Input() public cupons;
+  @Output() public selectCuponEmit = new EventEmitter<any>();
+
+  public isLoading: boolean;
+
   constructor() { }
 
   ngOnInit(): void {
