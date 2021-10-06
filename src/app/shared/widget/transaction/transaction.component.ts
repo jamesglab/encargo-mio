@@ -11,7 +11,7 @@ import { NotifyService } from "src/app/_services/notify.service";
 export class TransactionComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
-  @Input() public status: number;
+  @Input() public status: string;
   @Input() public transactions: Array<{
     id?: string;
     estimeted_value?: number;
@@ -23,7 +23,7 @@ export class TransactionComponent implements OnInit {
 
   public orderSelected: any = {};
   public isLoading: boolean = false;
-  public statusTab: number = 0;
+  // public statusTab: number = 0;
 
   constructor(
     private modalService: NgbModal,
@@ -33,7 +33,7 @@ export class TransactionComponent implements OnInit {
   ngOnInit() { }
 
   ngOnChanges() {
-    this.statusTab = this.status;
+    // this.statusTab = this.status;
   }
 
   openModal(order: any, modal: any, sizeModale: string) {

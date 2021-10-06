@@ -15,7 +15,7 @@
         <th class="align-middle">Fecha de Creación</th>
         <th class="align-middle">Productos</th>
         <th class="align-middle">Total</th>
-        <th class="align-middle">Opciones</th>
+        <th class="align-middle" *ngIf="status != '4'">Opciones</th>
       </tr>
 
     </thead>
@@ -47,7 +47,7 @@
 
         <td>{{ data.total_value ? data.total_value : "" }}</td>
 
-        <td>
+        <td *ngIf="status != '4'">
           <!-- validamos el boton que se muestra dependiendo del estado de la orden -->
           <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(data, editOrder,'xl');"
             [disabled]="isLoading" *ngIf="data.status != '3' && data.status != '4'">
