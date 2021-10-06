@@ -10,8 +10,10 @@ export class ShippingDetailComponent implements OnInit {
   @Input() shipping;
   constructor() { }
 
-  ngOnInit(): void {
-    
+  ngOnInit(): void {}
+
+  ngOnChanges(){
+    console.log("SHIPPING", this.shipping)
   }
 
   validateShippingstatus(status){
