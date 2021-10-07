@@ -28,30 +28,47 @@
     <div class="row mt-3">
 
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
+
           <label for="products">Producto</label>
-          <select class="form-control" id="products" formControlName="product" (change)="setProductValue();">
-            <option [value]="null" disabled>Selecciona un producto</option>
-            <option *ngFor="let product of orderSelected.products" [ngValue]="product">
-              {{ (product.name.length > 50) ? (product.name | slice:0:50 ) + '...' : product.name }}</option>
-          </select>
+
+          <input matInput type="text" id="products" class="form-control" placeholder="Busca el producto..."
+            formControlName="product" [matAutocomplete]="auto_product">
+
+          <mat-autocomplete #auto_product="matAutocomplete" [displayWith]="displayProperty">
+            <mat-option *ngFor="let product of filteredOptionsProducts | async" [value]="product">
+              {{ (product.name.length > 50) ? (product.name | slice:0:50 ) + '...' : product.name }}
+            </mat-option>
+          </mat-autocomplete>
+
         </div>
+
       </div>
 
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
+
           <label for="store">Tienda</label>
-          <select class="form-control" id="store" formControlName="store">
-            <option [value]="null" disabled>Selecciona una tienda</option>
-            <option *ngFor="let store of stores" [ngValue]="store.id">
-              {{ (store.name.length > 50) ? (store.name | slice:0:50 ) + '...' : store.name }}</option>
-          </select>
+
+          <input matInput type="text" id="store" class="form-control" placeholder="Busca la tienda..."
+            formControlName="store" [matAutocomplete]="auto_shop">
+
+          <mat-autocomplete #auto_shop="matAutocomplete" [displayWith]="displayProperty">
+            <mat-option *ngFor="let store of filteredOptionsStores | async" [value]="store">
+              {{ (store.name.length > 50) ? (store.name | slice:0:50 ) + '...' : store.name }}
+            </mat-option>
+          </mat-autocomplete>
+
         </div>
+
       </div>
 
     </div>
 
     <div class="row mt-3">
+
       <!-- 
       <div class="col-12 col-sm-6">
         <label for="payment">Tipo de Pago</label>
@@ -63,22 +80,32 @@
       </div> -->
 
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
           <label for="order_value">Total Producto</label>
-          <input type="number" class="form-control" id="order_value" (keypress)="numberOnly($event);"
-            formControlName="product_price">
+          <input type="number" class="form-control" id="order_value" placeholder="Total del producto..."
+            (keypress)="numberOnly($event);" formControlName="product_price">
         </div>
+
       </div>
 
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
+
           <label for="conveyor">Transportadora</label>
-          <select class="form-control" id="conveyor" formControlName="conveyor">
-            <option [value]="null" disabled>Selecciona una transportadora</option>
-            <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
-              {{ conveyor.name ? conveyor.name : '' }}</option>
-          </select>
+
+          <input matInput type="text" id="conveyor" class="form-control" placeholder="Busca la transportadora..."
+            formControlName="conveyor" [matAutocomplete]="auto_conveyor">
+
+          <mat-autocomplete #auto_conveyor="matAutocomplete" [displayWith]="displayProperty">
+            <mat-option *ngFor="let conveyor of filteredOptionsConveyors | async" [value]="conveyor">
+              {{ conveyor.name ? conveyor.name : '' }}
+            </mat-option>
+          </mat-autocomplete>
+
         </div>
+
       </div>
 
     </div>
@@ -128,8 +155,21 @@
 
   </form>
 
-</div>
+  <ng-container *ngIf="form.product.value && form.product.value.image">
 
+    <div class="d-flex justify-content-center padding-image">
+      <a [href]="form.product.value.link" target="_blank">
+        <img [src]="form.product.value.image" draggable="false" alt="">
+      </a>
+    </div>
+
+    <div class="d-flex justify-content-center padding-image">
+      {{ form.product.value ? form.product.value.description : 'Sin descripción' }}
+    </div>
+
+  </ng-container>
+
+</div>
 
 <div class="modal-footer">
 

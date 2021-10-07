@@ -23,6 +23,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FormsModule,
     ReactiveFormsModule,
     NgxDropzoneModule,
+    MatAutocompleteModule
   ],
   exports: [StatComponent, TransactionComponent],
   providers: [NgxImageCompressService]

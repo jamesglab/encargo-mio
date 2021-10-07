@@ -100,7 +100,7 @@ export class OrderService {
       );
   }
 
-  registerPurchase(purchase) {
+  registerPurchase(purchase: any) {
     return this.http.post<any>(
       `${environment.microservices.management}order-purchase`, purchase
     ).pipe(
