@@ -76,7 +76,7 @@ export class CreateOrderComponent implements OnInit {
       tax_manually: [false],
       sub_total: [0],
       selected_tax: ["1"],
-      global_weight: [0]
+      initial_weight: [0]
     });
 
     return createProduct;
@@ -94,23 +94,11 @@ export class CreateOrderComponent implements OnInit {
       if (this.form.link.value) {
         this.quotationService.getProductInfo(this.form.link.value.trim())
           .subscribe((res) => {
-            this.form.image.setValue(res ? res.image : null);
-            this.form.name.setValue(res ? res.name : null);
-            this.form.description.setValue(res ? res.description : null);
-            this.form.price.setValue(res ? res.price : 0);
-            this.products.push(this.createProduct());
-            this.getFormula(this.products.controls.length - 1); // LLAMAMOS AL MÉTODO DE LA FORMULA
-            this.cleanForm(); // LLAMAMOS AL MÉTODO PARA RESETEAR EL FORMULARIO
+            this.addItem(res);
             this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
             this.isLoading = false;
           }, err => {
-            this.form.image.setValue(null);
-            this.form.name.setValue(null);
-            this.form.description.setValue(null);
-            this.form.price.setValue(null);
-            this.products.push(this.createProduct());
-            this.getFormula(this.products.controls.length - 1); // LLAMAMOS AL MÉTODO DE LA FORMULA
-            this.cleanForm(); // LLAMAMOS AL MÉTODO PARA RESETEAR EL FORMULARIO
+            this.addItem(null);
             this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
             this.isLoading = false;
             throw err;
@@ -125,6 +113,16 @@ export class CreateOrderComponent implements OnInit {
       this._notify.show('Los datos del producto están incompletos.', '', 'warning');
     }
 
+  }
+
+  addItem(res: any){
+    this.form.image.setValue(res ? res.image : null);
+    this.form.name.setValue(res ? res.name : null);
+    this.form.description.setValue(res ? res.description : null);
+    this.form.price.setValue(res ? res.price : 0);
+    this.products.push(this.createProduct());
+    this.getFormula(this.products.controls.length - 1); // LLAMAMOS AL MÉTODO DE LA FORMULA
+    this.cleanForm(); // LLAMAMOS AL MÉTODO PARA RESETEAR EL FORMULARIO
   }
 
   cleanForm(): void { //RESET CREATE PRODUCT FORM
@@ -205,13 +203,19 @@ export class CreateOrderComponent implements OnInit {
   }
 
   calculateWeightSubstract(i: number) {
-    console.log("EN LA RESTA XD");
-    this.products.controls[i]['controls'].quantity.value = this.products.controls[i]['controls'].quantity.value - 1; // Restar una cantidad
+    let product_weight = this.products.controls[i]['controls'].weight.value;//OBTAIN PRODUCT WEIGHT
+    let product_quantity = this.products.controls[i]['controls'].quantity.value;//OBTAIN PRODUCT QUANTITY
+    this.products.controls[i]['controls'].quantity.setValue(product_quantity - 1); //SUBSTRACT 1 TO QUANTITY
+    let unit_weight = (product_weight / product_quantity);// CALC WEIGHT FOR UNIT
+    this.products.controls[i]['controls'].weight.setValue(parseFloat((product_weight - unit_weight).toFixed(2)));//SUBSTRACT 1 UNIT TO WEIGHT
   }
 
   calculateWeightAdd(i: number) {
-    console.log("EN LA SUMA XD");
-    this.products.controls[i]['controls'].quantity.value = this.products.controls[i]['controls'].quantity.value + 1; // Sumar una cantidad
+    let product_weight = this.products.controls[i]['controls'].weight.value;//OBTAIN PRODUCT WEIGHT
+    let product_quantity = this.products.controls[i]['controls'].quantity.value;//OBTAIN PRODUCT QUANTITY
+    this.products.controls[i]['controls'].quantity.setValue(product_quantity + 1);//SUBSTRACT 1 TO QUANTITY
+    let unit_weight = (product_weight / product_quantity);// CALC WEIGHT FOR UNIT
+    this.products.controls[i]['controls'].weight.setValue(parseFloat((product_weight + unit_weight).toFixed(2)));//SUBSTRACT 1 UNIT TO WEIGHT
   }
 
   calculateTotalArticles() {
