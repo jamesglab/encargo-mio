@@ -47,23 +47,30 @@
 
         <td>{{ data.total_value ? data.total_value : "" }}</td>
 
-        <td *ngIf="status != '4'">
+        <td class="d-flex justify-content-around" *ngIf="status != '4'">
           <!-- validamos el boton que se muestra dependiendo del estado de la orden -->
           <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(data, editOrder,'xl');"
-            [disabled]="isLoading" *ngIf="data.status != '3' && data.status != '4'">
-            Editar
+            [disabled]="isLoading" *ngIf="data.status != '4'">
+            <ng-container *ngIf="data.status == '3'">
+              Ver Detalle
+            </ng-container>
+            <ng-container *ngIf="data.status != '3'">
+              Editar
+            </ng-container>
           </button>
           <!-- ABRIMOS EL ESTADO DE LA ORDEN PARA MOSTRAR EL BOTON DE APROBAR PRODUCTOS -->
-          <button type="button" class="btn btn-primary btn-sm btn-rounded" *ngIf="data.status == '3'"
+          <button type="button" *ngIf="data.status == '3'" class="btn btn-primary btn-sm btn-rounded"
             (click)="openModal(data, registerPurchase,'lg');" [disabled]="isLoading">
             Registrar Compra
           </button>
-
         </td>
+
       </tr>
+
     </tbody>
 
   </table>
+
 </div>
 <!-- end table -->
 

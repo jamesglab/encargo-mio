@@ -63,7 +63,7 @@ export class ModalEditOrderComponent implements OnInit {
         this.modalService.dismissAll()
         throw err;
       });
-    if (this.status === 2) {
+    if (this.status == 2 || this.status == 3) {
       this.disabledAllInputs = true;
     }
   }
@@ -175,8 +175,10 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   openModal(product: any, modal: any, sizeModale: string) {
-    this.productSelected = product;
-    this.modalService.open(modal, { size: sizeModale, centered: true });
+    if (this.status == 0 || this.status == 1 || this.status == 2) {
+      this.productSelected = product;
+      this.modalService.open(modal, { size: sizeModale, centered: true });
+    }
   }
 
   sendQuotation() {
