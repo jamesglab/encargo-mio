@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'fragment', loadChildren: () => import('./fragment/fragment.module').then(m => m.FragmentModule) },
   { path: 'tables', loadChildren: () => import('./tables/tables.module').then(m => m.TablesModule) },
   { path: 'purchases', loadChildren: () => import('./purchases/purchases.module').then(m => m.PurchasesModule) },
+  { path: 'lockers', loadChildren: () => import('./lockers/lockers.module').then(m => m.LockersModule) }
 
 ];
 

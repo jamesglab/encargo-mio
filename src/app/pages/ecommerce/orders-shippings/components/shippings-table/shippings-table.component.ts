@@ -6,20 +6,22 @@ import { OrderService } from '../../../_services/orders.service';
   templateUrl: './shippings-table.component.html',
   styleUrls: ['./shippings-table.component.scss']
 })
+
 export class ShippingsTableComponent implements OnInit {
-  @Input() shippings = [];
-  @Output() shippingSelected = new EventEmitter<any>();
-  isLoading: boolean;
+
+  @Input() public shippings = [];
+  @Output() public shippingSelected = new EventEmitter<any>();
+
+  public isLoading: boolean;
+
   constructor(
-    private readonly _orderService: OrderService,
+    private readonly _orderService: OrderService
   ) { }
 
   ngOnInit(): void {
   }
 
-  openModal() {
-
-  }
+  openModal() { }
 
   getOrderById(id) {
     this.isLoading = true;
@@ -27,6 +29,9 @@ export class ShippingsTableComponent implements OnInit {
       this.isLoading = false;
       this.shippingSelected.emit(res);
       // falta crear componente y enviar informacion a un modale
-    })
+    }, err => {
+      this.isLoading = false;
+      throw err;
+    });
   }
 }

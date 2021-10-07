@@ -93,6 +93,22 @@ export class ModalEditOrderComponent implements OnInit {
     }
   }
 
+  calculateWeightSubstract(i: number) {
+    let product_weight = this.orderSelected.products[i].weight; //OBTAIN PRODUCT WEIGHT
+    let product_quantity = this.orderSelected.products[i].quantity; //OBTAIN PRODUCT QUANTITY
+    this.orderSelected.products[i].quantity = (product_quantity - 1); //SUBSTRACT 1 TO QUANTITY
+    let unit_weight = (product_weight / product_quantity);// CALC WEIGHT FOR UNIT
+    this.orderSelected.products[i].weight = parseFloat((product_weight - unit_weight).toFixed(2)); //SUBSTRACT 1 UNIT TO WEIGHT
+  }
+
+  calculateWeightAdd(i: number) {
+    let product_weight = this.orderSelected.products[i].weight;//OBTAIN PRODUCT WEIGHT
+    let product_quantity = this.orderSelected.products[i].quantity;//OBTAIN PRODUCT QUANTITY
+    this.orderSelected.products[i].quantity = (product_quantity + 1);//SUBSTRACT 1 TO QUANTITY
+    let unit_weight = (product_weight / product_quantity);// CALC WEIGHT FOR UNIT
+    this.orderSelected.products[i].weight = parseFloat((product_weight + unit_weight).toFixed(2));//SUBSTRACT 1 UNIT TO WEIGHT
+  }
+
   calculateTax(position?: number) {
     if (this.status == 0 || this.status == 1) {
       if (this.orderSelected.products[position].free_shipping) { // Si el free_shipping es true
@@ -182,13 +198,5 @@ export class ModalEditOrderComponent implements OnInit {
         throw err;
       });
   }
-
-  // validateErrors(objectsValidate, validators) {
-  //   let validate = false;
-  //   // let validators = ['name', 'weight', 'product_value'];
-  //   objectsValidate.map(p => {
-  //     validators.map(validator => { if (p[validator] == null || p[validator] == undefined || p[validator] == '') { validate = true } })
-  //   });
-  // }
 
 }

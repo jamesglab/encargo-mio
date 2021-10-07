@@ -1,0 +1,75 @@
+<div class="table-responsive mb-0">
+
+    <div class="alert alert-primary" role="alert" *ngIf="lockers && lockers.length === 0">
+        No hay datos disponibles...
+    </div>
+
+    <table class="table table-centered table-nowrap">
+
+        <thead class="table-light">
+
+            <tr>
+                <th style="width: 20px"></th>
+                <th class="align-middle">Número de Guía</th>
+                <th class="align-middle">Nombre de Producto</th>
+                <th class="align-middle">Casillero</th>
+                <th class="align-middle">Estado</th>
+                <th class="align-middle">Peso</th>
+                <th class="align-middle">Opciones</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr *ngFor="let data of lockers">
+
+                <td>
+                    <!-- <a href="javascript: void(0);" class="text-body fw-bold">
+                        {{ data.id ? data.id :0 }}
+                    </a> -->
+                </td>
+
+                <td>
+                    {{ data.guide_number ? data.guide_number : '' }}
+                </td>
+
+                <td title="{{data.product ? data.product.name : ''}}">
+                    {{ (data.product ? (data.product?.name.length > 50) ? (data.product.name | slice:0:50 ) + '...' :
+                    data.product.name : '' ) }}
+                </td>
+
+                <td>{{ data.locker ? 'CA' + data.locker.id : '' }}</td>
+
+                <td>{{ data.status ? data.status : 0 }}</td>
+
+                <td>{{ data.weight ? data.weight + ' lb' : 0 }}</td>
+
+                <td>
+                    <button class="btn btn-primary btn-sm btn-rounded" (click)="viewDetail(data, modalLocker, 'xl');">
+                        Editar
+                    </button>
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<ng-template #modalLocker role="document" let-modal>
+
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Producto #{{ lockerSelected.product.id }}</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+        <app-modal-edit-lockers [lockerSelected]="lockerSelected"
+            (closeModalEditLockers)="closeModalEditLockers($event);" (cancelModalStatus)="cancelModalReceive($event);">
+        </app-modal-edit-lockers>
+    </div>
+
+</ng-template>

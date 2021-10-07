@@ -84,14 +84,22 @@
           </div>
 
           <hr>
+
           <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term"
-            (shippingSelected)="shippingToUpdate=$event ;openModal(updateShipping,'xl')"></app-shippings-table>
+            (shippingSelected)="shippingToUpdate=$event ;openModal(updateShipping,'xl')">
+          </app-shippings-table>
+
           <mat-paginator [length]="counts[status]" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
           </mat-paginator>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
+
 </div>
 
 <ng-template #createShipping role="document" let-modal>
@@ -101,7 +109,7 @@
 
 
 <ng-template #updateShipping role="document" let-modal>
-  <app-modal-update-shipping [users]="users" [trm]="trm" [shippingToUpdate]="shippingToUpdate"
+  <app-modal-update-shipping [users]="users" [trm]="trm" [status]="status" [shippingToUpdate]="shippingToUpdate"
     (getTransactions)="getTransactions()">
   </app-modal-update-shipping>
 </ng-template>

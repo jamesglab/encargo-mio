@@ -4,7 +4,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { numberOnly } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
-import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
+import { map, startWith } from "rxjs/operators";
+import { Observable } from "rxjs-compat";
 
 @Component({
   selector: "app-modal-register-purchase",
@@ -14,26 +15,26 @@ import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 
 export class ModalRegisterPurchaseComponent implements OnInit {
 
-  @Input() public orderSelected: any = {};
+  @Input() public orderSelected: any;
   @Output() public closeModaleOut = new EventEmitter<any>();
   @Output() public refreshTable = new EventEmitter<any>();
 
-  public stores: any = [];
-  public conveyors: any = [];
+  public stores: any[] = [];
+  public products: any[] = [];
+  public conveyors: any[] = [];
   public isLoading: boolean = false;
   public purchaseForm: FormGroup;
+
+  public filteredOptionsProducts: Observable<string[]>;
+  public filteredOptionsStores: Observable<string[]>;
+  public filteredOptionsConveyors: Observable<string[]>;
 
   constructor(
     private _orderService: OrderService,
     private fb: FormBuilder,
     public _notify: NotifyService,
     public modalService: NgbModal,
-    private config: NgbDatepickerConfig
   ) {
-    //Función para no dejar seleccionar fechas anteriores al día de hoy en el calendario.
-    const current = new Date();
-    config.minDate = { year: current.getFullYear(), month: current.getMonth() + 1, day: current.getDate() };
-    config.outsideDays = 'hidden';
   }
 
   ngOnInit(): void { }
@@ -41,9 +42,9 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   ngOnChanges() {
     if (this.orderSelected) {
       this.getStores();
+      this.getConvenyors();
       this.buildForm();
       this.getProductsForPurchase();
-      this.getConvenyors();
     }
   }
 
@@ -53,15 +54,23 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       order_service: [{ value: this.orderSelected.id, disabled: true }, Validators.required],
       guide_number: [null],
       product: [{ value: null, disabled: true }, [Validators.required]],
-      // payment_type: [null, Validators.required],
       observations: [null],
       store: [{ value: null, disabled: true }, [Validators.required]],
       product_price: [null],
       purchase_date: [null, Validators.required],
       invoice_number: [null, Validators.required],
       locker_entry_date: [null, Validators.required],
-      conveyor: [{ value: null, disabled: true }]
+      conveyor: [{ value: null, disabled: true }],
+      // payment_type: [null, Validators.required],
     });
+    this.purchaseForm.controls.product.valueChanges.subscribe((product: any) => { if (product) { this.purchaseForm.get('product_price').setValue(product.product_value); } }); // Selecionar el valor del producto
+    this.filteredOptionsProducts = this.purchaseForm.controls.product.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'products'))); // Suscribirse a los cambios de valor de product
+    this.filteredOptionsStores = this.purchaseForm.controls.store.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'stores'))); // Suscribirse a los cambios del valor de store 
+    this.filteredOptionsConveyors = this.purchaseForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors'))) // Suscribirse a los cambios de valor de conveyor
+  }
+
+  get form() {
+    return this.purchaseForm.controls;
   }
 
   // CONSUMIMOS END-POINT DE LAS TIENDAS ASOCIADAS A ENCARGOMIO
@@ -81,7 +90,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
     this._orderService.ordersForPurchase({ id: this.orderSelected.id })
       .subscribe((res: any) => {
         if (res.products && res.products.length > 0) {
-          this.orderSelected.products = res.products;
+          this.products = res.products;
           this.purchaseForm.controls.product.enable();
         }
       }, err => {
@@ -117,7 +126,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
         ...this.purchaseForm.getRawValue(),
         purchase_date,
         locker_entry_date,
-      }).subscribe((res) => {
+      }).subscribe((res: any) => {
         this._notify.show(`Orden de Compra Creada #${res.order_purchase.id.replace(/=/g, "")}`, res.message, "success");
         this.refreshTable.emit(true);
         this.modalService.dismissAll();
@@ -130,12 +139,23 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       this._notify.show("Campos incompletos", "", "info");
       this.isLoading = false;
     }
+
   }
 
-  setProductValue() {
-    this.purchaseForm.get('product_price').setValue(
-      this.orderSelected.products.find(item => item.id == this.purchaseForm.value.product.id).sub_total
-    );
+  displayProperty(option: any): void {
+    return option ? option.name : '';
+  }
+
+  private _filter(value: any, array: any): string[] {
+    if (value && value.length > 0) { // Cuando el usuario escribe el valor (No es un objecto)
+      const filterValue = value.toLowerCase();
+      return this[array].filter(option => option.name.toLowerCase().includes(filterValue));
+    } else if (value && value.name) { // Cuando el usuario selecciona un valor en la lista desplegable
+      const filterValue = value.name.toLowerCase();
+      return this[array].filter(option => option.name.toLowerCase().includes(filterValue));
+    } else {
+      return this[array];
+    }
   }
 
   toInsertDates() {

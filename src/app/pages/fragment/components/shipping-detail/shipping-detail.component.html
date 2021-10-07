@@ -34,7 +34,7 @@
             <p class="font-weight-bold">Tipo de Envío</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>{{shipping?.shipping_type ? shipping?.shipping_type : '-'}}</p>
+            <p>{{shipping?.shipping_type?.name || '-' }}</p>
           </div>
         </div>
 

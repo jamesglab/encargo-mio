@@ -13,12 +13,14 @@
   <form [formGroup]="updateShippingForm">
 
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="guide_number">Guia Internacional *</label>
+          <label for="guide_number">Número de Guía *</label>
           <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
         </div>
       </div>
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="conveyor">Transportadora Internacional * </label>
@@ -29,10 +31,13 @@
           </select>
         </div>
       </div>
+
     </div>
 
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
+
         <div class="form-group">
           <label for="delivery_date">Fecha de Entrega *</label>
           <div class="input-group clockpicker">
@@ -43,15 +48,20 @@
             </div>
           </div>
         </div>
+
       </div>
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="total_value">Valor Envio</label>
           <input type="number" class="form-control" id="total_value" formControlName="total_value">
         </div>
       </div>
+
     </div>
+
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="store">Tipo de Envio *</label>
@@ -71,12 +81,13 @@
             <option selected disabled value="">Selecciona un usuario...</option>
             <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
           </select>
-
         </div>
-
       </div>
+
     </div>
+
     <div class="row mt-3 mt-3">
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="store">Dirección de Envio *</label>
@@ -87,32 +98,65 @@
           </select>
         </div>
       </div>
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="observations">Observaciones de Compra</label>
           <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
         </div>
       </div>
+
     </div>
+
     <div class="row mt-3">
-      <div class="col-12 col-sm-12"> 
+
+      <div class="col-12 col-sm-12">
+
         <label for="product">Productos en Envio *</label>
-        <ng-select [multiple]="true" id="product" formControlName="products" (remove)="removeProduct($event.value)"
-          (add)="addProduct($event)">
-          <ng-option *ngFor="let product of products" [value]="product">
-            {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :
-            product.name)}}
-          </ng-option>
-        </ng-select>
+
+        <ng-container *ngIf="isLoadingProducts">
+          <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="status === 3">
+          <br>
+          <div class="container-products-badge">
+            <ng-container *ngFor="let product of updateShippingForm.controls.products.value">
+              <div class="is-badge-encarogmio">
+                {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...'
+                : product.name)}}
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="status != 3">
+          <ng-select [multiple]="true" id="product" formControlName="products" (remove)="removeProduct($event.value)"
+            (add)="addProduct($event)">
+            <ng-option *ngFor="let product of products" [value]="product">
+              {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :
+              product.name)}}
+            </ng-option>
+          </ng-select>
+        </ng-container>
+
       </div>
-      <div class="col-12 col-sm-12 p-3 px-4 const-warning"*ngIf="validateAllProductsInLocker">
+
+      <div class="col-12 col-sm-12 p-3 px-4 const-warning" *ngIf="validateAllProductsInLocker">
         <a href="" style="color:red">
-          <i class="fas fa-exclamation-triangle fa-2x" ></i> 
+          <i class="fas fa-exclamation-triangle fa-2x"></i>
         </a>
         <span class="mx-2"> Aún no estan todos los productos del envío en el casillero</span>
       </div>
+
     </div>
+
   </form>
+
 </div>
 
 <div class="modal-footer">
@@ -120,13 +164,14 @@
   <button class="btn btn-secondary" (click)="closeModale()">
     Cancelar
   </button>
-  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPackcage()" *ngIf="shippingToUpdate.status =='1'">
+  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPackcage()"
+    *ngIf="shippingToUpdate.status =='1'">
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Empacado
   </button>
-  
+
   <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
-    <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Actualizar
   </button>
+
 </div>
