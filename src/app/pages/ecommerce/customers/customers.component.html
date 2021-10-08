@@ -36,7 +36,7 @@
 
               <div class="search-box me-2 mb-2 d-inline-block">
                 <div class="position-relative">
-                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
+                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term" (blur)="searchFilter()">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
               </div>
@@ -75,7 +75,7 @@
 
               <tbody>
 
-                <tr *ngFor="let transaction of transactions | filter: term; let i = index">
+                <tr *ngFor="let transaction of transactions; let i = index">
 
                   <td>
                     {{ transaction.id }}

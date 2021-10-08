@@ -18,7 +18,7 @@ export class CustomersComponent implements OnInit {
   public referenceImage: any;
   public orderSelected: any;
   public transactionSelected: any;
-  public term: any;
+  public term: any = '';
   public trm: number = 0;
   public status: number;
   public count: number;
@@ -39,21 +39,26 @@ export class CustomersComponent implements OnInit {
   }
 
   getTransactions(status?, pagination?) {
-    this.isLoading = true;
-    this.status = status;
-    this._transactionService.getTransactionsFilter({
-      status: status ? status : 1,
-      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
-      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1
-    }).subscribe(res => {
-      this.transactions = res.transactions;
-      console.log("TRANSACTION: ", this.transactions);
-      this.count = res.count;
-      this.isLoading = false;
-    }, err => {
-      this.isLoading = false;
-      throw err;
-    });
+    if (this.term != '') {
+      this.isLoading = true;
+      this.status = status;
+      this._transactionService.getTransactionsFilter({
+        status: status ? status : 1,
+        pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+        page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1
+      }).subscribe(res => {
+        this.transactions = res.transactions;
+        console.log("TRANSACTION: ", this.transactions);
+        this.count = res.count;
+        this.isLoading = false;
+      }, err => {
+        this.isLoading = false;
+        throw err;
+      });
+    } else {
+      this.searchFilter(status, pagination);
+    }
+
   }
 
   openModalOrderService(content: any, transaction: any) {
@@ -101,4 +106,22 @@ export class CustomersComponent implements OnInit {
     return isType;
   }
 
+  searchFilter(status?, pagination?) {
+    this.isLoading = true;
+    this.status = status;
+    this._transactionService.getTransactionsFilterI({
+      status: status ? status : 1,
+      filter: this.term,
+      per_page: pagination?.pageSize ? pagination.pageSize : 10,
+      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1
+    }).subscribe(res => {
+      this.transactions = res.transactions;
+      console.log("TRANSACTION: ", this.transactions);
+      this.count = res.count;
+      this.isLoading = false;
+    }, err => {
+      this.isLoading = false;
+      throw err;
+    });
+  }
 }
