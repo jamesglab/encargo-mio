@@ -33,14 +33,14 @@
         <div class="form-group">
 
           <label for="orders">Orden</label>
-
-          <input matInput type="text" id="orders" class="form-control" placeholder="Busca la orden..."
+          <!-----(input)="autoCompleteGuide($event.target.value);"-->
+          <input matInput type="text" id="orders" class="form-control"
+            placeholder="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : 'Busca la orden...' }}"
             formControlName="guide_order" [matAutocomplete]="auto_order"
-            (input)="autoCompleteGuide($event.target.value);"
             title="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : '' }}">
 
-          <mat-autocomplete #auto_order="matAutocomplete">
-            <mat-option *ngFor="let order of allOrders" [value]="order">
+          <mat-autocomplete #auto_order="matAutocomplete" [displayWith]="displayFn">
+            <mat-option *ngFor="let order of filteredOrders | async" [value]="order">
               {{ order.id ? order.id : '' }} | {{ order.product.name ? order.product.name : '' }}
             </mat-option>
           </mat-autocomplete>
@@ -98,10 +98,11 @@
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
-          <label for="description-product">Descripción del Producto </label>
-          <textarea class="form-control" id="description-product" formControlName="product_description"
+          <label for="description-product">Nombre del Producto </label>
+          <input type="text" class="form-control" id="description-product" formControlName="product_description">
+          <!-- <textarea class="form-control" id="description-product" formControlName="product_description"
             style="height: 37px; min-height: 37px !important; max-height: 300px !important;">
-          </textarea>
+          </textarea> -->
         </div>
 
       </div>
