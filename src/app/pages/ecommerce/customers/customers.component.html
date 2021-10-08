@@ -1,33 +1,49 @@
 <div class="container-fluid">
+
   <app-page-title title="Pagos" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <ul class="nav nav-pills mb-3">
+
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':status==2}" (click)="getTransactions(2)">Pendientes</a>
+      <a class="nav-link" [ngClass]="{'active': status == 1 }" (click)="status = 1; getTransactions(1)">Aprobadas</a>
     </li>
+
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':status==1}" (click)="status = 1; getTransactions(1)">Aprobadas</a>
+      <a class="nav-link" [ngClass]="{'active': status == 2 }" (click)="status = 2; getTransactions(2);">Pendientes</a>
     </li>
+
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':status==3}" (click)="status = 2 ;getTransactions(3)">Rechazadas</a>
+      <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 2; getTransactions(3)">Rechazadas</a>
     </li>
+
   </ul>
 
   <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
     No hay datos de pagos activos...
   </div>
 
-  <div *ngIf="isLoading">
-    Cargando...
-  </div>
-
   <div class="row">
+
     <div class="col-12">
+
       <div class="card">
+
         <div class="card-body">
+
           <div class="row mb-2">
+
             <div class="col-sm-4">
+
+              <div class="search-box me-2 mb-2 d-inline-block">
+                <div class="position-relative">
+                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
+                  <i class="bx bx-search-alt search-icon"></i>
+                </div>
+              </div>
+
+
             </div>
+
             <div class="col-sm-8">
               <!-- <div class="text-sm-end">
                 <button type="button" class="btn btn-success btn-rounded mb-2 mr-2" (click)="openModal(content)">
@@ -35,8 +51,9 @@
                 </button>
               </div> -->
             </div>
-            <!-- end col-->
+
           </div>
+
           <div class="table-responsive">
 
             <table class="table align-middle table-nowrap">
@@ -44,11 +61,13 @@
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Order</th>
-                  <th>Methodo de Pago</th>
+                  <th>Orden</th>
+                  <th>Método de Pago</th>
+                  <th>Fecha de Pago</th>
                   <th>Pasarela de Pago</th>
                   <th>Referencia</th>
-                  <th>Estado</th>
+                  <th>Usuario</th>
+                  <th>Tipo</th>
                   <th>Valor</th>
                   <th>Opciones</th>
                 </tr>
@@ -59,23 +78,36 @@
                 <tr *ngFor="let transaction of transactions | filter: term; let i = index">
 
                   <td>
-                    <div class="form-check font-size-16">
-                      {{ transaction.id }}
-                    </div>
+                    {{ transaction.id }}
                   </td>
 
-                  <td>{{ transaction.order_service }}</td>
-
                   <td>
-                    <p class="mb-1">{{ transaction.payment_method }}</p>
+                    {{ transaction.order_service ? transaction.order_service :
+                    (transaction.shipping_order ? transaction.shipping_order : '-') }}
                   </td>
 
-                  <td>{{ transaction.payment_gateway }}</td>
-
-                  <td>{{ transaction.reference }}</td>
+                  <td>
+                    <p class="mb-1">
+                      {{ transaction.payment_method }}
+                    </p>
+                  </td>
 
                   <td>
-                    {{ transaction.status }}
+                    {{ transaction.created_at | date: 'medium' }}
+                  </td>
+
+                  <td style="text-transform: capitalize;">
+                    {{ transaction.payment_gateway }}
+                  </td>
+
+                  <td>{{ transaction.reference ? transaction.reference : '-' }}</td>
+
+                  <td>
+                    {{ transaction ? (transaction.user.name + ' ' + transaction.user.last_name) : '' }}
+                  </td>
+
+                  <td>
+                    {{ typeElement(transaction.type) }}
                   </td>
 
                   <td>{{ transaction.value }}</td>
@@ -114,12 +146,23 @@
             </table>
 
           </div>
+
+          <div class="text-center" *ngIf="isLoading">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Cargando...</span>
+            </div>
+          </div>
+
           <!-- pagination -->
           <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions(status,$event)">
           </mat-paginator>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
 
   <!-- Modal Detalles de la orden  -->
@@ -143,7 +186,7 @@
             </div>
 
             <div class="h5">
-              Fecha de Pago: {{ orderSelected.updated_at | date :'MM/d/y hh:mm a' }}
+              Fecha de Pago: {{ orderSelected.updated_at | date :'medium' }}
             </div>
 
             <div class="h5">
@@ -169,7 +212,7 @@
                 <div>
                   USD {{ orderSelected.total_value ? orderSelected.total_value : 0 }}
                   / {{
-                  ((orderSelected.total_value ? orderSelected.total_value : 0) * orderSelected.trm) | currency: 'COP' :
+                  ((orderSelected.total_value ? orderSelected.total_value : 0) * orderSelected.trm.value) | currency: 'COP' :
                   'symbol' : '1.0-0'
                   }}
                 </div>

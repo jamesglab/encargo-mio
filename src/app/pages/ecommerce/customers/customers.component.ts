@@ -35,18 +35,19 @@ export class CustomersComponent implements OnInit {
   ngOnInit() {
     this.breadCrumbItems = [{ label: 'Ecommerce' }, { label: 'Customers', active: true }];
     this.currentpage = 1;
-    this.getTransactions(2);
+    this.getTransactions(1);
   }
 
   getTransactions(status?, pagination?) {
     this.isLoading = true;
     this.status = status;
     this._transactionService.getTransactionsFilter({
-      status: status ? status : 2,
+      status: status ? status : 1,
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1
     }).subscribe(res => {
       this.transactions = res.transactions;
+      console.log("TRANSACTION: ", this.transactions);
       this.count = res.count;
       this.isLoading = false;
     }, err => {
@@ -86,6 +87,18 @@ export class CustomersComponent implements OnInit {
         this.isLoadingTransaction = false;
         throw err;
       });
+  }
+
+  typeElement(type: string) {
+    let isType: string = "";
+    if (type == 'order_service') {
+      isType = `Compra`;
+    } else if (type == 'shipping_order') {
+      isType = 'Envío';
+    } else {
+      return "-";
+    }
+    return isType;
   }
 
 }

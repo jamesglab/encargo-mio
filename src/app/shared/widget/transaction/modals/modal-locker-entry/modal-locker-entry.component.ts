@@ -2,9 +2,11 @@ import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@ang
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
-import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
+import { dataURLtoFile, numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { insertInLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
+import { Observable } from 'rxjs-compat';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-modal-locker-entry',
@@ -16,16 +18,19 @@ export class ModalLockerEntryComponent implements OnInit {
 
   @Output() refreshTable = new EventEmitter<any>();
 
+  public lockerForm: FormGroup;
+
   public isLoading: boolean = false;
   public getQueries: boolean = false;
   public lockers = [];
   public orders_purchase: [] = [];
   public conveyors: [] = [];
-  public lockerForm: FormGroup;
   public files: File[] = [];
   public allGuides: any[] = [];
   public allLockers: any[] = [];
   public allOrders: any[] = [];
+
+  public filteredOrders: Observable<string[]>;
 
   constructor(
     public modalService: NgbModal,
@@ -64,6 +69,7 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_number.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
+        this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
@@ -72,7 +78,9 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
         this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
+        this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
         this.lockerForm.controls.user.setValue((guide.user.id ? guide.user.id : null))
+        this.pushImagesResponse(guide.product.image ? guide.product.image : null);
       }
     });
 
@@ -94,9 +102,19 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
         this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
+        this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
         this.lockerForm.controls.user.setValue((guide.order_service.user.id ? guide.order_service.user.id : null));
+        this.pushImagesResponse(guide.product.image ? guide.product.image : null);
+      } else if (typeof guide === 'string' && guide !== null && guide.length === 0) {
+        this.cleanData();
       }
     });
+
+    this.filteredOrders = this.lockerForm.controls.guide_order.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => this._filter(value))
+      );
 
   }
 
@@ -171,6 +189,7 @@ export class ModalLockerEntryComponent implements OnInit {
           this.allOrders = res;
         } else {
           this._notify.show('', 'No hay ordenes asociadas al casillero.', 'info');
+          this.cleanData();
         }
         this.lockerForm.controls.guide_order.enable();
         this.getQueries = false;
@@ -182,10 +201,47 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   cleanData() {
-    this.allOrders = [];
     this.allGuides = [];
+    this.files = [];
     this.lockerForm.controls.guide_number.setValue(null);
     this.lockerForm.controls.guide_order.setValue(null);
+    this.lockerForm.controls.product_description.setValue(null);
+    this.lockerForm.controls.weight.setValue(0);
+    this.lockerForm.controls.shipping_value.setValue(0);
+    this.lockerForm.controls.declared_value_admin.setValue(0);
+  }
+
+  private _filter(value: any): string[] {
+    if (typeof value === 'string' && value !== null) {
+      const filterValue = value.toLowerCase();
+      return this.allOrders.filter(option => option.product.name.toLowerCase().includes(filterValue));
+    } else {
+      return this.allOrders;
+    }
+  }
+
+  displayFn(option: any) {
+    if (option) {
+      return option ? option : `${option.id} | ${option.product.name}`;
+    }
+  }
+
+  pushImagesResponse(image: any): void { // Pusheamos las imagenes que están guardadas en la base de datos.
+    if (image) {
+      const toDataURL = url => fetch(url)
+        .then(response => response.blob())
+        .then(blob => new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.onerror = reject
+          reader.readAsDataURL(blob)
+        }))
+      toDataURL(image)
+        .then(dataUrl => {
+          var fileData = dataURLtoFile(dataUrl, "imagen.jpg");
+          this.files.push(fileData);
+        });
+    }
   }
 
   closeModal(): void { // Función para cerrar el modal
