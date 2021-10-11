@@ -36,4 +36,14 @@ export class TransactionService {
         catchError(handleError)
       );
   }
+
+  getTransactionsFilterI(params){
+    return this.http.get<any>(
+      `${environment.microservices.management}transactions/filter-for-page`, { headers: header, params }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      ); 
+  }
 }
