@@ -1,5 +1,7 @@
 <div class="modal-header">
-  <h5 class="modal-title mt-0">Actualizar Envio</h5>
+  <h5 class="modal-title mt-0">Actualizar Envio |
+    {{ shippingToUpdate ? 'CA' + shippingToUpdate.user.locker[0].id : '' }}
+    {{ shippingToUpdate ? shippingToUpdate.user.name + ' ' + shippingToUpdate.user.last_name : '' }} </h5>
   <button type="button" class="btn-close" (click)="closeModale()" aria-hidden="true"></button>
 </div>
 
@@ -10,152 +12,234 @@
     <button class="btn btn-warning" (click)="goToFragment();">Fraccionar Envío</button>
   </div>
 
-  <form [formGroup]="updateShippingForm">
+  <ng-container *ngIf="isLoadingData">
+    Cargando...
+  </ng-container>
 
-    <div class="row mt-3">
+  <ng-container *ngIf="!isLoadingData">
 
-      <div class="col-12 col-sm-6">
-        <div class="form-group">
-          <label for="guide_number">Número de Guía *</label>
-          <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
-        </div>
-      </div>
+    <form [formGroup]="updateShippingForm">
 
-      <div class="col-12 col-sm-6">
-        <div class="form-group">
-          <label for="conveyor">Transportadora Internacional * </label>
-          <select class="form-control" id="conveyor" formControlName="conveyor">
-            <option [value]="null" disabled>Selecciona transportadora</option>
-            <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
-              {{conveyor.name}}</option>
-          </select>
-        </div>
-      </div>
+      <div class="row mt-3">
 
-    </div>
+        <div class="col-12 col-sm-6">
 
-    <div class="row mt-3">
-
-      <div class="col-12 col-sm-6">
-
-        <div class="form-group">
-          <label for="delivery_date">Fecha de Entrega *</label>
-          <div class="input-group clockpicker">
-            <input ngbDatepicker class="form-control" id="delivery_date" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
-              formControlName="delivery_date">
-            <div class="input-group-append" (click)="dl.toggle()">
-              <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-            </div>
+          <div class="form-group">
+            <label for="guide_number">Número de Guía *</label>
+            <input type="number" class="form-control" placeholder="Ingresa tu número de guía" id="guide_number"
+              formControlName="guide_number">
           </div>
+
         </div>
 
-      </div>
+        <div class="col-12 col-sm-6">
 
-      <div class="col-12 col-sm-6">
-        <div class="form-group">
-          <label for="total_value">Valor Envio</label>
-          <input type="number" class="form-control" id="total_value" formControlName="total_value">
-        </div>
-      </div>
+          <div class="form-group">
 
-    </div>
+            <label for="conveyor">Transportadora Internacional * </label>
 
-    <div class="row mt-3">
+            <input type="text" class="form-control" id="conveyor"
+              placeholder="Selecciona la Transportadora Internacional" formControlName="conveyor"
+              [matAutocomplete]="auto_conveyors">
 
-      <div class="col-12 col-sm-6">
-        <div class="form-group">
-          <label for="store">Tipo de Envio *</label>
-          <select class="form-control" id="store" formControlName="shipping_type">
-            <option [value]="null" disabled>Selecciona tipo de envío</option>
-            <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
-              {{shipping.name}}</option>
-          </select>
-        </div>
-      </div>
+            <mat-autocomplete #auto_conveyors="matAutocomplete" [displayWith]="displayFn">
+              <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
+                {{ conveyor.name }}
+              </mat-option>
+            </mat-autocomplete>
 
-      <div class="col-12 col-sm-6">
-        <div class="form-group ">
-          <label for="exampleInputEmail1">Usuario *</label>
-          <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario" formControlName="user"
-            (change)="getInfoUser()">
-            <option selected disabled value="">Selecciona un usuario...</option>
-            <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
-          </select>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="row mt-3 mt-3">
-
-      <div class="col-12 col-sm-6">
-        <div class="form-group">
-          <label for="store">Dirección de Envio *</label>
-          <select class="form-control" id="store" formControlName="address">
-            <option [value]="null" disabled>Selecciona direccion de envio</option>
-            <option *ngFor="let addres of address" [ngValue]="addres.id">
-              {{addres.address}}</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6">
-        <div class="form-group">
-          <label for="observations">Observaciones de Compra</label>
-          <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="row mt-3">
-
-      <div class="col-12 col-sm-12">
-
-        <label for="product">Productos en Envio *</label>
-
-        <ng-container *ngIf="isLoadingProducts">
-          <div class="d-flex justify-content-center">
-            <div class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
           </div>
-        </ng-container>
 
-        <ng-container *ngIf="status === 3">
-          <br>
-          <div class="container-products-badge">
-            <ng-container *ngFor="let product of updateShippingForm.controls.products.value">
-              <div class="is-badge-encarogmio">
-                {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...'
-                : product.name)}}
+        </div>
+
+      </div>
+
+      <div class="row mt-3">
+
+        <div class="col-12 col-sm-6">
+
+          <div class="form-group">
+
+            <label for="delivery_date">Fecha de Entrega *</label>
+
+            <div class="input-group clockpicker">
+              <input ngbDatepicker class="form-control" id="delivery_date" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
+                formControlName="delivery_date">
+              <div class="input-group-append" (click)="dl.toggle()">
+                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
               </div>
-            </ng-container>
-          </div>
-        </ng-container>
+            </div>
 
-        <ng-container *ngIf="status != 3">
-          <ng-select [multiple]="true" id="product" formControlName="products" (remove)="removeProduct($event.value)"
-            (add)="addProduct($event)">
-            <ng-option *ngFor="let product of products" [value]="product">
-              {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :
-              product.name)}}
-            </ng-option>
-          </ng-select>
-        </ng-container>
+          </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+
+          <div class="form-group">
+            <label for="total_value">Valor Envio</label>
+            <input type="number" class="form-control" id="total_value" formControlName="total_value">
+          </div>
+
+        </div>
 
       </div>
 
-      <div class="col-12 col-sm-12 p-3 px-4 const-warning" *ngIf="validateAllProductsInLocker">
+      <div class="row mt-3">
+
+        <div class="col-12 col-sm-6">
+
+          <div class="form-group">
+
+            <label for="store">Tipo de Envio *</label>
+
+            <select class="form-control" id="store" formControlName="shipping_type">
+
+              <option value="null" disabled>Selecciona tipo de envío</option>
+
+              <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
+                {{ shipping.name }}
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+
+          <div class="form-group ">
+
+            <label for="user_id">Usuario *</label>
+
+            <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
+              placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
+
+            <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+              <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+              </mat-option>
+            </mat-autocomplete>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="row mt-3 mt-3">
+
+        <div class="col-12 col-sm-6">
+
+          <div class="form-group">
+
+            <label for="store">Dirección de Envio *</label>
+
+            <input type="text" class="form-control" autocomplete="off" formControlName="address"
+              placeholder="Dirección de envío" [matAutocomplete]="auto_address">
+
+            <mat-autocomplete #auto_address="matAutocomplete" [displayWith]="displayFnAddress">
+              <mat-option *ngFor="let address of filteredAddress | async" [value]="address">
+                {{ address.address }}
+              </mat-option>
+            </mat-autocomplete>
+
+          </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+          <div class="form-group">
+            <label for="observations">Observaciones de Compra</label>
+            <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-12 col-sm-12 p-3 px-4 const-warning" *ngIf="message.status">
         <a href="" style="color:red">
           <i class="fas fa-exclamation-triangle fa-2x"></i>
         </a>
         <span class="mx-2"> Aún no estan todos los productos del envío en el casillero</span>
       </div>
 
-    </div>
+      <div class="row mt-3">
 
-  </form>
+        <div cdkDropListGroup>
+
+          <div class="example-container">
+
+            <h2>En Casillero</h2>
+
+            <div cdkDropList [cdkDropListData]="inLocker" class="example-list" (cdkDropListDropped)="drop($event)">
+
+              <div class="example-box" *ngFor="let item of inLocker" cdkDrag>
+
+                <div>
+                  <a [href]="item.product.link" target="_blank">
+                    <img [src]="item.product.image" (error)="$event.target.src = 'assets/images/default.jpg'" alt="">
+                  </a>
+                </div>
+
+                <div> #{{ item.product.id }}</div>
+
+                <div title="{{ item.product.name ? item.product.name : '' }}">
+                  {{ (item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...' :
+                  item.product.name}}
+                </div>
+
+                <div><strong>Peso: </strong> {{ item.weight }} lb.</div>
+
+                <div><strong>Descripción: </strong> {{ item.product.description ? item.product.description : 'N/A' }}
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="example-container">
+
+            <h2>En este Envío</h2>
+
+            <div cdkDropList [cdkDropListData]="outLocker" class="example-list" (cdkDropListDropped)="drop($event)">
+
+              <div class="example-box" *ngFor="let item of outLocker" cdkDrag>
+
+                <div>
+                  <a [href]="item.product.link" target="_blank">
+                    <img [src]="item.product.image" (error)="$event.target.src = 'assets/images/default.jpg'" alt="">
+                  </a>
+                </div>
+
+                <div> #{{ item.product.id }}</div>
+
+                <div>
+                  {{ (item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...' :
+                  item.product.name}}
+                </div>
+
+                <div><strong>Peso:</strong> {{ item.weight }} lb.</div>
+
+                <div><strong>Descripción:</strong>{{ item.product.description }}</div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </ng-container>
+
 
 </div>
 

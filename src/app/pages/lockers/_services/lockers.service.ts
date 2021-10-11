@@ -55,8 +55,20 @@ export class LockersService {
       `${environment.microservices.management}locker/type-of-shipping`,
       { headers: header, params: { order_service: data } }
     ).pipe(
-      map((reS: any) => {
-        return reS;
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  getProductsInLocker(data: any): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}locker/shipping-products`,
+      { headers: header, params: { ...data } }
+    ).pipe(
+      map((res: any) => {
+        return res;
       }),
       catchError(handleError)
     )

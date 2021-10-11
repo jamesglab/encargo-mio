@@ -13,7 +13,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ShippingDetailComponent } from './components/shipping-detail/shipping-detail.component';
 import { FragmentProductsComponent } from './components/fragment-products/fragment-products.component';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [

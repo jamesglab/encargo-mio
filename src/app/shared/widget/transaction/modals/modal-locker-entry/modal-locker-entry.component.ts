@@ -60,7 +60,7 @@ export class ModalLockerEntryComponent implements OnInit {
       product_description: [null],
       weight: [0, [Validators.required]],
       receipt_date: [null, [Validators.required]],
-      shipping_value: [0],
+      permanent_shipping_value: [0],
       declared_value_admin: [0, [Validators.required]],
       conveyor: [null, [Validators.required]],
       force_commercial_shipping: [false],
@@ -72,7 +72,6 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_number.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
-        console.log("guide", guide);
         this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
@@ -83,7 +82,8 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
         this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
         this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
-        this.lockerForm.controls.user.setValue((guide.user.id ? guide.user.id : null))
+        this.lockerForm.controls.user.setValue((guide.user.id ? guide.user.id : null));
+        this.lockerForm.controls.permanent_shipping_value.setValue((guide.permanent_shipping_value ? guide.permanent_shipping_value : 0));
         this.pushImagesResponse(guide.product.image ? guide.product.image : null);
         this.getTypeShipping(guide);
       }
@@ -101,7 +101,6 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.valueChanges.subscribe((guide: any) => {
       if (guide && guide.id) {
-        console.log("guide_order", guide);
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
@@ -110,6 +109,7 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
         this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
         this.lockerForm.controls.user.setValue((guide.order_service.user.id ? guide.order_service.user.id : null));
+        this.lockerForm.controls.permanent_shipping_value.setValue((guide.permanent_shipping_value ? guide.permanent_shipping_value : 0));
         this.getTypeShipping(guide);
         this.pushImagesResponse(guide.product.image ? guide.product.image : null);
       } else if (typeof guide === 'string' && guide !== null && guide.length === 0) {
@@ -230,7 +230,7 @@ export class ModalLockerEntryComponent implements OnInit {
     this.lockerForm.controls.guide_order.setValue(null);
     this.lockerForm.controls.product_description.setValue(null);
     this.lockerForm.controls.weight.setValue(0);
-    this.lockerForm.controls.shipping_value.setValue(0);
+    this.lockerForm.controls.permanent_shipping_value.setValue(0);
     this.lockerForm.controls.declared_value_admin.setValue(0);
   }
 
