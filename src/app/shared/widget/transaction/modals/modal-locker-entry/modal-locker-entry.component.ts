@@ -7,6 +7,7 @@ import { NotifyService } from 'src/app/_services/notify.service';
 import { insertInLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
+import { LockersService } from 'src/app/pages/lockers/_services/lockers.service';
 
 @Component({
   selector: 'app-modal-locker-entry',
@@ -19,9 +20,10 @@ export class ModalLockerEntryComponent implements OnInit {
   @Output() refreshTable = new EventEmitter<any>();
 
   public lockerForm: FormGroup;
-
+  public toHome = { status: false, to_home: false };
   public isLoading: boolean = false;
   public getQueries: boolean = false;
+
   public lockers = [];
   public orders_purchase: [] = [];
   public conveyors: [] = [];
@@ -37,6 +39,7 @@ export class ModalLockerEntryComponent implements OnInit {
     private _orderService: OrderService,
     private fb: FormBuilder,
     public _notify: NotifyService,
+    private _lockers: LockersService,
     public _cdr: ChangeDetectorRef
   ) { }
 
@@ -69,6 +72,7 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_number.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
+        console.log("guide", guide);
         this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
@@ -81,6 +85,7 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
         this.lockerForm.controls.user.setValue((guide.user.id ? guide.user.id : null))
         this.pushImagesResponse(guide.product.image ? guide.product.image : null);
+        this.getTypeShipping(guide);
       }
     });
 
@@ -96,6 +101,7 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.valueChanges.subscribe((guide: any) => {
       if (guide && guide.id) {
+        console.log("guide_order", guide);
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
@@ -104,6 +110,7 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
         this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
         this.lockerForm.controls.user.setValue((guide.order_service.user.id ? guide.order_service.user.id : null));
+        this.getTypeShipping(guide);
         this.pushImagesResponse(guide.product.image ? guide.product.image : null);
       } else if (typeof guide === 'string' && guide !== null && guide.length === 0) {
         this.cleanData();
@@ -160,6 +167,21 @@ export class ModalLockerEntryComponent implements OnInit {
     }
   }
 
+  getTypeShipping(data: any) {
+
+    if (data.order_service) {
+      this._lockers.getTypeOfShipping(data.order_service.id).subscribe((res: any) => {
+        if (res) {
+          this.toHome.status = true;
+          this.toHome.to_home = res.to_home;
+        }
+      }, err => {
+        throw err;
+      });
+    }
+
+  }
+
   autoCompleteLocker(params: any) {
     if (params.length >= 2) {
       this.getQueries = true;
@@ -203,6 +225,7 @@ export class ModalLockerEntryComponent implements OnInit {
   cleanData() {
     this.allGuides = [];
     this.files = [];
+    this.toHome = { status: false, to_home: false };
     this.lockerForm.controls.guide_number.setValue(null);
     this.lockerForm.controls.guide_order.setValue(null);
     this.lockerForm.controls.product_description.setValue(null);

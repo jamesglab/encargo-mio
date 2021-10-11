@@ -5,6 +5,13 @@
 
 <div class="container p-4">
 
+  <div class="alert alert-primary" role="alert" *ngIf="toHome.status">
+    <strong>Nota:</strong>
+    <div>
+      {{ toHome.to_home ? 'Producto para envío a Casa' : 'Producto para envío a Casillero' }}
+    </div>
+  </div>
+
   <form [formGroup]="lockerForm">
 
     <div class="row">
@@ -32,7 +39,7 @@
 
         <div class="form-group">
 
-          <label for="orders">Orden</label>
+          <label for="orders">Orden de Compra</label>
           <!-----(input)="autoCompleteGuide($event.target.value);"-->
           <input matInput type="text" id="orders" class="form-control"
             placeholder="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : 'Busca la orden...' }}"
@@ -204,6 +211,8 @@
     </div>
 
   </form>
+
+  <br>
 
 </div>
 
