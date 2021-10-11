@@ -1,8 +1,11 @@
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
+import { Observable } from "rxjs";
+import { LockersService } from "src/app/pages/lockers/_services/lockers.service";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
 import { ExportPdfService } from "../../../_services/export-pdf.service";
@@ -21,23 +24,33 @@ export class ModalUpdateShippingComponent implements OnInit {
   @Input() public shippingToUpdate: any;
   @Input() public status: number;
 
-  @Output() getTransactions = new EventEmitter<any>();
+  @Output() public getTransactions = new EventEmitter<any>();
 
   public isLoading: boolean = false;
   public isLoadingLabel: boolean = false;
-  public validateAllProductsInLocker: boolean = false;
-  public isLoadingProducts: boolean = false;
+  public isLoadingData: boolean = false;
 
-  public conveyors: [] = [];
-  public address: [] = [];
-  public products: [] = [];
+  public conveyors: any = [];
+  public address: any = [];
+  public products: any = [];
+
+  public inLocker: any = [];
+  public outLocker: any = [];
+
   public shipping_types: [] = [];
   public deleted_products: any = [];
   public updateShippingForm: FormGroup;
   public addressSelected: any = {};
 
+  public message: any = { status: false, await_products: false };
+
+  public filteredConveyors: Observable<string[]>;
+  public filteredAddress: Observable<string[]>;
+  public filteredUsers: Observable<string[]>;
+
   constructor(
     private _userService: UserService,
+    private _lockers: LockersService,
     private _orderService: OrderService,
     private _formBuilder: FormBuilder,
     private _notify: NotifyService,
@@ -47,159 +60,97 @@ export class ModalUpdateShippingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.buildForm(this.shippingToUpdate);
-    this.getConvenyor();
-    this.getShippingTypes();
-    this.validateProductsInLocker()
+    this.getConveyorsAndShippings();
   }
 
-  buildForm(shipping) {
-    this.addressSelected = shipping.address;
-    // SETEAMOS LOS VALORES AL FORMULARIO QUE ENCUENTRA EL USUARIO
-    this.updateShippingForm = this._formBuilder.group({
-      id: [shipping.id],
-      trm: [this.trm],
-      guide_number: [shipping.guide_number, Validators.required],
-      conveyor: [shipping.conveyor, Validators.required],
-      delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")), }, Validators.required,],
-      total_value: [shipping.total_value, Validators.required],
-      shipping_type: [shipping.shipping_type, Validators.required],
-      // HACEMOS UN FIND SOBRE LOS EL USUARIO PARA RENDEREIZAR EL USUARIO AL QUE SE LE CREO EL ENVIO
-      // ESTO SE DEBE A UN CAMBIO EN LA ESTRUCTURA DE LOS USUARIOS locker_id y locker{} SI NO NO SE MUESTRA EL USUARIO
-      user: [this.users.find((item) => item.id == shipping.user.id), Validators.required,],
-      address: [shipping.address.id, Validators.required],
-      observations: [shipping.observations],
-      products: [null, Validators.required],
-    });
-    // DEBIDO AL CAMBIO EN LA ESTRUCTURA DE LOS DATOS ENVIAMOS EL ID DEL LOCKER Y LOS PRODUCTOS
-    this.getInfoUser(shipping.user.locker.id, shipping.products);
-    this.disabledInputs();
+  ngOnChanges() {
+    if (this.shippingToUpdate) {
+      this.buildForm(this.shippingToUpdate);
+    }
   }
 
-  async getInfoUser(locker_id?, products?) {
+  async getConveyorsAndShippings() {
 
-    await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
-      .subscribe((res: any) => {
-        this.address = res;
-      }, err => {
-        throw err;
-      });
-
-    // VALIDAMOS EL LOCKER ID Y ENVIAMOS LA CONSULTA PARA OBTENER LOS PRODUCTOS
-    this.isLoadingProducts = true;
-    this.updateShippingForm.controls.products.disable();
-
-    await this._orderService.getProductsByLocker({
-      locker: locker_id ? locker_id : this.updateShippingForm.get("user").value.locker_id,
-    }).subscribe((res: any) => {
-      let totalProducts = [];
-      if (products) {
-        products.map((product: any) => {
-          // BUSCAMOS LOS PRODUCTOS DENTRO DE LA RESPUESTA PARA QUE PUEDAN SER RENDERIZADOS EN EL SELECTOR PUES SUS ESTRUCTURAS SON DIFERENTES EN LAS COSULTAS
-          const find_product = res.find((p) => p.id == product.id);
-          if (find_product) {
-            totalProducts.push(find_product);
-          }
-        });
-      }
-      this.products = res;
-
-      // AGREGAMOS LOS VALORES QUE ESTABAN SELECCIONADOS EN EL FORMULARIO
-      this.updateShippingForm.controls.products.setValue(totalProducts);
-      if (this.status === 3) {
-        this.updateShippingForm.controls.products.disable();
-      } else {
-        this.updateShippingForm.controls.products.enable();
-      }
-
-      this.isLoadingProducts = false;
-    }, err => {
-      this.isLoadingProducts = false;
-      throw err;
-    });
-  }
-
-  validateProductsInLocker() {
-    this.shippingToUpdate.products.map(p => {
-      if (p.status != 1) {
-        this.validateAllProductsInLocker = true;
-      }
-    });
-  }
-
-  // AGREGAMOS LAS TRANSPORTADORAS
-  getConvenyor() {
-    this._orderService.getConvenyor().subscribe((res) => {
+    await this._orderService.getConvenyor().subscribe((res: any) => {
       this.conveyors = res;
     }, err => {
       throw err;
     });
-  }
 
-  getShippingTypes() {
-    this._orderService.getShippingTypes().subscribe((res) => {
+    await this._orderService.getShippingTypes().subscribe((res: any) => {
       this.shipping_types = res;
     }, err => {
       throw err;
     });
+
   }
 
-  // METODO PARA ACTUALIZAR LA ORDEN
-  updateShipping() {
-    this.updateShippingForm.controls.products.enable();
-    if (this.updateShippingForm.valid && this.updateShippingForm.value.products.length > 0) {
-      const delivery_date = new Date(
-        this.updateShippingForm.getRawValue().delivery_date.year,
-        this.updateShippingForm.getRawValue().delivery_date.month,
-        this.updateShippingForm.getRawValue().delivery_date.day
-      );
-      this.isLoading = true;
-      this._orderService
-        .updateShipping({
-          ...this.updateShippingForm.getRawValue(),
-          deleted_products: this.deleted_products,
-          delivery_date,
-          status: this.status
-        }).subscribe((res: any) => {
-          this.modalService.dismissAll();
-          this.getTransactions.emit(true);
-          this._notify.show('Orden de envio Actualizada', '', 'success');
-        }, err => {
-          this.isLoading = false;
-          this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
-          throw err;
+  buildForm(shipping: any): void {
+
+    this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
+    shipping.address.first_name = shipping.address.name;
+    delete shipping.address.name;
+    this.updateShippingForm = this._formBuilder.group({
+      id: [shipping.id],
+      trm: [this.trm],
+      guide_number: [shipping.guide_number, Validators.required],
+      conveyor: [null, [Validators.required]],
+      delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")), }, Validators.required,],
+      total_value: [shipping.total_value, Validators.required],
+      shipping_type: [shipping.shipping_type ? shipping.shipping_type.id : null, [Validators.required]],
+      user: [this.users.find((item) => item.id == shipping.user.id), Validators.required,],
+      address: [shipping.address ? shipping.address : null, [Validators.required]],
+      observations: [shipping.observations],
+      products: [null, Validators.required],
+    });
+
+    this.getInfoUser();
+    this.disabledInputs();
+  }
+
+  async getInfoUser() {
+
+    this.isLoadingData = true;
+
+    await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
+      .subscribe((res: any) => {
+        this.address = res;
+        this.address.map((item: any) => { // Recorrermos el arreglo de address 
+          item.last_name = item.name; // Creamos una nueva posición llamada last_name y le asginamos la propiedad de name
+          delete item.name; // Eliminamos el item.nombre para que en el filtro no hayan errores
         });
+      }, err => {
+        throw err;
+      });
+
+    await this._lockers.getProductsInLocker({
+      locker: this.updateShippingForm.controls.user.value.locker_id,
+      shipping_id: this.updateShippingForm.controls.id.value
+    }).subscribe((locker: any) => {
+      this.inLocker = locker.in_locker;
+      this.outLocker = locker.in_shipping;
+      this.updateShippingForm.controls.products.setValue(this.outLocker);
+    }, err => {
+      throw err;
+    });
+
+    await this._orderService.validateNotProducts(this.shippingToUpdate.id)
+      .subscribe((res: any) => {
+        this.message = { status: true, ...res};
+      }, err => {
+        throw err;
+      });
+
+    this.isLoadingData = false;
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    // console.log("EVENTO DEL DROP", event.previousContainer.data[event.previousIndex]);
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      this._notify.show('Error', 'Revisa el formulario hay campos requeridos incompletos', 'error');
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
-  }
-
-  closeModale() {
-    this.modalService.dismissAll();
-  }
-
-  removeProduct(product) {
-    this.deleted_products.push(product);
-  }
-
-  addProduct(product) {
-    this.deleted_products.map((p, i) => {
-      if (p.id == product.id) {
-        this.deleted_products.splice(i, 1);
-      }
-    });
-  }
-
-  generateLabel() {
-    this.isLoadingLabel = true;
-    let UID: string = "";
-    UID = this.updateShippingForm.getRawValue().id;
-    for (let index = 0; index < this.updateShippingForm.getRawValue().products.length; index++) {
-      UID = UID + '-' + this.updateShippingForm.getRawValue().products[index].id;
-    }
-    this._label.exportToLabel(this.updateShippingForm.getRawValue(), this.addressSelected, UID).then(() => {
-      this.isLoadingLabel = false;
-    });
   }
 
   updateShippingPackcage() {
@@ -229,12 +180,93 @@ export class ModalUpdateShippingComponent implements OnInit {
     }
   }
 
+  _filter(value: string, array: any): string[] {
+    const filterValue = this._normalizeValue(value, array);
+    let fileterdData = this[array].filter(option => this._normalizeValue(option, array).includes(filterValue));
+    if (fileterdData.length > 0) {
+      return fileterdData;
+    } else {
+      return this[array];
+    }
+  }
+
+  private _normalizeValue(value: any, array: any): string {
+    if (typeof value === 'object') {
+      if (array === 'conveyors') {
+        return value.name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'users') {
+        return value.full_name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'address') {
+        return value.address.toLowerCase().replace(/\s/g, '');
+      }
+    } else {
+      return value.toLowerCase().replace(/\s/g, '');
+    }
+  }
+
+  displayFn(option: any) {
+    return option ? option.name : '';
+  }
+
+  displayFnAddress(address: any) {
+    return address ? address.address : '';
+  }
+
+  displayFnUserName(name: any) {
+    return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
+  }
+
+  generateLabel() {
+    this.isLoadingLabel = true;
+    let UID: string = "";
+    UID = this.updateShippingForm.getRawValue().id;
+    for (let index = 0; index < this.updateShippingForm.getRawValue().products.length; index++) {
+      UID = UID + '-' + this.updateShippingForm.getRawValue().products[index].id;
+    }
+    this._label.exportToLabel(this.updateShippingForm.getRawValue(), this.addressSelected, UID).then(() => {
+      this.isLoadingLabel = false;
+    });
+  }
+
   goToFragment() {
     if (this.updateShippingForm.getRawValue().id) {
       this._router.navigate(["/fragment/" + this.updateShippingForm.getRawValue().id]);
       this.modalService.dismissAll();
     } else {
       return;
+    }
+  }
+
+  closeModale(): void {
+    this.modalService.dismissAll();
+  }
+
+  updateShipping() {
+    this.updateShippingForm.controls.products.enable();
+    if (this.updateShippingForm.valid && this.updateShippingForm.value.products.length > 0) {
+      const delivery_date = new Date(
+        this.updateShippingForm.getRawValue().delivery_date.year,
+        this.updateShippingForm.getRawValue().delivery_date.month,
+        this.updateShippingForm.getRawValue().delivery_date.day
+      );
+      this.isLoading = true;
+      this._orderService
+        .updateShipping({
+          ...this.updateShippingForm.getRawValue(),
+          deleted_products: this.deleted_products,
+          delivery_date,
+          status: this.status
+        }).subscribe((res: any) => {
+          this.modalService.dismissAll();
+          this.getTransactions.emit(true);
+          this._notify.show('Orden de envio Actualizada.', '', 'success');
+        }, err => {
+          this.isLoading = false;
+          this._notify.show('Error', 'No pudimos actualizar la orden, intenta de nuevo.', 'error');
+          throw err;
+        });
+    } else {
+      this._notify.show('', 'Revisa el formulario hay campos requeridos incompletos.', 'info');
     }
   }
 

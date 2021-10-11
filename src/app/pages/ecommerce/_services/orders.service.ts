@@ -326,7 +326,7 @@ export class OrderService {
     )
   }
 
-  updateShippingPacked(payload) {
+  updateShippingPacked(payload: any) {
     delete payload.products
     return this.http.put<any>(
       `${environment.microservices.management}shipping-order`, payload).pipe(
@@ -335,6 +335,19 @@ export class OrderService {
         }),
         catchError(handleError)
       );
+  }
+
+  validateNotProducts(shipping_order: any) {
+    console.log(shipping_order)
+    return this.http.get<any>(
+      `${environment.microservices.management}shipping-order/validate-not-products`,
+      { headers: header, params: { shipping_order: shipping_order } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
   }
 
 }
