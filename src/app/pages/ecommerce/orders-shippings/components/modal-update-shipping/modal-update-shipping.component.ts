@@ -5,7 +5,9 @@ import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
 import { Observable } from "rxjs";
+import { map, startWith } from "rxjs/operators";
 import { LockersService } from "src/app/pages/lockers/_services/lockers.service";
+import { updateShipping } from "src/app/_helpers/tools/create-order-parse.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
 import { ExportPdfService } from "../../../_services/export-pdf.service";
@@ -59,30 +61,33 @@ export class ModalUpdateShippingComponent implements OnInit {
     public _router: Router
   ) { }
 
-  ngOnInit(): void {
-    this.getConveyorsAndShippings();
-  }
+  ngOnInit(): void { }
 
-  ngOnChanges() {
-    if (this.shippingToUpdate) {
-      this.buildForm(this.shippingToUpdate);
-    }
-  }
+  getConveyorsAndShippings() {
 
-  async getConveyorsAndShippings() {
-
-    await this._orderService.getConvenyor().subscribe((res: any) => {
+    this._orderService.getConvenyor().subscribe((res: any) => {
       this.conveyors = res;
     }, err => {
       throw err;
     });
 
-    await this._orderService.getShippingTypes().subscribe((res: any) => {
+    this._orderService.getShippingTypes().subscribe((res: any) => {
       this.shipping_types = res;
     }, err => {
       throw err;
     });
 
+  }
+
+  ngOnChanges() {
+    if (this.shippingToUpdate) {
+      this.isLoadingData = true;
+      this.isLoadingLabel = true;
+      this.getConveyorsAndShippings();
+      setTimeout(() => {
+        this.buildForm(this.shippingToUpdate);
+      }, 1000);
+    }
   }
 
   buildForm(shipping: any): void {
@@ -94,23 +99,26 @@ export class ModalUpdateShippingComponent implements OnInit {
       id: [shipping.id],
       trm: [this.trm],
       guide_number: [shipping.guide_number, Validators.required],
-      conveyor: [null, [Validators.required]],
+      conveyor: [this.conveyors.find((item) => item.id == shipping.conveyor), [Validators.required]],
       delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")), }, Validators.required,],
       total_value: [shipping.total_value, Validators.required],
       shipping_type: [shipping.shipping_type ? shipping.shipping_type.id : null, [Validators.required]],
       user: [this.users.find((item) => item.id == shipping.user.id), Validators.required,],
       address: [shipping.address ? shipping.address : null, [Validators.required]],
       observations: [shipping.observations],
-      products: [null, Validators.required],
+      products: [null, Validators.required]
+
     });
+
+    this.filteredConveyors = this.updateShippingForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
+    this.filteredAddress = this.updateShippingForm.controls.address.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'address')));
+    this.filteredUsers = this.updateShippingForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
 
     this.getInfoUser();
     this.disabledInputs();
   }
 
   async getInfoUser() {
-
-    this.isLoadingData = true;
 
     await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
       .subscribe((res: any) => {
@@ -136,12 +144,13 @@ export class ModalUpdateShippingComponent implements OnInit {
 
     await this._orderService.validateNotProducts(this.shippingToUpdate.id)
       .subscribe((res: any) => {
-        this.message = { status: true, ...res};
+        this.message = { status: true, ...res };
       }, err => {
         throw err;
       });
 
     this.isLoadingData = false;
+    this.isLoadingLabel = false;
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -216,16 +225,26 @@ export class ModalUpdateShippingComponent implements OnInit {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
 
+  deleteProduct(array: any, index: number) {
+    this.deleted_products.push(this[array][index]);
+    this.inLocker.unshift(this[array][index]);
+    this[array].splice(index, 1);
+    this._notify.show('', 'Eliminaste el producto correctamente', 'info');
+  }
+
   generateLabel() {
     this.isLoadingLabel = true;
     let UID: string = "";
     UID = this.updateShippingForm.getRawValue().id;
-    for (let index = 0; index < this.updateShippingForm.getRawValue().products.length; index++) {
-      UID = UID + '-' + this.updateShippingForm.getRawValue().products[index].id;
+    if (this.updateShippingForm.getRawValue()) {
+      for (let index = 0; index < this.updateShippingForm.getRawValue().products.length; index++) {
+        UID = UID + '-' + this.updateShippingForm.getRawValue().products[index].product.id;
+      }
+      this._label.exportToLabel(this.updateShippingForm.getRawValue(), this.addressSelected, UID).then(() => {
+        this.isLoadingLabel = false;
+      });
     }
-    this._label.exportToLabel(this.updateShippingForm.getRawValue(), this.addressSelected, UID).then(() => {
-      this.isLoadingLabel = false;
-    });
+
   }
 
   goToFragment() {
@@ -251,12 +270,12 @@ export class ModalUpdateShippingComponent implements OnInit {
       );
       this.isLoading = true;
       this._orderService
-        .updateShipping({
+        .updateShipping(updateShipping({
           ...this.updateShippingForm.getRawValue(),
           deleted_products: this.deleted_products,
           delivery_date,
           status: this.status
-        }).subscribe((res: any) => {
+        })).subscribe((res: any) => {
           this.modalService.dismissAll();
           this.getTransactions.emit(true);
           this._notify.show('Orden de envio Actualizada.', '', 'success');

@@ -175,9 +175,13 @@
 
             <div cdkDropList [cdkDropListData]="inLocker" class="example-list" (cdkDropListDropped)="drop($event)">
 
-              <div class="example-box" *ngFor="let item of inLocker" cdkDrag>
+              <div *ngIf="inLocker && inLocker.length === 0">
+                No hay productos en el casillero
+              </div>
 
-                <div>
+              <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag>
+
+                <div class="d-flex justify-content-center">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.product.image" (error)="$event.target.src = 'assets/images/default.jpg'" alt="">
                   </a>
@@ -207,9 +211,18 @@
 
             <div cdkDropList [cdkDropListData]="outLocker" class="example-list" (cdkDropListDropped)="drop($event)">
 
-              <div class="example-box" *ngFor="let item of outLocker" cdkDrag>
+              <div *ngIf="outLocker && outLocker.length === 0">
+                No hay productos en este envío
+              </div>
 
-                <div>
+              <div class="example-box" *ngFor="let item of outLocker; let i = index" cdkDrag>
+
+                <div class="d-flex justify-content-end" style="cursor: pointer;"
+                  (click)="deleteProduct('outLocker', i);">
+                  <i class="bx bx-trash-alt"></i>
+                </div>
+
+                <div class="d-flex justify-content-center">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.product.image" (error)="$event.target.src = 'assets/images/default.jpg'" alt="">
                   </a>

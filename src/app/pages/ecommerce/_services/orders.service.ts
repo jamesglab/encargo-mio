@@ -338,7 +338,6 @@ export class OrderService {
   }
 
   validateNotProducts(shipping_order: any) {
-    console.log(shipping_order)
     return this.http.get<any>(
       `${environment.microservices.management}shipping-order/validate-not-products`,
       { headers: header, params: { shipping_order: shipping_order } }

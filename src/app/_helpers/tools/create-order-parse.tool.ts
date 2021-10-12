@@ -67,3 +67,25 @@ export const updateLocker = (data: any): any => {
     return locker;
 
 }
+
+export const updateShipping = (data: any): any => {
+
+    let shipping = {
+        "id": data.id,
+        "address": data.address.id,
+        "conveyor": data.conveyor.id,
+        "deleted_products": data.deleted_products,
+        "delivery_date": data.delivery_date,
+        "guide_number": data.guide_number,
+        "observations": data.observations,
+        "products": data.products,
+        "shipping_type": data.shipping_type,
+        "status": data.status,
+        "total_value": data.total_value,
+        "trm": data.trm,
+        "user": data.user
+    };
+
+    return shipping;
+
+};

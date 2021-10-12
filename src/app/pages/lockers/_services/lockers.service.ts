@@ -64,7 +64,7 @@ export class LockersService {
 
   getProductsInLocker(data: any): Observable<any> {
     return this.http.get<any>(
-      `${environment.microservices.management}locker/shipping-products`,
+      `${environment.microservices.management}shipping-order/obtain-products`,
       { headers: header, params: { ...data } }
     ).pipe(
       map((res: any) => {
