@@ -18,7 +18,7 @@
                                 <div class="position-relative">
                                     <input type="text" class="form-control" title="Buscar por número de Guía..."
                                         placeholder="Buscar por Guía..." [(ngModel)]="search"
-                                        (input)="onSearch($event);" [disabled]="isLoadInput">
+                                        (blur)="onSearch();" [disabled]="isLoadInput">
                                     <i class="bx bx-search-alt search-icon"></i>
                                 </div>
                             </div>

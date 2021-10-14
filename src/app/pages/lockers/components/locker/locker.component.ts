@@ -42,10 +42,10 @@ export class LockerComponent implements OnInit {
     });
   }
 
-  onSearch(event: any) {
-    if (event.target.value.length >= 5) {
+  onSearch() {
+    
       this.isLoadInput = true;
-      this._lockers.getDataByGuideNumber(event.target.value)
+      this._lockers.getDataByGuideNumber(this.search)
         .subscribe((res: any) => {
           this.lockers = res;
           this.counts = res.length;
@@ -57,7 +57,7 @@ export class LockerComponent implements OnInit {
           this.isLoadInput = false;
           throw err;
         });
-    }
+    
   }
 
   refreshTableReceive(event): void {
