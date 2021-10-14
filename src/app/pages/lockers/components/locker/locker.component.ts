@@ -43,7 +43,7 @@ export class LockerComponent implements OnInit {
   }
 
   onSearch() {
-    
+    if (this.search.length > 5) {
       this.isLoadInput = true;
       this._lockers.getDataByGuideNumber(this.search)
         .subscribe((res: any) => {
@@ -57,7 +57,11 @@ export class LockerComponent implements OnInit {
           this.isLoadInput = false;
           throw err;
         });
-    
+    } else if (this.search == '') {
+      this.getAllLockers();
+    }
+
+
   }
 
   refreshTableReceive(event): void {
