@@ -144,7 +144,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
     await this._orderService.validateNotProducts(this.shippingToUpdate.id)
       .subscribe((res: any) => {
-        this.message = { status: true, ...res };
+        this.message = { ...res };
       }, err => {
         throw err;
       });

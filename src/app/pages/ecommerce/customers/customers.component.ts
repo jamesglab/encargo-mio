@@ -48,7 +48,6 @@ export class CustomersComponent implements OnInit {
         page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1
       }).subscribe(res => {
         this.transactions = res.transactions;
-        console.log("TRANSACTION: ", this.transactions);
         this.count = res.count;
         this.isLoading = false;
       }, err => {
@@ -116,7 +115,6 @@ export class CustomersComponent implements OnInit {
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1
     }).subscribe(res => {
       this.transactions = res.transactions;
-      console.log("TRANSACTION: ", this.transactions);
       this.count = res.count;
       this.isLoading = false;
     }, err => {
