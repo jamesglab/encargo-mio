@@ -80,7 +80,7 @@ export class ModalCreateShippingComponent implements OnInit {
     if (this.createShippingForm.valid) {
       this.isLoading = true;
       const delivery_date = new Date(this.createShippingForm.value.delivery_date.year,
-        this.createShippingForm.value.delivery_date.month,
+        this.createShippingForm.value.delivery_date.month - 1,
         this.createShippingForm.value.delivery_date.day);
       this._orderService.createShipping({
         ...this.createShippingForm.getRawValue(),

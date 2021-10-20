@@ -142,7 +142,7 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   createReceiptDate(date) { //Formato de fechas recibidas
-    return new Date(date.year, date.month, date.day);
+    return new Date(date.year, date.month - 1, date.day);
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
@@ -272,6 +272,11 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   addLocker(): void {
+    let payloadtxt = insertInLocker(this.lockerForm.getRawValue());
+console.log('tenemos payload',payloadtxt)
+
+
+
 
     if (this.lockerForm.invalid) {
       this._notify.show('', 'El formulario no se ha completado correctamente.', 'info');

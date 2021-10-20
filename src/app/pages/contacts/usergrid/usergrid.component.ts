@@ -29,6 +29,7 @@ export class UsergridComponent implements OnInit {
   permissionsRole;
   editRol: boolean;
   roleSelected;
+  isLoading: boolean = false;
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder, private _rolesService: RolesService) { }
 
   ngOnInit() {
@@ -62,10 +63,10 @@ export class UsergridComponent implements OnInit {
       this.rolForm.get('name').setValue(edit.name);
       this.rolForm.get('id').setValue(edit.id);
       this.rolForm.get('description').setValue(edit.description);
-      this.modalService.open(content);
+      this.modalService.open(content,{centered:true});
     } else {
       this.editRol = false;
-      this.modalService.open(content);
+      this.modalService.open(content,{centered:true});
     }
   }
 
@@ -93,7 +94,7 @@ export class UsergridComponent implements OnInit {
         }
       })
       this.roleSelected = data;
-      this.modalService.open(content);
+      this.modalService.open(content,{centered:true});
     });
   }
 
@@ -151,7 +152,11 @@ export class UsergridComponent implements OnInit {
 
   savePermisson() {
     if (this.permisionForm.valid) {
+      this.isLoading = true;
+
       this._rolesService.createPermission(this.permisionForm.getRawValue()).subscribe(res => {
+        this.isLoading = false;
+        this.permisionForm.reset();
         this.modalService.dismissAll();
         this.getPermisions();
         Swal.fire('Permiso creado', '', 'success');

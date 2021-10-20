@@ -44,12 +44,12 @@ export class CreateCuponsComponent implements OnInit {
       this.isLoading = true;
       const date_init = new Date(
         this.createCuponsForm.value.date_init.year,
-        this.createCuponsForm.value.date_init.month,
+        this.createCuponsForm.value.date_init.month-1,
         this.createCuponsForm.value.date_init.day
       )
       const date_finish = new Date(
         this.createCuponsForm.value.date_finish.year,
-        this.createCuponsForm.value.date_finish.month,
+        this.createCuponsForm.value.date_finish.month-1,
         this.createCuponsForm.value.date_finish.day
       )
       this._cuponsService.createCupons({

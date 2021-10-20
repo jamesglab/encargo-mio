@@ -36,7 +36,7 @@ export const insertInLocker = (data: any): any => {
         "product": (data.product ? data.product : null),
         "product_description": (data.product_description ? data.product_description : null),
         "weight": (data.weight ? data.weight : 0),
-        "receipt_date": new Date(data.receipt_date.year, data.receipt_date.month, data.receipt_date.day),
+        "receipt_date": new Date(data.receipt_date.year, data.receipt_date.month - 1, data.receipt_date.day),
         "shipping_value": (data.shipping_value ? data.shipping_value : 0),
         "declared_value_admin": (data.declared_value_admin ? data.declared_value_admin : 0),
         "conveyor": (data.conveyor ? data.conveyor : null),
@@ -54,7 +54,7 @@ export const updateLocker = (data: any): any => {
     let locker = {
         "id": (data.id ? data.id : null),
         "conveyor": (data.conveyor ? data.conveyor : null),
-        "receipt_date": new Date(data.date_recieved.year, data.date_recieved.month, data.date_recieved.day),
+        "receipt_date": new Date(data.date_recieved.year, data.date_recieved.month - 1, data.date_recieved.day),
         "declared_value_admin": (data.declared_value_admin ? data.declared_value_admin : 0),
         "force_commercial_shipping": (data.force_commercial_shipping ? data.force_commercial_shipping : 0),
         "guide_number": (data.guide_number ? data.guide_number : null),

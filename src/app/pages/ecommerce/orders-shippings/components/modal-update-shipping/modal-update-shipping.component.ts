@@ -265,7 +265,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     if (this.updateShippingForm.valid && this.updateShippingForm.value.products.length > 0) {
       const delivery_date = new Date(
         this.updateShippingForm.getRawValue().delivery_date.year,
-        this.updateShippingForm.getRawValue().delivery_date.month,
+        this.updateShippingForm.getRawValue().delivery_date.month - 1 ,
         this.updateShippingForm.getRawValue().delivery_date.day
       );
       this.isLoading = true;

@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
 import { TranslateService } from '@ngx-translate/core';
+import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,7 +29,11 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
 
   @ViewChild('sideMenu') sideMenu: ElementRef;
 
-  constructor(private eventService: EventService, private router: Router, public translate: TranslateService, private http: HttpClient) {
+  constructor(private eventService: EventService, private router: Router,
+    public translate: TranslateService, private http: HttpClient,
+    private _storageService: StorageService
+
+  ) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this._activateMenuDropdown();
@@ -66,9 +71,9 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
       if (document.getElementsByClassName("mm-active").length > 0) {
         const currentPosition = document.getElementsByClassName("mm-active")[0]['offsetTop'];
         if (currentPosition > 500)
-        if(this.scrollRef.SimpleBar !== null)
-          this.scrollRef.SimpleBar.getScrollElement().scrollTop =
-            currentPosition + 300;
+          if (this.scrollRef.SimpleBar !== null)
+            this.scrollRef.SimpleBar.getScrollElement().scrollTop =
+              currentPosition + 300;
       }
     }, 300);
   }
@@ -140,6 +145,28 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
    * Initialize
    */
   initialize(): void {
+    const permissions = this._storageService.getItem('permissions');
+    // RECORREMOS LOS PERMISOS
+    Object.keys(permissions).map((p) => {
+      //RECORREMOS LOS ITEMS PRINCIPALES
+      MENU.map((m,i) => {
+        //RECORREMOS LOS SUBITEMS QUE TIENEN LOS ACCESOS A LOS MODULOS
+        if (m.subItems) {
+          m.subItems.map((sub) => {
+            //VALIDAMOS QUE EL CODIGO RECORRIDO SEA IGUAL A MODULO AL QUE VAMOS A DAR ACCESO
+            if (p == sub.code) {
+              console.log('tenemos subcode',sub.code)
+              console.log('tenemos p ',p)
+              console.log('tenemos menu',MENU[i])
+
+              //ANEXAMOS EL PERMISO AL MODULO
+              sub.showItem = permissions[p];
+              MENU[i].showItem = true;
+            }
+          })
+        }
+      });
+    });
     this.menuItems = MENU;
   }
 

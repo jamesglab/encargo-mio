@@ -95,12 +95,12 @@ export class ModalEditPurchaseComponent implements OnInit {
     return [
       new Date(
         this.purchaseForm.getRawValue().purchase_date.year,
-        this.purchaseForm.getRawValue().purchase_date.month,
+        this.purchaseForm.getRawValue().purchase_date.month - 1 ,
         this.purchaseForm.getRawValue().purchase_date.day
       ),
       new Date(
         this.purchaseForm.getRawValue().locker_entry_date.year,
-        this.purchaseForm.getRawValue().locker_entry_date.month,
+        this.purchaseForm.getRawValue().locker_entry_date.month - 1 ,
         this.purchaseForm.getRawValue().locker_entry_date.day
       ),
     ];

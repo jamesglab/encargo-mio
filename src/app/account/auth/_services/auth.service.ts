@@ -39,9 +39,9 @@ export class AuthService {
     return this.http.post<any>(`${environment.microservices.user}auth`, credentials, { headers: header }).pipe(
       map((res: any) => {
         // localStorage.setItem("currentUser", JSON.stringify({ user: res.user, token: res.token }));
-
-
         this._storageService.setItem("currentUser", { user: res.user, token: res.token });
+        this._storageService.setItem("permissions", res.permissions);
+
         localStorage.setItem("lang", res.user.language || "es");
         this.user = this.getAuthFromLocalStorage();
         return res;

@@ -3,6 +3,7 @@ export interface MenuItem {
     label?: string;
     icon?: string;
     link?: string;
+    showItem : boolean;
     subItems?: any;
     isTitle?: boolean;
     badge?: any;

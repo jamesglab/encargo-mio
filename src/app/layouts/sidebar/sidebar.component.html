@@ -9,7 +9,7 @@
       <!-- {{menuItems}} -->
       <ng-container *ngFor="let item of menuItems">
         <li class="menu-title" *ngIf="item.isTitle">{{ item.label | translate }}</li>
-        <li *ngIf="!item.isTitle && !item.isLayout">
+        <li *ngIf="!item.isTitle && !item.isLayout && item.showItem">
           <a *ngIf="hasItems(item)" href="javascript:void(0);" class="is-parent"
             [ngClass]="{'has-arrow': !item.badge, 'has-dropdown': item.badge}">
             <i class="bx {{item.icon}}" *ngIf="item.icon"></i>
@@ -27,22 +27,24 @@
 
           <ul *ngIf="hasItems(item)" class="sub-menu" aria-expanded="false">
             <li *ngFor="let subitem of item.subItems">
-              <a [routerLink]="subitem.link" *ngIf="!hasItems(subitem)" class="side-nav-link-ref"
+              
+              <a [routerLink]="subitem.link" *ngIf="!hasItems(subitem) && subitem.showItem" class="side-nav-link-ref"
                 [attr.data-parent]="subitem.parentId" routerLinkActive="active">
                 {{ subitem.label | translate}}
               </a>
-              <a *ngIf="hasItems(subitem)" class="side-nav-link-a-ref has-arrow" href="javascript:void(0);"
+              <!-- <a *ngIf="hasItems(subitem)" class="side-nav-link-a-ref has-arrow" href="javascript:void(0);"
                 [attr.data-parent]="subitem.parentId">
                 {{ subitem.label | translate}}
-              </a>
-              <ul *ngIf="hasItems(subitem)" class="sub-menu mm-collapse" aria-expanded="false">
+              </a> -->
+              
+              <!-- <ul *ngIf="hasItems(subitem)" class="sub-menu mm-collapse" aria-expanded="false"> 
                 <li *ngFor="let subSubitem of subitem.subItems">
                   <a [attr.data-parent]="subSubitem.parentId" [routerLink]="subSubitem.link" routerLinkActive="active"
                     class="side-nav-link-ref">
                     {{ subSubitem.label | translate }}
                   </a>
                 </li>
-              </ul>
+              </ul> -->
             </li>
           </ul>
         </li>
