@@ -1,0 +1,10 @@
+.cont-image {
+  display: flex;
+  justify-content: center;
+  height: calc(100vh - 10rem);
+}
+
+img{
+  width: 60%;
+  object-fit: scale-down;
+}

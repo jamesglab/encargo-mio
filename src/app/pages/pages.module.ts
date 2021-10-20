@@ -19,6 +19,7 @@ import { TasksModule } from './tasks/tasks.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { TablesModule } from './tables/tables.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LandingInitComponent } from './landing-init/landing-init.component';
 
 FullCalendarModule.registerPlugins([ // register FullCalendar plugins
   dayGridPlugin,
@@ -28,6 +29,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
 
 @NgModule({
   declarations: [
+  
+    LandingInitComponent
   ],
   imports: [
     CommonModule,

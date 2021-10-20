@@ -75,7 +75,6 @@ export class UsergridComponent implements OnInit {
       role: this.roleSelected.id,
       permission: permission.id,
     }).subscribe(res => {
-      console.log('agregado', res)
       this.roleSelected = res
       this.permissionsRole.splice(i, 1)
     })

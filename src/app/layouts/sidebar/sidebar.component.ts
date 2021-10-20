@@ -155,10 +155,6 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
           m.subItems.map((sub) => {
             //VALIDAMOS QUE EL CODIGO RECORRIDO SEA IGUAL A MODULO AL QUE VAMOS A DAR ACCESO
             if (p == sub.code) {
-              console.log('tenemos subcode',sub.code)
-              console.log('tenemos p ',p)
-              console.log('tenemos menu',MENU[i])
-
               //ANEXAMOS EL PERMISO AL MODULO
               sub.showItem = permissions[p];
               MENU[i].showItem = true;
