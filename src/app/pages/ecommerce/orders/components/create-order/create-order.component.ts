@@ -25,6 +25,7 @@ export class CreateOrderComponent implements OnInit {
   public isLoadingFormula: boolean = false;
   public totalFormulas: any = [];
   public totalValues: any = [];
+  files: any = [];
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -114,8 +115,11 @@ export class CreateOrderComponent implements OnInit {
     }
 
   }
+  onSelect(event) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
+    this.files.push(...event.addedFiles);
+  }
 
-  addItem(res: any){
+  addItem(res: any) {
     this.form.image.setValue(res ? res.image : null);
     this.form.name.setValue(res ? res.name : null);
     this.form.description.setValue(res ? res.description : null);
@@ -241,18 +245,19 @@ export class CreateOrderComponent implements OnInit {
       }
     }
 
-    if (this.createProductForm.valid) {
+    if (this.createProductForm.valid && this.files.length  !=  0) {
 
       this.isLoading = true;
-
-      this.quotationService.createQuotation({
+      var formData = new FormData();
+      this.files.forEach((file) => { formData.append('images', file) });
+      formData.append('payload', JSON.stringify({
         ...getInsertCreateOrder(
           this.createProductForm.getRawValue().user,
           this.createProductForm.getRawValue().products,
           this.totalFormulas,
-          this.trm
-        )
-      }).subscribe(res => {
+          this.trm)
+      }));
+      this.quotationService.createQuotation(formData).subscribe(res => {
         this._notify.show('Transacción Exitosa', res.message, 'success');
         this.isLoading = false;
         this.close_modale.emit();
@@ -263,10 +268,17 @@ export class CreateOrderComponent implements OnInit {
         throw err;
       });
 
-    } else {
+    } else if (this.files.length  ==  0){
+      this._notify.show('Datos incompletos', `Sube El/Los comprobantes de pago`, 'info');
+    }
+    else {
       this._notify.show('Datos incompletos', `Revisa que hayas llenado los campos.`, 'info');
+
     }
 
   }
 
+  onRemove(event) { // ELIMINAMOS LA IMAGEN
+    this.files.splice(this.files.indexOf(event), 1);
+  }
 }

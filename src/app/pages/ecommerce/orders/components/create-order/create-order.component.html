@@ -37,6 +37,21 @@
               </select>
 
             </div>
+            <div>
+              <div class="custom-dropzone mt-3" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+
+                <ngx-dropzone-label>
+                  <div>
+                    <h2>Inserta las Imagenes de facturación</h2>
+                  </div>
+                </ngx-dropzone-label>
+      
+                <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
+                  [removable]="true" (removed)="onRemove(f)">
+                </ngx-dropzone-image-preview>
+      
+              </div> 
+            </div>
 
             <div class="d-flex h5">
 

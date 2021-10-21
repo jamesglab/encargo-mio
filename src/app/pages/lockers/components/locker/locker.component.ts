@@ -21,54 +21,54 @@ export class LockerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getAllLockers();
+    // this.getAllLockers();
   }
 
-  getAllLockers(pagination?: any) {
-    this.isLoading = true;
-    this.isLoadInput = true;
-    this._lockers.getAllLockers({
-      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
-      page: pagination?.pageIndex ? pagination?.pageIndex + 1 : 1
-    }).subscribe((res: any) => {
-      this.lockers = res.products;
-      this.counts = res.count;
-      this.isLoading = false;
-      this.isLoadInput = false;
-    }, err => {
-      this.isLoading = false;
-      this.isLoadInput = false;
-      throw err;
-    });
-  }
+  // getAllLockers(pagination?: any) {
+  //   this.isLoading = true;
+  //   this.isLoadInput = true;
+  //   this._lockers.getAllLockers({
+  //     pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+  //     page: pagination?.pageIndex ? pagination?.pageIndex + 1 : 1
+  //   }).subscribe((res: any) => {
+  //     this.lockers = res.products;
+  //     this.counts = res.count;
+  //     this.isLoading = false;
+  //     this.isLoadInput = false;
+  //   }, err => {
+  //     this.isLoading = false;
+  //     this.isLoadInput = false;
+  //     throw err;
+  //   });
+  // }
 
-  onSearch() {
-    if (this.search.length > 5) {
-      this.isLoadInput = true;
-      this._lockers.getDataByGuideNumber(this.search)
-        .subscribe((res: any) => {
-          this.lockers = res;
-          this.counts = res.length;
-          if (this.counts === 0) {
-            this.getAllLockers();
-          }
-          this.isLoadInput = false;
-        }, err => {
-          this.isLoadInput = false;
-          throw err;
-        });
-    } else if (this.search == '') {
-      this.getAllLockers();
-    }
+  // onSearch() {
+  //   if (this.search.length > 5) {
+  //     this.isLoadInput = true;
+  //     this._lockers.getDataByGuideNumber(this.search)
+  //       .subscribe((res: any) => {
+  //         this.lockers = res;
+  //         this.counts = res.length;
+  //         if (this.counts === 0) {
+  //           this.getAllLockers();
+  //         }
+  //         this.isLoadInput = false;
+  //       }, err => {
+  //         this.isLoadInput = false;
+  //         throw err;
+  //       });
+  //   } else if (this.search == '') {
+  //     this.getAllLockers();
+  //   }
 
 
-  }
+  // }
 
-  refreshTableReceive(event): void {
-    this.refreshTable = event;
-    if (this.refreshTable) {
-      this.getAllLockers();
-    }
-  }
+  // refreshTableReceive(event): void {
+  //   this.refreshTable = event;
+  //   if (this.refreshTable) {
+  //     this.getAllLockers();
+  //   }
+  // }
 
 }

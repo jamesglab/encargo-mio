@@ -48,8 +48,7 @@ export class OrderService {
 
   createQuotation(body) {
     return this.http.post<any>(
-      `${environment.microservices.management}orders`, body,
-      { headers: header }).pipe(
+      `${environment.microservices.management}orders`, body).pipe(
         map((res: any) => {
           return res;
         }),
