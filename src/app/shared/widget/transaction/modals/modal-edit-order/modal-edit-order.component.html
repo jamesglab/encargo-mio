@@ -185,7 +185,6 @@
                   <input type="number" class="form-control" placeholder="Tax" [ngModel]="item.tax | number: '1.2-2'"
                     (ngModelChange)="item.tax = $event" min="0" (keypress)="numberOnly($event);"
                     (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || disabledAllInputs">
-
                   <br>
 
                   <div class="container-calcs">

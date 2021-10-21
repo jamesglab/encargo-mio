@@ -112,13 +112,17 @@ export class ModalEditOrderComponent implements OnInit {
   calculateTax(position?: number) {
     if (this.status == 0 || this.status == 1) {
       if (this.orderSelected.products[position].free_shipping) { // Si el free_shipping es true
+        console.log('entramos free')
         this.orderSelected.products[position].tax = 0; // Volvemos el tax 0
       } else { // Si no calculamos el tax normalmente
         if (!this.orderSelected.products[position].tax_manually) { // Validar si el tax se calcula manual o automatico
-          if (this.orderSelected.products[position].selected_tax === "1" || this.orderSelected.products[position].selected_tax != null) {
+          console.log('estamos probando',this.orderSelected.products[position].selected_tax)
+          if (this.orderSelected.products[position].selected_tax == "1" || this.orderSelected.products[position].selected_tax == null) {
+            console.log('estamos en if ')
             this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity * 0.07;
           } else {
-            this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].shipping_origin_value_product * 0.07;
+            this.orderSelected.products[position].tax = ((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].shipping_origin_value_product) * 0.07;
+            console.log('estamos',this.orderSelected.products[position].tax)
           }
         }
       }
