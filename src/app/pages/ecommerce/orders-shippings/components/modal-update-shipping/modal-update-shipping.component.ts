@@ -10,6 +10,7 @@ import { LockersService } from "src/app/pages/lockers/_services/lockers.service"
 import { updateShipping } from "src/app/_helpers/tools/create-order-parse.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
+import Swal from "sweetalert2";
 import { ExportPdfService } from "../../../_services/export-pdf.service";
 import { OrderService } from "../../../_services/orders.service";
 
@@ -261,11 +262,20 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   updateShipping() {
+
+    if (this.status == 2) {
+      if (this.updateShippingForm.controls.guide_number.value == '' || this.updateShippingForm.controls.guide_number.value == null ||
+        this.updateShippingForm.controls.conveyor.value == '' || this.updateShippingForm.controls.conveyor.value == null
+      ) {
+        Swal.fire('Numero de guia y transportadora requerido', '', 'info')
+        return
+      }
+    }
     this.updateShippingForm.controls.products.enable();
     if (this.updateShippingForm.valid && this.updateShippingForm.value.products.length > 0) {
       const delivery_date = new Date(
         this.updateShippingForm.getRawValue().delivery_date.year,
-        this.updateShippingForm.getRawValue().delivery_date.month - 1 ,
+        this.updateShippingForm.getRawValue().delivery_date.month - 1,
         this.updateShippingForm.getRawValue().delivery_date.day
       );
       this.isLoading = true;
@@ -274,7 +284,7 @@ export class ModalUpdateShippingComponent implements OnInit {
           ...this.updateShippingForm.getRawValue(),
           deleted_products: this.deleted_products,
           delivery_date,
-          status: this.status
+          status: (this.status == 2) ? 3 : this.status
         })).subscribe((res: any) => {
           this.modalService.dismissAll();
           this.getTransactions.emit(true);
