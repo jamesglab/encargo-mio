@@ -34,13 +34,13 @@
 
             <div class="col-sm-4">
 
-              <div class="search-box me-2 mb-2 d-inline-block">
+              <!-- <div class="search-box me-2 mb-2 d-inline-block">
                 <div class="position-relative">
                   <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term"
-                    (blur)="searchFilter()">
+                    (blur)="searchFilter(status)">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
-              </div>
+              </div> -->
 
 
             </div>
@@ -55,21 +55,80 @@
 
           </div>
 
-          <div class="table-responsive">
+          <div class="table-responsive" style="min-height: 30rem;">
 
             <table class="table align-middle table-nowrap">
 
-              <thead>
+              <thead class="table-light">
                 <tr>
-                  <th>#</th>
-                  <th>Orden</th>
-                  <th>Método de Pago</th>
-                  <th>Fecha de Pago</th>
-                  <th>Pasarela de Pago</th>
-                  <th>Referencia</th>
-                  <th>Usuario</th>
-                  <th>Tipo</th>
-                  <th>Valor</th>
+                  <th>#
+                    <div class="mt-2">
+                      <input type="" [formControl]="filterId" class="form-control" (blur)="getTransactions(status)" />
+                    </div>
+                  </th>
+                  <th>Orden
+
+                    <div class="mt-2">
+                      <input type="" [formControl]="filterOrder" class="form-control"
+                        (blur)="getTransactions(status)" />
+                    </div>
+                  </th>
+                  <th>Método de Pago
+                    <div class="mt-2" style="width: 8rem;">
+                      <select class="form-select mt-2" aria-label="Default select example"
+                        [formControl]="filterPaymentMethod" (change)="getTransactions(status)">
+                        <option selected>Seleccióne un metodo de pago</option>
+                        <option value="credit">Credito</option>
+                        <option value="transfer">Transferencia</option>
+                      </select>
+                    </div>
+                  </th>
+                  <th>Fecha de Pago
+
+                    <div class="input-group clockpicker mt-2">
+                      <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
+                        (ngModelChange)="getTransactions(status)" #dl="ngbDatepicker" [formControl]="filterDate">
+                      <div class="input-group-append" (click)="dl.toggle()">
+                        <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                      </div>
+                    </div>
+
+                  </th>
+
+                  <th>Referencia
+                    <div class="mt-2">
+                      <input type="" [formControl]="filterReference" class="form-control"
+                        (blur)="getTransactions(status)" />
+                    </div>
+                  </th>
+                  <th>Usuario
+                    <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
+                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user" />
+
+                    <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+                      <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+                        (click)="getTransactions(status)">
+              CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                        
+                      </mat-option>
+                    </mat-autocomplete>
+                  </th>
+                  <th>Tipo
+                    <div class="mt-2">
+                      <select class="form-select mt-2" aria-label="Default select example" [formControl]="filterType"
+                        (change)="getTransactions(status)">
+                        <option selected>Seleccióne un Estado</option>
+                        <option value="0">Compra</option>
+                        <option value="1">Envio</option>
+                      </select>
+                    </div>
+                  </th>
+                  <th>Valor
+                    <div class="mt-2">
+                      <input type="" [formControl]="filterValue" class="form-control"
+                        (blur)="getTransactions(status)" />
+                    </div>
+                  </th>
                   <th>Opciones</th>
                 </tr>
               </thead>
@@ -89,18 +148,13 @@
 
                   <td>
                     <p class="mb-1">
-                      {{ transaction.payment_method }}
+                      {{ transaction.payment_method == 'credit' ? 'Credito':'Transferencia'  }}
                     </p>
                   </td>
 
                   <td>
                     {{ transaction.created_at | date: 'medium' }}
                   </td>
-
-                  <td style="text-transform: capitalize;">
-                    {{ transaction.payment_gateway }}
-                  </td>
-
                   <td>{{ transaction.reference ? transaction.reference : '-' }}</td>
 
                   <td>
@@ -108,7 +162,7 @@
                   </td>
 
                   <td>
-                    {{ typeElement(transaction.type) }}
+                    {{ transaction.type? transaction.type : '-' }}
                   </td>
 
                   <td>{{ transaction.value }}</td>

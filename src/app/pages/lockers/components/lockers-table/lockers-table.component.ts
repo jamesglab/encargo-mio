@@ -50,7 +50,7 @@ export class LockersTableComponent implements OnInit {
     this.lockerService.getAllLockers({
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination?.pageIndex + 1 : 1,
-      ...this.filterdOptions()
+      ...this.filterOptions()
     }).subscribe((res: any) => {
       this.lockers = res.products;
       this.counts = res.count;
@@ -60,7 +60,7 @@ export class LockersTableComponent implements OnInit {
   }
 
   //VALIDAMOS LOS FILTROS QUE ENVIAREMOS
-  filterdOptions() {
+  filterOptions() {
     const options = {}
     if (this.filterGuide.value != null && this.filterGuide.value != '') {
       options['guide_number'] = this.filterGuide.value
