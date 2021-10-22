@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
   selector: 'app-landing-init',
@@ -6,10 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./landing-init.component.scss']
 })
 export class LandingInitComponent implements OnInit {
-
-  constructor() { }
+  currentUser  = this._storageService.getItem('currentUser')
+  constructor(private _storageService : StorageService ) { }
 
   ngOnInit(): void {
+    console.log('current',this.currentUser,this._storageService.getItem('currenUser'))
   }
 
 }

@@ -5,6 +5,12 @@
 }
 
 img{
-  width: 60%;
+  width: 80%;
   object-fit: scale-down;
+}
+
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
