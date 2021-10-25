@@ -1,5 +1,5 @@
-export const getInsertCreateOrder = (user: any, products: any, calculate: any, trm: any): any => {
-
+export const getInsertCreateOrder = (user: any, products: any, calculations: any, trm: any): any => {
+    console.log("CALCULATIONS", calculations);
     let order = {
         "user": {
             "id": user.id,
@@ -18,8 +18,9 @@ export const getInsertCreateOrder = (user: any, products: any, calculate: any, t
             "created_at": trm.created_at,
             "updated_at": trm.updated_at
         },
-        "home_value": calculate ? parseFloat(calculate.shipping_usd) : 0,
-        "shipping_value": calculate ? calculate.value : 0,
+        // "home_value": calculations ? parseFloat(calculations.shipping_usd) : 0,
+        // "shipping_value": calculations ? calculations.value : 0,
+        "shipping_value_admin": calculations,
         "products": [...products]
     };
 
