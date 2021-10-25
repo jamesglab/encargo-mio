@@ -31,11 +31,14 @@
             <div class="form-group h5">
 
               <label for="exampleInputEmail1">Usuario </label>
-              <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario" formControlName="user">
-                <option selected disabled value="">Selecciona un usuario...</option>
-                <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
-              </select>
+              <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
+                placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
 
+              <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+                <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                  CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                </mat-option>
+              </mat-autocomplete>
             </div>
             <div>
               <div class="custom-dropzone mt-3" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
@@ -45,12 +48,12 @@
                     <h2>Inserta las Imagenes de facturación</h2>
                   </div>
                 </ngx-dropzone-label>
-      
+
                 <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
                   [removable]="true" (removed)="onRemove(f)">
                 </ngx-dropzone-image-preview>
-      
-              </div> 
+
+              </div>
             </div>
 
             <div class="d-flex h5">

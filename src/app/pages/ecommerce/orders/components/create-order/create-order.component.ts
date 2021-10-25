@@ -4,6 +4,8 @@ import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.
 import { NotifyService } from 'src/app/_services/notify.service';
 import { OrderService } from '../../../_services/orders.service';
 import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
+import { Observable } from 'rxjs-compat';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-order',
@@ -17,6 +19,7 @@ export class CreateOrderComponent implements OnInit {
   @Output() public close_modale = new EventEmitter<any>();
   @Input() public trm: any;
   @Input() public users: any = [];
+  public filteredUsers: Observable<string[]>;
 
   public typeTax: number = 0.07;
   public createProductForm: FormGroup;
@@ -50,6 +53,8 @@ export class CreateOrderComponent implements OnInit {
       user: [null],
       price: [0]
     });
+
+    this.filteredUsers = this.createProductForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
   // Retorna los controles del formulario que se consumen desde el HTML
@@ -84,6 +89,9 @@ export class CreateOrderComponent implements OnInit {
 
   }
 
+  displayFnUserName(name: any) {
+    return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
+  }
   //creamos un producto nuevo que sera pusheado en los formArray
   addProduct(): void {
 
@@ -114,6 +122,30 @@ export class CreateOrderComponent implements OnInit {
       this._notify.show('Los datos del producto están incompletos.', '', 'warning');
     }
 
+  }
+
+  _filter(value: string, array: any): string[] {
+    const filterValue = this._normalizeValue(value, array);
+    let fileterdData = this[array].filter(option => this._normalizeValue(option, array).includes(filterValue));
+    if (fileterdData.length > 0) {
+      return fileterdData;
+    } else {
+      return this[array];
+    }
+  }
+
+  private _normalizeValue(value: any, array: any): string {
+    if (typeof value === 'object') {
+      if (array === 'conveyors') {
+        return value.name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'users') {
+        return value.full_name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'address') {
+        return value.address.toLowerCase().replace(/\s/g, '');
+      }
+    } else {
+      return value.toLowerCase().replace(/\s/g, '');
+    }
   }
   onSelect(event) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
     this.files.push(...event.addedFiles);

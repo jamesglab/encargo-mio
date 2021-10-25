@@ -11,7 +11,7 @@ export class LandingInitComponent implements OnInit {
   constructor(private _storageService : StorageService ) { }
 
   ngOnInit(): void {
-    console.log('current',this.currentUser,this._storageService.getItem('currenUser'))
+    
   }
 
 }
