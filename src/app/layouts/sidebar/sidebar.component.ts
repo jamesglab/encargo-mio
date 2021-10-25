@@ -147,23 +147,27 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   initialize(): void {
     const permissions = this._storageService.getItem('permissions');
     // RECORREMOS LOS PERMISOS
-    Object.keys(permissions).map((p) => {
-      //RECORREMOS LOS ITEMS PRINCIPALES
-      MENU.map((m,i) => {
-        //RECORREMOS LOS SUBITEMS QUE TIENEN LOS ACCESOS A LOS MODULOS
-        if (m.subItems) {
-          m.subItems.map((sub) => {
-            //VALIDAMOS QUE EL CODIGO RECORRIDO SEA IGUAL A MODULO AL QUE VAMOS A DAR ACCESO
-            if (p == sub.code) {
-              //ANEXAMOS EL PERMISO AL MODULO
-              sub.showItem = permissions[p];
-              MENU[i].showItem = true;
-            }
-          })
-        }
-      });
+    var new_menu = MENU;
+    // Object.keys(permissions).map((p) => {
+    //RECORREMOS LOS ITEMS PRINCIPALES
+    new_menu.map((m, i) => {
+      //RECORREMOS LOS SUBITEMS QUE TIENEN LOS ACCESOS A LOS MODULOS
+      if (m.subItems) {
+        m.subItems.map((sub) => {
+          //VALIDAMOS QUE EL CODIGO RECORRIDO SEA IGUAL A MODULO AL QUE VAMOS A DAR ACCESO
+          if (permissions[sub.code]) {
+            //ANEXAMOS EL PERMISO AL MODULO
+            sub.showItem = true
+            new_menu[i].showItem = true;
+          } else {
+            //DENEGAMOS EL ACCESO AL MODULO
+            sub.showItem = false
+          }
+        })
+      }
     });
-    this.menuItems = MENU;
+    // });
+    this.menuItems = new_menu;
   }
 
   /**
