@@ -63,19 +63,19 @@
                 <tr>
                   <th>#
                     <div class="mt-2">
-                      <input type="" [formControl]="filterId" class="form-control" (blur)="getTransactions(status)" />
+                      <input type="" [formControl]="filterId" class="form-control min-width" (blur)="getTransactions(status)" />
                     </div>
                   </th>
                   <th>Orden
 
                     <div class="mt-2">
-                      <input type="" [formControl]="filterOrder" class="form-control"
+                      <input type="" [formControl]="filterOrder" class="form-control min-width"
                         (blur)="getTransactions(status)" />
                     </div>
                   </th>
                   <th>Método de Pago
                     <div class="mt-2" style="width: 8rem;">
-                      <select class="form-select mt-2" aria-label="Default select example"
+                      <select class="form-select mt-2 " aria-label="Default select example"
                         [formControl]="filterPaymentMethod" (change)="getTransactions(status)">
                         <option selected>Seleccióne un metodo de pago</option>
                         <option value="credit">Credito</option>
@@ -97,7 +97,7 @@
 
                   <th>Referencia
                     <div class="mt-2">
-                      <input type="" [formControl]="filterReference" class="form-control"
+                      <input type="" [formControl]="filterReference" class="form-control min-width"
                         (blur)="getTransactions(status)" />
                     </div>
                   </th>
@@ -115,7 +115,7 @@
                   </th>
                   <th>Tipo
                     <div class="mt-2">
-                      <select class="form-select mt-2" aria-label="Default select example" [formControl]="filterType"
+                      <select class="form-select mt-2" aria-label="Default select example " [formControl]="filterType"
                         (change)="getTransactions(status)">
                         <option selected>Seleccióne un Estado</option>
                         <option value="0">Compra</option>
@@ -125,7 +125,7 @@
                   </th>
                   <th>Valor
                     <div class="mt-2">
-                      <input type="" [formControl]="filterValue" class="form-control"
+                      <input type="" [formControl]="filterValue" class="form-control min-width"
                         (blur)="getTransactions(status)" />
                     </div>
                   </th>
