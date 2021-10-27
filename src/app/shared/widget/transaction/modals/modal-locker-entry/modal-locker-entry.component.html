@@ -92,9 +92,13 @@
             (input)="autoCompleteLocker($event.target.value);" [matAutocomplete]="auto_locker"
             placeholder="Búsqueda de casillero...">
 
+          <div class="spinner-border text-dark" role="status" *ngIf="loaderLockers">
+            <span class="sr-only"></span>
+          </div>
+
           <mat-autocomplete #auto_locker="matAutocomplete">
             <mat-option *ngFor="let locker of allLockers" [value]="locker">
-              CA{{ locker.locker ? locker.locker.id : 0 }} | {{ locker.name }} {{ locker.last_name }}
+              CA{{ locker.locker_id ? locker.locker_id : 0 }} | {{ locker.us_name }} {{ locker.us_last_name }}
             </mat-option>
           </mat-autocomplete>
 
