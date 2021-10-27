@@ -34,7 +34,7 @@
           Estado
           <select class="form-select mt-2" aria-label="Default select example" [formControl]="filterStatus"
             (change)="getAllLockers()">
-            <option selected>Seleccione un Estado</option>
+            <option [value]="'all'" selected>Seleccione un Estado</option>
             <option value="0">En Casillero</option>
             <option value="1">Consolidacion</option>
           </select>
