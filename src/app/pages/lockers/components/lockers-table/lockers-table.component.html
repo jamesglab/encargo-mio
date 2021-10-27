@@ -21,8 +21,7 @@
         <th class="align-middle">
           Casillero
           <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
-            placeholder="Selecciona el usuario" [formControl]="filterUserLocker" 
-            [matAutocomplete]="auto_user" />
+            placeholder="Selecciona el usuario" [formControl]="filterUserLocker" [matAutocomplete]="auto_user" />
 
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
             <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="getAllLockers()">
@@ -47,25 +46,21 @@
     <tbody>
       <tr *ngFor="let data of lockers">
         <td>
-          {{ data.guide_number ? data.guide_number : "" }}
+          {{ data.guide_number_alph ? data.guide_number_alph : "" }}
         </td>
 
         <td title="{{ data.product_name ? data.product_name : '' }}">
           {{
-            data.product_name
-              ? data.product_name.length > 50
-                ? (data.product_name | slice: 0:50) + "..."
-                : data.product_name
-              : ""
+          data.product_name
+          ? data.product_name.length > 50
+          ? (data.product_name | slice: 0:50) + "..."
+          : data.product_name
+          : ""
           }}
         </td>
 
         <td>
-          {{
-            (data.locker_id ? "CA" + data.locker_id : "") +
-              " " +
-              data.user_name 
-          }}
+          {{(data.locker_id ? "CA " + data.locker_id : "") + " | " + data.user_name + " " + data.last_name }}
         </td>
 
         <td>{{ (data.status == '1') ? 'CONSOLIDACION' : 'EN CASILLERO' }}</td>
