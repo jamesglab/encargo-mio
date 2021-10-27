@@ -212,7 +212,6 @@ export class ModalLockerEntryComponent implements OnInit {
 
   cleanData() {
     this.allGuides = [];
-    this.files = [];
     this.toHome = { status: false, to_home: false };
     this.lockerForm.controls.guide_number.setValue(null);
     this.lockerForm.controls.guide_order.setValue(null);

@@ -39,7 +39,7 @@ export class ModalEditLockersComponent implements OnInit {
   ngOnChanges() {
     if (this.lockerSelected) {
       this.isLoading = true;
-      this._lockers.getLockerDetail(this.lockerSelected.product.id)
+      this._lockers.getLockerDetail(this.lockerSelected.product)
         .subscribe((res: any) => {
           this.buildForm(res);
           this.isLoading = false;
