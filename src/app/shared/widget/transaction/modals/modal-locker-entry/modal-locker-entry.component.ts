@@ -213,8 +213,6 @@ export class ModalLockerEntryComponent implements OnInit {
   cleanData() {
     this.allGuides = [];
     this.toHome = { status: false, to_home: false };
-    this.lockerForm.controls.guide_number.setValue(null);
-    this.lockerForm.controls.guide_order.setValue(null);
     this.lockerForm.controls.product_description.setValue(null);
     this.lockerForm.controls.weight.setValue(0);
     this.lockerForm.controls.permanent_shipping_value.setValue(0);
@@ -265,13 +263,10 @@ export class ModalLockerEntryComponent implements OnInit {
       return;
     }
 
-    if (this.files.length === 0) {
-      this._notify.show('', 'No has añadido imagenes al producto. (mínimo 1)', 'info');
-      return;
-    }
-
     var formData = new FormData();
-    this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+    if (this.files && this.files.length > 0) {
+      this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+    }
     let payload = insertInLocker(this.lockerForm.getRawValue());
     formData.append("payload", JSON.stringify(payload)); // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
     this.isLoading = true;
