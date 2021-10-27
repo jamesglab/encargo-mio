@@ -53,7 +53,7 @@
     <tbody>
       <tr *ngFor="let data of lockers">
         <td>
-          {{ data.guide_number ? data.guide_number : "" }}
+          {{ data.guide_number_alph ? data.guide_number_alph : "" }}
         </td>
         
         <td>
@@ -62,20 +62,16 @@
 
         <td title="{{ data.product_name ? data.product_name : '' }}">
           {{
-            data.product_name
-              ? data.product_name.length > 50
-                ? (data.product_name | slice: 0:50) + "..."
-                : data.product_name
-              : ""
+          data.product_name
+          ? data.product_name.length > 50
+          ? (data.product_name | slice: 0:50) + "..."
+          : data.product_name
+          : ""
           }}
         </td>
 
         <td>
-          {{
-            (data.locker_id ? "CA" + data.locker_id : "") +
-              " " +
-              data.user_name 
-          }}
+          {{(data.locker_id ? "CA " + data.locker_id : "") + " | " + data.user_name + " " + data.last_name }}
         </td>
 
         <td>{{ (data.status == '1') ? 'CONSOLIDACION' : 'EN CASILLERO' }}</td>

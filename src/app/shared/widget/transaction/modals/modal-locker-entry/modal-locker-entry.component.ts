@@ -53,6 +53,7 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm = this.fb.group({
       guide_number: [null],
+      guide_number_alph: [null],
       guide_order: [null],
       order_purchase: [null],
       locker: [null, [Validators.required]],
@@ -71,11 +72,13 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.disable();
 
-    this.lockerForm.controls.guide_number.valueChanges.subscribe((guide: any) => {
+    this.lockerForm.controls.guide_number_alph.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
+        console.log("guideeee", guide);
         this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
+        this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
         this.lockerForm.controls.locker.setValue(guide.locker.id);
         this.lockerForm.controls.locker_info.setValue(`CA${(guide.locker.id ? guide.locker.id : 0)} | ${guide.user.name} ${guide.user.last_name}`);
@@ -102,8 +105,10 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.valueChanges.subscribe((guide: any) => {
       if (guide && guide.id) {
+        console.log("GUIDE", guide);
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
+        this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
         this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
@@ -213,8 +218,6 @@ export class ModalLockerEntryComponent implements OnInit {
   cleanData() {
     this.allGuides = [];
     this.toHome = { status: false, to_home: false };
-    this.lockerForm.controls.guide_number.setValue(null);
-    this.lockerForm.controls.guide_order.setValue(null);
     this.lockerForm.controls.product_description.setValue(null);
     this.lockerForm.controls.weight.setValue(0);
     this.lockerForm.controls.permanent_shipping_value.setValue(0);
@@ -265,13 +268,10 @@ export class ModalLockerEntryComponent implements OnInit {
       return;
     }
 
-    if (this.files.length === 0) {
-      this._notify.show('', 'No has añadido imagenes al producto. (mínimo 1)', 'info');
-      return;
-    }
-
     var formData = new FormData();
-    this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+    if (this.files && this.files.length > 0) {
+      this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+    }
     let payload = insertInLocker(this.lockerForm.getRawValue());
     formData.append("payload", JSON.stringify(payload)); // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
     this.isLoading = true;
