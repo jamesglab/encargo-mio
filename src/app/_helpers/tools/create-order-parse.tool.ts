@@ -59,6 +59,8 @@ export const updateLocker = (data: any): any => {
         "declared_value_admin": (data.declared_value_admin ? data.declared_value_admin : 0),
         "force_commercial_shipping": (data.force_commercial_shipping ? data.force_commercial_shipping : 0),
         "guide_number": (data.guide_number ? data.guide_number : null),
+        "product_id": (data.product ? data.product.id : null),
+        "product_name": (data.name ? data.name : ''),
         "product_description": (data.product_description ? data.product_description : null),
         "permanent_shipping_value": (data.permanent_shipping_value ? data.permanent_shipping_value : 0),
         "weight": (data.weight ? data.weight : 0),
