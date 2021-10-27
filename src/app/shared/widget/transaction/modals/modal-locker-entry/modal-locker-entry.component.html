@@ -227,16 +227,7 @@
   </button>
 
   <button class="btn btn-primary" (click)="addLocker();" [disabled]="isLoading || getQueries">
-
-    <ng-container *ngIf="isLoading">
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Cargando...
-    </ng-container>
-
-    <ng-container *ngIf="!isLoading">
-      Guardar
-    </ng-container>
-
+    Guardar
   </button>
 
 </div>

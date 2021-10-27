@@ -58,7 +58,7 @@ export class LockersTableComponent implements OnInit {
 
   //VALIDAMOS LOS FILTROS QUE ENVIAREMOS
   filterOptions() {
-    const options = {}
+    const options = {};
     if (this.filterGuide.value != null && this.filterGuide.value != '') {
       options['guide_number'] = this.filterGuide.value
     }
@@ -68,7 +68,7 @@ export class LockersTableComponent implements OnInit {
     if (this.filterUserLocker.value != null && this.filterUserLocker.value != '') {
       options['locker_id'] = this.filterUserLocker.value.locker_id
     }
-    if (this.filterStatus.value != null && this.filterStatus.value != '') {
+    if (this.filterStatus.value != null && this.filterStatus.value != '' && this.filterStatus.value != 'all') {
       options['status'] = this.filterStatus.value
     }
     return options
