@@ -18,7 +18,6 @@ export class LockersTableComponent implements OnInit {
   @Input() public lockers: any = [];
   public lockerSelected: any = {};
 
-
   // ALMACENAMOS OBJETOS PARA LOS SELECTORES
   public users: [] = [];
 
@@ -44,9 +43,7 @@ export class LockersTableComponent implements OnInit {
     this.getAllLockers();
   }
 
-
   getAllLockers(pagination?: any) {
-
     this.lockerService.getAllLockers({
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination?.pageIndex + 1 : 1,
@@ -100,8 +97,10 @@ export class LockersTableComponent implements OnInit {
     if (!event) {
       this.modalService.dismissAll();
       this.refreshTable.emit(true);
+      this.getAllLockers();
     }
   }
+
   cancelModalReceive(event?: any) {
     this.modalService.dismissAll();
   }
@@ -109,7 +108,6 @@ export class LockersTableComponent implements OnInit {
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
-
 
   //RECIBIMOS UN VALOR PARA FILTRAR
   //RECIBIMOS EL ARRAY AL QUE HAREMOS EL FILTRO

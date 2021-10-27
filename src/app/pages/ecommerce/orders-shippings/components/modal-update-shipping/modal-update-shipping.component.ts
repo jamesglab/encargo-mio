@@ -96,6 +96,8 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
     shipping.address.first_name = shipping.address.name;
     delete shipping.address.name;
+    console.log(this.users);
+    console.log(shipping);
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
       trm: [this.trm],
@@ -104,7 +106,7 @@ export class ModalUpdateShippingComponent implements OnInit {
       delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")), }, Validators.required,],
       total_value: [shipping.total_value, Validators.required],
       shipping_type: [shipping.shipping_type ? shipping.shipping_type.id : null, [Validators.required]],
-      user: [this.users.find((item) => item.id == shipping.user.id), Validators.required,],
+      user: [shipping.user, Validators.required,],
       address: [shipping.address ? shipping.address : null, [Validators.required]],
       observations: [shipping.observations],
       products: [null, Validators.required]
@@ -120,6 +122,8 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   async getInfoUser() {
+
+    console.log(this.updateShippingForm.getRawValue());
 
     await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
       .subscribe((res: any) => {

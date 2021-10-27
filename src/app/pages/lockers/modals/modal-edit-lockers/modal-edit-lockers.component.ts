@@ -131,10 +131,6 @@ export class ModalEditLockersComponent implements OnInit {
     this.cancelModalStatus.emit(true);
   }
 
-  closeModal(): void {
-    this.closeModalEditLockers.emit(false);
-  }
-
   onSubmit(): void {
 
     if (this.lockerEditForm.invalid) {
@@ -160,6 +156,10 @@ export class ModalEditLockersComponent implements OnInit {
       throw err;
     });
 
+  }
+
+  closeModal(): void {
+    this.closeModalEditLockers.emit(false);
   }
 
 }

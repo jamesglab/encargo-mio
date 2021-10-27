@@ -34,7 +34,7 @@
           Estado
           <select class="form-select mt-2" aria-label="Default select example" [formControl]="filterStatus"
             (change)="getAllLockers()">
-            <option selected>Seleccióne un Estado</option>
+            <option selected>Seleccione un Estado</option>
             <option value="0">En Casillero</option>
             <option value="1">Consolidacion</option>
           </select>
@@ -84,7 +84,7 @@
 
 <ng-template #modalLocker role="document" let-modal>
   <div class="modal-header">
-    <h5 class="modal-title mt-0">Producto #{{ lockerSelected.product.id }}</h5>
+    <h5 class="modal-title mt-0">Producto #{{ lockerSelected.product }}</h5>
     <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
   </div>
 

@@ -77,7 +77,7 @@
                     <div class="mt-2" style="width: 8rem;">
                       <select class="form-select mt-2 " aria-label="Default select example"
                         [formControl]="filterPaymentMethod" (change)="getTransactions(status)">
-                        <option selected>Seleccióne un metodo de pago</option>
+                        <option selected disabled>Seleccione un metodo de pago</option>
                         <option value="credit">Credito</option>
                         <option value="transfer">Transferencia</option>
                       </select>
@@ -117,7 +117,7 @@
                     <div class="mt-2">
                       <select class="form-select mt-2" aria-label="Default select example " [formControl]="filterType"
                         (change)="getTransactions(status)">
-                        <option selected>Seleccióne un Estado</option>
+                        <option selected>Seleccione un Estado</option>
                         <option value="0">Compra</option>
                         <option value="1">Envio</option>
                       </select>
