@@ -69,7 +69,7 @@ export class ModalEditLockersComponent implements OnInit {
       permanent_shipping_value: [res.permanent_shipping_value ? res.permanent_shipping_value : 0],
       declared_value_admin: [res.declared_value_admin ? res.declared_value_admin : 0, [Validators.required]],
       product_description: [res.product_description ? res.product_description : null],
-      force_commercial_shipping: [false],
+      force_commercial_shipping: [res.force_commercial_shipping],
       images: [res.images ? res.images : []],
       product: [res.product ? res.product : null]
       // estimated_delivery_date: [null],

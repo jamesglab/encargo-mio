@@ -86,6 +86,7 @@ export class ModalUpdateShippingComponent implements OnInit {
       this.isLoadingLabel = true;
       this.getConveyorsAndShippings();
       setTimeout(() => {
+        console.log('update',this.shippingToUpdate)
         this.buildForm(this.shippingToUpdate);
       }, 1000);
     }
@@ -135,9 +136,9 @@ export class ModalUpdateShippingComponent implements OnInit {
       }, err => {
         throw err;
       });
-
+console.log('locker',this.updateShippingForm.controls.user.value)
     await this._lockers.getProductsInLocker({
-      locker: this.updateShippingForm.controls.user.value.locker_id,
+      locker: this.updateShippingForm.controls.user.value.locker[0].id,
       shipping_id: this.updateShippingForm.controls.id.value
     }).subscribe((locker: any) => {
       this.inLocker = locker.in_locker;

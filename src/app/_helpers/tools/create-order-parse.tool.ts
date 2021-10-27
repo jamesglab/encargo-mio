@@ -32,6 +32,7 @@ export const insertInLocker = (data: any): any => {
 
     let locker = {
         "guide_number": (data.guide_number ? data.guide_number : null),
+        "guide_number_alph": (data.guide_number_alph ? data.guide_number_alph : null),
         "order_purchase": (data.order_purchase ? data.order_purchase : null),
         "locker": (data.locker ? data.locker : null),
         "product": (data.product ? data.product : null),
