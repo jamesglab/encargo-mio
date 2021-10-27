@@ -26,6 +26,8 @@ export class LockersTableComponent implements OnInit {
   public filterGuide = new FormControl('');
   public filterProduct = new FormControl('');
   public filterStatus = new FormControl('');
+  public filterIdProduct  = new FormControl('');
+
 
   //SUBSCRIPCIONES PARA LOS AUTOCOMPLETS 
   public filteredUsers: Observable<string[]>;
@@ -70,6 +72,9 @@ export class LockersTableComponent implements OnInit {
     }
     if (this.filterStatus.value != null && this.filterStatus.value != '' && this.filterStatus.value != 'all') {
       options['status'] = this.filterStatus.value
+    }
+    if (this.filterIdProduct.value != null && this.filterIdProduct.value != '' && this.filterIdProduct.value != 'all') {
+      options['product'] = this.filterIdProduct.value
     }
     return options
   }
