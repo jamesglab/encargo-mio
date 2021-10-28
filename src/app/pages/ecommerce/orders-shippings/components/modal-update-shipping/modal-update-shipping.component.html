@@ -148,13 +148,12 @@
           </div>
 
           <div>
-            <li>Dirección: {{ form.address.value.address }}</li>
-            <li>Descripción: {{ form.address.value.description }}</li>
-            <li>Departamento: {{ form.address.value.locality }}</li>
-            <li>Teléfono: {{ form.address.value.phone }}</li>
-            <li>Nombre: {{ form.address.value ? form.address.value.name : 'N/A' }}</li>
+            <li>Dirección: {{ form.address.value.address ?form.address.value.address :'N/A'}}</li>
+            <li>Descripción: {{ form.address.value.description ? form.address.value.description :'N/A' }}</li>
+            <li>Departamento: {{ form.address.value?.locality?.name ? form.address.value.locality.name :'N/A'}}</li>
+            <li>Teléfono: {{ form.address.value.phone  ? form.address.value.phone :'N/A'}}</li>
+            <li>Nombre: {{ form.address.value.name ? form.address.value.name : 'N/A' }}</li>
           </div>
-
         </div>
 
         <div class="col-12 col-sm-6">
