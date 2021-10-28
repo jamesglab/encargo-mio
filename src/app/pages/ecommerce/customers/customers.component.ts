@@ -124,7 +124,7 @@ export class CustomersComponent implements OnInit {
   openModalReference(modale: any, transaction: any) {
     this.transactionSelected = transaction;
     if (transaction.image) {
-      this.referenceImage = transaction.image.url;
+      this.referenceImage = transaction.image;
       this.modalService.open(modale, { size: 'lg', centered: true })
     } else {
       window.open(transaction.response);
