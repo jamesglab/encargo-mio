@@ -59,7 +59,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       product_price: [null],
       purchase_date: [null, Validators.required],
       invoice_number: [null, Validators.required],
-      locker_entry_date: [null, Validators.required],
+      locker_entry_date: [null],
       conveyor: [{ value: null, disabled: true }],
       // payment_type: [null, Validators.required],
     });
@@ -159,18 +159,29 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   }
 
   toInsertDates() {
-    return [
-      new Date(
-        this.purchaseForm.getRawValue().purchase_date.year,
-        this.purchaseForm.getRawValue().purchase_date.month - 1 ,
-        this.purchaseForm.getRawValue().purchase_date.day
-      ),
-      new Date(
-        this.purchaseForm.getRawValue().locker_entry_date.year,
-        this.purchaseForm.getRawValue().locker_entry_date.month - 1 ,
-        this.purchaseForm.getRawValue().locker_entry_date.day
-      ),
-    ];
+    if (!this.purchaseForm.getRawValue().locker_entry_date) {
+      return [
+        new Date(
+          this.purchaseForm.getRawValue().purchase_date.year,
+          this.purchaseForm.getRawValue().purchase_date.month - 1,
+          this.purchaseForm.getRawValue().purchase_date.day
+        )
+      ];
+    } else {
+      return [
+        new Date(
+          this.purchaseForm.getRawValue().purchase_date.year,
+          this.purchaseForm.getRawValue().purchase_date.month - 1,
+          this.purchaseForm.getRawValue().purchase_date.day
+        ),
+        new Date(
+          this.purchaseForm.getRawValue().locker_entry_date.year,
+          this.purchaseForm.getRawValue().locker_entry_date.month - 1,
+          this.purchaseForm.getRawValue().locker_entry_date.day
+        ),
+      ];
+    }
+
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input

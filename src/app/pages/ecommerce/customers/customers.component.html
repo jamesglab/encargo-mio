@@ -63,7 +63,8 @@
                 <tr>
                   <th>#
                     <div class="mt-2">
-                      <input type="" [formControl]="filterId" class="form-control min-width" (blur)="getTransactions(status)" />
+                      <input type="" [formControl]="filterId" class="form-control min-width"
+                        (blur)="getTransactions(status)" />
                     </div>
                   </th>
                   <th>Orden
@@ -108,8 +109,8 @@
                     <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
                       <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
                         (click)="getTransactions(status)">
-              CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
-                        
+                        CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+
                       </mat-option>
                     </mat-autocomplete>
                   </th>
@@ -148,7 +149,7 @@
 
                   <td>
                     <p class="mb-1">
-                      {{ transaction.payment_method == 'credit' ? 'Credito':'Transferencia'  }}
+                      {{ transaction.payment_method == 'credit' ? 'Credito':'Transferencia' }}
                     </p>
                   </td>
 
@@ -290,9 +291,14 @@
 
           <div class="row">
 
-            <div class="col-2 d-flex justify-content-center align-items-center">
-              <img [src]="item.image" alt class="avatar" style="object-fit: contain;" draggable="false" />
+            <div class="col-2 d-flex justify-content-center align-items-center" *ngIf="item.image && !item.images">
+              <img [src]="item.image" alt class="avatar" style="object-fit: contain; " draggable="false" />
             </div>
+
+            <ng-container *ngIf="item.images">
+              <img *ngFor="let image of item.images" [src]="image.Location" style="height: 200px; object-fit: contain;"
+                alt="" draggable="false">
+            </ng-container>
 
             <div class="col-6">
 
@@ -303,11 +309,11 @@
               </div>
 
               <div>
-                {{ item.description ? item.description: 'El artículo no tiene descripción' }}
+                {{ item.product_description ? item.product_description: 'El artículo no tiene descripción' }}
               </div>
 
               <div class="mt-2 h5">
-                Precio del Artículo: {{ item.product_value ? item.product_value : 0 }} USD
+                Precio del Artículo: {{ item.product_value ? item.declared_value_admin : 0 }} USD
               </div>
 
               <div class="mt-2 h5">
