@@ -136,7 +136,7 @@ export class ModalUpdateShippingComponent implements OnInit {
       }, err => {
         throw err;
       });
-console.log('locker',this.updateShippingForm.controls.user.value)
+
     await this._lockers.getProductsInLocker({
       locker: this.updateShippingForm.controls.user.value.locker[0].id,
       shipping_id: this.updateShippingForm.controls.id.value
