@@ -7,6 +7,12 @@
 
 <div class="modal-body">
 
+  <ng-container *ngIf="isLoadingData">
+    Estámos obteniendo la información del envío...
+  </ng-container>
+
+  <h2>Envío # {{shippingToUpdate.id}}</h2>
+
   <div class="d-flex justify-content-around" *ngIf="shippingToUpdate.status == '2'">
     <button class="btn btn-success" (click)="generateLabel();" [disabled]="isLoadingLabel">
       Generar Rótulo</button>
@@ -14,9 +20,6 @@
       Fraccionar Envío</button>
   </div>
 
-  <ng-container *ngIf="isLoadingData">
-    Estámos obteniendo la información del envío...
-  </ng-container>
 
   <ng-container *ngIf="!isLoadingData">
 
@@ -290,14 +293,16 @@
   <button class="btn btn-secondary" (click)="closeModale()">
     Cancelar
   </button>
-  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPackcage()"
+  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPacked()"
     *ngIf="shippingToUpdate.status =='1'">
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Empacado
   </button>
 
-  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
-    Actualizar
-  </button>
+  <ng-container *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'">
+    <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
+      Actualizar
+    </button>
+  </ng-container>
 
 </div>

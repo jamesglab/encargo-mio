@@ -170,7 +170,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     }
   }
 
-  updateShippingPackcage() {
+  updateShippingPacked() {
     this.isLoading = true;
     this._orderService.updateShippingPacked({
       status: '2',

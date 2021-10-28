@@ -167,8 +167,8 @@
                   </td>
 
                   <td>
-                    {{ transaction.type =='envio' ?  transaction.so_trm ? ((transaction.value  * transaction.so_trm ) | currency: 'COP') : transaction.value? (transaction.value |currency:'USD'):0 :
-                    transaction.or_trm ? ((transaction.value  * transaction.or_trm ) | currency: 'COP') : transaction.value? (transaction.value |currency:'USD'):0
+                    {{ (transaction.type =='envio') ? transaction.value + ' / ' +  ((transaction.value  * transaction.so_trm ) | currency: 'COP': 'symbol' : '1.0-0')
+                    : transaction.value + ' / ' + ((transaction.value  * transaction.or_trm ) | currency: ' COP' : 'symbol' : '1.0-0' )
                       }}
                   </td>
 
