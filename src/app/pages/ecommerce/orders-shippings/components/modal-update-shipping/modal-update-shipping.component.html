@@ -7,163 +7,178 @@
 
 <div class="modal-body">
 
-  <div class="d-flex justify-content-around">
-    <button class="btn btn-success" (click)="generateLabel();" [disabled]="isLoadingLabel">Generar Rótulo</button>
-    <button class="btn btn-warning" (click)="goToFragment();" *ngIf="shippingToUpdate.status == '2'">Fraccionar Envío</button>
+  <div class="d-flex justify-content-around" *ngIf="shippingToUpdate.status == '2'">
+    <button class="btn btn-success" (click)="generateLabel();" [disabled]="isLoadingLabel">
+      Generar Rótulo</button>
+    <button class="btn btn-warning" (click)="goToFragment();">
+      Fraccionar Envío</button>
   </div>
 
   <ng-container *ngIf="isLoadingData">
-    Cargando...
+    Estámos obteniendo la información del envío...
   </ng-container>
 
   <ng-container *ngIf="!isLoadingData">
 
     <form [formGroup]="updateShippingForm">
 
-      <div class="row mt-3">
+      <ng-container *ngIf="shippingToUpdate.status != '0' &&  shippingToUpdate.status != '1'">
+        <div class="row mt-3">
 
-        <div class="col-12 col-sm-6">
+          <div class="col-12 col-sm-6">
 
-          <div class="form-group">
-            <label for="guide_number">Número de Guía *</label>
-            <input type="text" class="form-control" placeholder="Ingresa tu número de guía" id="guide_number"
-              formControlName="guide_number">
-          </div>
-
-        </div>
-
-        <div class="col-12 col-sm-6">
-
-          <div class="form-group">
-
-            <label for="conveyor">Transportadora Internacional * </label>
-
-            <input type="text" class="form-control" id="conveyor"
-              placeholder="Selecciona la Transportadora Internacional" formControlName="conveyor"
-              [matAutocomplete]="auto_conveyors">
-
-            <mat-autocomplete #auto_conveyors="matAutocomplete" [displayWith]="displayFn">
-              <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
-                {{ conveyor.name }}
-              </mat-option>
-            </mat-autocomplete>
+            <div class="form-group">
+              <label for="guide_number">Número de Guía *</label>
+              <input type="text" class="form-control" placeholder="Ingresa tu número de guía" id="guide_number"
+                formControlName="guide_number">
+            </div>
 
           </div>
 
-        </div>
+          <div class="col-12 col-sm-6">
 
-      </div>
+            <div class="form-group">
 
-      <div class="row mt-3">
+              <label for="conveyor">Transportadora Internacional * </label>
 
-        <div class="col-12 col-sm-6">
+              <input type="text" class="form-control" id="conveyor"
+                placeholder="Selecciona la Transportadora Internacional" formControlName="conveyor"
+                [matAutocomplete]="auto_conveyors">
 
-          <div class="form-group">
+              <mat-autocomplete #auto_conveyors="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
+                  {{ conveyor.name }}
+                </mat-option>
+              </mat-autocomplete>
 
-            <label for="delivery_date">Fecha de Entrega *</label>
-
-            <div class="input-group clockpicker">
-              <input ngbDatepicker class="form-control" id="delivery_date" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
-                formControlName="delivery_date">
-              <div class="input-group-append" (click)="dl.toggle()">
-                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-              </div>
             </div>
 
           </div>
 
         </div>
 
-        <div class="col-12 col-sm-6">
+        <div class="row mt-3">
 
-          <div class="form-group">
-            <label for="total_value">Valor Envio</label>
-            <input type="number" class="form-control" id="total_value" formControlName="total_value">
-          </div>
+          <div class="col-12 col-sm-6">
 
-        </div>
+            <div class="form-group">
 
-      </div>
+              <label for="delivery_date">Fecha de Entrega *</label>
 
-      <div class="row mt-3">
+              <div class="input-group clockpicker">
+                <input ngbDatepicker class="form-control" id="delivery_date" placeholder="yyyy-mm-dd"
+                  #dl="ngbDatepicker" formControlName="delivery_date">
+                <div class="input-group-append" (click)="dl.toggle()">
+                  <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                </div>
+              </div>
 
-        <div class="col-12 col-sm-6">
-
-          <div class="form-group">
-
-            <label for="store">Tipo de Envio *</label>
-
-            <select class="form-control" id="store" formControlName="shipping_type">
-
-              <option value="null" disabled>Selecciona tipo de envío</option>
-
-              <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
-                {{ shipping.name }}
-              </option>
-
-            </select>
+            </div>
 
           </div>
 
-        </div>
+          <div class="col-12 col-sm-6">
 
-        <div class="col-12 col-sm-6">
-
-          <div class="form-group ">
-
-            <label for="user_id">Usuario *</label>
-
-            <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
-              placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
-
-            <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
-              <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
-                CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
-              </mat-option>
-            </mat-autocomplete>
+            <div class="form-group">
+              <label for="total_value">Valor Envio</label>
+              <input type="number" class="form-control" id="total_value" formControlName="total_value">
+            </div>
 
           </div>
 
         </div>
 
-      </div>
+        <div class="row mt-3">
 
-      <div class="row mt-3 mt-3">
+          <div class="col-12 col-sm-6">
 
-        <div class="col-12 col-sm-6">
+            <div class="form-group">
 
-          <div class="form-group">
+              <label for="store">Tipo de Envio *</label>
 
-            <label for="store">Dirección de Envio *</label>
+              <select class="form-control" id="store" formControlName="shipping_type">
 
-            <input type="text" class="form-control" autocomplete="off" formControlName="address"
-              placeholder="Dirección de envío" [matAutocomplete]="auto_address">
+                <option value="null" disabled>Selecciona tipo de envío</option>
 
-            <mat-autocomplete #auto_address="matAutocomplete" [displayWith]="displayFnAddress">
-              <mat-option *ngFor="let address of filteredAddress | async" [value]="address">
-                {{ address.address }}
-              </mat-option>
-            </mat-autocomplete>
+                <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
+                  {{ shipping.name }}
+                </option>
+
+              </select>
+
+            </div>
 
           </div>
 
-          <div class="mt-3">
-            <li> <strong>Dirección:</strong>  {{ form.address.value.address ?form.address.value.address :'N/A'}}</li>
-            <li><strong>Descripción:</strong>  {{ form.address.value.description ? form.address.value.description :'N/A' }}</li>
-            <li> <strong>Departamento:</strong> {{ form.address.value?.locality?.name ? form.address.value.locality.name :'N/A'}}</li>
-            <li><strong>Teléfono:</strong> {{ form.address.value.phone  ? form.address.value.phone :'N/A'}}</li>
-            <li><strong>Nombre:</strong> {{ form.address.value.name ? form.address.value.name : 'N/A' }}</li>
+          <div class="col-12 col-sm-6">
+
+            <div class="form-group ">
+
+              <label for="user_id">Usuario *</label>
+
+              <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
+                placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
+
+              <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+                <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                  CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                </mat-option>
+              </mat-autocomplete>
+
+            </div>
+
           </div>
+
         </div>
 
-        <div class="col-12 col-sm-6">
-          <div class="form-group">
-            <label for="observations">Observaciones de Compra</label>
-            <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
-          </div>
-        </div>
+        <div class="row mt-3 mt-3">
 
-      </div>
+          <div class="col-12 col-sm-6">
+
+            <!-- <div class="form-group">
+  
+              <label for="store">Dirección de Envio *</label>
+  
+              <input type="text" class="form-control" autocomplete="off" formControlName="address"
+                placeholder="Dirección de envío" [matAutocomplete]="auto_address">
+  
+              <mat-autocomplete #auto_address="matAutocomplete" [displayWith]="displayFnAddress">
+                <mat-option *ngFor="let address of filteredAddress | async" [value]="address">
+                  {{ address.address }}
+                </mat-option>
+              </mat-autocomplete>
+  
+            </div> -->
+
+            <div class="mt-3">
+              <li><strong>Departamento: </strong>
+                {{ (form.address.value?.department?.name) ? form.address.value.department.name :'N/A'}}</li>
+
+              <li> <strong>Dirección: </strong>
+                {{ (form.address.value.address) ? form.address.value.address :'N/A'}}</li>
+
+              <li><strong>Descripción:</strong>
+                {{ (form.address.value.description) ? form.address.value.description :'N/A'}}</li>
+
+              <li><strong>Nombre de quien recibe: </strong>
+                {{ (form.address.value.name) ? form.address.value.name : 'N/A' }}</li>
+
+              <li><strong>Teléfono: </strong>
+                {{ (form.address.value.phone) ? form.address.value.phone :'N/A'}}</li>
+
+
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6">
+            <div class="form-group">
+              <label for="observations">Observaciones de Compra</label>
+              <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
 
       <div class="col-12 col-sm-12 p-3 px-4 const-warning" *ngIf="message.await_products">
         <a style="color:red">
@@ -205,9 +220,9 @@
                 <div><strong>Peso: </strong> {{ item.weight }} lb.</div>
 
                 <div><strong>Descripción: </strong> {{ item.product.description ? item.product.description : 'N/A' }}
-                <div><strong>Guía Origen:</strong>{{ item.guide_number_alph }}</div>
+                  <div><strong>Guía Origen:</strong>{{ item.guide_number_alph }}</div>
 
-              </div>
+                </div>
 
 
               </div>
