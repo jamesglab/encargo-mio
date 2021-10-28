@@ -60,27 +60,27 @@ export class CustomersComponent implements OnInit {
     this.currentpage = 1;
     this.getTransactions(1);
     this.getUsers();
-    
+
   }
 
   getTransactions(status?, pagination?) {
     console.log('filtramos')
     // if (this.term != '') {
-      this.isLoading = true;
-      this.status = status;
-      this._transactionService.getTransactionsFilterI({
-        ...this.filterOptions(),
-        status: status ? status : 1,
-        pageSize: pagination?.pageSize ? pagination.pageSize : 10,
-        page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
-      }).subscribe(res => {
-        this.transactions = res.transactions;
-        this.count = res.count;
-        this.isLoading = false;
-        this.isLoading = false;
-      }, err => {
-        throw err;
-      });
+    this.isLoading = true;
+    this.status = status;
+    this._transactionService.getTransactionsFilterI({
+      ...this.filterOptions(),
+      status: status ? status : 1,
+      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
+    }).subscribe(res => {
+      this.transactions = res.transactions;
+      this.count = res.count;
+      this.isLoading = false;
+      this.isLoading = false;
+    }, err => {
+      throw err;
+    });
     // } else {
     //   this.searchFilter(status, pagination);
     // }
@@ -91,13 +91,13 @@ export class CustomersComponent implements OnInit {
     const options = {}
     if (this.filterId.value != null && this.filterId.value != '') {
       options['id'] = this.filterId.value
-    }if (this.filterUser.value != null && this.filterUser.value != '') {
+    } if (this.filterUser.value != null && this.filterUser.value != '') {
       options['user'] = this.filterUser.value.id
-    }if (this.filterOrder.value != null && this.filterOrder.value != '') {
+    } if (this.filterOrder.value != null && this.filterOrder.value != '') {
       options['order'] = this.filterOrder.value
-    }if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != '') {
+    } if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != '') {
       options['payment_method'] = this.filterPaymentMethod.value
-    }if (this.filterDate.value.year && this.filterDate.value != '') {
+    } if (this.filterDate.value.year && this.filterDate.value != '') {
       options['created_at'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
     } if (this.filterPaymentGateway.value != null && this.filterPaymentGateway.value != '') {
       options['payment_gateway'] = this.filterPaymentGateway.value
@@ -105,20 +105,27 @@ export class CustomersComponent implements OnInit {
       options['reference'] = this.filterReference.value
     } if (this.filterType.value != null && this.filterType.value != '') {
       options['type'] = this.filterType.value
-    }if (this.filterValue!=null  && this.filterValue.value!= ''){
+    } if (this.filterValue != null && this.filterValue.value != '') {
       options['value'] = this.filterValue.value
 
     }
-
-    return options
+    return options;
   }
 
   openModalOrderService(content: any, transaction: any) {
     this.transactionSelected = transaction;
-    this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
-      this.orderSelected = res;
-      this.modalService.open(content, { size: 'xl', centered: true });
-    });
+    if (transaction.order_service) {
+      this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
+        this.orderSelected = res;
+        this.modalService.open(content, { size: 'xl', centered: true });
+      });
+    } else {
+      this._orderService.getShippingById({ id: transaction.shipping_order }).subscribe(res => {
+        this.orderSelected = res;
+        this.modalService.open(content, { size: 'xl', centered: true });
+      });
+    }
+
   }
 
   openModalReference(modale: any, transaction: any) {
@@ -131,7 +138,8 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-  updateTransaction(status) {
+  updateTransaction(status: any) {
+    console.log(this.transactionSelected);
     this.isLoadingTransaction = true;
     this._transactionService.updateTransaction(this.transactionSelected, status)
       .subscribe(res => {

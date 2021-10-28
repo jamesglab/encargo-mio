@@ -86,7 +86,6 @@ export class ModalUpdateShippingComponent implements OnInit {
       this.isLoadingLabel = true;
       this.getConveyorsAndShippings();
       setTimeout(() => {
-        console.log('update',this.shippingToUpdate)
         this.buildForm(this.shippingToUpdate);
       }, 1000);
     }
@@ -97,8 +96,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
     shipping.address.first_name = shipping.address.name;
     delete shipping.address.name;
-    console.log(this.users);
-    console.log(shipping);
+
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
       trm: [this.trm],
@@ -123,8 +121,6 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   async getInfoUser() {
-
-    console.log(this.updateShippingForm.getRawValue());
 
     await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
       .subscribe((res: any) => {
@@ -176,10 +172,10 @@ export class ModalUpdateShippingComponent implements OnInit {
     }).subscribe((res: any) => {
       this.modalService.dismissAll();
       this.getTransactions.emit(true);
-      this._notify.show('Orden de envio Actualizada', '', 'success');
+      this._notify.show('Orden de envío actualizada correctamente.', '', 'success');
     }, err => {
       this.isLoading = false;
-      this._notify.show('Error', 'no pudimos actualizar la orden', 'error');
+      this._notify.show('Error', 'No pudimos actualizar la orden, intenta de nuevo.', 'error');
       throw err;
     });
   }
@@ -228,7 +224,9 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   displayFnUserName(name: any) {
-    return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
+    if (name) {
+      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name : '';
+    }
   }
 
   deleteProduct(array: any, index: number) {
@@ -270,9 +268,8 @@ export class ModalUpdateShippingComponent implements OnInit {
 
     if (this.status == 2) {
       if (this.updateShippingForm.controls.guide_number.value == '' || this.updateShippingForm.controls.guide_number.value == null ||
-        this.updateShippingForm.controls.conveyor.value == '' || this.updateShippingForm.controls.conveyor.value == null
-      ) {
-        Swal.fire('Numero de guia y transportadora requerido', '', 'info')
+        this.updateShippingForm.controls.conveyor.value == '' || this.updateShippingForm.controls.conveyor.value == null) {
+        Swal.fire('Numero de guia y transportadora requerido', '', 'info');
         return
       }
     }
