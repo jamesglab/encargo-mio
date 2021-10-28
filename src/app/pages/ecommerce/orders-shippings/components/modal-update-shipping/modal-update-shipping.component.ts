@@ -129,11 +129,12 @@ export class ModalUpdateShippingComponent implements OnInit {
 
     await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
       .subscribe((res: any) => {
+        console.log('addresss',res)
         this.address = res;
-        this.address.map((item: any) => { // Recorrermos el arreglo de address 
-          item.last_name = item.name; // Creamos una nueva posición llamada last_name y le asginamos la propiedad de name
-          delete item.name; // Eliminamos el item.nombre para que en el filtro no hayan errores
-        });
+        // this.address.map((item: any) => { // Recorrermos el arreglo de address 
+        //   item.last_name = item.name; // Creamos una nueva posición llamada last_name y le asginamos la propiedad de name
+        //   delete item.name; // Eliminamos el item.nombre para que en el filtro no hayan errores
+        // });
       }, err => {
         throw err;
       });

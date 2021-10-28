@@ -166,10 +166,10 @@
                     {{ transaction.type? transaction.type : '-' }}
                   </td>
 
-                  <td>{{ transaction.value }}
-
-                    <!-- {{transaction.trm.value}} -->
-                    <!-- {{ (transaction.value ? (transaction.value  * transaction.trm.value) : 0) | currency: 'COP' : 'symbol' : '1.0-0' }} -->
+                  <td>
+                    {{ transaction.type =='envio' ?  transaction.so_trm ? ((transaction.value  * transaction.so_trm ) | currency: 'COP') : transaction.value? (transaction.value |currency:'USD'):0 :
+                    transaction.or_trm ? ((transaction.value  * transaction.or_trm ) | currency: 'COP') : transaction.value? (transaction.value |currency:'USD'):0
+                      }}
                   </td>
 
                   <td>
@@ -368,7 +368,7 @@
 
     <div class="modal-body">
       <div class="center">
-        <carousel [cellWidth]="700"[height]="700" >
+        <carousel [cellWidth]="700" [height]="700">
           <div class="carousel-cell" *ngFor="let image of referenceImage ">
             <a [href]="image.Location" target="blank">
               <img [src]="image.Location" alt="" style="object-fit: contain;" class="img-reference">
