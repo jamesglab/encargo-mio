@@ -109,8 +109,9 @@ export class ModalUpdateShippingComponent implements OnInit {
       address: [shipping.address ? shipping.address : null, [Validators.required]],
       observations: [shipping.observations],
       products: [null, Validators.required]
-
     });
+
+    console.log(this.updateShippingForm.getRawValue());
 
     this.filteredConveyors = this.updateShippingForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
     this.filteredAddress = this.updateShippingForm.controls.address.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'address')));
@@ -118,6 +119,10 @@ export class ModalUpdateShippingComponent implements OnInit {
 
     this.getInfoUser();
     this.disabledInputs();
+  }
+
+  get form() {
+    return this.updateShippingForm.controls;
   }
 
   async getInfoUser() {
