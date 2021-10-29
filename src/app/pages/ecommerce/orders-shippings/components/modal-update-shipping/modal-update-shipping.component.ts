@@ -109,8 +109,9 @@ export class ModalUpdateShippingComponent implements OnInit {
       address: [shipping.address ? shipping.address : null, [Validators.required]],
       observations: [shipping.observations],
       products: [null, Validators.required]
-
     });
+
+    console.log(this.updateShippingForm.getRawValue());
 
     this.filteredConveyors = this.updateShippingForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
     this.filteredAddress = this.updateShippingForm.controls.address.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'address')));
@@ -120,15 +121,20 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.disabledInputs();
   }
 
+  get form() {
+    return this.updateShippingForm.controls;
+  }
+
   async getInfoUser() {
 
     await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
       .subscribe((res: any) => {
+        console.log('addresss',res)
         this.address = res;
-        this.address.map((item: any) => { // Recorrermos el arreglo de address 
-          item.last_name = item.name; // Creamos una nueva posición llamada last_name y le asginamos la propiedad de name
-          delete item.name; // Eliminamos el item.nombre para que en el filtro no hayan errores
-        });
+        // this.address.map((item: any) => { // Recorrermos el arreglo de address 
+        //   item.last_name = item.name; // Creamos una nueva posición llamada last_name y le asginamos la propiedad de name
+        //   delete item.name; // Eliminamos el item.nombre para que en el filtro no hayan errores
+        // });
       }, err => {
         throw err;
       });
@@ -164,7 +170,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     }
   }
 
-  updateShippingPackcage() {
+  updateShippingPacked() {
     this.isLoading = true;
     this._orderService.updateShippingPacked({
       status: '2',

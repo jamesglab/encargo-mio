@@ -166,7 +166,11 @@
                     {{ transaction.type? transaction.type : '-' }}
                   </td>
 
-                  <td>{{ transaction.value }}</td>
+                  <td>
+                    {{ (transaction.type =='envio') ? transaction.value + ' / ' +  ((transaction.value  * transaction.so_trm ) | currency: 'COP': 'symbol' : '1.0-0')
+                    : transaction.value + ' / ' + ((transaction.value  * transaction.or_trm ) | currency: ' COP' : 'symbol' : '1.0-0' )
+                      }}
+                  </td>
 
                   <td>
                     <div class="dropdown" ngbDropdown placement="bottom-right">
@@ -358,14 +362,21 @@
   <ng-template #reference role="document" let-modal>
 
     <div class="modal-header">
-      <h5 class="modal-title mt-0">Comprobante de Pago {{status}}</h5>
+      <h5 class="modal-title mt-0">Comprobante de Pago</h5>
       <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
 
     <div class="modal-body">
       <div class="center">
+        <carousel [cellWidth]="700" [height]="700">
+          <div class="carousel-cell" *ngFor="let image of referenceImage ">
+            <a [href]="image.Location" target="blank">
+              <img [src]="image.Location" alt="" style="object-fit: contain;" class="img-reference">
+
+            </a>
+          </div>
+        </carousel>
         <div>
-          <img [src]="referenceImage" alt="" style="object-fit: contain;" class="img-reference">
         </div>
       </div>
     </div>

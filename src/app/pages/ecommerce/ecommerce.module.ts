@@ -36,6 +36,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import {IvyCarouselModule} from 'angular-responsive-carousel';
+
 
 const config: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -73,7 +75,8 @@ const config: DropzoneConfigInterface = {
     MatInputModule,
     MatAutocompleteModule,
     SharedModule,
-    DragDropModule
+    DragDropModule,
+    IvyCarouselModule
   ],
   exports: [
     MatSelectModule,

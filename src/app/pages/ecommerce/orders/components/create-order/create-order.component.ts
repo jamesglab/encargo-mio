@@ -277,7 +277,7 @@ export class CreateOrderComponent implements OnInit {
       }
     }
 
-    if (this.createProductForm.valid && this.files.length  !=  0) {
+    if (this.createProductForm.valid ) {
 
       this.isLoading = true;
       var formData = new FormData();
@@ -300,8 +300,6 @@ export class CreateOrderComponent implements OnInit {
         throw err;
       });
 
-    } else if (this.files.length  ==  0){
-      this._notify.show('Datos incompletos', `Sube El/Los comprobantes de pago`, 'info');
     }
     else {
       this._notify.show('Datos incompletos', `Revisa que hayas llenado los campos.`, 'info');
