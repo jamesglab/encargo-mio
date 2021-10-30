@@ -7,7 +7,9 @@ import { FragmentService } from './services/fragment.service';
   templateUrl: './fragment.component.html',
   styleUrls: ['./fragment.component.scss']
 })
+
 export class FragmentComponent implements OnInit {
+
   public shipping: any;
   public conveyors: any;
   public addresses: any;
@@ -20,31 +22,32 @@ export class FragmentComponent implements OnInit {
     this.getShippingById();
   }
 
-
   getShippingById() {
-
     this._fragmentService.getShippingById({ id: this.router.snapshot.params.id }).subscribe(res => {
-
       let products = res.products.length;
       this.products_quantity = products;
       this.shipping = res;
-
       // CONSUMIMOS EL ENDPOINT PARA LAS DIRECCIONES DEL USUARIO
       this.getAdrresesByUSer(res.user.id);
-
-    })
+    }, err => {
+      throw err;
+    });
   }
 
   getConveyors() {
     this._fragmentService.getConvenyor().subscribe(res => {
       this.conveyors = res;
-    })
+    }, err => {
+      throw err;
+    });
   }
 
   getAdrresesByUSer(id) {
     this._fragmentService.getAddressByUser({ id }).subscribe((res: any) => {
       this.addresses = res;
-    })
+    }, err => {
+      throw err;
+    });
   }
 
 }

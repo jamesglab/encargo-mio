@@ -21,6 +21,10 @@ export class ShippingsTableComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  ngOnChanges(){
+    console.log(this.shippings);
+  }
+
   openModal() { }
 
   getOrderById(id) {

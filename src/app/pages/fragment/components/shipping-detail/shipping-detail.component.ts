@@ -13,7 +13,7 @@ export class ShippingDetailComponent implements OnInit {
   ngOnInit(): void {}
 
   ngOnChanges(){
-    console.log("SHIPPING", this.shipping)
+    // console.log("SHIPPING", this.shipping)
   }
 
   validateShippingstatus(status){
