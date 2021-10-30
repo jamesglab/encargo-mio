@@ -92,7 +92,7 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   buildForm(shipping: any): void {
-
+    console.log(shipping);
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
     shipping.address.first_name = shipping.address.name;
     delete shipping.address.name;
@@ -102,7 +102,7 @@ export class ModalUpdateShippingComponent implements OnInit {
       trm: [this.trm],
       guide_number: [shipping.guide_number, Validators.required],
       conveyor: [this.conveyors.find((item) => item.id == shipping.conveyor), [Validators.required]],
-      delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")), }, Validators.required,],
+      // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
       total_value: [shipping.total_value, Validators.required],
       shipping_type: [shipping.shipping_type ? shipping.shipping_type.id : null, [Validators.required]],
       user: [shipping.user, Validators.required,],
@@ -111,7 +111,8 @@ export class ModalUpdateShippingComponent implements OnInit {
       products: [null, Validators.required]
     });
 
-    console.log(this.updateShippingForm.getRawValue());
+    this.updateShippingForm.controls.shipping_type.disable();
+    this.updateShippingForm.controls.total_value.disable();
 
     this.filteredConveyors = this.updateShippingForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
     this.filteredAddress = this.updateShippingForm.controls.address.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'address')));
@@ -129,7 +130,6 @@ export class ModalUpdateShippingComponent implements OnInit {
 
     await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
       .subscribe((res: any) => {
-        console.log('addresss',res)
         this.address = res;
         // this.address.map((item: any) => { // Recorrermos el arreglo de address 
         //   item.last_name = item.name; // Creamos una nueva posición llamada last_name y le asginamos la propiedad de name
@@ -144,7 +144,9 @@ export class ModalUpdateShippingComponent implements OnInit {
       shipping_id: this.updateShippingForm.controls.id.value
     }).subscribe((locker: any) => {
       this.inLocker = locker.in_locker;
+      console.log("IN LOCKER", this.inLocker);
       this.outLocker = locker.in_shipping;
+      console.log("OUT LOCKER", this.outLocker);
       this.updateShippingForm.controls.products.setValue(this.outLocker);
     }, err => {
       throw err;
@@ -188,7 +190,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   disabledInputs() {
     if (this.status === 3) {
-      this.updateShippingForm.controls.delivery_date.disable();
+      // this.updateShippingForm.controls.delivery_date.disable();
       this.updateShippingForm.controls.total_value.disable();
       this.updateShippingForm.controls.shipping_type.disable();
       this.updateShippingForm.controls.user.disable();
@@ -266,6 +268,10 @@ export class ModalUpdateShippingComponent implements OnInit {
     }
   }
 
+  errorImage(event: any): void {
+    event.target.src = 'assets/images/default.jpg';
+  }
+
   closeModale(): void {
     this.modalService.dismissAll();
   }
@@ -281,17 +287,11 @@ export class ModalUpdateShippingComponent implements OnInit {
     }
     this.updateShippingForm.controls.products.enable();
     if (this.updateShippingForm.valid && this.updateShippingForm.value.products.length > 0) {
-      const delivery_date = new Date(
-        this.updateShippingForm.getRawValue().delivery_date.year,
-        this.updateShippingForm.getRawValue().delivery_date.month - 1,
-        this.updateShippingForm.getRawValue().delivery_date.day
-      );
       this.isLoading = true;
       this._orderService
         .updateShipping(updateShipping({
           ...this.updateShippingForm.getRawValue(),
           deleted_products: this.deleted_products,
-          delivery_date,
           status: (this.status == 2) ? 3 : this.status
         })).subscribe((res: any) => {
           this.modalService.dismissAll();

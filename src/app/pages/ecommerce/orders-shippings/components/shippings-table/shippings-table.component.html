@@ -34,7 +34,7 @@
 
         <td>
           <a href="javascript: void(0);" class="text-body fw-bold">
-            {{ data.id }}
+            {{ data.id }} <ng-container *ngIf="data && data.parent_id">- F{{ data.parent_id }}</ng-container>
           </a>
         </td>
 
