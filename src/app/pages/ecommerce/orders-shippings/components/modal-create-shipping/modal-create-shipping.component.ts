@@ -50,7 +50,7 @@ export class ModalCreateShippingComponent implements OnInit {
       guide_number: [null, Validators.required],
       conveyor: [null, Validators.required],
       delivery_date: [null, Validators.required],
-      total_value: [null],
+      total_value: [0, [Validators.required]],
       shipping_type: [null, Validators.required],
       user: [null, Validators.required],
       address: [null, Validators.required],
