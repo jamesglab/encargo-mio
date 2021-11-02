@@ -47,8 +47,8 @@ export class ModalCreateShippingComponent implements OnInit {
   buildForm() {
     this.createShippingForm = this._formBuilder.group({
       trm: [this.trm],
-      guide_number: [null, Validators.required],
-      conveyor: [null, Validators.required],
+      guide_number: [null],
+      conveyor: [null],
       delivery_date: [null, Validators.required],
       total_value: [0, [Validators.required]],
       shipping_type: [null, Validators.required],
