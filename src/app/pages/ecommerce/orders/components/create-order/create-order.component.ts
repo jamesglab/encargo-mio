@@ -92,6 +92,7 @@ export class CreateOrderComponent implements OnInit {
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
+  
   //creamos un producto nuevo que sera pusheado en los formArray
   addProduct(): void {
 
@@ -147,6 +148,7 @@ export class CreateOrderComponent implements OnInit {
       return value.toLowerCase().replace(/\s/g, '');
     }
   }
+  
   onSelect(event) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
     this.files.push(...event.addedFiles);
   }
