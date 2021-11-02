@@ -84,6 +84,11 @@
                 (click)="status = 6;  getTransactions()">Canceladas</a>
             </li>
 
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == 7}"
+                (click)="status = 7;  getTransactions()">Vencidas</a>
+            </li>
+
           </ul>
           <!-- Table data -->
           <hr>
