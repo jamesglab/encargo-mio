@@ -69,7 +69,7 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   getFormula(position?: number) {
-    if (this.status == 0 || this.status == 1) {
+    if (this.status == 0 || this.status == 1 || this.status == 7) {
       this.isLoadingFormula = true;
       this._orders.calculateShipping(this.orderSelected.products)
         .subscribe((res: any) => {
@@ -110,7 +110,7 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   calculateTax(position?: number) {
-    if (this.status == 0 || this.status == 1) {
+    if (this.status == 0 || this.status == 1 || this.status == 7) {
       if (this.orderSelected.products[position].free_shipping) { // Si el free_shipping es true
         
         this.orderSelected.products[position].tax = 0; // Volvemos el tax 0
@@ -129,13 +129,13 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   calculateTotalPrices(position: number) {
-    if (this.status == 0 || this.status == 1) {
+    if (this.status == 0 || this.status == 1 || this.status == 7) {
       this.orderSelected.products[position].sub_total = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].tax;
     }
   }
 
   calculateDiscount(position: number) {
-    if (this.status == 0 || this.status == 1) {
+    if (this.status == 0 || this.status == 1 || this.status == 7) {
       if (this.orderSelected.products[position].discount > 0) {
         this.orderSelected.products[position].discount = this.orderSelected.products[position].sub_total - this.orderSelected.products[position].sub_total * (this.orderSelected.products[position].discount / 100);
         this.orderSelected.products[position].discount = this.orderSelected.products[position].discount / 100
@@ -177,7 +177,7 @@ export class ModalEditOrderComponent implements OnInit {
     this.productSelected.image = image;
   }
 
-  openModal(product: any, modal: any, sizeModale: string) {
+  openModal(product: any, modal: any, sizeModale: string) { //ITS ONLY FOR EDIT IMAGE
     if (this.status == 0 || this.status == 1 || this.status == 2) {
       this.productSelected = product;
       this.modalService.open(modal, { size: sizeModale, centered: true });
