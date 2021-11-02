@@ -34,12 +34,12 @@ export class CuponsService {
   //     );
   // }
   createCupons(payload) {
-    console.log('creamos',payload)
+    // console.log('creamos',payload)
     return this.http.post<any>(
       `${environment.microservices.management}cupons/create`, payload
     ).pipe(
       map((res: any) => {
-        console.log("RESPONSEE", res);
+        // console.log("RESPONSEE", res);
         return res;
       }),
       catchError(handleError)
