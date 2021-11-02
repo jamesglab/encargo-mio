@@ -173,6 +173,16 @@ export class OrderService {
       );
   }
 
+  getProductsByockerAndStatus(params: any): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}locker/products`, { headers: header, params }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
   getShippingTypes() {
     return this.http.get<any>(
       `${environment.microservices.management}shipping-types`, { headers: header }).pipe(

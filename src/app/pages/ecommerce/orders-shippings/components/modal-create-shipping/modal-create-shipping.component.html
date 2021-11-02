@@ -2,17 +2,20 @@
   <h5 class="modal-title mt-0">Crear Envio</h5>
   <button type="button" class="btn-close" (click)="closeModale()" aria-hidden="true"></button>
 </div>
+
 <div class="modal-body">
+
   <form [formGroup]="createShippingForm">
 
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="guide_number">Guia Internacional</label>
-          <input type="number" class="form-control"
-           id="guide_number" formControlName="guide_number">
+          <input type="text" class="form-control" id="guide_number" formControlName="guide_number">
         </div>
       </div>
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="conveyor">Transportadora Internacional</label>
@@ -23,29 +26,36 @@
           </select>
         </div>
       </div>
+
     </div>
 
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="delivery_date">Fecha de Entrega</label>
           <div class="input-group clockpicker">
-            <input ngbDatepicker class="form-control" id="delivery_date"
-             placeholder="yyyy-mm-dd" #dl="ngbDatepicker" formControlName="delivery_date">
+            <input ngbDatepicker class="form-control" id="delivery_date" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
+              formControlName="delivery_date">
             <div class="input-group-append" (click)="dl.toggle()">
               <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
             </div>
           </div>
         </div>
       </div>
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="total_value">Valor Envio</label>
-          <input type="number" class="form-control" id="total_value" formControlName="total_value">
+          <input type="number" class="form-control" id="total_value" formControlName="total_value"
+            (keypress)="numberOnly($event);">
         </div>
       </div>
+
     </div>
+
     <div class="row mt-3">
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="store">Tipo de Envio</label>
@@ -58,59 +68,78 @@
       </div>
 
       <div class="col-12 col-sm-6">
-        <div class="form-group ">
-          <label for="exampleInputEmail1">Usuario </label>
-          <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario"
-           formControlName="user"
-            (change)="getAddresByUser()">
-            <option selected disabled value="">Selecciona un usuario...</option>
-            <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
-          </select>
 
-        </div>
-
-      </div>
-    </div>
-    <div class="row mt-3 mt-3">
-      <div class="col-12 col-sm-6">
         <div class="form-group">
-          <label for="store">Dirección de Envio</label>
-          <select class="form-control" id="store" formControlName="address">
-            <option [value]="null" disabled>Selecciona direccion de envio</option>
-            <option *ngFor="let addres of address" [ngValue]="addres.id">
-              {{addres.address}}</option>
-          </select>
+          <label for="user-item">Usuario </label>
+          <input class="form-control" id="user-item" placeholder="Selecciona un usuario..." formControlName="user"
+            [matAutocomplete]="auto_user">
+          <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+            <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+              CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+            </mat-option>
+          </mat-autocomplete>
+
         </div>
+
       </div>
+
+    </div>
+
+    <div class="row mt-3 mt-3">
+
+      <div class="col-12 col-sm-6">
+
+        <div class="form-group">
+
+          <label for="store">Dirección de Envio</label>
+
+          <input class="form-control" id="store" placeholder="Selecciona una dirección..." formControlName="address"
+            [matAutocomplete]="auto_address">
+
+          <mat-autocomplete #auto_address="matAutocomplete" [displayWith]="displayFnAddress">
+            <mat-option *ngFor="let address of filteredAddress | async" [value]="address">
+              {{address.address}}
+            </mat-option>
+          </mat-autocomplete>
+
+        </div>
+
+      </div>
+
       <div class="col-12 col-sm-6">
         <div class="form-group">
           <label for="observations">Observaciones de Compra</label>
-          <textarea class="form-control" id="observations" row mt-3s="3"
-          formControlName="observations"></textarea>
+          <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
         </div>
       </div>
+
     </div>
+
     <div class="row mt-3">
       <div class="col-12 col-sm-12">
         <label for="">Productos en Envio</label>
         <ng-select [multiple]="true" formControlName="products">
-          <ng-option *ngFor="let product of products" [value]="product">
-            {{('CA'+product.locker.id + ' | ') + ((product.name.length > 50) ? (product.name | slice:0:50 ) + '...' :  product.name)}}
+          <ng-option *ngFor="let product of products" [value]="product"
+            title="{{ product.product ? product.product.name : '' }}">
+            {{ product.product ? ((product.product.name.length > 50) ? (product.product.name | slice:0:50 ) + '...' :
+            product.product.name) : 'N/A' }}
           </ng-option>
-      </ng-select>
+        </ng-select>
       </div>
     </div>
+
   </form>
+
 </div>
 
 <div class="modal-footer">
 
-  <button class="btn btn-secondary"(click)="closeModale()">
+  <button class="btn btn-secondary" (click)="closeModale()">
     Cancelar
   </button>
 
   <button class="btn btn-primary" [disabled]="isLoading" (click)="createShipping()">
-    <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Crear
   </button>
+
 </div>
