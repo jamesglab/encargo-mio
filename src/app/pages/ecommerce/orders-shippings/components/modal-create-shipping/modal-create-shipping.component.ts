@@ -82,7 +82,7 @@ export class ModalCreateShippingComponent implements OnInit {
     await this._orderService.getProductsByLocker({ locker: this.createShippingForm.get('user').value.locker_id, status: 0 })
       .subscribe((res: any) => {
         this.products = res;
-        console.log(this.products)
+        // console.log(this.products)
         this.createShippingForm.controls.products.enable();
       }, err => {
         this.createShippingForm.controls.products.enable();
@@ -147,7 +147,7 @@ export class ModalCreateShippingComponent implements OnInit {
         if (array === 'users') {
           return value.full_name.toLowerCase().replace(/\s/g, '');
         } else if (array === 'address') {
-          console.log("value: ", value);
+          // console.log("value: ", value);
           return value.address.toLowerCase().replace(/\s/g, '');
         }
       } else {

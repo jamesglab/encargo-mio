@@ -64,7 +64,7 @@ export class CustomersComponent implements OnInit {
   }
 
   getTransactions(status?, pagination?) {
-    console.log('filtramos')
+    // console.log('filtramos')
     // if (this.term != '') {
     this.isLoading = true;
     this.status = status;
@@ -87,7 +87,7 @@ export class CustomersComponent implements OnInit {
   }
 
   filterOptions() {
-    console.log('estamos filtrando')
+    // console.log('estamos filtrando')
     const options = {}
     if (this.filterId.value != null && this.filterId.value != '') {
       options['id'] = this.filterId.value
@@ -139,7 +139,7 @@ export class CustomersComponent implements OnInit {
   }
 
   updateTransaction(status: any) {
-    console.log(this.transactionSelected);
+    // console.log(this.transactionSelected);
     this.isLoadingTransaction = true;
     this._transactionService.updateTransaction(this.transactionSelected, status)
       .subscribe(res => {

@@ -25,7 +25,7 @@ export class UpdateCuponComponent implements OnInit {
     this.buildForm();
   }
   buildForm() {
-    console.log('cupon',this.cuponSelected)
+    // console.log('cupon',this.cuponSelected)
     this.updateCuponForm = this._formBuilder.group({
       id: [this.cuponSelected.id],
       price: [this.cuponSelected.price, Validators.required],
