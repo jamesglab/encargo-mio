@@ -19,6 +19,7 @@ export class CreateOrderComponent implements OnInit {
   @Output() public close_modale = new EventEmitter<any>();
   @Input() public trm: any;
   @Input() public users: any = [];
+
   public filteredUsers: Observable<string[]>;
 
   public typeTax: number = 0.07;
@@ -28,7 +29,7 @@ export class CreateOrderComponent implements OnInit {
   public isLoadingFormula: boolean = false;
   public totalFormulas: any = [];
   public totalValues: any = [];
-  files: any = [];
+  public files: any = [];
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -92,7 +93,7 @@ export class CreateOrderComponent implements OnInit {
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
-  
+
   //creamos un producto nuevo que sera pusheado en los formArray
   addProduct(): void {
 
@@ -102,7 +103,10 @@ export class CreateOrderComponent implements OnInit {
       this.isLoading = true;
 
       if (this.form.link.value) {
-        this.quotationService.getProductInfo(this.form.link.value.trim())
+
+        let newUrl: any;
+        newUrl = "https" + this.form.link.value.split("https")[1];
+        this.quotationService.getProductInfo(newUrl)
           .subscribe((res) => {
             this.addItem(res);
             this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
@@ -148,7 +152,7 @@ export class CreateOrderComponent implements OnInit {
       return value.toLowerCase().replace(/\s/g, '');
     }
   }
-  
+
   onSelect(event) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
     this.files.push(...event.addedFiles);
   }
@@ -279,7 +283,7 @@ export class CreateOrderComponent implements OnInit {
       }
     }
 
-    if (this.createProductForm.valid ) {
+    if (this.createProductForm.valid) {
 
       this.isLoading = true;
       var formData = new FormData();
