@@ -60,7 +60,7 @@ export class ModalLockerEntryComponent implements OnInit {
       locker_info: [null],
       product: [null],
       product_description: [null],
-      weight: [0, [Validators.required]],
+      weight: [0, [Validators.required, Validators.min(0.1)]],
       receipt_date: [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }, [Validators.required]],
       permanent_shipping_value: [0],
       declared_value_admin: [0, [Validators.required]],
@@ -74,7 +74,6 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_number_alph.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
-        console.log("guideeee", guide);
         this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
@@ -105,7 +104,6 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.valueChanges.subscribe((guide: any) => {
       if (guide && guide.id) {
-        console.log("GUIDE", guide);
         this.lockerForm.controls.guide_order.setValue((guide.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
         this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
