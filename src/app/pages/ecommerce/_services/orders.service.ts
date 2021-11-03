@@ -358,4 +358,16 @@ export class OrderService {
     )
   }
 
+  deleteProduct(product: string): Observable<any> {
+    return this.http.delete<any>(
+      `${environment.microservices.management}orders/delete-product`,
+      { headers: header, params: { product } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
 }
