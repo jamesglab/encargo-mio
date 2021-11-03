@@ -287,6 +287,21 @@
 
   </ng-container>
 
+  <ng-container *ngIf="status == 7">
+    <button class="btn btn-primary" (click)="sendQuotation();" [disabled]="isLoading || isLoadingQuery">
+
+      <ng-container *ngIf="isLoading">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Cargando...
+      </ng-container>
+
+      <ng-container *ngIf="!isLoading">
+        Cambiar a cotizada
+      </ng-container>
+
+    </button>
+  </ng-container>
+
 </div>
 
 <ng-template #createImage role="document" let-modal>
