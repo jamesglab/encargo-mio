@@ -92,7 +92,6 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   buildForm(shipping: any): void {
-    console.log(shipping);
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
     shipping.address.first_name = shipping.address.name;
     delete shipping.address.name;
@@ -144,9 +143,7 @@ export class ModalUpdateShippingComponent implements OnInit {
       shipping_id: this.updateShippingForm.controls.id.value
     }).subscribe((locker: any) => {
       this.inLocker = locker.in_locker;
-      console.log("IN LOCKER", this.inLocker);
       this.outLocker = locker.in_shipping;
-      console.log("OUT LOCKER", this.outLocker);
       this.updateShippingForm.controls.products.setValue(this.outLocker);
     }, err => {
       throw err;

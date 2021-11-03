@@ -1,5 +1,5 @@
 export const getInsertCreateOrder = (user: any, products: any, calculations: any, trm: any): any => {
-    console.log("CALCULATIONS", calculations);
+
     let order = {
         "user": {
             "id": user.id,

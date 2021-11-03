@@ -119,10 +119,10 @@ export class ExportPdfService {
             color: '#f08001',
             fontSize: '15',
             'bold': true,
-            absolutePosition: { x: 190, y: 270 }
+            absolutePosition: { x: 180, y: 260 }
           },
           {
-            text: `${address.address} ${address.description ? address.description : ''}\n${address.locality.name}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
+            text: `${address.address} ${address.description ? address.description : ''}\n${address.city.name}, ${address.department.name}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
             fontSize: '10',
             color: '#4f5159',
             absolutePosition: { x: 190, y: 305 }
