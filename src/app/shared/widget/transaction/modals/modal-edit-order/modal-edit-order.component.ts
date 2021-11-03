@@ -47,6 +47,7 @@ export class ModalEditOrderComponent implements OnInit {
         if (res) {
           this.orderSelected.trm = res.trm;
           this.orderSelected.products = res.products;
+          console.log(this.orderSelected.products);
           this.orderSelected.products.map((products: any, index: number) => {
             products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.

@@ -139,11 +139,13 @@
 
           <div class="mt-2 h5 d-flex">
 
-            <div class="mx-2" *ngIf="status == 0 || status == 1 && orderSelected && orderSelected.products.length > 1">
-              <a (click)="deleteProduct(i);">
-                <i class="fas fa-trash"></i>
-              </a>
-            </div>
+            <ng-container *ngIf="status === 0 || status === 1">
+              <div class="mx-2" *ngIf="orderSelected.products.length > 1">
+                <a (click)="deleteProduct(i);">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </div>
+            </ng-container>
 
             <div class="mx-2" *ngIf="item.quantity > 1 && status == 0 || status == 1">
               <a (click)="calculateWeightSubstract(i); getFormula(i)">
