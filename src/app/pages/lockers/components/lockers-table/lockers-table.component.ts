@@ -26,7 +26,8 @@ export class LockersTableComponent implements OnInit {
   public filterGuide = new FormControl('');
   public filterProduct = new FormControl('');
   public filterStatus = new FormControl('');
-  public filterIdProduct  = new FormControl('');
+  public filterIdProduct = new FormControl('');
+  public filterDate = new FormControl('');
 
 
   //SUBSCRIPCIONES PARA LOS AUTOCOMPLETS 
@@ -76,6 +77,11 @@ export class LockersTableComponent implements OnInit {
     if (this.filterIdProduct.value != null && this.filterIdProduct.value != '' && this.filterIdProduct.value != 'all') {
       options['product'] = this.filterIdProduct.value
     }
+
+    if (this.filterDate.value && this.filterDate.value.year != '') {
+      options['receipt_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
+    }
+
     return options
   }
   // CONSULTAMOS LOS USUARIOS PARA VISUALIZAR LOS CASILLEROS QUE TIENEN

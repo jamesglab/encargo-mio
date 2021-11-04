@@ -1,5 +1,5 @@
 <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
-  <div class="table-responsive mb-0">
+  <div class="table-responsive mb-0" style="min-height: 500px;">
 
     <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
       No hay datos disponibles...
@@ -12,41 +12,48 @@
       
           <th class="align-middle">Código Orden
             <div class="mt-2">
-              <!-- <input type="text" class="form-control" [formControl]="filterCode" (blur)="filterPurchase()" /> -->
+              <input type="text" class="form-control" [formControl]="filterCode" (blur)="filterPurchase()" />
             </div>
           </th>
           <th class="align-middle">Fecha
-            <!-- <div class="input-group clockpicker mt-2">
+            <div class="input-group clockpicker mt-2">
               <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
                 (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate">
               <div class="input-group-append" (click)="dl.toggle()">
                 <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
               </div>
-            </div> -->
+            </div>
   
           </th>
-          <th class="align-middle">Detalle del Articulo
-            <!-- <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="productDetail" (blur)="filterPurchase()" />
-            </div> -->
-  
+          <th class="align-middle">Nombre del Producto
+            <div class="mt-2">
+              <input type="text" class="form-control" [formControl]="productName" (blur)="filterPurchase()" />
+            </div>
           </th>
           <th class="align-middle">Numero de Compra
-            <!-- <div class="mt-2">
+            <div class="mt-2">
               <input type="text" class="form-control" [formControl]="purchaseNumber" (blur)="filterPurchase()" />
-            </div> -->
+            </div>
           </th>
           <th class="align-middle">
             Usuario
             <!-- se cambiara por el autocomplete -->
-            <!-- <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="purchaseNumber" (blur)="filterPurchase()" />
-            </div> -->
+            <div class="mt-2">
+
+              <input type="text" id="user_id" class="form-control" autocomplete="off" [formControl]="filterUser"
+                placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
+
+              <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+                <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="filterPurchase()">
+                  CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
           </th>
           <th class="align-middle">Total de la Compra
-            <!-- <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="total_value" (blur)="filterPurchase()" />
-            </div> -->
+            <div class="mt-2">
+              <!-- <input type="text" class="form-control" [formControl]="total_value" (blur)="filterPurchase()" /> -->
+            </div>
           </th>
           <th class="align-middle">Opciones</th>
         </tr>
@@ -62,7 +69,7 @@
             </a>
           </td>
           <td>
-            {{data.purchase_date | date :'YY/d/M'}} </td>
+            {{data.purchase_date | date }} </td>
           <td>
             {{ (data.product_name ? (data.product_name.length > 50) ? (data.product_name | slice:0:50 ) + '...' :  data.product_name : '' )   }}
           </td>
