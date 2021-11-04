@@ -138,19 +138,31 @@
           </div>
 
           <div class="mt-2 h5 d-flex">
+
+            <ng-container *ngIf="status === 0 || status === 1">
+              <div class="mx-2" *ngIf="orderSelected.products.length > 1">
+                <a (click)="deleteProduct(i);">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </div>
+            </ng-container>
+
             <div class="mx-2" *ngIf="item.quantity > 1 && status == 0 || status == 1">
               <a (click)="calculateWeightSubstract(i); getFormula(i)">
                 <i class="fas fa-minus"></i>
               </a>
             </div>
+
             <div class="item-quantity">
               Cantidad: {{ item.quantity }}
             </div>
+
             <div class="mx-2" *ngIf="status == 0 || status == 1">
               <a (click)="calculateWeightAdd(i); getFormula(i)">
                 <i class="fas fa-plus"></i>
               </a>
             </div>
+
           </div>
 
         </div>
@@ -309,5 +321,5 @@
   <!-- (close) CERRAMOS EL MODALE CUANDO LO QUEIRAN CERRAR -->
   <!--  (imageUpdated) SELECCIONAMOS EL METODO DE ACTUALIZAR IMAGEN DEL PRODUCTO SELECCIONADO-->
   <app-create-image [product]="productSelected" (close)="modal.close()"
-    (imageUpdated)="upadteImageByProduct($event);modal.close()"></app-create-image>
+    (imageUpdated)="upadteImageByProduct($event); modal.close()"></app-create-image>
 </ng-template>

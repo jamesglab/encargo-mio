@@ -267,9 +267,9 @@ export class OrderService {
       );
   }
 
-  getOrderPurchase() {
+  getOrderPurchase(params) {
     return this.http.get<any>(
-      `${environment.microservices.management}order-purchase`, { headers: header }).pipe(
+      `${environment.microservices.management}order-purchase`, { headers: header , params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -350,6 +350,18 @@ export class OrderService {
     return this.http.get<any>(
       `${environment.microservices.management}shipping-order/validate-not-products`,
       { headers: header, params: { shipping_order: shipping_order } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  deleteProduct(product: string): Observable<any> {
+    return this.http.delete<any>(
+      `${environment.microservices.management}orders/delete-product`,
+      { headers: header, params: { product } }
     ).pipe(
       map((res: any) => {
         return res;

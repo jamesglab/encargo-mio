@@ -95,7 +95,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
     shipping.address.first_name = shipping.address.name;
     delete shipping.address.name;
-
+    console.log("SHIPPING: ", shipping);
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
       trm: [this.trm],
@@ -107,12 +107,12 @@ export class ModalUpdateShippingComponent implements OnInit {
       user: [shipping.user, Validators.required,],
       address: [shipping.address ? shipping.address : null, [Validators.required]],
       observations: [shipping.observations],
-      products: [null, Validators.required]
+      products: [shipping.products ? shipping.products : null, Validators.required]
     });
 
     this.updateShippingForm.controls.shipping_type.disable();
     this.updateShippingForm.controls.total_value.disable();
-
+    console.log(this.updateShippingForm.getRawValue());
     this.filteredConveyors = this.updateShippingForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
     this.filteredAddress = this.updateShippingForm.controls.address.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'address')));
     this.filteredUsers = this.updateShippingForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));

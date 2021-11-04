@@ -10,6 +10,7 @@ import { OrderService } from '../ecommerce/_services/orders.service';
 export class PurchasesComponent implements OnInit {
   public purchases;
   public purchaseSelected;
+  public count;
   constructor(
     private _orderService: OrderService,
     private modalService: NgbModal
@@ -19,10 +20,15 @@ export class PurchasesComponent implements OnInit {
     this.getPurchases();
   }
 
-  getPurchases() {
+  getPurchases(paginator?) {
+    console.log('paginator', paginator);
+    this._orderService.getOrderPurchase({
+      pageSize: paginator ? paginator.pageSize : 10,
+      page: paginator ? paginator.pageIndex + 1 : 1
+    }).subscribe(res => {
+      this.purchases = res.orders_purchase;
+      this.count = res.count;
 
-    this._orderService.getOrderPurchase().subscribe(res => {
-      this.purchases = res;
     })
 
   }
