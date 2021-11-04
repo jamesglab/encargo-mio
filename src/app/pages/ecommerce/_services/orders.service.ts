@@ -370,4 +370,16 @@ export class OrderService {
     )
   }
 
+  countsTabs(){
+    return this.http.get<any>(
+      `${environment.microservices.management}orders/count-tabs`,
+      { headers: header }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
 }

@@ -93,6 +93,15 @@ export const MENU: MenuItem[] = [
                 link: '/lockers/locker',
                 code : 'CAS000',
                 showItem: false
+            },
+            {
+                id: 3,
+                label: 'Ingresar a Casillero',
+                parentId: 1,
+                modale: 'modal_locker_entry',
+                link: '/lockers/locker',
+                code : 'CAS000',
+                showItem: false
             }
         ]
     }

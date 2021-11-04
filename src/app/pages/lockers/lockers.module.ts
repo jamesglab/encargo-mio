@@ -12,6 +12,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { EcommerceModule } from '../ecommerce/ecommerce.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
     NgxDropzoneModule,
     MatAutocompleteModule,
     MatInputModule,
-    NgbDatepickerModule
+    NgbDatepickerModule,
+    EcommerceModule
   ]
 })
 
