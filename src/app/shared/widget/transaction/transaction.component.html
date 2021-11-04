@@ -14,7 +14,7 @@
         </th>
         <th class="align-middle">Nombre del Cliente
           <input type="text" id="user_id" class="form-control mt-2" autocomplete="off" [formControl]="filterUser"
-            placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
+            placeholder="Selecciona el usuario" [matAutocomplete]="auto_user" (blur)="filterOrders()">
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
             <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="filterOrders()">
               CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}

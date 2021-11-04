@@ -35,13 +35,10 @@
             <input type="text" class="form-control" [formControl]="filterProduct" (blur)="getAllLockers()" />
           </div>
         </th>
-
-
         <th class="align-middle">
           Casillero
           <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
-            placeholder="Selecciona el usuario" [formControl]="filterUserLocker" [matAutocomplete]="auto_user" />
-
+            placeholder="Selecciona el usuario" [formControl]="filterUserLocker" [matAutocomplete]="auto_user" (blur)="getAllLockers()" />
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
             <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="getAllLockers()">
               CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
