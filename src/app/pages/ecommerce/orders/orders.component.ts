@@ -23,6 +23,7 @@ export class OrdersComponent implements OnInit {
   public users = [];
   public refreshTable: boolean = false;
   public isLoading: boolean = false;
+  public filterValues: any = {};
 
   constructor(
     private readonly _orderService: OrderService,
@@ -43,7 +44,10 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  async getTransactions(pagination?) {
+  async getTransactions(pagination?, filterValues?) {
+    if (filterValues) {
+      this.filterValues = filterValues;
+    }
 
     this.isLoading = true;
 
@@ -55,7 +59,8 @@ export class OrdersComponent implements OnInit {
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
       status: this.status,
-      type: 'quotation'
+      type: 'quotation',
+      ...this.filterValues
     }).subscribe((res) => {
       this.transactions = res.orders;
       this.counts = res.count;

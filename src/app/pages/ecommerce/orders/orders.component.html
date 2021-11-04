@@ -13,13 +13,6 @@
           <div class="row mb-2">
 
             <div class="col-sm-4">
-
-              <div class="search-box me-2 mb-2 d-inline-block">
-                <div class="position-relative">
-                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
-                  <i class="bx bx-search-alt search-icon"></i>
-                </div>
-              </div>
               
             </div>
 
@@ -102,7 +95,7 @@
           <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
 
             <app-transaction class="mt-1" [transactions]="transactions | filter:term" [status]="status"
-              (refreshTable)="refreshTableReceive($event);">
+              (refreshTable)="refreshTableReceive($event);" (filterValues)="getTransactions(null, $event)">
             </app-transaction>
 
             <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
