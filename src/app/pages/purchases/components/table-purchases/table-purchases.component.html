@@ -1,50 +1,95 @@
-<div class="table-responsive mb-0">
+<div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
+  <div class="table-responsive mb-0">
 
-  <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
-    No hay datos disponibles...
+    <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
+      No hay datos disponibles...
+    </div>
+  
+    <table class="table table-centered table-nowrap">
+  
+      <thead class="table-light">
+        <tr>
+      
+          <th class="align-middle">Código Orden
+            <div class="mt-2">
+              <!-- <input type="text" class="form-control" [formControl]="filterCode" (blur)="filterPurchase()" /> -->
+            </div>
+          </th>
+          <th class="align-middle">Fecha
+            <!-- <div class="input-group clockpicker mt-2">
+              <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
+                (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate">
+              <div class="input-group-append" (click)="dl.toggle()">
+                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+              </div>
+            </div> -->
+  
+          </th>
+          <th class="align-middle">Detalle del Articulo
+            <!-- <div class="mt-2">
+              <input type="text" class="form-control" [formControl]="productDetail" (blur)="filterPurchase()" />
+            </div> -->
+  
+          </th>
+          <th class="align-middle">Numero de Compra
+            <!-- <div class="mt-2">
+              <input type="text" class="form-control" [formControl]="purchaseNumber" (blur)="filterPurchase()" />
+            </div> -->
+          </th>
+          <th class="align-middle">
+            Usuario
+            <!-- se cambiara por el autocomplete -->
+            <!-- <div class="mt-2">
+              <input type="text" class="form-control" [formControl]="purchaseNumber" (blur)="filterPurchase()" />
+            </div> -->
+          </th>
+          <th class="align-middle">Total de la Compra
+            <!-- <div class="mt-2">
+              <input type="text" class="form-control" [formControl]="total_value" (blur)="filterPurchase()" />
+            </div> -->
+          </th>
+          <th class="align-middle">Opciones</th>
+        </tr>
+  
+      </thead>
+  
+      <tbody>
+  
+        <tr *ngFor="let data of purchases">
+          <td>
+            <a class="text-body fw-bold">
+              {{ data.id}}
+            </a>
+          </td>
+          <td>
+            {{data.purchase_date | date :'YY/d/M'}} </td>
+          <td>
+            {{ (data.product_name ? (data.product_name.length > 50) ? (data.product_name | slice:0:50 ) + '...' :  data.product_name : '' )   }}
+          </td>
+          <td>
+            {{ data.invoice_number}}
+          </td>
+          <td>
+            CA{{data.locker_id + ' ' + data?.user_name + ' '+  data?.last_name}}
+          </td>
+          <td>
+            USD {{ data.product_price  ? data.product_price  : 0 }} / {{((data.product_price  ? data.product_price  : 0) * data.trm_value) | currency:'COP ' :'symbol' : '1.0-0'}}
+          </td>
+          <td>
+            <!-- btns options -->
+            <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
+              (click)="selectPurchase(data)">
+              Editar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <table class="table table-centered table-nowrap">
-
-    <thead class="table-light">
-
-      <tr>
-        <th class="align-middle">Fecha</th>
-        <th class="align-middle">Código Orden</th>
-        <th class="align-middle">Detalle del Articulo</th>
-        <th class="align-middle">Numero de Compra</th>
-        <th class="align-middle">Total de la Compra</th>
-        <th class="align-middle">Opciones</th>
-      </tr>
-
-    </thead>
-
-    <tbody>
-
-      <tr *ngFor="let data of purchases">
-        <td>
-          {{data.purchase_date | date :'YY/d/M'}} </td>
-        <td>
-          <a class="text-body fw-bold">
-            CC{{ data.id.replaceAll('=',"") }}
-          </a>
-        </td>
-        <td>
-          {{ (data.product?.name ? (data.product?.name.length > 50) ? (data.product.name | slice:0:50 ) + '...' :  data.product.name : '' )   }}
-        </td>
-        <td>
-          {{ data.invoice_number}}
-        </td>
-        <td>{{ data.product_price }}</td>
-        <td>
-          <!-- btns options -->
-          <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
-            (click)="selectPurchase(data)">
-            Editar
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]" aria-label="Select page" (page)="emitPage($event)">
+  </mat-paginator>
 </div>
+
+
+
 <!-- end table -->

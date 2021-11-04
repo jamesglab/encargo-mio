@@ -1,5 +1,5 @@
 <app-page-title title="Compras"></app-page-title>
-<app-table-purchases [purchases]="purchases" (editPurchase)="receivePurchase($event , updateCupon, 'lg')">
+<app-table-purchases [purchases]="purchases" [count]="count" (editPurchase)="receivePurchase($event , updateCupon, 'lg')" (filterData)="getPurchases($event)">
 </app-table-purchases>
 
 <ng-template #updateCupon role="document" let-modal>
