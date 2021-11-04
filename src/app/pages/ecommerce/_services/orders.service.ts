@@ -267,9 +267,9 @@ export class OrderService {
       );
   }
 
-  getOrderPurchase() {
+  getOrderPurchase(params) {
     return this.http.get<any>(
-      `${environment.microservices.management}order-purchase`, { headers: header }).pipe(
+      `${environment.microservices.management}order-purchase`, { headers: header , params }).pipe(
         map((res: any) => {
           return res;
         }),
