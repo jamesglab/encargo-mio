@@ -94,7 +94,7 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.locker_info.valueChanges.subscribe((data: any) => {
       if (data && data.locker_id) {
-        this.cleanData();
+        // this.cleanData();
         this.lockerForm.controls.locker_info.setValue((`CA${data.locker_id} | ${data.us_name} ${data.us_last_name}`));
         this.lockerForm.controls.locker.setValue(data.locker_id);
         this.lockerForm.controls.user.setValue(data.us_id);
@@ -214,6 +214,7 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   cleanData() {
+    console.log("ENTRO AL CLEAN DATA");
     this.allGuides = [];
     this.toHome = { status: false, to_home: false };
     this.lockerForm.controls.product_description.setValue(null);
