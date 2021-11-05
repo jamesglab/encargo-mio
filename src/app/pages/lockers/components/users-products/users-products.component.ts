@@ -44,24 +44,7 @@ export class UsersProductsComponent implements OnInit {
       return [];
     }
   }
-
-  filterProductsByUser(paginator?) {
-    if (this.filterUser.value.locker_id) {
-      this.lockerService.getAllLockers({
-        pageSize: paginator ? paginator.pageSize : 10,
-        page: paginator ? paginator.pageIndex + 1 : 1,
-        locker_id: this.filterUser.value.locker_id,
-        status: 0
-      }).subscribe(res => {
-        this.products = res.products;
-        this.count = res.count;
-      })
-    }
-
-  }
-  onImageError(event) {
-    event.target.src = "assets/images/default.jpg";
-  }
+  
   // VALIDAREMOS EL CAMPO EN EL OBJETO PARA FILTRAR EL VALOR EN EL ARRAY
   private _normalizeValue(value: any, array: any): string {
     // VALIDAMOS SI EL VALOR RECIVIDO ES UN OBJETO
@@ -77,5 +60,22 @@ export class UsersProductsComponent implements OnInit {
     }
   }
 
-  del
+  filterProductsByUser(paginator?) {
+    if (this.filterUser.value.locker_id) {
+      this.lockerService.getAllLockers({
+        pageSize: paginator ? paginator.pageSize : 10,
+        page: paginator ? paginator.pageIndex + 1 : 1,
+        locker_id: this.filterUser.value.locker_id,
+        status: 0
+      }).subscribe(res => {
+        this.products = res.products;
+        this.count = res.count;
+      })
+    }
+  }
+
+  onImageError(event) {
+    event.target.src = "assets/images/default.jpg";
+  }
+
 }
