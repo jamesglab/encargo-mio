@@ -15,12 +15,14 @@ export class OrdersShippingsComponent implements OnInit {
   public page = 1;
   public itemPerPage = 5;
   public shippings;
-  public counts: any = [];
+  public counts: any = {};
   public status: number = 0;
+  public count: number = 0;
   public trm: any;
   public users = [];
   public shippingToUpdate;
   public isLoading: boolean = false;
+  public shippingTracking: any;
 
   constructor(
     private readonly _orderService: OrderService,
@@ -32,6 +34,13 @@ export class OrdersShippingsComponent implements OnInit {
     this.getTransactions();
     this.getUsersAdmin();
     this.getTRM();
+    this.getCountsTabs();
+  }
+
+  getCountsTabs() {
+    this._orderService.countsTabsShipping().subscribe(res => {
+      this.counts = res;
+    })
   }
 
   getUsersAdmin() {
@@ -56,7 +65,8 @@ export class OrdersShippingsComponent implements OnInit {
       status: this.status ? this.status : '0',
     }).subscribe((res) => {
       this.shippings = res.shipping_orders;
-      this.counts[this.status] = res.count;
+      this.shippings = res.shipping_orders;
+      this.count = res.count;
       this.isLoading = false;
     }, err => {
       this.isLoading = false;
