@@ -99,6 +99,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
       trm: [this.trm],
+      total_weight:[{value : this.shippingToUpdate.total_weight,disabled : true}],
       guide_number: [shipping.guide_number, Validators.required],
       conveyor: [this.conveyors.find((item) => item.id == shipping.conveyor), [Validators.required]],
       // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
@@ -230,7 +231,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   displayFnUserName(name: any) {
     if (name) {
-      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name : '';
+      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name  + ' ' + name.last_name : '';
     }
   }
 

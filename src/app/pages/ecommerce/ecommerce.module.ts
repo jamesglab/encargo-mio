@@ -80,7 +80,8 @@ const config: DropzoneConfigInterface = {
   ],
   exports: [
     MatSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    ModalLockerEntryComponent
   ],
   providers: [
     {

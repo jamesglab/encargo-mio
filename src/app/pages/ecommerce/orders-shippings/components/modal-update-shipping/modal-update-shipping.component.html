@@ -92,7 +92,20 @@
 
           </div>
 
+
+
           <div class="col-12 col-sm-6">
+            <div class="form-group">
+              <label for="total_weight">Peso total:</label>
+              <input type="number" class="form-control" id="total_weight" formControlName="total_weight">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+
+          <div class="col-12 col-sm-6">
+
 
             <div class="form-group">
 
@@ -110,11 +123,10 @@
 
             </div>
 
+
+
+
           </div>
-
-        </div>
-
-        <div class="row mt-3">
 
           <div class="col-12 col-sm-6">
 
@@ -133,15 +145,19 @@
 
             </div>
 
+
+
           </div>
 
-          <div class="col-12 col-sm-6">
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12">
             <div class="form-group">
               <label for="observations">Observaciones de Compra</label>
               <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
             </div>
           </div>
-
         </div>
 
         <div class="row mt-3 mt-3">
@@ -203,6 +219,11 @@
                   <li>
                     <strong>Teléfono: </strong>
                     {{ form.address.value.phone ? form.address.value.phone :'N/A' }}
+                  </li>
+
+                  <li>
+                    <strong>Peso: </strong>
+                    {{ shippingToUpdate?.total_weight ? shippingToUpdate.total_weight :'N/A' }}
                   </li>
                 </div>
 
@@ -348,7 +369,7 @@
                   <strong>Descripción</strong>
                   {{ item.product.description }}
                 </div>
-                
+
                 <div>
                   <strong>Guía Origen:</strong>
                   {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}

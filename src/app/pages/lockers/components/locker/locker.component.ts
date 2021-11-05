@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LockersService } from '../../_services/lockers.service';
 
 @Component({
@@ -17,11 +18,16 @@ export class LockerComponent implements OnInit {
   public lockers: any = [];
 
   constructor(
-    private _lockers: LockersService
+    private _lockers: LockersService,
+    private modalService : NgbModal
   ) { }
 
   ngOnInit(): void {
     // this.getAllLockers();
+  }
+
+  openModal(content: any) {
+    this.modalService.open(content, { size: 'xl', centered: true });
   }
 
   // getAllLockers(pagination?: any) {
