@@ -1,7 +1,7 @@
 <div class="container-fluid">
 
   <app-page-title title="Lista de usuarios"></app-page-title>
-  <div class="row">
+  <!-- <div class="row">
     <div class="form-group h5">
       <label for="exampleInputEmail1">Usuario </label>
       <div class="input-group">
@@ -20,7 +20,7 @@
         </mat-option>
       </mat-autocomplete>
     </div>
-  </div>
+  </div> -->
   <div class="row">
     <div class="col-lg-12">
       <div class="card">
@@ -29,11 +29,25 @@
             <table class="table align-middle  table-nowrap table-hover">
               <thead class="table-light">
                 <tr>
-                  <th scope="col">Email</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">Apellido</th>
-                  <th scope="col">Casillero</th>
-                  <th scope="col">Rol</th>
+                  <th scope="col">Email
+                    <input type="search" id="form1" class="form-control mt-3" type="text" id="user_id"
+                      class="form-control" autocomplete="off" [formControl]="filterEmail" (blur)="getUsers()"
+                      placeholder="Selecciona el usuario" />
+
+                  </th>
+                  <th scope="col">Nombre Apellido
+                    <input type="search" id="form1" class="form-control mt-3" type="text" id="user_id"
+                      class="form-control" autocomplete="off" [formControl]="filterName" (blur)="getUsers()"
+                      placeholder="Selecciona el usuario" />
+                  </th>
+
+                  <th scope="col">Casillero
+                    <input type="search" id="form1" class="form-control mt-3" type="text" id="user_id"
+                      class="form-control" autocomplete="off" [formControl]="filterLocker" (blur)="getUsers()"
+                      placeholder="Selecciona el usuario" />
+                  </th>
+                  <th scope="col">Rol
+                  </th>
                   <th scope="col">Fecha de Creación</th>
                   <th scope="col">Action</th>
                 </tr>
@@ -42,11 +56,7 @@
                 <tr *ngFor="let user of usersTable">
                   <td>{{user.email}}</td>
                   <td>
-                    <h5 class="font-size-14 mb-1"><a class="text-dark">{{user.name}}</a>
-                    </h5>
-                  </td>
-                  <td>
-                    <h5 class="font-size-14 mb-1"><a class="text-dark">{{user.last_name}}</a>
+                    <h5 class="font-size-14 mb-1"><a class="text-dark">{{user.name}} {{user.last_name}}</a>
                     </h5>
                   </td>
 
