@@ -17,6 +17,7 @@ import { WidgetModule } from 'src/app/shared/widget/widget.module';
 import { Ng5SliderModule } from 'ng5-slider';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     NgbPaginationModule,
     MatPaginatorModule,
     NgbDatepickerModule,
+    MatAutocompleteModule
   ]
 })
 export class PurchasesModule { }

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import Swal from 'sweetalert2';
 import { OrderService } from '../../../_services/orders.service';
 
 @Component({
@@ -11,6 +12,9 @@ export class ShippingsTableComponent implements OnInit {
 
   @Input() public shippings = [];
   @Output() public shippingSelected = new EventEmitter<any>();
+  @Output() public shippingTracking = new EventEmitter<any>();
+  @Output() public shipping = new EventEmitter<any>();
+
 
   public isLoading: boolean;
 
@@ -34,4 +38,13 @@ export class ShippingsTableComponent implements OnInit {
       throw err;
     });
   }
+
+  sendShippingTracking(data){
+    if (data.conveyor_status){
+      this.shippingTracking.emit(data)
+    }else {
+      Swal.fire('Aun no hay registro de la transportadora','','info')
+    }
+  }
+
 }

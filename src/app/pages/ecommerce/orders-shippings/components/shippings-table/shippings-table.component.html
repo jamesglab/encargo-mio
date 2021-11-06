@@ -52,10 +52,19 @@
 
         <td>
           <!-- btns options -->
-          <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="getOrderById(data.id)"
-            [disabled]="isLoading">
-            Editar
-          </button>
+
+          <div class="d-flex">
+            
+            <div class="center">
+              <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="getOrderById(data.id)"
+              [disabled]="isLoading">
+              {{(data.status != 7)  ? 'Editar': 'Detalle'}}
+            </button>
+            </div>
+            <div class="delivery" *ngIf="data.status == 3" (click)="sendShippingTracking(data)">
+              <img src="assets/images/delivery.png" alt="">
+          </div>
+          </div>
         </td>
       </tr>
     </tbody>

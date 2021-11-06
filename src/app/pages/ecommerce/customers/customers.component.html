@@ -104,13 +104,11 @@
                   </th>
                   <th>Usuario
                     <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
-                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user" />
-
+                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user" (blur)="getTransactions(status)"/>
                     <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
                       <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
                         (click)="getTransactions(status)">
                         CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
-
                       </mat-option>
                     </mat-autocomplete>
                   </th>

@@ -13,13 +13,6 @@
           <div class="row mb-2">
 
             <div class="col-sm-4">
-
-              <div class="search-box me-2 mb-2 d-inline-block">
-                <div class="position-relative">
-                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term">
-                  <i class="bx bx-search-alt search-icon"></i>
-                </div>
-              </div>
               
             </div>
 
@@ -48,45 +41,45 @@
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 0 }" (click)="status = 0;  getTransactions()">
-                Por Aprobar
+                Por Aprobar {{counts_tabs?.for_approve}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 1}"
-                (click)="status = 1 ;  getTransactions()">Cotizadas</a>
+                (click)="status = 1 ;  getTransactions()">Cotizadas {{counts_tabs?.quoted}}</a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active':status == 2}" (click)="status = 2;  getTransactions()">
-                En proceso de pago
+                En proceso de pago {{counts_tabs?.in_payment}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 3;  getTransactions()">
-                Registrar Compra </a>
+                Registrar Compra {{counts_tabs?.register_purchase}} </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 4}" (click)="status = 4;  getTransactions()">
-                Ingresar Producto
+                Ingresar Producto {{counts_tabs?.enter_product}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{ 'active': status == 5 }"
-                (click)="status = 5;  getTransactions()">Finalizada</a>
+                (click)="status = 5;  getTransactions()">Finalizada {{counts_tabs?.finished}}</a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 6}"
-                (click)="status = 6;  getTransactions()">Canceladas</a>
+                (click)="status = 6;  getTransactions()">Canceladas {{counts_tabs?.canceled}}</a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 7}"
-                (click)="status = 7;  getTransactions()">Vencidas</a>
+                (click)="status = 7;  getTransactions()">Vencidas {{counts_tabs?.expired}}</a>
             </li>
 
           </ul>
@@ -102,7 +95,7 @@
           <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
 
             <app-transaction class="mt-1" [transactions]="transactions | filter:term" [status]="status"
-              (refreshTable)="refreshTableReceive($event);">
+              (refreshTable)="refreshTableReceive($event);" (filterValues)="getTransactions(null, $event)">
             </app-transaction>
 
             <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">

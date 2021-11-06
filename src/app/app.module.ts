@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
 
 import { environment } from '../environments/environment';
@@ -47,6 +47,9 @@ registerLocaleData(localeEs, 'es');
     NgbModule
   ],
   bootstrap: [AppComponent],
-  providers: [],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'es' }
+    
+  ],
 })
 export class AppModule { }
