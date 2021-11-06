@@ -37,6 +37,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import {IvyCarouselModule} from 'angular-responsive-carousel';
+import { ShipmentTrackingComponent } from './orders-shippings/components/shipment-tracking/shipment-tracking.component';
 
 
 const config: DropzoneConfigInterface = {
@@ -52,7 +53,7 @@ const config: DropzoneConfigInterface = {
     CheckoutComponent, CartComponent, AddproductComponent,
     CustomersComponent, OrdersComponent, CreateOrderComponent,
     OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent,
-    ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent],
+    ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent, ShipmentTrackingComponent],
   imports: [
     CommonModule,
     EcommerceRoutingModule,

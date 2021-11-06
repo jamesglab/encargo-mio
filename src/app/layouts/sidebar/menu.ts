@@ -96,13 +96,12 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 3,
-                label: 'Ingresar a Casillero',
+                label: 'Productos de usuario',
                 parentId: 1,
-                modale: 'modal_locker_entry',
-                link: '/lockers/locker',
+                link: '/lockers/user-products',
                 code : 'CAS000',
                 showItem: false
-            }
+            },
         ]
     }
 ];

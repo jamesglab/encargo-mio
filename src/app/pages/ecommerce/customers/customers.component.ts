@@ -167,9 +167,8 @@ export class CustomersComponent implements OnInit {
   }
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
-    // return name ? `${name.name + ' ' + name.last_name}` : '';
-
   }
+  
   searchFilter(status?, pagination?) {
     this.isLoading = true;
     this.status = status;

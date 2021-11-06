@@ -269,7 +269,7 @@ export class OrderService {
 
   getOrderPurchase(params) {
     return this.http.get<any>(
-      `${environment.microservices.management}order-purchase`, { headers: header , params }).pipe(
+      `${environment.microservices.management}order-purchase`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -370,7 +370,7 @@ export class OrderService {
     )
   }
 
-  countsTabs(){
+  countsTabs() {
     return this.http.get<any>(
       `${environment.microservices.management}orders/count-tabs`,
       { headers: header }
@@ -380,6 +380,28 @@ export class OrderService {
       }),
       catchError(handleError)
     )
+  }
+
+  countsTabsShipping() {
+    return this.http.get<any>(
+      `${environment.microservices.management}shipping-order/count-tabs`,
+      { headers: header }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  shippingOrderIsDelivered(id) {
+    return this.http.put<any>(
+      `${environment.microservices.management}shipping-order/is-delivered`, {}, { params: { id } }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
 }

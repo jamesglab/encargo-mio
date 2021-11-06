@@ -219,12 +219,7 @@
                   <li>
                     <strong>Teléfono: </strong>
                     {{ form.address.value.phone ? form.address.value.phone :'N/A' }}
-                  </li>
-
-                  <li>
-                    <strong>Peso: </strong>
-                    {{ shippingToUpdate?.total_weight ? shippingToUpdate.total_weight :'N/A' }}
-                  </li>
+                  </li>                  
                 </div>
 
               </div>
@@ -412,11 +407,9 @@
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Empacado
   </button>
-
-  <ng-container *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'">
+  <ng-container *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'  && shippingToUpdate.status != '7'">
     <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
       Actualizar
     </button>
   </ng-container>
-
 </div>

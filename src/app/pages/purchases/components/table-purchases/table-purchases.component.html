@@ -4,13 +4,14 @@
     <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
       No hay datos disponibles...
     </div>
-  
+
     <table class="table table-centered table-nowrap">
-  
+
       <thead class="table-light">
         <tr>
-      
-          <th class="align-middle">Código Orden
+
+          <th class="align-middle">
+            #
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="filterCode" (blur)="filterPurchase()" />
             </div>
@@ -23,7 +24,7 @@
                 <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
               </div>
             </div>
-  
+
           </th>
           <th class="align-middle">Nombre del Producto
             <div class="mt-2">
@@ -50,6 +51,11 @@
               </mat-autocomplete>
             </div>
           </th>
+          <th class="align-middle">
+            Código Orden
+            <div class="mt-2">
+            </div>
+          </th>
           <th class="align-middle">Total de la Compra
             <div class="mt-2">
               <!-- <input type="text" class="form-control" [formControl]="total_value" (blur)="filterPurchase()" /> -->
@@ -57,11 +63,11 @@
           </th>
           <th class="align-middle">Opciones</th>
         </tr>
-  
+
       </thead>
-  
+
       <tbody>
-  
+
         <tr *ngFor="let data of purchases">
           <td>
             <a class="text-body fw-bold">
@@ -80,7 +86,11 @@
             CA{{data.locker_id + ' ' + data?.user_name + ' '+  data?.last_name}}
           </td>
           <td>
-            USD {{ data.product_price  ? data.product_price  : 0 }} / {{((data.product_price  ? data.product_price  : 0) * data.trm_value) | currency:'COP ' :'symbol' : '1.0-0'}}
+            {{data.encrypted_id}}
+          </td>
+          <td>
+            USD {{ data.product_price  ? data.product_price  : 0 }} /
+            {{((data.product_price  ? data.product_price  : 0) * data.trm_value) | currency:'COP ' :'symbol' : '1.0-0'}}
           </td>
           <td>
             <!-- btns options -->
@@ -93,7 +103,8 @@
       </tbody>
     </table>
   </div>
-  <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]" aria-label="Select page" (page)="emitPage($event)">
+  <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]" aria-label="Select page"
+    (page)="emitPage($event)">
   </mat-paginator>
 </div>
 
