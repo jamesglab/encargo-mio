@@ -55,7 +55,7 @@ export class TransactionComponent implements OnInit {
     const filterValues = {}
     if (this.filterId.value && this.filterId.value != '') {
       filterValues['id'] = this.filterId.value
-    } if (this.filterDate.value && this.filterDate.value.year != '') {
+    } if (this.filterDate?.value && this.filterDate.value.year) {
       filterValues['created_at'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
     } if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
