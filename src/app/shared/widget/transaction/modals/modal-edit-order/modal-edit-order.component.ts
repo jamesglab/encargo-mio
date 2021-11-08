@@ -45,9 +45,15 @@ export class ModalEditOrderComponent implements OnInit {
     this._orders.detailOrder({ id: this.orderSelected.id })
       .subscribe((res: any) => {
         if (res) {
+
+          if (res.products.length == 0) {
+            Swal.fire('No existen productos', '', 'info');
+            this.modalService.dismissAll();
+            return
+          }
           this.orderSelected.trm = res.trm;
           this.orderSelected.products = res.products;
-          console.log(this.orderSelected.products);
+
           this.orderSelected.products.map((products: any, index: number) => {
             products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.

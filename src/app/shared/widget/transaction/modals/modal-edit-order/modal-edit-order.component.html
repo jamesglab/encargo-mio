@@ -14,13 +14,22 @@
         <div class="h4">
           #000{{orderSelected?.id}}
         </div>
-
+        <div class="h5">
+          {{ (orderSelected?.user.name + ' ' + orderSelected?.user.last_name) || 'Encargomio' }}
+        </div>
         <div class="h5">
           {{orderSelected?.created_at | date }}
         </div>
         <div class="h5">
           TRM cotización:
           {{ (orderSelected ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
+        </div>
+        <br>
+        <div class="form-check form-switch text-truncate h5">
+
+          <label for="form-group">Compra anticipada</label>
+          <input class="form-check-input" type="checkbox" disabled checked="{{orderSelected?.advance_purchase}}"
+            id="flexSwitchCheckChecked">
         </div>
       </div>
 

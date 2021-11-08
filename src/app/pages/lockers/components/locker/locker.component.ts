@@ -16,20 +16,26 @@ export class LockerComponent implements OnInit {
   public refreshTable: boolean = false;
   public isLoadInput: boolean = false;
   public lockers: any = [];
-
+  public showData: boolean = true;
   constructor(
     private _lockers: LockersService,
-    private modalService : NgbModal
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
-    // this.getAllLockers();
   }
 
   openModal(content: any) {
     this.modalService.open(content, { size: 'xl', centered: true });
   }
 
+  resetFilters() {
+    this.showData = false;
+    setTimeout(() => {      
+      this.showData = true;
+    }, 300);
+
+  }
   // getAllLockers(pagination?: any) {
   //   this.isLoading = true;
   //   this.isLoadInput = true;

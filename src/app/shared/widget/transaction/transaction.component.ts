@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import * as moment from "moment";
 import { Observable } from "rxjs-compat";
 import { map, startWith } from "rxjs/operators";
 import { NotifyService } from "src/app/_services/notify.service";
@@ -17,7 +18,7 @@ export class TransactionComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Output() public filterValues: EventEmitter<any> = new EventEmitter();
-  
+
   @Input() public status: string;
   @Input() public transactions: Array<{
     id?: string;
@@ -29,7 +30,7 @@ export class TransactionComponent implements OnInit {
   }>;
   public filterUser = new FormControl('');
   public filterId = new FormControl('');
-  public filterDate = new FormControl('');
+  public filterDate = new FormControl({ value: '' });
   public filteredUsers: Observable<string[]>;
   public orderSelected: any = {};
   public isLoading: boolean = false;
@@ -50,11 +51,11 @@ export class TransactionComponent implements OnInit {
     // this.statusTab = this.status;
   }
 
-  filterOrders(){
+  filterOrders() {
     const filterValues = {}
     if (this.filterId.value && this.filterId.value != '') {
       filterValues['id'] = this.filterId.value
-    } if (this.filterDate.value && this.filterDate.value.year != '') {
+    } if (this.filterDate?.value && this.filterDate.value.year) {
       filterValues['created_at'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
     } if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
@@ -89,6 +90,14 @@ export class TransactionComponent implements OnInit {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
 
+
+  formatDate() {
+    if (this.filterDate.value.year) {
+      return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD')
+    } else {
+      return ''
+    }
+  }
 
   private _normalizeValue(value: any, array: any): string {
     if (typeof value === 'object') {
