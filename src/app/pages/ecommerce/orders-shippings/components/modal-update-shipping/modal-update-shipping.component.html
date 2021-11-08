@@ -219,7 +219,7 @@
                   <li>
                     <strong>Teléfono: </strong>
                     {{ form.address.value.phone ? form.address.value.phone :'N/A' }}
-                  </li>                  
+                  </li>
                 </div>
 
               </div>
@@ -255,15 +255,15 @@
 
               <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag>
 
-                <div class="d-flex justify-content-center" *ngIf="item.images">
+                <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
                   </a>
                 </div>
 
-                <div class="d-flex justify-content-center" *ngIf="item.image">
+                <div class="d-flex justify-content-center" *ngIf="item.images.length === 0">
                   <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.image" (error)="errorImage($event);" alt="">
+                    <img [src]="item.product.image" (error)="errorImage($event);" alt="">
                   </a>
                 </div>
 
@@ -332,17 +332,17 @@
                   <i class="bx bx-trash-alt"></i>
                 </div>
 
-                <div class="d-flex justify-content-center" *ngIf="item.images">
+                <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
                   </a>
                 </div>
 
-                <!-- <div class="d-flex justify-content-center" *ngIf="item.product.image && !item.images">
+                <div class="d-flex justify-content-center" *ngIf="item.images.length === 0">
                   <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.image" (error)="errorImage($event);" alt="">
+                    <img [src]="item.product.image" (error)="errorImage($event);" alt="">
                   </a>
-                </div> -->
+                </div>
 
                 <div> #{{ item.product ? item.product.id : '' }}</div>
 
@@ -407,7 +407,8 @@
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Empacado
   </button>
-  <ng-container *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'  && shippingToUpdate.status != '7'">
+  <ng-container
+    *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'  && shippingToUpdate.status != '7'">
     <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
       Actualizar
     </button>
