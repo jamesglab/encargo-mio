@@ -1,4 +1,4 @@
-export const getInsertCreateOrder = (user: any, products: any, calculations: any, trm: any): any => {
+export const getInsertCreateOrder = (user: any, products: any, calculations: any, trm: any, advance_purchase: boolean): any => {
 
     let order = {
         "user": {
@@ -18,6 +18,7 @@ export const getInsertCreateOrder = (user: any, products: any, calculations: any
             "created_at": trm.created_at,
             "updated_at": trm.updated_at
         },
+        advance_purchase,
         // "home_value": calculations ? parseFloat(calculations.shipping_usd) : 0,
         // "shipping_value": calculations ? calculations.value : 0,
         "shipping_value_admin": calculations,

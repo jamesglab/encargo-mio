@@ -52,6 +52,7 @@ export class CreateOrderComponent implements OnInit {
       image: [null],
       products: this._formBuilder.array([]),
       user: [null],
+      advance_purchase: [false],
       price: [0]
     });
 
@@ -288,13 +289,17 @@ export class CreateOrderComponent implements OnInit {
       this.isLoading = true;
       var formData = new FormData();
       this.files.forEach((file) => { formData.append('images', file) });
+      const { user, products, advance_purchase } = this.createProductForm.getRawValue();
+
       formData.append('payload', JSON.stringify({
         ...getInsertCreateOrder(
-          this.createProductForm.getRawValue().user,
-          this.createProductForm.getRawValue().products,
+          user,
+          products,
           this.totalFormulas,
-          this.trm)
+          this.trm,
+          advance_purchase)
       }));
+
       this.quotationService.createQuotation(formData).subscribe(res => {
         this._notify.show('Transacción Exitosa', res.message, 'success');
         this.isLoading = false;
@@ -306,10 +311,8 @@ export class CreateOrderComponent implements OnInit {
         throw err;
       });
 
-    }
-    else {
+    } else {
       this._notify.show('Datos incompletos', `Revisa que hayas llenado los campos.`, 'info');
-
     }
 
   }
