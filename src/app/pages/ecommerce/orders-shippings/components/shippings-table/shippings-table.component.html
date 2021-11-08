@@ -9,7 +9,6 @@
     <thead class="table-light">
 
       <tr>
-        <th style="width: 20px"></th>
         <th class="align-middle"># de Orden</th>
         <th class="align-middle">Nombre del Cliente</th>
         <th class="align-middle">Dirección</th>
@@ -25,12 +24,6 @@
 
       <tr *ngFor="let data of shippings">
 
-        <td>
-          <div class="form-check font-size-16">
-            <input class="form-check-input" type="checkbox" id="transactionCheck{{ data.index }}" />
-            <label class="form-check-label" for="transactionCheck{{ data.index }}"></label>
-          </div>
-        </td>
 
         <td>
           <a href="javascript: void(0);" class="text-body fw-bold">

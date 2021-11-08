@@ -32,12 +32,18 @@
 
           <div class="row mb-2">
 
-            <div class="col-sm-4">
-
+            <div class="col-sm-12">
+              <div class="text-sm-end">
+                <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+                  <i class="bx bx-trash-alt mr-1"></i>
+                  Eliminar Filtros
+                </button  >
+              </div>
+              
               <!-- <div class="search-box me-2 mb-2 d-inline-block">
                 <div class="position-relative">
                   <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term"
-                    (blur)="searchFilter(status)">
+                    (keyup.enter)="searchFilter(status)">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
               </div> -->
@@ -64,14 +70,14 @@
                   <th>#
                     <div class="mt-2">
                       <input type="" [formControl]="filterId" class="form-control min-width"
-                        (blur)="getTransactions(status)" />
+                        (keyup.enter)="getTransactions(status)" />
                     </div>
                   </th>
                   <th>Orden
 
                     <div class="mt-2">
                       <input type="" [formControl]="filterOrder" class="form-control min-width"
-                        (blur)="getTransactions(status)" />
+                        (keyup.enter)="getTransactions(status)" />
                     </div>
                   </th>
                   <th>Método de Pago
@@ -99,12 +105,12 @@
                   <th>Referencia
                     <div class="mt-2">
                       <input type="" [formControl]="filterReference" class="form-control min-width"
-                        (blur)="getTransactions(status)" />
+                        (keyup.enter)="getTransactions(status)" />
                     </div>
                   </th>
                   <th>Usuario
                     <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
-                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user" (blur)="getTransactions(status)"/>
+                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)"/>
                     <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
                       <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
                         (click)="getTransactions(status)">
@@ -125,7 +131,7 @@
                   <th>Valor
                     <div class="mt-2">
                       <input type="" [formControl]="filterValue" class="form-control min-width"
-                        (blur)="getTransactions(status)" />
+                        (keyup.enter)="getTransactions(status)" />
                     </div>
                   </th>
                   <th>Opciones</th>

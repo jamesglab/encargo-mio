@@ -6,6 +6,7 @@ import { map, startWith } from 'rxjs/operators';
 import { UserService } from 'src/app/_services/users.service';
 import { LockersService } from '../../_services/lockers.service';
 import Swal from "sweetalert2";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-lockers-table',
@@ -95,6 +96,14 @@ export class LockersTableComponent implements OnInit {
     }, err => {
       throw err;
     });
+  }
+
+  formatDate() {
+    if (this.filterDate.value?.year) {
+      return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD')
+    } else {
+      return ''
+    }
   }
 
   initialFilterdsSubscriptions() {

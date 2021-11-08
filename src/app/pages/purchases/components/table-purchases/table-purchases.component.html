@@ -1,25 +1,38 @@
 <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
   <div class="table-responsive mb-0" style="min-height: 500px;">
 
+    
+      <div class="col-sm-12">
+        <div class="text-sm-end">
+          <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+            <i class="bx bx-trash-alt mr-1"></i>
+            Eliminar Filtros
+          </button>
+        </div>
+      </div>
+    
     <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
       No hay datos disponibles...
     </div>
-
-    <table class="table table-centered table-nowrap">
+ 
+    <table class="table table-centered table-nowrap mt-3">
 
       <thead class="table-light">
         <tr>
-
           <th class="align-middle">
             #
             <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="filterCode" (blur)="filterPurchase()" />
+              <input type="text" class="form-control" [formControl]="filterCode" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
           <th class="align-middle">Fecha
             <div class="input-group clockpicker mt-2">
+
+              <input  placeholder="yyyy-mm-dd"  class="form-control"
+              [value]="formatDate()" disabled>
+              
               <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
-                (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate">
+                (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate" style="display: none;">
               <div class="input-group-append" (click)="dl.toggle()">
                 <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
               </div>
@@ -28,19 +41,18 @@
           </th>
           <th class="align-middle">Nombre del Producto
             <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="productName" (blur)="filterPurchase()" />
+              <input type="text" class="form-control" [formControl]="productName" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
           <th class="align-middle">Numero de Compra
             <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="purchaseNumber" (blur)="filterPurchase()" />
+              <input type="text" class="form-control" [formControl]="purchaseNumber" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
           <th class="align-middle">
             Usuario
             <!-- se cambiara por el autocomplete -->
             <div class="mt-2">
-
               <input type="text" id="user_id" class="form-control" autocomplete="off" [formControl]="filterUser"
                 placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
 
@@ -58,7 +70,7 @@
           </th>
           <th class="align-middle">Total de la Compra
             <div class="mt-2">
-              <!-- <input type="text" class="form-control" [formControl]="total_value" (blur)="filterPurchase()" /> -->
+              <!-- <input type="text" class="form-control" [formControl]="total_value" (keyup.enter)="filterPurchase()" /> -->
             </div>
           </th>
           <th class="align-middle">Opciones</th>
