@@ -9,7 +9,7 @@ export const environment = {
   url_api: '',
   microservices: {
     user: "https://dev-api.encargomio.com/api/v1/user/",
-    management: "https://1b61-179-51-120-22.ngrok.io/api/v1/management/",
+    management: "https://dev-api.encargomio.com/api/v1/management/",
     orders: "https://dev-api.encargomio.com/api/v1/orders/",
     scraping: 'https://t8cjnb3q08.execute-api.us-east-1.amazonaws.com/prod/web-scrapping-page'
   },
