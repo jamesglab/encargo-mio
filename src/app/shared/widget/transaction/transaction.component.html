@@ -3,18 +3,17 @@
   <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
     No hay datos disponibles...
   </div>
-
+  
   <table class="table table-centered table-nowrap">
-
+    
     <thead class="table-light">
-
       <tr>
-        <th class="align-middle" style="max-width:3rem;"># de Orden
-          <input type="text" class="form-control mt-2" [formControl]="filterId" (blur)="filterOrders()" />
+        <th class="align-middle"># de Orden
+          <input type="text" class="form-control mt-2" [formControl]="filterId" (keyup.enter)="filterOrders()" />
         </th>
         <th class="align-middle">Nombre del Cliente
           <input type="text" id="user_id" class="form-control mt-2" autocomplete="off" [formControl]="filterUser"
-            placeholder="Selecciona el usuario" [matAutocomplete]="auto_user" (blur)="filterOrders()">
+            placeholder="Selecciona el usuario" [matAutocomplete]="auto_user" (keyup.enter)="filterOrders()">
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
             <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="filterOrders()">
               CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
@@ -23,18 +22,19 @@
         </th>
         <th class="align-middle">Fecha de Creación
           <div class="input-group clockpicker mt-2">
-            <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
-              (ngModelChange)="filterOrders()" #dl="ngbDatepicker" [formControl]="filterDate">
+            <input  placeholder="yyyy-mm-dd"  class="form-control"
+               [value]="formatDate()" disabled>
+            <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd" 
+              (ngModelChange)="filterOrders()" #dl="ngbDatepicker" [formControl]="filterDate" style="display: none;">
             <div class="input-group-append" (click)="dl.toggle()">
               <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
             </div>
           </div>
         </th>
-        <th class="align-middle">Productos
-          <div class="mt-2"></div>
+        <th class="th-align">Productos
         </th>
-        <th class="align-middle">Total</th>
-        <th class="align-middle" *ngIf="status != '4'">Opciones</th>
+        <th class="th-align">Total</th>
+        <th class="th-align" *ngIf="status != '4'">Opciones</th>
       </tr>
 
     </thead>

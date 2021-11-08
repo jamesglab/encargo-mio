@@ -13,12 +13,17 @@
           <div class="row mb-2">
 
             <div class="col-sm-4">
-              
+
             </div>
 
             <div class="col-sm-8">
 
               <div class="text-sm-end">
+
+                <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+                  <i class="bx bx-trash-alt mr-1"></i>
+                  Eliminar Filtros
+                </button>
 
                 <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="openModal(content)">
                   <i class="mdi mdi-plus mr-1"></i>
@@ -78,8 +83,8 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 7}"
-                (click)="status = 7;  getTransactions()">Vencidas {{counts_tabs?.expired}}</a>
+              <a class="nav-link" [ngClass]="{'active': status == 7}" (click)="status = 7;  getTransactions()">Vencidas
+                {{counts_tabs?.expired}}</a>
             </li>
 
           </ul>
@@ -95,7 +100,7 @@
           <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
 
             <app-transaction class="mt-1" [transactions]="transactions | filter:term" [status]="status"
-              (refreshTable)="refreshTableReceive($event);" (filterValues)="getTransactions(null, $event)">
+              (refreshTable)="refreshTableReceive($event);" (filterValues)="getTransactions(null, $event)" *ngIf="showData">
             </app-transaction>
 
             <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
