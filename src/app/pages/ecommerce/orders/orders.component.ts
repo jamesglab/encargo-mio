@@ -23,7 +23,9 @@ export class OrdersComponent implements OnInit {
   public users = [];
   public refreshTable: boolean = false;
   public isLoading: boolean = false;
-
+  public filterValues: any = {};
+  public counts_tabs: any = {};
+  public showData: boolean = false;
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
@@ -33,6 +35,7 @@ export class OrdersComponent implements OnInit {
   ngOnInit() {
     this.getTransactions();
     this.getUsersAdmin();
+    this.countsTabs();
   }
 
   getUsersAdmin() {
@@ -43,7 +46,22 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  async getTransactions(pagination?) {
+  countsTabs() {
+    this._orderService.countsTabs().subscribe(res => {
+      this.counts_tabs = res;
+    })
+  }
+
+  resetFilters() {
+    this.filterValues = {};
+    this.showData = false;
+    this.getTransactions();
+  }
+
+  async getTransactions(pagination?, filterValues?) {
+    if (filterValues) {
+      this.filterValues = filterValues;
+    }
 
     this.isLoading = true;
 
@@ -55,11 +73,13 @@ export class OrdersComponent implements OnInit {
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
       status: this.status,
-      type: 'quotation'
+      type: 'quotation',
+      ...this.filterValues
     }).subscribe((res) => {
       this.transactions = res.orders;
       this.counts = res.count;
       this.isLoading = false;
+      this.showData = true;
     }, err => {
       this.isLoading = false;
       throw err;

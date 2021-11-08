@@ -7,12 +7,21 @@
     <div class="col-12">
 
       <div class="card">
-
+ 
         <div class="card-body">
 
           <div class="row mb-2">
+            <div class="text-sm-end">
+              <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+                <i class="bx bx-trash-alt mr-1"></i>
+                Eliminar Filtros
+              </button  >
+              <button type="button" class="btn btn-info btn-rounded mb-2 me-2" (click)="openModal(modal_locker_entry)">
+                <i class="mdi mdi-plus mr-1"></i>
+                Ingreso a Casillero
+              </button>
 
-            <div class="col-sm-4">
+
               <!-- 
                             <div class="search-box me-2 mb-2 d-inline-block">
                                 <div class="position-relative">
@@ -48,7 +57,7 @@
 
           <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
 
-            <app-lockers-table class="mt-1">
+            <app-lockers-table class="mt-1" *ngIf="showData">
             </app-lockers-table>
 
             <!-- <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getAllLockers($event);">
@@ -65,3 +74,7 @@
   </div>
 
 </div>
+
+<ng-template #modal_locker_entry role="document" let-modal>
+  <app-modal-locker-entry ></app-modal-locker-entry>
+</ng-template>

@@ -93,7 +93,15 @@ export const MENU: MenuItem[] = [
                 link: '/lockers/locker',
                 code : 'CAS000',
                 showItem: false
-            }
+            },
+            {
+                id: 3,
+                label: 'Productos de usuario',
+                parentId: 1,
+                link: '/lockers/user-products',
+                code : 'CAS000',
+                showItem: false
+            },
         ]
     }
 ];

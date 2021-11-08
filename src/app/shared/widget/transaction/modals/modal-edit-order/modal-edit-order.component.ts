@@ -45,8 +45,15 @@ export class ModalEditOrderComponent implements OnInit {
     this._orders.detailOrder({ id: this.orderSelected.id })
       .subscribe((res: any) => {
         if (res) {
+
+          if (res.products.length == 0) {
+            Swal.fire('No existen productos', '', 'info');
+            this.modalService.dismissAll();
+            return
+          }
           this.orderSelected.trm = res.trm;
           this.orderSelected.products = res.products;
+
           this.orderSelected.products.map((products: any, index: number) => {
             products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.
@@ -60,7 +67,7 @@ export class ModalEditOrderComponent implements OnInit {
       }, err => {
         this.isLoadingQuery = false;
         this._notify.show('Intenta mas tarde', 'No pudimos consultar la order', 'error');
-        this.modalService.dismissAll()
+        this.modalService.dismissAll();
         throw err;
       });
     if (this.status == 2 || this.status == 3) {
@@ -112,13 +119,13 @@ export class ModalEditOrderComponent implements OnInit {
   calculateTax(position?: number) {
     if (this.status == 0 || this.status == 1 || this.status == 7) {
       if (this.orderSelected.products[position].free_shipping) { // Si el free_shipping es true
-        
+
         this.orderSelected.products[position].tax = 0; // Volvemos el tax 0
       } else { // Si no calculamos el tax normalmente
         if (!this.orderSelected.products[position].tax_manually) { // Validar si el tax se calcula manual o automatico
-          
+
           if (this.orderSelected.products[position].selected_tax == "1" || this.orderSelected.products[position].selected_tax == null) {
-            
+
             this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity * 0.07;
           } else {
             this.orderSelected.products[position].tax = ((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].shipping_origin_value_product) * 0.07;
@@ -169,6 +176,29 @@ export class ModalEditOrderComponent implements OnInit {
     this.getFormula(i);
   }
 
+  deleteProduct(i: number): void {
+    Swal.fire({
+      title: '¿Estás seguro que deseas borrar el producto ' + this.orderSelected.products[i].name + '?',
+      showDenyButton: true,
+      confirmButtonText: 'Eliminar',
+      denyButtonText: `Cancelar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._orders.deleteProduct(this.orderSelected.products[i].id)
+          .subscribe((res: any) => {
+            if (res) {
+              this.orderSelected.products.splice(i, 1);
+              this._notify.show('', res.message ? res.message : 'Has eliminado el producto correctamente.', 'success');
+              this.calculateValuesInit();
+            }
+          }, err => {
+            this._notify.show('', err.error ? err.error.message : 'Hemos tenido un error al intentar eliminar tu producto.', 'warning');
+            throw err;
+          });
+      }
+    });
+  }
+
   numberOnly(event): boolean {  // Función para que sólo se permitan números en un input
     return numberOnly(event);
   }
@@ -187,12 +217,12 @@ export class ModalEditOrderComponent implements OnInit {
   sendQuotation() {
     // VALIDAMOS LOS CAMPOS QUE SON REQUERIDOS EN EL INPUT
     if (validateErrors(this.orderSelected.products, ['name', 'weight', 'product_value'])) {
-      Swal.fire('Error', 'Campos requeridos incompletos', 'warning')
+      Swal.fire('Error', 'Campos requeridos incompletos', 'warning');
       return
     }
     this.isLoading = true;
     this._orders.updateOrder(this.orderSelected)
-      .subscribe(res => {
+      .subscribe((res: any) => {
         this._notify.show("Cotización Actualizada", `Actualizaste la cotización # ${this.orderSelected.id}`, "success");
         this.isLoading = false;
         this.refreshTable.emit(true);

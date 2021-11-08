@@ -5,6 +5,8 @@ import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
 import { UserService } from 'src/app/_services/users.service';
 import { LockersService } from '../../_services/lockers.service';
+import Swal from "sweetalert2";
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-lockers-table',
@@ -26,12 +28,13 @@ export class LockersTableComponent implements OnInit {
   public filterGuide = new FormControl('');
   public filterProduct = new FormControl('');
   public filterStatus = new FormControl('');
-  public filterIdProduct  = new FormControl('');
+  public filterIdProduct = new FormControl('');
+  public filterDate = new FormControl('');
 
 
   //SUBSCRIPCIONES PARA LOS AUTOCOMPLETS 
   public filteredUsers: Observable<string[]>;
-  counts: any;
+  public counts: any;
 
   //SERVICIOS Y DEMAS IMPORTACIONES
   constructor(
@@ -76,15 +79,31 @@ export class LockersTableComponent implements OnInit {
     if (this.filterIdProduct.value != null && this.filterIdProduct.value != '' && this.filterIdProduct.value != 'all') {
       options['product'] = this.filterIdProduct.value
     }
+
+    if (this.filterDate.value && this.filterDate.value.year != '') {
+      options['receipt_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
+    }
+
     return options
   }
+
   // CONSULTAMOS LOS USUARIOS PARA VISUALIZAR LOS CASILLEROS QUE TIENEN
   getUsers() {
     this.usersService.getUsersAdmin().subscribe(res => {
       this.users = res;
       //INICIALIZAMOS LA SUBSCRIPCION DE LOS FILTROS
       this.initialFilterdsSubscriptions();
+    }, err => {
+      throw err;
     });
+  }
+
+  formatDate() {
+    if (this.filterDate.value?.year) {
+      return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD')
+    } else {
+      return ''
+    }
   }
 
   initialFilterdsSubscriptions() {
@@ -138,6 +157,32 @@ export class LockersTableComponent implements OnInit {
     } else {
       // RETORNAMOS EL VALOR FORMATEADO PARA FILTRAR CUANDO NO VAMOS A CONSULTAR UN OBJETO
       return value.toLowerCase().replace(/\s/g, '');
+    }
+  }
+
+  deleteProduct(product: any): void {
+    if (product) {
+      Swal.fire({
+        title: '¿Estás seguro que deseas borrar el producto ' + product.product_name + '?',
+        showDenyButton: true,
+        confirmButtonText: 'Eliminar',
+        denyButtonText: `Cancelar`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.usersService.deleteProductOnLocker(product.product)
+            .subscribe((res: any) => {
+              if (res) {
+                Swal.fire('', 'El producto se ha eliminado el producto.', 'success');
+                this.getAllLockers();
+              }
+            }, err => {
+              Swal.fire('', 'Ha ocurrido un error al intentar borrar el producto.', 'warning');
+              throw err;
+            });
+        }
+      });
+    } else {
+      Swal.fire('', 'No has seleccionado un producto para borrar.', 'warning');
     }
   }
 

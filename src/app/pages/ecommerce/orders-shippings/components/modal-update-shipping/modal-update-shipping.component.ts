@@ -92,14 +92,14 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   buildForm(shipping: any): void {
-    console.log(shipping);
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
     shipping.address.first_name = shipping.address.name;
     delete shipping.address.name;
-
+    console.log("SHIPPING: ", shipping);
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
       trm: [this.trm],
+      total_weight:[{value : this.shippingToUpdate.total_weight,disabled : true}],
       guide_number: [shipping.guide_number, Validators.required],
       conveyor: [this.conveyors.find((item) => item.id == shipping.conveyor), [Validators.required]],
       // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
@@ -108,12 +108,12 @@ export class ModalUpdateShippingComponent implements OnInit {
       user: [shipping.user, Validators.required,],
       address: [shipping.address ? shipping.address : null, [Validators.required]],
       observations: [shipping.observations],
-      products: [null, Validators.required]
+      products: [shipping.products ? shipping.products : null, Validators.required]
     });
 
     this.updateShippingForm.controls.shipping_type.disable();
     this.updateShippingForm.controls.total_value.disable();
-
+    console.log(this.updateShippingForm.getRawValue());
     this.filteredConveyors = this.updateShippingForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
     this.filteredAddress = this.updateShippingForm.controls.address.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'address')));
     this.filteredUsers = this.updateShippingForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
@@ -144,9 +144,7 @@ export class ModalUpdateShippingComponent implements OnInit {
       shipping_id: this.updateShippingForm.controls.id.value
     }).subscribe((locker: any) => {
       this.inLocker = locker.in_locker;
-      console.log("IN LOCKER", this.inLocker);
       this.outLocker = locker.in_shipping;
-      console.log("OUT LOCKER", this.outLocker);
       this.updateShippingForm.controls.products.setValue(this.outLocker);
     }, err => {
       throw err;
@@ -233,7 +231,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   displayFnUserName(name: any) {
     if (name) {
-      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name : '';
+      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name  + ' ' + name.last_name : '';
     }
   }
 

@@ -49,13 +49,13 @@ export class ModalCreateShippingComponent implements OnInit {
       trm: [this.trm],
       guide_number: [null],
       conveyor: [null],
-      delivery_date: [null, Validators.required],
-      total_value: [0, [Validators.required]],
-      shipping_type: [null, Validators.required],
-      user: [null, Validators.required],
-      address: [null, Validators.required],
+      delivery_date: [null],
+      total_value: [0, [Validators.required, Validators.min(1)]],
+      shipping_type: [null, [Validators.required]],
+      user: [null, [Validators.required]],
+      address: [null, [Validators.required]],
       observations: [null],
-      products: [null, Validators.required],
+      products: [null, [Validators.required]],
     });
     this.filteredUsers = this.createShippingForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
     this.filteredAddress = this.createShippingForm.controls.address.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'address')));
@@ -82,7 +82,6 @@ export class ModalCreateShippingComponent implements OnInit {
     await this._orderService.getProductsByLocker({ locker: this.createShippingForm.get('user').value.locker_id, status: 0 })
       .subscribe((res: any) => {
         this.products = res;
-        console.log(this.products)
         this.createShippingForm.controls.products.enable();
       }, err => {
         this.createShippingForm.controls.products.enable();
@@ -109,11 +108,17 @@ export class ModalCreateShippingComponent implements OnInit {
 
   createShipping() {
     if (this.createShippingForm.valid) {
+
       this.isLoading = true;
-      const delivery_date = new Date(
-        this.createShippingForm.value.delivery_date.year,
-        this.createShippingForm.value.delivery_date.month - 1,
-        this.createShippingForm.value.delivery_date.day);
+      let delivery_date = null;
+      if (this.createShippingForm.value.delivery_date) {
+        delivery_date = new Date(
+          this.createShippingForm.value.delivery_date.year,
+          this.createShippingForm.value.delivery_date.month - 1,
+          this.createShippingForm.value.delivery_date.day
+        );
+      }
+
       this._orderService.createShipping({
         ...this.createShippingForm.getRawValue(),
         delivery_date
@@ -147,7 +152,6 @@ export class ModalCreateShippingComponent implements OnInit {
         if (array === 'users') {
           return value.full_name.toLowerCase().replace(/\s/g, '');
         } else if (array === 'address') {
-          console.log("value: ", value);
           return value.address.toLowerCase().replace(/\s/g, '');
         }
       } else {

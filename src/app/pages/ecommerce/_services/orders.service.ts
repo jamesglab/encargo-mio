@@ -267,9 +267,9 @@ export class OrderService {
       );
   }
 
-  getOrderPurchase() {
+  getOrderPurchase(params) {
     return this.http.get<any>(
-      `${environment.microservices.management}order-purchase`, { headers: header }).pipe(
+      `${environment.microservices.management}order-purchase`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
@@ -356,6 +356,52 @@ export class OrderService {
       }),
       catchError(handleError)
     )
+  }
+
+  deleteProduct(product: string): Observable<any> {
+    return this.http.delete<any>(
+      `${environment.microservices.management}orders/delete-product`,
+      { headers: header, params: { product } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  countsTabs() {
+    return this.http.get<any>(
+      `${environment.microservices.management}orders/count-tabs`,
+      { headers: header }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  countsTabsShipping() {
+    return this.http.get<any>(
+      `${environment.microservices.management}shipping-order/count-tabs`,
+      { headers: header }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
+  shippingOrderIsDelivered(id) {
+    return this.http.put<any>(
+      `${environment.microservices.management}shipping-order/is-delivered`, {}, { params: { id } }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
 }

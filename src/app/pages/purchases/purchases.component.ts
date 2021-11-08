@@ -10,6 +10,8 @@ import { OrderService } from '../ecommerce/_services/orders.service';
 export class PurchasesComponent implements OnInit {
   public purchases;
   public purchaseSelected;
+  public count;
+  public filterValues: any = {};
   constructor(
     private _orderService: OrderService,
     private modalService: NgbModal
@@ -19,10 +21,17 @@ export class PurchasesComponent implements OnInit {
     this.getPurchases();
   }
 
-  getPurchases() {
-
-    this._orderService.getOrderPurchase().subscribe(res => {
-      this.purchases = res;
+  getPurchases(paginator?, filterValues?) {
+    if (filterValues) {
+      this.filterValues = filterValues;
+    }
+    this._orderService.getOrderPurchase({
+      pageSize: paginator ? paginator.pageSize : 10,
+      page: paginator ? paginator.pageIndex + 1 : 1,
+      ...this.filterValues
+    }).subscribe(res => {
+      this.purchases = res.orders_purchase;
+      this.count = res.count;
     })
 
   }

@@ -9,7 +9,6 @@
     <thead class="table-light">
 
       <tr>
-        <th style="width: 20px"></th>
         <th class="align-middle"># de Orden</th>
         <th class="align-middle">Nombre del Cliente</th>
         <th class="align-middle">Dirección</th>
@@ -25,12 +24,6 @@
 
       <tr *ngFor="let data of shippings">
 
-        <td>
-          <div class="form-check font-size-16">
-            <input class="form-check-input" type="checkbox" id="transactionCheck{{ data.index }}" />
-            <label class="form-check-label" for="transactionCheck{{ data.index }}"></label>
-          </div>
-        </td>
 
         <td>
           <a href="javascript: void(0);" class="text-body fw-bold">
@@ -52,10 +45,19 @@
 
         <td>
           <!-- btns options -->
-          <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="getOrderById(data.id)"
-            [disabled]="isLoading">
-            Editar
-          </button>
+
+          <div class="d-flex">
+            
+            <div class="center">
+              <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="getOrderById(data.id)"
+              [disabled]="isLoading">
+              {{(data.status != 7)  ? 'Editar': 'Detalle'}}
+            </button>
+            </div>
+            <div class="delivery" *ngIf="data.status == 3" (click)="sendShippingTracking(data)">
+              <img src="assets/images/delivery.png" alt="">
+          </div>
+          </div>
         </td>
       </tr>
     </tbody>

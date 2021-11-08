@@ -28,7 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NgbDropdownModule,
     ClickOutsideModule,
     UIModule,
-    SimplebarAngularModule
+    SimplebarAngularModule,
   ],
   providers: [LanguageService]
 })

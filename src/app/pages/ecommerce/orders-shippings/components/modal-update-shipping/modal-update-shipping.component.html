@@ -92,7 +92,20 @@
 
           </div>
 
+
+
           <div class="col-12 col-sm-6">
+            <div class="form-group">
+              <label for="total_weight">Peso total:</label>
+              <input type="number" class="form-control" id="total_weight" formControlName="total_weight">
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+
+          <div class="col-12 col-sm-6">
+
 
             <div class="form-group">
 
@@ -110,11 +123,10 @@
 
             </div>
 
+
+
+
           </div>
-
-        </div>
-
-        <div class="row mt-3">
 
           <div class="col-12 col-sm-6">
 
@@ -133,15 +145,19 @@
 
             </div>
 
+
+
           </div>
 
-          <div class="col-12 col-sm-6">
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12">
             <div class="form-group">
               <label for="observations">Observaciones de Compra</label>
               <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
             </div>
           </div>
-
         </div>
 
         <div class="row mt-3 mt-3">
@@ -198,7 +214,7 @@
                   </li>
 
                   <li><strong>Nombre de quien recibe: </strong>
-                    {{ form.address.value.address ? form.address.value.address.name : 'N/A' }}</li>
+                    {{ form.address.value.address ? form.address.value.first_name : 'N/A' }}</li>
 
                   <li>
                     <strong>Teléfono: </strong>
@@ -239,15 +255,15 @@
 
               <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag>
 
-                <div class="d-flex justify-content-center" *ngIf="item.images">
+                <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
                   </a>
                 </div>
 
-                <div class="d-flex justify-content-center" *ngIf="item.image">
+                <div class="d-flex justify-content-center" *ngIf="item.images.length === 0">
                   <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.image" (error)="errorImage($event);" alt="">
+                    <img [src]="item.product.image" (error)="errorImage($event);" alt="">
                   </a>
                 </div>
 
@@ -260,7 +276,7 @@
 
                 <div>
                   <strong># Orden:</strong>
-                  {{ item.product.order_service ? item.product.order_service : 'N/A' }}
+                  {{ item.order_service ? item.order_service : 'N/A' }}
                 </div>
 
                 <div>
@@ -316,17 +332,17 @@
                   <i class="bx bx-trash-alt"></i>
                 </div>
 
-                <div class="d-flex justify-content-center" *ngIf="item.images">
+                <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
                   </a>
                 </div>
 
-                <!-- <div class="d-flex justify-content-center" *ngIf="item.product.image && !item.images">
+                <div class="d-flex justify-content-center" *ngIf="item.images.length === 0">
                   <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.image" (error)="errorImage($event);" alt="">
+                    <img [src]="item.product.image" (error)="errorImage($event);" alt="">
                   </a>
-                </div> -->
+                </div>
 
                 <div> #{{ item.product ? item.product.id : '' }}</div>
 
@@ -337,7 +353,7 @@
 
                 <div>
                   <strong># Orden:</strong>
-                  {{ item.product.order_service ? item.product.order_service : 'N/A' }}
+                  {{ item.order_service ? item.order_service : 'N/A' }}
                 </div>
 
                 <div>
@@ -348,7 +364,7 @@
                   <strong>Descripción</strong>
                   {{ item.product.description }}
                 </div>
-                
+
                 <div>
                   <strong>Guía Origen:</strong>
                   {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
@@ -391,11 +407,10 @@
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Empacado
   </button>
-
-  <ng-container *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'">
+  <ng-container
+    *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'  && shippingToUpdate.status != '7'">
     <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
       Actualizar
     </button>
   </ng-container>
-
 </div>

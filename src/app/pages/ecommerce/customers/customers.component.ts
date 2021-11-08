@@ -64,7 +64,7 @@ export class CustomersComponent implements OnInit {
   }
 
   getTransactions(status?, pagination?) {
-    console.log('filtramos')
+    // console.log('filtramos')
     // if (this.term != '') {
     this.isLoading = true;
     this.status = status;
@@ -87,7 +87,7 @@ export class CustomersComponent implements OnInit {
   }
 
   filterOptions() {
-    console.log('estamos filtrando')
+    // console.log('estamos filtrando')
     const options = {}
     if (this.filterId.value != null && this.filterId.value != '') {
       options['id'] = this.filterId.value
@@ -97,7 +97,7 @@ export class CustomersComponent implements OnInit {
       options['order'] = this.filterOrder.value
     } if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != '') {
       options['payment_method'] = this.filterPaymentMethod.value
-    } if (this.filterDate.value.year && this.filterDate.value != '') {
+    } if (this.filterDate.value?.year && this.filterDate.value != '') {
       options['created_at'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
     } if (this.filterPaymentGateway.value != null && this.filterPaymentGateway.value != '') {
       options['payment_gateway'] = this.filterPaymentGateway.value
@@ -105,13 +105,28 @@ export class CustomersComponent implements OnInit {
       options['reference'] = this.filterReference.value
     } if (this.filterType.value != null && this.filterType.value != '') {
       options['type'] = this.filterType.value
-    } if (this.filterValue != null && this.filterValue.value != '') {
+    } if (this.filterValue.value != null && this.filterValue.value != '') {
       options['value'] = this.filterValue.value
 
     }
     return options;
   }
 
+
+  resetFilters() {
+
+    this.filterId.reset();
+    this.filterUser.reset();
+    this.filterOrder.reset();
+    this.filterPaymentGateway.reset();
+    this.filterPaymentMethod.reset();
+    this.filterDate.reset();
+    this.filterReference.reset();
+    this.filterType.reset();
+    this.filterValue.reset();
+    this.getTransactions(this.status);
+
+  }
   openModalOrderService(content: any, transaction: any) {
     this.transactionSelected = transaction;
     if (transaction.order_service) {
@@ -139,7 +154,7 @@ export class CustomersComponent implements OnInit {
   }
 
   updateTransaction(status: any) {
-    console.log(this.transactionSelected);
+    // console.log(this.transactionSelected);
     this.isLoadingTransaction = true;
     this._transactionService.updateTransaction(this.transactionSelected, status)
       .subscribe(res => {
@@ -167,9 +182,8 @@ export class CustomersComponent implements OnInit {
   }
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
-    // return name ? `${name.name + ' ' + name.last_name}` : '';
-
   }
+
   searchFilter(status?, pagination?) {
     this.isLoading = true;
     this.status = status;
@@ -184,7 +198,7 @@ export class CustomersComponent implements OnInit {
       this.isLoading = false;
     }, err => {
       this.isLoading = false;
-      throw err;
+      throw err; 
     });
   }
 
@@ -214,7 +228,6 @@ export class CustomersComponent implements OnInit {
       return [];
     }
   }
-
 
   // VALIDAREMOS EL CAMPO EN EL OBJETO PARA FILTRAR EL VALOR EN EL ARRAY
   private _normalizeValue(value: any, array: any): string {

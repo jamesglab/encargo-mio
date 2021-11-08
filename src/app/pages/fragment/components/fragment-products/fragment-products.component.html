@@ -121,8 +121,7 @@
                   <div class="col-sm-3 col-12">
                     <div class="form-group">
                       <label for="shipping_value">Valor Envío *</label>
-                      <input type="number" class="form-control" id="shipping_value" formControlName="shipping_value"
-                        readonly>
+                      <input type="number" class="form-control" id="shipping_value" formControlName="shipping_value">
                       <span *ngIf="submit && obtainForm(i).get('shipping_value').errors" class="text-danger small">El
                         valor ingresado no es correcto</span>
                     </div>
