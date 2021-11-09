@@ -122,9 +122,9 @@
                     <div class="mt-2">
                       <select class="form-select mt-2" aria-label="Default select example " [formControl]="filterType"
                         (change)="getTransactions(status)">
-                        <option selected>Seleccione un Estado</option>
-                        <option value="0">Compra</option>
-                        <option value="1">Envio</option>
+                        <option  [value]="null">Todos</option>
+                        <option [value]="'compra'">Compra</option>
+                        <option [value]="'envio'">Envio</option>
                       </select>
                     </div>
                   </th>

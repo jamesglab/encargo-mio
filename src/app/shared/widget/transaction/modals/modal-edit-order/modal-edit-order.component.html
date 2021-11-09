@@ -24,13 +24,16 @@
           TRM cotización:
           {{ (orderSelected ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
         </div>
-        <br>
-        <div class="form-check form-switch text-truncate h5">
 
-          <label for="form-group">Compra anticipada</label>
-          <input class="form-check-input" type="checkbox" disabled checked="{{orderSelected?.advance_purchase}}"
-            id="flexSwitchCheckChecked">
-        </div>
+        <br>
+        <ng-container *ngIf="orderSelected">
+          <div class="form-check form-switch text-truncate h5">
+            <label for="form-group">Compra anticipada</label>
+            <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" disabled 
+            [checked]="orderSelected.advance_purchase">
+          </div>
+        </ng-container>
+
       </div>
 
       <div class="col-5 d-flex justify-content-center align-items-center">

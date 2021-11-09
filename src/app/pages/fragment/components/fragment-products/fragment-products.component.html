@@ -13,8 +13,16 @@
             <div class="row">
 
               <div class="col-4">
-                <img [src]="item.images[0].Location" (error)="errorImage($event);" class="img-cont"
-                  title="{{item.name}}">
+
+                <img *ngIf="item.images && item.images.length > 0" [src]="item.images[0].Location"
+                  (error)="errorImage($event);" class="img-cont" title="{{item.name}}">
+
+                <img *ngIf="!item.images" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
+                  alt="">
+
+                <img *ngIf="item.images && item.images.length === 0" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
+                  alt="">
+
               </div>
 
               <div class="col-8 pt-3">
