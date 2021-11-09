@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 
 export class ModalEditOrderComponent implements OnInit {
 
-  @Input() public orderSelected: any;
+  @Input() public orderSelected: any = null;
   @Input() public status: any;
   @Output() public refreshTable = new EventEmitter<any>();
 
