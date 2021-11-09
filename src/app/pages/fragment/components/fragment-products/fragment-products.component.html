@@ -20,8 +20,8 @@
                 <img *ngIf="!item.images" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
                   alt="">
 
-                <img *ngIf="item.images && item.images.length === 0" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
-                  alt="">
+                <img *ngIf="item.images && item.images.length === 0" class="img-cont" [src]="item.product.image"
+                  (error)="errorImage($event);" alt="">
 
               </div>
 
@@ -91,8 +91,16 @@
                       cdkDrag>
 
                       <div style="text-align: center; align-items: center; width: 100%;">
-                        <img [src]="item.images[0].Location" (error)="errorImage($event);" class="img-cont"
-                          title="{{item.name}}">
+
+                        <img *ngIf="item.images && item.images.length > 0" [src]="item.images[0].Location"
+                          (error)="errorImage($event);" class="img-cont" title="{{item.name}}">
+
+                        <img *ngIf="item.images && item.images.length === 0" [src]="item.product.image"
+                          (error)="errorImage($event);" class="img-cont" alt="">
+
+                        <img *ngIf="!item.images" [src]="item.product.image" class="img-cont"
+                          (error)="errorImage($event);" alt="">
+
                       </div>
 
                     </div>
