@@ -1,7 +1,7 @@
 <div class="modal-header ">
-  <h5 class="modal-title mt-0">Actualizar Compra #{{purchaseSelected.id.replaceAll('=',"")}} | {{
-    (purchaseSelected.product.name.length > 50) ? (purchaseSelected.product.name | slice:0:50 ) + '...' :
-    purchaseSelected.product.name }}</h5>
+  <h5 class="modal-title mt-0">
+    Actualizar Compra #{{purchaseSelected.id}}
+  </h5>
   <button type="button" class="btn-close" aria-hidden="true" (click)="closeModale()"></button>
 </div>
 
