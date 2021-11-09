@@ -103,7 +103,7 @@ export class CustomersComponent implements OnInit {
       options['payment_gateway'] = this.filterPaymentGateway.value
     } if (this.filterReference.value != null && this.filterReference.value != '') {
       options['reference'] = this.filterReference.value
-    } if (this.filterType.value != null && this.filterType.value != '') {
+    } if (this.filterType.value != null && this.filterType.value != '' && this.filterType.value != 'null') {
       options['type'] = this.filterType.value
     } if (this.filterValue.value != null && this.filterValue.value != '') {
       options['value'] = this.filterValue.value
