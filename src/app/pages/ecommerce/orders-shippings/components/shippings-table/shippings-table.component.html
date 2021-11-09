@@ -8,14 +8,77 @@
 
     <thead class="table-light">
 
-      <tr>
-        <th class="align-middle"># de Orden</th>
-        <th class="align-middle">Nombre del Cliente</th>
-        <th class="align-middle">Dirección</th>
-        <th class="align-middle">Tipo de Envío</th>
-        <th class="align-middle">Fecha de solicitud</th>
-        <th class="align-middle">Valor de Envío</th>
+      <tr [formGroup]="shippingsFilters">
+
+        <th class="align-middle">
+          # de Envío
+          <input type="text" class="form-control mt-2" formControlName="shipping"
+            placeholder="Filtra por el número de envío..." title="Filtra por el número de envío..."
+            (keyup.enter)="sendFilter();">
+        </th>
+
+        <th class="align-middle">
+          Fecha de Creación
+          <div class="input-group clockpicker mt-2">
+            <input placeholder="yyyy-mm-dd" class="form-control" [value]="formatDate()" readonly>
+            <input ngbDatepicker class="form-control" id="dateLocker" (ngModelChange)="sendFilter();"
+              placeholder="yyyy-mm-dd" #dl="ngbDatepicker" formControlName="created_at" style="display: none;">
+            <div class="input-group-append" (click)="dl.toggle();">
+              <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+            </div>
+          </div>
+        </th>
+
+        <th class="align-middle">
+
+          Nombre del Cliente
+
+          <input type="text" class="form-control mt-2" formControlName="user" placeholder="Filtrar por cliente..."
+            title="Filtrar por cliente..." autocomplete="off" [matAutocomplete]="auto_user"
+            (keyup.enter)="sendFilter();">
+
+          <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+            <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="sendFilter();">
+              CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+            </mat-option>
+          </mat-autocomplete>
+
+        </th>
+
+        <th class="align-middle">
+
+          Dirección
+
+          <input type="text" class="form-control mt-2" formControlName="address" placeholder="Filtrar por dirección..."
+            title="Filtrar por cliente..." autocomplete="off" [matAutocomplete]="auto_address"
+            (keyup.enter)="sendFilter();">
+
+          <mat-autocomplete #auto_address="matAutocomplete" [displayWith]="displayFnUserName">
+            <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="sendFilter();">
+              CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+            </mat-option>
+          </mat-autocomplete>
+
+        </th>
+
+        <th class="align-middle">
+          Tipo de Envío
+          <select class="form-select" formControlName="shipping_type" title="Filtrar por tipo de envio..."
+            (change)="sendFilter();">
+            <option value="null" selected>Todos</option>
+            <option *ngFor="let item of typesShippings" [value]="item.id">{{ item.name }}</option>
+          </select>
+        </th>
+
+        <th class="align-middle">
+          Valor de Envío
+          <input type="text" class="form-control mt-2" formControlName="shipping_value"
+            placeholder="Filtrar por valor..." title="Filtrar por valor..." (keyup.enter)="sendFilter();"
+            (keypress)="numberOnly($event);">
+        </th>
+
         <th class="align-middle">Opciones</th>
+
       </tr>
 
     </thead>
@@ -24,44 +87,44 @@
 
       <tr *ngFor="let data of shippings">
 
-
         <td>
           <a href="javascript: void(0);" class="text-body fw-bold">
-            {{ data.id }} <ng-container *ngIf="data && data.parent_id">- F{{ data.parent_id }}</ng-container>
+            {{ data.id }}
+            <ng-container *ngIf="data && data.parent_id">
+              - F{{ data.parent_id }}
+            </ng-container>
           </a>
         </td>
 
-        <td>{{ (data.user?.name ? data.user?.name: "") + ' ' + (data.user?.last_name ? data.user?.last_name: "") }}</td>
-
-        <td>
-          {{ data.address.address ? data.address.address :'' }}
-        </td>
-
+        <td>{{ data.created_at ? ( data.created_at | date: 'medium' ) : '' }}</td>
+        <td>{{ data.full_name ? data.full_name : '' }}</td>
+        <td>{{ data.address_code ? data.address_code :'-' }}</td>
         <td>{{ data.shipping_type ? data.shipping_type : "-" }}</td>
-        <td>{{ data.delivery_date ? (data.delivery_date | date ) : "" }}</td>
-
-
         <td>{{ data.total_value ? data.total_value : "" }}</td>
 
         <td>
-          <!-- btns options -->
 
           <div class="d-flex">
-            
+
             <div class="center">
               <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="getOrderById(data.id)"
-              [disabled]="isLoading">
-              {{(data.status != 7)  ? 'Editar': 'Detalle'}}
-            </button>
+                [disabled]="isLoading">
+                {{ (data.status != 7) ? 'Editar': 'Detalle' }}
+              </button>
             </div>
-            <div class="delivery" *ngIf="data.status == 3" (click)="sendShippingTracking(data)">
-              <img src="assets/images/delivery.png" alt="">
+
+            <div class="delivery" *ngIf="data.status == 3" (click)="sendShippingTracking(data);">
+              <img src="assets/images/delivery.png" alt="" draggable="false">
+            </div>
+
           </div>
-          </div>
+
         </td>
+
       </tr>
+
     </tbody>
 
   </table>
+
 </div>
-<!-- end table -->

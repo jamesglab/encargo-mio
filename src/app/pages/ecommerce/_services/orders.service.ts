@@ -203,7 +203,7 @@ export class OrderService {
       );
   }
 
-  getAllShippings(params) {
+  getAllShippings(params: any) {
     return this.http.get<any>(
       `${environment.microservices.management}shipping-order`, { headers: header, params }).pipe(
         map((res: any) => {

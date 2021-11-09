@@ -38,9 +38,12 @@ export class OrdersShippingsComponent implements OnInit {
   }
 
   getCountsTabs() {
-    this._orderService.countsTabsShipping().subscribe(res => {
-      this.counts = res;
-    })
+    this._orderService.countsTabsShipping()
+      .subscribe((res: any) => {
+        this.counts = res;
+      }, err => {
+        throw err;
+      });
   }
 
   getUsersAdmin() {
@@ -52,9 +55,12 @@ export class OrdersShippingsComponent implements OnInit {
   }
 
   getTRM() {
-    this._orderService.getTRM().subscribe(res => {
-      this.trm = res;
-    });
+    this._orderService.getTRM()
+      .subscribe((res: any) => {
+        this.trm = res;
+      }, err => {
+        throw err;
+      });
   }
 
   getTransactions(pagination?) {
@@ -63,8 +69,7 @@ export class OrdersShippingsComponent implements OnInit {
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
       status: this.status ? this.status : '0',
-    }).subscribe((res) => {
-      this.shippings = res.shipping_orders;
+    }).subscribe((res: any) => {
       this.shippings = res.shipping_orders;
       this.count = res.count;
       this.isLoading = false;
