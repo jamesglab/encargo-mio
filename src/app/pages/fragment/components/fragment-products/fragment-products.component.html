@@ -17,7 +17,7 @@
                 <img *ngIf="item.images && item.images.length > 0" [src]="item.images[0].Location"
                   (error)="errorImage($event);" class="img-cont" title="{{item.name}}">
 
-                <img *ngIf="!item.image" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
+                <img *ngIf="!item.images" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
                   alt="">
 
                 <img *ngIf="item.images && item.images.length === 0" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
