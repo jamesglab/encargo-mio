@@ -39,17 +39,21 @@ export class OrdersComponent implements OnInit {
   }
 
   getUsersAdmin() {
-    this._userService.getUsersAdmin().subscribe(users => {
-      this.users = users;
-    }, err => {
-      throw err;
-    });
+    this._userService.getUsersAdmin()
+      .subscribe((users: any) => {
+        this.users = users;
+      }, err => {
+        throw err;
+      });
   }
 
   countsTabs() {
-    this._orderService.countsTabs().subscribe(res => {
-      this.counts_tabs = res;
-    })
+    this._orderService.countsTabs()
+      .subscribe((res: any) => {
+        this.counts_tabs = res;
+      }, err => {
+        throw err;
+      })
   }
 
   resetFilters() {

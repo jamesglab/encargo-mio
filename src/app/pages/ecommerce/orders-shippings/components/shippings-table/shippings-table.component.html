@@ -4,18 +4,6 @@
     No hay datos disponibles...
   </div>
 
-
-  <div class="col-sm-12">
-
-    <div class="text-sm-end">
-      <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters();">
-        <i class="bx bx-trash-alt mr-1"></i>
-        Eliminar Filtros
-      </button>
-    </div>
-
-  </div>
-
   <table class="table table-centered table-nowrap">
 
     <thead class="table-light">
@@ -26,6 +14,13 @@
           # de Envío
           <input type="text" class="form-control mt-2" formControlName="shipping"
             placeholder="Filtra por el número de envío..." title="Filtra por el número de envío..."
+            (keyup.enter)="sendFilter();">
+        </th>
+
+        <th class="th-align">
+          Guía
+          <input type="text" class="form-control mt-2" formControlName="guide_number"
+            placeholder="Filtra por el número de envío..." title="Filtra por el número de guía..."
             (keyup.enter)="sendFilter();">
         </th>
 
@@ -58,20 +53,8 @@
 
         </th>
 
-        <th class="align-middle">
-
+        <th class="th-align">
           Dirección
-
-          <input type="text" class="form-control mt-2" formControlName="address" placeholder="Filtrar por dirección..."
-            title="Filtrar por cliente..." autocomplete="off" [matAutocomplete]="auto_address"
-            (keyup.enter)="sendFilter();">
-
-          <mat-autocomplete #auto_address="matAutocomplete" [displayWith]="displayFnUserName">
-            <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="sendFilter();">
-              CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
-            </mat-option>
-          </mat-autocomplete>
-
         </th>
 
         <th class="align-middle">
@@ -90,7 +73,7 @@
             (keypress)="numberOnly($event);">
         </th>
 
-        <th class="align-middle">Opciones</th>
+        <th class="th-align">Opciones</th>
 
       </tr>
 
@@ -109,6 +92,7 @@
           </a>
         </td>
 
+        <td>{{ data.guide_number_alph ? data.guide_number : '-' }}</td>
         <td>{{ data.created_at ? ( data.created_at | date: 'medium' ) : '' }}</td>
         <td>{{ data.full_name ? data.full_name : '' }}</td>
         <td>{{ data.address_code ? data.address_code :'-' }}</td>
