@@ -4,6 +4,18 @@
     No hay datos disponibles...
   </div>
 
+
+  <div class="col-sm-12">
+
+    <div class="text-sm-end">
+      <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters();">
+        <i class="bx bx-trash-alt mr-1"></i>
+        Eliminar Filtros
+      </button>
+    </div>
+
+  </div>
+
   <table class="table table-centered table-nowrap">
 
     <thead class="table-light">
@@ -38,7 +50,8 @@
             (keyup.enter)="sendFilter();">
 
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
-            <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="sendFilter();">
+            <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+              title="CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}" (click)="sendFilter();">
               CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
             </mat-option>
           </mat-autocomplete>

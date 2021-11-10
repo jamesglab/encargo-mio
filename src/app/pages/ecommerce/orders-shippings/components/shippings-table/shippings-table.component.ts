@@ -16,16 +16,17 @@ import { map, startWith } from 'rxjs/operators';
 export class ShippingsTableComponent implements OnInit {
 
   @Input() public shippings: any = [];
+  @Input() public users: any = [];
   @Input() public status: number;
 
   @Output() public shippingSelected = new EventEmitter<any>();
   @Output() public shippingTracking = new EventEmitter<any>();
   @Output() public shipping = new EventEmitter<any>();
+  @Output() public filterData = new EventEmitter<any>();
 
   public isLoading: boolean = false;
 
   public typesShippings: any = [];
-  public users: any = [];
   public address: any = [];
 
   public shippingsFilters: FormGroup;
@@ -59,14 +60,9 @@ export class ShippingsTableComponent implements OnInit {
     this._orderService.getShippingTypes()
       .subscribe((res: any) => {
         this.typesShippings = res;
-        console.log(this.typesShippings);
       }, err => {
         throw err;
       });
-  }
-
-  ngOnChanges() {
-    console.log(this.shippings);
   }
 
   getOrderById(id: any) {
@@ -128,33 +124,30 @@ export class ShippingsTableComponent implements OnInit {
   }
 
   sendFilter(): void {
-    console.log("TESTTTTTTT SEND", this.shippingsFilters.getRawValue());
-    this._orderService.getAllShippings({ ...this.filterValidation() })
-      .subscribe((res: any) => {
-        this.shippings = [];
-        this.shippings = res.shipping_orders;
-      }, err => {
-        throw err;
-      });
+    this.filterData.emit(this.filterValidation());
+  }
+
+  resetFilters(): void {
+    this.shippingsFilters.reset();
+    this.filterValidation();
+    // this.filterData.emit(this.filterValidation());
   }
 
   filterValidation() {
-    let filterValues: any = { status: this.status, page: 1, pageSize: 9 };
-    console.log(this.form);
-    if (this.form.shipping.value != '' && this.form.shipping.value != null) {
+    let filterValues: any = { };
+    if (this.form.shipping.value) {
       filterValues['shipping'] = this.form.shipping.value;
     } if (this.form.created_at.value && this.form.created_at.value.year) {
       filterValues['created_at'] = this.formatDate();
-    } if (this.form.user.value != null && this.form.user.value != '') {
+    } if (this.form.user.value) {
       filterValues['user'] = this.form.user.value.id;
-    } else if (this.form.address.value != '' && this.form.address.value != null) {
+    } else if (this.form.address.value) {
       filterValues['address'] = this.form.address.value.id;
-    } else if (this.form.shipping_type.value != '' && this.form.shipping_type.value != null) {
+    } else if (this.form.shipping_type.value && this.form.shipping_type.value != 'null') {
       filterValues['shipping_type'] = this.form.shipping_type.value;
-    } else if (this.form.shipping_value.value > 0 && this.form.shipping_type.value != null) {
+    } else if (this.form.shipping_value.value > 0) {
       filterValues['shipping_value'] = this.form.shipping_value.value;
     }
-    console.log("FILTER:,", filterValues)
     return filterValues;
   }
 

@@ -89,9 +89,10 @@
 
           <hr>
 
-          <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term" [status]="status"
+          <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term" [users]="users" [status]="status"
             (shippingSelected)="shippingToUpdate = $event; openModal(updateShipping,'xl')"
-            (shippingTracking)="shippingTracking = $event; openModal(shipment_tracking,'xl')">
+            (shippingTracking)="shippingTracking = $event; openModal(shipment_tracking,'xl')"
+            (filterData)="shippingFilterReceive($event);">
           </app-shippings-table>
 
           <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions($event)">

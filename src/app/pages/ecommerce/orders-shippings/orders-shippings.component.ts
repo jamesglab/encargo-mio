@@ -24,6 +24,8 @@ export class OrdersShippingsComponent implements OnInit {
   public isLoading: boolean = false;
   public shippingTracking: any;
 
+  public filteredData: any = {};
+
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
@@ -47,11 +49,12 @@ export class OrdersShippingsComponent implements OnInit {
   }
 
   getUsersAdmin() {
-    this._userService.getUsersAdmin().subscribe((users: any) => {
-      this.users = users;
-    }, err => {
-      throw err;
-    });
+    this._userService.getUsersAdmin()
+      .subscribe((users: any) => {
+        this.users = users;
+      }, err => {
+        throw err;
+      });
   }
 
   getTRM() {
@@ -69,6 +72,7 @@ export class OrdersShippingsComponent implements OnInit {
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
       status: this.status ? this.status : '0',
+      ...this.filteredData
     }).subscribe((res: any) => {
       this.shippings = res.shipping_orders;
       this.count = res.count;
@@ -77,6 +81,11 @@ export class OrdersShippingsComponent implements OnInit {
       this.isLoading = false;
       throw err;
     });
+  }
+
+  shippingFilterReceive(event: any) {
+    this.filteredData = event;
+    this.getTransactions();
   }
 
   openModal(modal: any, sizeModale: string) {
