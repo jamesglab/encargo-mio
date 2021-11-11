@@ -136,18 +136,18 @@ export class ShippingsTableComponent implements OnInit {
   }
 
   filterValidation() {
-    let filterValues: any = {};
+    const filterValues: any = {};
     if (this.form.shipping.value) {
       filterValues['shipping'] = this.form.shipping.value;
     } if (this.form.created_at.value && this.form.created_at.value.year) {
       filterValues['created_at'] = this.formatDate();
     } if (this.form.user.value) {
       filterValues['user'] = this.form.user.value.id;
-    } else if (this.form.guide_number.value) {
+    } if (this.form.guide_number.value) {
       filterValues['guide_number'] = this.form.guide_number.value;
-    } else if (this.form.shipping_type.value && this.form.shipping_type.value != 'null') {
+    } if (this.form.shipping_type.value && this.form.shipping_type.value != 'null' && this.form.shipping_type.value != null) {
       filterValues['shipping_type'] = this.form.shipping_type.value;
-    } else if (this.form.shipping_value.value > 0) {
+    } if (this.form.shipping_value.value > 0) {
       filterValues['shipping_value'] = this.form.shipping_value.value;
     }
     return filterValues;
