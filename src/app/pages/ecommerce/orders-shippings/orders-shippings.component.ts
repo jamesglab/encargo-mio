@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/_services/users.service';
 import { OrderService } from '../_services/orders.service';
@@ -12,22 +12,29 @@ import { OrderService } from '../_services/orders.service';
 export class OrdersShippingsComponent implements OnInit {
 
   public term: any;
-  public page = 1;
-  public itemPerPage = 5;
-  public shippings;
-  public counts: any = {};
+  public shippings: any;
+  public shippingToUpdate: any;
+  public shippingTracking: any;
+  public trm: any;
+
+  public itemPerPage: number = 5;
   public status: number = 0;
   public count: number = 0;
-  public trm: any;
-  public users = [];
-  public shippingToUpdate;
+  public page: number = 1;
+
   public isLoading: boolean = false;
-  public shippingTracking: any;
+  public resetAllFilters: boolean = false;
+
+  public filteredData: any = {};
+  public counts: any = {};
+
+  public users: any = [];
 
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    public _cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -38,40 +45,66 @@ export class OrdersShippingsComponent implements OnInit {
   }
 
   getCountsTabs() {
-    this._orderService.countsTabsShipping().subscribe(res => {
-      this.counts = res;
-    })
+    this._orderService.countsTabsShipping()
+      .subscribe((res: any) => {
+        this.counts = res;
+      }, err => {
+        throw err;
+      });
   }
 
   getUsersAdmin() {
-    this._userService.getUsersAdmin().subscribe((users: any) => {
-      this.users = users;
-    }, err => {
-      throw err;
-    });
+    this._userService.getUsersAdmin()
+      .subscribe((users: any) => {
+        this.users = users;
+      }, err => {
+        throw err;
+      });
   }
 
   getTRM() {
-    this._orderService.getTRM().subscribe(res => {
-      this.trm = res;
-    });
+    this._orderService.getTRM()
+      .subscribe((res: any) => {
+        this.trm = res;
+      }, err => {
+        throw err;
+      });
   }
 
-  getTransactions(pagination?) {
+  getTransactions(pagination?: any) {
     this.isLoading = true;
     this._orderService.getAllShippings({
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
       status: this.status ? this.status : '0',
-    }).subscribe((res) => {
-      this.shippings = res.shipping_orders;
+      ...this.filteredData
+    }).subscribe((res: any) => {
       this.shippings = res.shipping_orders;
       this.count = res.count;
       this.isLoading = false;
+      this._cdr.detectChanges();
     }, err => {
       this.isLoading = false;
       throw err;
     });
+  }
+
+  shippingFilterReceive(event: any) {
+    if (event.reset) {
+      this.filteredData = {};
+    } else {
+      this.filteredData = event.data;
+    }
+    this.getTransactions();
+  }
+
+  resetFilters() {
+    this.resetAllFilters = true;
+    this._cdr.detectChanges();
+  }
+
+  defaultResetValuesReceive(event: boolean) {
+    this.resetAllFilters = event;
   }
 
   openModal(modal: any, sizeModale: string) {

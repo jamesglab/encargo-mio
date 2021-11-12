@@ -1,26 +1,46 @@
 <div class="container-fluid">
+
   <app-page-title title="Envios"></app-page-title>
 
   <div class="row">
+
     <div class="col-12">
+
       <div class="card">
+
         <div class="card-body">
+
           <div class="row mb-2">
+
             <div class="col-sm-4">
+
               <div class="search-box me-2 mb-2 d-inline-block" style="width:100%">
                 <div class="position-relative">
                   <input type="text" class="form-control" placeholder="Busca por producto o guia..." [(ngModel)]="term">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
               </div>
+
             </div>
+
             <div class="col-sm-8">
+
               <div class="text-sm-end">
+
+                <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters();">
+                  <i class="bx bx-trash-alt mr-1"></i>
+                  Eliminar Filtros
+                </button>
+
                 <button type="button" class="btn btn-success btn-rounded mb-2 me-2"
                   (click)="openModal(createShipping,'xl')" [disabled]="!trm"><i class="mdi mdi-plus mr-1"></i>
-                  Crear un Envío</button>
-              </div><!-- end col-->
-            </div><!-- end col-->
+                  Crear un Envío
+                </button>
+
+              </div>
+
+            </div>
+
           </div>
           <!-- 0 Consolidación (Viene de ordenes de compra)
           1 Por empacar (En espera de que el administrador realice el envío) (INCLUIR BOTON DE EMPACADO)
@@ -89,9 +109,11 @@
 
           <hr>
 
-          <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term"
-            (shippingSelected)="shippingToUpdate=$event ;openModal(updateShipping,'xl')"
-            (shippingTracking)="shippingTracking = $event;openModal(shipment_tracking,'xl')">
+          <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term" [users]="users" [status]="status"
+            (shippingSelected)="shippingToUpdate = $event; openModal(updateShipping,'xl')"
+            (shippingTracking)="shippingTracking = $event; openModal(shipment_tracking,'xl')"
+            (filterData)="shippingFilterReceive($event);" (defaultResetValues)="defaultResetValuesReceive($event);"
+            [resetAllFilters]="resetAllFilters">
           </app-shippings-table>
 
           <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
