@@ -19,11 +19,13 @@ export class ModalEditOrderComponent implements OnInit {
 
   public subTotalPrice: number = 0;
   public totalPrice: number = 0;
+
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
   public disabledInputs: boolean = false;
   public disabledAllInputs: boolean = false;
   public isLoadingQuery: boolean = false;
+
   public productSelected: any;
 
   constructor(
@@ -45,15 +47,13 @@ export class ModalEditOrderComponent implements OnInit {
     this._orders.detailOrder({ id: this.orderSelected.id })
       .subscribe((res: any) => {
         if (res) {
-
           if (res.products.length == 0) {
-            Swal.fire('No existen productos', '', 'info');
+            Swal.fire('No existen productos.', '', 'info');
             this.modalService.dismissAll();
-            return
+            return;
           }
           this.orderSelected.trm = res.trm;
           this.orderSelected.products = res.products;
-
           this.orderSelected.products.map((products: any, index: number) => {
             products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.
@@ -66,7 +66,7 @@ export class ModalEditOrderComponent implements OnInit {
         this.isLoadingQuery = false;
       }, err => {
         this.isLoadingQuery = false;
-        this._notify.show('Intenta mas tarde', 'No pudimos consultar la order', 'error');
+        this._notify.show('', 'No pudimos consultar la orden, intenta de nuevo.', 'error');
         this.modalService.dismissAll();
         throw err;
       });
@@ -119,16 +119,13 @@ export class ModalEditOrderComponent implements OnInit {
   calculateTax(position?: number) {
     if (this.status == 0 || this.status == 1 || this.status == 7) {
       if (this.orderSelected.products[position].free_shipping) { // Si el free_shipping es true
-
         this.orderSelected.products[position].tax = 0; // Volvemos el tax 0
       } else { // Si no calculamos el tax normalmente
         if (!this.orderSelected.products[position].tax_manually) { // Validar si el tax se calcula manual o automatico
-
           if (this.orderSelected.products[position].selected_tax == "1" || this.orderSelected.products[position].selected_tax == null) {
-
-            this.orderSelected.products[position].tax = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity * 0.07;
+            this.orderSelected.products[position].tax = parseFloat(((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) * 0.07).toFixed(2));
           } else {
-            this.orderSelected.products[position].tax = ((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].shipping_origin_value_product) * 0.07;
+            this.orderSelected.products[position].tax = parseFloat((((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].shipping_origin_value_product) * 0.07).toFixed(2));
           }
         }
       }

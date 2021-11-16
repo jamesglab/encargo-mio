@@ -29,8 +29,8 @@
         <ng-container *ngIf="orderSelected">
           <div class="form-check form-switch text-truncate h5">
             <label for="form-group">Compra anticipada</label>
-            <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" disabled 
-            [checked]="orderSelected.advance_purchase">
+            <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" disabled
+              [checked]="orderSelected.advance_purchase">
           </div>
         </ng-container>
 
@@ -208,7 +208,7 @@
               <div class="form-group">
                 <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
                 <div>
-                  <input type="number" class="form-control" placeholder="Tax" [ngModel]="item.tax | number: '1.2-2'"
+                  <input type="number" class="form-control" placeholder="Tax" [(ngModel)]="item.tax"
                     (ngModelChange)="item.tax = $event" min="0" (keypress)="numberOnly($event);"
                     (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || disabledAllInputs">
                   <br>
