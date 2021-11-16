@@ -57,7 +57,7 @@ export class ModalEditLockersComponent implements OnInit {
   buildForm(res: any): void {
     this.lockerEditForm = this._fb.group({
       id: [res.id ? res.id : null],
-      guide_number: [res.guide_number ? res.guide_number : null],
+      guide_number: [res.guide_number_alph ? res.guide_number_alph : res.guide_number],
       conveyor: [null],
       locker: [res.locker ? `CA${res.locker.id} | ${res.locker.user.name} ${res.locker.user.last_name}` : '', [Validators.required]],
       locker_info: [res.locker ? res.locker : null],
