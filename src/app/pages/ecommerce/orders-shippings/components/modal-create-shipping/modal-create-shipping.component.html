@@ -115,18 +115,25 @@
 
     </div>
 
-    <div class="row mt-3">
-      <div class="col-12 col-sm-12">
-        <label for="">Productos en Envio</label>
-        <ng-select [multiple]="true" formControlName="products">
-          <ng-option *ngFor="let product of products" [value]="product"
-            title="{{ product.product ? product.product.name : '' }}">
-            {{ product.product ? ((product.product.name.length > 50) ? (product.product.name | slice:0:50 ) + '...' :
-            product.product.name) : 'N/A' }}
-          </ng-option>
-        </ng-select>
+    <ng-container *ngIf="createShippingForm.controls.user.value && products.length > 0">
+      <div class="row mt-3">
+        <div class="col-12 col-sm-12">
+          <label>Productos en Envio</label>
+          <ng-select [multiple]="true" formControlName="products">
+            <ng-option *ngFor="let locker_product of products" [value]="locker_product"
+              title="renderName(locker_product)">
+              {{ renderName(locker_product) }}
+            </ng-option>
+          </ng-select>
+        </div>
       </div>
-    </div>
+    </ng-container>
+
+    <ng-container *ngIf="createShippingForm.controls.user.value && products.length === 0">
+      <label>El Casillero de {{ createShippingForm.controls.user.value.full_name }}
+        NO CONTIENE PRODUCTOS
+      </label>
+    </ng-container>
 
   </form>
 

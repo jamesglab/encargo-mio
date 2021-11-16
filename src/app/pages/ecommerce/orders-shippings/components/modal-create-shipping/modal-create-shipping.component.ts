@@ -168,6 +168,21 @@ export class ModalCreateShippingComponent implements OnInit {
     return address ? address.address : "";
   }
 
+  renderName(locker_product: { [ key: string ]: any }): string {
+    if(locker_product.product) {
+      let product = locker_product.product;
+      if(product.name) {
+        let name = product.name;
+        if(product.name.length > 40){
+         name = product.name.slice(0, 40);
+        }
+        return `${product.id} | ${name}`;
+      }
+      return `${product.id} | -`;
+    }
+    return '-';
+  }
+
   numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
 
   closeModale() {
