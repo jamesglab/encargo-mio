@@ -100,7 +100,7 @@ export class ModalUpdateShippingComponent implements OnInit {
       id: [shipping.id],
       trm: [this.trm],
       total_weight:[{value : this.shippingToUpdate.total_weight,disabled : true}],
-      guide_number: [shipping.guide_number, Validators.required],
+      guide_number: [shipping.guide_number_alph, Validators.required],
       conveyor: [this.conveyors.find((item) => item.id == shipping.conveyor), [Validators.required]],
       // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
       total_value: [shipping.total_value, Validators.required],
