@@ -64,7 +64,7 @@ export class TablePurchasesComponent implements OnInit {
     this.filterCode.reset();
     this.filterUser.reset();
     this.filterDate.reset();
-    console.log('fiormat date',this.filterDate)
+    // console.log('fiormat date',this.filterDate)
     this.productName.reset();
     this.purchaseNumber.reset();
     this.filterPurchase();

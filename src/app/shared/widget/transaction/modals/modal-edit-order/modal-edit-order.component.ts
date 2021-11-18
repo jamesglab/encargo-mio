@@ -122,9 +122,9 @@ export class ModalEditOrderComponent implements OnInit {
         this.orderSelected.products[position].tax = 0; // Volvemos el tax 0
       } else { // Si no calculamos el tax normalmente
         if (!this.orderSelected.products[position].tax_manually) { // Validar si el tax se calcula manual o automatico
-          if (this.orderSelected.products[position].selected_tax == "1" || this.orderSelected.products[position].selected_tax == null) {
+          if (this.orderSelected.products[position].selected_tax == "1") {
             this.orderSelected.products[position].tax = parseFloat(((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) * 0.07).toFixed(2));
-          } else {
+          } else if (this.orderSelected.products[position].selected_tax == "2") {
             this.orderSelected.products[position].tax = parseFloat((((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].shipping_origin_value_product) * 0.07).toFixed(2));
           }
         }
