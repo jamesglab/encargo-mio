@@ -20,7 +20,7 @@
         <th class="th-align">
           Guía
           <input type="text" class="form-control mt-2" formControlName="guide_number"
-            placeholder="Filtra por el número de envío..." title="Filtra por el número de guía..."
+            placeholder="Filtra por número de guía..." title="Filtra por el número de guía..."
             (keyup.enter)="sendFilter();">
         </th>
 
@@ -92,7 +92,7 @@
           </a>
         </td>
 
-        <td>{{ data.guide_number_alph ? data.guide_number : '-' }}</td>
+        <td>{{ data.guide_number_alph ? data.guide_number_alph : data.guide_number }}</td>
         <td>{{ data.created_at ? ( data.created_at | date: 'medium' ) : '' }}</td>
         <td>{{ data.full_name ? data.full_name : '' }}</td>
         <td>{{ data.address_code ? data.address_code :'-' }}</td>

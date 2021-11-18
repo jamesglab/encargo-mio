@@ -83,7 +83,7 @@ export class CreateOrderComponent implements OnInit {
       free_shipping: [false],
       tax_manually: [false],
       sub_total: [0],
-      selected_tax: ["1"],
+      selected_tax: [null],
       initial_weight: [0]
     });
 
@@ -201,13 +201,10 @@ export class CreateOrderComponent implements OnInit {
       this.products.controls[i]['controls'].tax.setValue(0); // Seteamos el valor del tax en 0
     } else {
       if (!this.products.controls[i]['controls'].tax_manually.value) { // Validar si el tax se calcula manual o automatico
-        var total_tax: number = 0;
-        if (this.products.controls[i]['controls'].free_shipping.value == "1" || this.products.controls[i]['controls'].free_shipping.value == null) { // Si elige la primer calculadora
-          total_tax = parseFloat((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value * 0.07).toFixed(2)); // Se obtiene el product_value * la quantity * 7%
-          this.products.controls[i]['controls'].tax.setValue(total_tax); // Seteamos en el tax el valor calculado (total_tax)
-        } else {
-          total_tax = parseFloat((((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value) + this.products.controls[i]['controls'].shipping_origin_value_product.value) * 0.07).toFixed(2)); // Se obtiene el product_value * la quantity + shipping_origin_value_product * 7%
-          this.products.controls[i]['controls'].tax.setValue(total_tax); // Seteamos en el tax el valor calculado (total_tax)
+        if (this.products.controls[i]['controls'].selected_tax.value == "1") { // Si elige la primer calculadora
+          this.products.controls[i]['controls'].tax.setValue(parseFloat((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value * 0.07).toFixed(2))); // Se obtiene el product_value * la quantity * 7%
+        } else if (this.products.controls[i]['controls'].selected_tax.value == "2") {
+          this.products.controls[i]['controls'].tax.setValue(parseFloat((((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value) + this.products.controls[i]['controls'].shipping_origin_value_product.value) * 0.07).toFixed(2))); // Se obtiene el product_value * la quantity + shipping_origin_value_product * 7%
         }
       }
     }
@@ -220,6 +217,7 @@ export class CreateOrderComponent implements OnInit {
   changeCalculator(item: string, i: number) {
     this.products.controls[i]['controls'].tax_manually.setValue(false);
     this.products.controls[i]['controls'].selected_tax.setValue(item);
+    this.calculateTax(i);
     this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
   }
 

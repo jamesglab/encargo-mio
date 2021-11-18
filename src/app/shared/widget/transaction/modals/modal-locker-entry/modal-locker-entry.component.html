@@ -48,7 +48,7 @@
 
           <mat-autocomplete #auto_order="matAutocomplete" [displayWith]="displayFn">
             <mat-option *ngFor="let order of filteredOrders | async" [value]="order">
-              {{ order.id ? order.id : '' }} | {{ order.product.name ? order.product.name : '' }}
+              {{ order.order_service?.id ? order.order_service?.id : '' }} | {{ order.product.name ? order.product.name : '' }}
             </mat-option>
           </mat-autocomplete>
 

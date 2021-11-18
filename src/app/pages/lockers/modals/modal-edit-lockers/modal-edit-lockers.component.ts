@@ -57,12 +57,11 @@ export class ModalEditLockersComponent implements OnInit {
   buildForm(res: any): void {
     this.lockerEditForm = this._fb.group({
       id: [res.id ? res.id : null],
-      guide_number: [res.guide_number ? res.guide_number : null],
+      guide_number: [res.guide_number_alph ? res.guide_number_alph : res.guide_number],
       conveyor: [null],
       locker: [res.locker ? `CA${res.locker.id} | ${res.locker.user.name} ${res.locker.user.last_name}` : '', [Validators.required]],
       locker_info: [res.locker ? res.locker : null],
-      order: [res.order_purchase ? `${res.order_purchase.id} | ${res.product.name}` : null],
-      order_info: [res.order_purchase ? res.order_purchase : null],
+      order: [res.order_service ? `${res.order_service} | ${res.product.name}` : null],
       name: [res.product ? res.product.name : null],
       weight: [res.weight ? res.weight : 0, [Validators.required]],
       date_recieved: [res.receipt_date ? { day: parseInt(moment(res.receipt_date).format("D")), month: parseInt(moment(res.receipt_date).format("M")), year: parseInt(moment(res.receipt_date).format("YYYY")) } : null],

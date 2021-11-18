@@ -127,7 +127,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
         purchase_date,
         locker_entry_date,
       }).subscribe((res: any) => {
-        this._notify.show(`Orden de Compra Creada #${res.order_purchase.id.replace(/=/g, "")}`, res.message, "success");
+        this._notify.show(`Orden de Compra Creada #${res.order_purchase.id}`, res.message, "success");
         this.refreshTable.emit(true);
         this.modalService.dismissAll();
       }, err => {
