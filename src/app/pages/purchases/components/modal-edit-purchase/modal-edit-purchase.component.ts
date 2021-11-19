@@ -43,7 +43,7 @@ export class ModalEditPurchaseComponent implements OnInit {
     this.purchaseForm = this.fb.group({
       id: [this.purchaseSelected.id, Validators.required],
       product: [this.purchaseSelected.product, Validators.required],
-      payment_type: [this.purchaseSelected.payment_type, Validators.required],
+      payment_type: [this.purchaseSelected.payment_type || 'usd'],
       observations: [this.purchaseSelected.observations],
       store: [this.purchaseSelected.store, Validators.required],
       conveyor: [this.purchaseSelected.conveyor, Validators.required],
@@ -87,6 +87,7 @@ export class ModalEditPurchaseComponent implements OnInit {
   }
 
   updatePurchase() {
+    console.log("PURCHASE FORM", this.purchaseForm)
     if (this.purchaseForm.valid) {
       this.isLoading = true;
       const [purchase_date, locker_entry_date] = this.toInsertDates();
