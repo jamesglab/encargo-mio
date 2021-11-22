@@ -25,6 +25,14 @@
               <input type="text" class="form-control" [formControl]="filterCode" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
+
+          <th class="align-middle">
+            Cotización
+            <div class="mt-2">
+              <input type="text" class="form-control" [formControl]="filterOrderService" (keyup.enter)="filterPurchase()" />
+            </div>
+          </th>
+
           <th class="align-middle">Fecha
             <div class="input-group clockpicker mt-2"  style="min-width: 150px;">
               <input  placeholder="yyyy-mm-dd"  class="form-control"
@@ -38,16 +46,19 @@
             </div>
 
           </th>
+
           <th class="align-middle">Nombre del Producto
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="productName" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
+
           <th class="align-middle">Numero de Compra
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="purchaseNumber" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
+
           <th class="align-middle">
             Usuario
             <!-- se cambiara por el autocomplete -->
@@ -62,17 +73,15 @@
               </mat-autocomplete>
             </div>
           </th>
-          <th class="align-middle">
-            Código Orden
-            <div class="mt-2">
-            </div>
-          </th>
+
           <th class="align-middle">Total de la Compra
             <div class="mt-2">
               <!-- <input type="text" class="form-control" [formControl]="total_value" (keyup.enter)="filterPurchase()" /> -->
             </div>
           </th>
+
           <th class="align-middle">Opciones</th>
+
         </tr>
 
       </thead>
@@ -85,31 +94,39 @@
               {{ data.id}}
             </a>
           </td>
+
           <td>
-            {{data.purchase_date | date }} </td>
+            {{data.order_service || '-'}}
+          </td>
+
+          <td>
+            {{data.purchase_date | date }} 
+          </td>
+
           <td>
             {{ (data.product_name ? (data.product_name.length > 50) ? (data.product_name | slice:0:50 ) + '...' :  data.product_name : '' )   }}
           </td>
+
           <td>
             {{ data.invoice_number}}
           </td>
+
           <td>
             CA{{data.locker_id + ' ' + data?.user_name + ' '+  data?.last_name}}
           </td>
-          <td>
-            {{data.encrypted_id}}
-          </td>
+
           <td>
             USD {{ data.product_price  ? data.product_price  : 0 }} /
             {{((data.product_price  ? data.product_price  : 0) * data.trm_value) | currency:'COP ' :'symbol' : '1.0-0'}}
           </td>
+
           <td>
-            <!-- btns options -->
             <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
               (click)="selectPurchase(data)">
               Editar
             </button>
           </td>
+
         </tr>
       </tbody>
     </table>
