@@ -46,7 +46,7 @@ export class ModalEditPurchaseComponent implements OnInit {
       payment_type: [this.purchaseSelected.payment_type || 'usd'],
       observations: [this.purchaseSelected.observations],
       store: [this.purchaseSelected.store, Validators.required],
-      conveyor: [this.purchaseSelected.conveyor, Validators.required],
+      conveyor: [this.purchaseSelected.conveyor],
       product_price: [this.purchaseSelected.product_price, Validators.required],
       purchase_date: [{
         year: parseInt(moment(this.purchaseSelected.purchase_date).format('YYYY')),
@@ -87,7 +87,6 @@ export class ModalEditPurchaseComponent implements OnInit {
   }
 
   updatePurchase() {
-    console.log("PURCHASE FORM", this.purchaseForm)
     if (this.purchaseForm.valid) {
       this.isLoading = true;
       const [purchase_date, locker_entry_date] = this.toInsertDates();
