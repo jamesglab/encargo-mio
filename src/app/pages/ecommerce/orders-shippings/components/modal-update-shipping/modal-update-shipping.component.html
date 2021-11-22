@@ -92,8 +92,6 @@
 
           </div>
 
-
-
           <div class="col-12 col-sm-6">
             <div class="form-group">
               <label for="total_weight">Peso total:</label>
@@ -105,7 +103,6 @@
         <div class="row mt-3">
 
           <div class="col-12 col-sm-6">
-
 
             <div class="form-group">
 
@@ -122,9 +119,6 @@
               </select>
 
             </div>
-
-
-
 
           </div>
 
@@ -144,8 +138,6 @@
               </mat-autocomplete>
 
             </div>
-
-
 
           </div>
 
@@ -255,6 +247,10 @@
 
               <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag>
 
+                <div class="d-flex justify-content-between" style="cursor: pointer;">
+                  <a (click)="copyMessage(item);"><i class="far fa-copy"></i></a>
+                </div>
+
                 <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
@@ -314,7 +310,6 @@
 
                 </div>
 
-
               </div>
 
             </div>
@@ -333,9 +328,9 @@
 
               <div class="example-box" *ngFor="let item of outLocker; let i = index" cdkDrag>
 
-                <div class="d-flex justify-content-end" style="cursor: pointer;"
-                  (click)="deleteProduct('outLocker', i);">
-                  <i class="bx bx-trash-alt"></i>
+                <div class="d-flex justify-content-between" style="cursor: pointer;">
+                  <a (click)="copyMessage(item);"><i class="far fa-copy"></i></a>
+                  <a (click)="deleteProduct('outLocker', i);"><i class="bx bx-trash-alt"></i></a>
                 </div>
 
                 <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
@@ -406,7 +401,6 @@
 
   </ng-container>
 
-
 </div>
 
 <div class="modal-footer">
@@ -414,15 +408,18 @@
   <button class="btn btn-secondary" (click)="closeModale()">
     Cancelar
   </button>
+
   <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPacked()"
     *ngIf="shippingToUpdate.status =='1'">
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Empacado
   </button>
+
   <ng-container
     *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'  && shippingToUpdate.status != '7'">
     <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
       Actualizar
     </button>
   </ng-container>
+
 </div>
