@@ -1,19 +1,20 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import * as moment from "moment";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
+import Swal from "sweetalert2"
+
 import { LockersService } from "src/app/pages/lockers/_services/lockers.service";
 import { updateShipping } from "src/app/_helpers/tools/create-order-parse.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
-import Swal from "sweetalert2"
-import { Clipboard } from '@angular/cdk/clipboard';
 import { ExportPdfService } from "../../../_services/export-pdf.service";
 import { OrderService } from "../../../_services/orders.service";
+import { DragdropService } from "../../_services/dragdrop.service";
 
 @Component({
   selector: "app-modal-update-shipping",
@@ -33,6 +34,9 @@ export class ModalUpdateShippingComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingLabel: boolean = false;
   public isLoadingData: boolean = false;
+
+  public disabledInLocker: boolean = false;
+  public disabledInShipping: boolean = false;
 
   public conveyors: any = [];
   public address: any = [];
@@ -61,7 +65,8 @@ export class ModalUpdateShippingComponent implements OnInit {
     public modalService: NgbModal,
     public _label: ExportPdfService,
     public _router: Router,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private _dragdrop: DragdropService
   ) { }
 
   ngOnInit(): void { }
@@ -133,10 +138,6 @@ export class ModalUpdateShippingComponent implements OnInit {
     await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
       .subscribe((res: any) => {
         this.address = res;
-        // this.address.map((item: any) => { // Recorrermos el arreglo de address 
-        //   item.last_name = item.name; // Creamos una nueva posición llamada last_name y le asginamos la propiedad de name
-        //   delete item.name; // Eliminamos el item.nombre para que en el filtro no hayan errores
-        // });
       }, err => {
         throw err;
       });
@@ -163,12 +164,47 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.isLoadingLabel = false;
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<string[]>, type: string) {
+    if (this.status != 0) {
+      let objProduct: any = event.previousContainer.data[event.previousIndex];
+      if (event.previousContainer === event.container) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      } else {
+        if (type === 'shipping') {
+          this.disabledAllDrag();
+          this._dragdrop.moveAddProduct({ shipping: this.shippingToUpdate.id, product: objProduct })
+            .subscribe((res: any) => {
+              transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+              this.enableAllDrag();
+            }, err => {
+              this.enableAllDrag();
+              this._notify.show('', 'Hemos tenido un error al intentar mover el producto.', 'warning');
+              throw err;
+            });
+        } else {
+          this.disabledAllDrag();
+          this._dragdrop.removeAddProduct({ shipping: this.shippingToUpdate.id, product: objProduct.product.id })
+            .subscribe((res: any) => {
+              transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+              this.enableAllDrag();
+            }, err => {
+              this.enableAllDrag();
+              this._notify.show('', 'Hemos tenido un error al intentar mover el producto.', 'warning');
+              throw err;
+            });
+        }
+      }
     }
+  }
+
+  disabledAllDrag(): void {
+    this.disabledInLocker = true;
+    this.disabledInShipping = true;
+  }
+
+  enableAllDrag(): void {
+    this.disabledInLocker = false;
+    this.disabledInShipping = false;
   }
 
   updateShippingPacked() {
@@ -234,13 +270,6 @@ export class ModalUpdateShippingComponent implements OnInit {
     if (name) {
       return name ? 'CA ' + name.locker[0].id + ' | ' + name.name + ' ' + name.last_name : '';
     }
-  }
-
-  deleteProduct(array: any, index: number) {
-    this.deleted_products.push(this[array][index]);
-    this.inLocker.unshift(this[array][index]);
-    this[array].splice(index, 1);
-    this._notify.show('', 'Eliminaste el producto correctamente', 'info');
   }
 
   generateLabel() {
