@@ -88,7 +88,7 @@ export class TablePurchasesComponent implements OnInit {
     if (this.filterDate.value && this.filterDate.value.year.trim() != '') {
       filterValues['purchase_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
     } 
-    if (this.filterUser.value != null && this.filterUser.value.trim() != '') {
+    if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
     } 
     if (this.productName.value != null && this.productName.value.trim() != '') {
