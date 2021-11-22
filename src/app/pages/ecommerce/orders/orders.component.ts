@@ -71,7 +71,7 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  async getTransactions(pagination?: any, filterValues?: any) {
+  getTransactions(pagination?: any, filterValues?: any) {
 
     if (filterValues) {
       this.filterValues = filterValues;
@@ -79,7 +79,7 @@ export class OrdersComponent implements OnInit {
 
     this.isLoading = true;
 
-    await this._orderService.getQuotations({
+    this._orderService.getQuotations({
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
       status: this.status,
