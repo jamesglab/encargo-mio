@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output,EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Swal from 'sweetalert2';
 import { OrderService } from '../../../_services/orders.service';
@@ -8,20 +8,26 @@ import { OrderService } from '../../../_services/orders.service';
   templateUrl: './shipment-tracking.component.html',
   styleUrls: ['./shipment-tracking.component.scss']
 })
+
 export class ShipmentTrackingComponent implements OnInit {
-  @Input() shippingTracking;
+
+  @Input() shippingTracking: any;
   @Output() refreshTable = new EventEmitter<any>()
-  isLoadingData: boolean;
-  isLoading: boolean;
+
+  public isLoadingData: boolean;
+  public isLoading: boolean;
+
   constructor(
     private _orderService: OrderService,
-    private _moodalService : NgbModal
+    private _moodalService: NgbModal
   ) { }
 
   ngOnInit(): void {
     if (this.shippingTracking.conveyor_status) {
       this.shippingTracking.conveyor_status = JSON.parse(this.shippingTracking.conveyor_status);
-      this.shippingTracking.conveyor_status.reverse();
+      this.shippingTracking.conveyor_status.map((item: any) => {
+        item.date = item.date.trim()
+      });
     }
   }
 
@@ -29,11 +35,12 @@ export class ShipmentTrackingComponent implements OnInit {
     this._moodalService.dismissAll();
   }
 
-  isDelivered(){
-    this._orderService.shippingOrderIsDelivered(this.shippingTracking.id).subscribe(res=>{
-      Swal.fire('Actualizada',res.message,'success');
-      this.refreshTable.emit(true);
-    })
+  isDelivered() {
+    this._orderService.shippingOrderIsDelivered(this.shippingTracking.id)
+      .subscribe(res => {
+        Swal.fire('Actualizada', res.message, 'success');
+        this.refreshTable.emit(true);
+      });
   }
 
 }
