@@ -10,7 +10,8 @@ import { LockersService } from "src/app/pages/lockers/_services/lockers.service"
 import { updateShipping } from "src/app/_helpers/tools/create-order-parse.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
-import Swal from "sweetalert2";
+import Swal from "sweetalert2"
+import { Clipboard } from '@angular/cdk/clipboard';
 import { ExportPdfService } from "../../../_services/export-pdf.service";
 import { OrderService } from "../../../_services/orders.service";
 
@@ -59,7 +60,8 @@ export class ModalUpdateShippingComponent implements OnInit {
     private _notify: NotifyService,
     public modalService: NgbModal,
     public _label: ExportPdfService,
-    public _router: Router
+    public _router: Router,
+    private clipboard: Clipboard
   ) { }
 
   ngOnInit(): void { }
@@ -99,7 +101,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
       trm: [this.trm],
-      total_weight:[{value : this.shippingToUpdate.total_weight,disabled : true}],
+      total_weight: [{ value: this.shippingToUpdate.total_weight, disabled: true }],
       guide_number: [shipping.guide_number_alph, Validators.required],
       conveyor: [this.conveyors.find((item) => item.id == shipping.conveyor), [Validators.required]],
       // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
@@ -162,7 +164,6 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<string[]>) {
-    // console.log("EVENTO DEL DROP", event.previousContainer.data[event.previousIndex]);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -231,7 +232,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   displayFnUserName(name: any) {
     if (name) {
-      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name  + ' ' + name.last_name : '';
+      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name + ' ' + name.last_name : '';
     }
   }
 
@@ -272,6 +273,13 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   closeModale(): void {
     this.modalService.dismissAll();
+  }
+
+  copyMessage(item: any) {
+    if (item) {
+      this.clipboard.copy(`Producto ID: #${item.product.id ? item.product.id : ''}\nNombre: ${item.product.name ? item.product.name : 'N/A'}\n# Orden: ${item.order_service ? item.order_service : 'N/A'}\nPeso: ${item.weight ? item.weight : 0} lb\nDescripción: ${item.product.description ? item.product.description : 'N/A'}\nGuía Origen: ${item.guide_number_alph ? item.guide_number_alph : 'N/A'}\nValor Declarado Admin: $${item.declared_value_admin ? item.declared_value_admin : 0}USD\nValor Declarado Cliente: $${item.declared_value_client ? item.declared_value_client : 0}USD`);
+      Swal.fire('Información copida. ', '', 'info');
+    }
   }
 
   updateShipping() {
