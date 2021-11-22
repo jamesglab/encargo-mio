@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import * as moment from 'moment';
 import { Observable } from 'rxjs-compat';
 import { filter, map, startWith } from 'rxjs/operators';
+import { GET_STATUS } from 'src/app/_helpers/tools/utils.tool';
 import { UserService } from "src/app/_services/users.service";
 
 @Component({
@@ -25,6 +26,7 @@ export class TablePurchasesComponent implements OnInit {
 
   public filterCode = new FormControl('');
   public filterOrderService = new FormControl('');
+  public filterOrderServiceStatus = new FormControl('');
   public filterDate = new FormControl('');
   public productName = new FormControl('');
   public purchaseNumber = new FormControl('');
@@ -64,6 +66,7 @@ export class TablePurchasesComponent implements OnInit {
   resetFilters() {
     this.filterCode.reset();
     this.filterOrderService.reset();
+    this.filterOrderServiceStatus.reset();
     this.filterUser.reset();
     this.filterDate.reset();
     this.productName.reset();
@@ -76,8 +79,11 @@ export class TablePurchasesComponent implements OnInit {
     if (this.filterCode.value && this.filterCode.value.trim() != '') {
       filterValues['id'] = this.filterCode.value
     }
-    if(this.filterOrderService.value && this.filterOrderService.value.trim() != ''){
+    if(this.filterOrderService.value && this.filterOrderService.value.trim() != '') {
       filterValues['order_service'] = this.filterOrderService.value;
+    }
+    if(this.filterOrderServiceStatus.value != null && this.filterOrderServiceStatus.value != 'null') {
+      filterValues['order_service_status'] = this.filterOrderServiceStatus.value;
     }
     if (this.filterDate.value && this.filterDate.value.year.trim() != '') {
       filterValues['purchase_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
@@ -110,6 +116,10 @@ export class TablePurchasesComponent implements OnInit {
     } else {
       return this[array];
     }
+  }
+
+  getStatus(status: string): string {
+    return GET_STATUS(status);
   }
 
   private _normalizeValue(value: any, array: any): string {
