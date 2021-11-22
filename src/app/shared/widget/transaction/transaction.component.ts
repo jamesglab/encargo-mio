@@ -31,6 +31,7 @@ export class TransactionComponent implements OnInit {
   public filterUser = new FormControl('');
   public filterId = new FormControl('');
   public filterDate = new FormControl({ value: '' });
+  public filterAdvancePurchase = new FormControl(null);
   public filteredUsers: Observable<string[]>;
   public orderSelected: any = {};
   public isLoading: boolean = false;
@@ -52,13 +53,15 @@ export class TransactionComponent implements OnInit {
   }
 
   filterOrders() {
-    const filterValues = {}
+    const filterValues = {};
     if (this.filterId.value && this.filterId.value != '') {
       filterValues['id'] = this.filterId.value
     } if (this.filterDate?.value && this.filterDate.value.year) {
       filterValues['created_at'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
     } if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
+    } if (this.filterAdvancePurchase.value != null && this.filterAdvancePurchase.value != 'null') {
+      filterValues['advance_purchase'] = this.filterAdvancePurchase.value;
     }
     this.filterValues.emit(filterValues);
   }
@@ -70,6 +73,7 @@ export class TransactionComponent implements OnInit {
       throw err;
     });
   }
+  
   openModal(order: any, modal: any, sizeModale: string) {
     this.modalService.open(modal, { size: sizeModale, centered: true });
     this.orderSelected = order
@@ -89,7 +93,6 @@ export class TransactionComponent implements OnInit {
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
-
 
   formatDate() {
     if (this.filterDate.value.year) {

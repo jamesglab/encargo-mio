@@ -7,10 +7,13 @@
   <table class="table table-centered table-nowrap">
     
     <thead class="table-light">
+
       <tr>
+
         <th class="align-middle"># de Orden
           <input type="text" class="form-control mt-2" [formControl]="filterId" (keyup.enter)="filterOrders()" />
         </th>
+
         <th class="align-middle">Nombre del Cliente
           <input type="text" id="user_id" class="form-control mt-2" autocomplete="off" [formControl]="filterUser"
             placeholder="Selecciona el usuario" [matAutocomplete]="auto_user" (keyup.enter)="filterOrders()">
@@ -20,7 +23,9 @@
             </mat-option>
           </mat-autocomplete>
         </th>
-        <th class="align-middle">Fecha de Creación
+
+        <th class="align-middle">
+          Fecha de Creación
           <div class="input-group clockpicker mt-2">
             <input  placeholder="yyyy-mm-dd"  class="form-control"
                [value]="formatDate()" disabled>
@@ -31,8 +36,18 @@
             </div>
           </div>
         </th>
-        <th class="th-align">Productos
+
+        <th class="align-middle">
+          Compra Anticipada
+          <select class="form-select" [formControl]="filterAdvancePurchase" (change)="filterOrders();">
+            <option disabled value="" title="Selecciona filtro...">Selecciona filtro...</option>
+            <option [value]="null">Todos</option>
+            <option [value]="false">No</option>
+            <option [value]="true">Si</option>
+          </select>
         </th>
+
+        <th class="th-align">Productos</th>
         <th class="th-align">Total</th>
         <th class="th-align" *ngIf="status != '4'">Opciones</th>
       </tr>
@@ -42,6 +57,7 @@
     <tbody>
 
       <tr *ngFor="let data of transactions">
+
         <td>
           <a href="javascript: void(0);" class="text-body fw-bold">
             {{ data.id }}
@@ -53,6 +69,10 @@
 
         <td>
           {{ data.created_at ? (data.created_at | date: "medium") : "" }}
+        </td>
+
+        <td>
+          {{ data.advance_purchase ? 'Sí' : 'No' }}
         </td>
 
         <td>{{ data.total_products ? data.total_products : "" }}</td>
