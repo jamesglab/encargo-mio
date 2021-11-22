@@ -1,0 +1,25 @@
+.delivery {
+  background: #e3e3e3;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.th-align {
+  vertical-align: initial;
+}
+
+.container-button-left {
+  text-align: flex-end;
+}

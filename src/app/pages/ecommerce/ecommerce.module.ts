@@ -35,6 +35,10 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import {IvyCarouselModule} from 'angular-responsive-carousel';
+import { ShipmentTrackingComponent } from './orders-shippings/components/shipment-tracking/shipment-tracking.component';
+
 
 const config: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -49,7 +53,7 @@ const config: DropzoneConfigInterface = {
     CheckoutComponent, CartComponent, AddproductComponent,
     CustomersComponent, OrdersComponent, CreateOrderComponent,
     OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent,
-    ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent],
+    ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent, ShipmentTrackingComponent],
   imports: [
     CommonModule,
     EcommerceRoutingModule,
@@ -71,11 +75,14 @@ const config: DropzoneConfigInterface = {
     MatSelectModule,
     MatInputModule,
     MatAutocompleteModule,
-    SharedModule
+    SharedModule,
+    DragDropModule,
+    IvyCarouselModule
   ],
   exports: [
     MatSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    ModalLockerEntryComponent
   ],
   providers: [
     {

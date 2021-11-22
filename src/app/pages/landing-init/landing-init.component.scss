@@ -1,0 +1,16 @@
+.cont-image {
+  display: flex;
+  justify-content: center;
+  height: calc(100vh - 10rem);
+}
+
+img{
+  width: 80%;
+  object-fit: scale-down;
+}
+
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

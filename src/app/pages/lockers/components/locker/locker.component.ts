@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LockersService } from '../../_services/lockers.service';
 
 @Component({
@@ -15,56 +16,71 @@ export class LockerComponent implements OnInit {
   public refreshTable: boolean = false;
   public isLoadInput: boolean = false;
   public lockers: any = [];
-
+  public showData: boolean = true;
   constructor(
-    private _lockers: LockersService
+    private _lockers: LockersService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
-    this.getAllLockers();
   }
 
-  getAllLockers(pagination?: any) {
-    this.isLoading = true;
-    this.isLoadInput = true;
-    this._lockers.getAllLockers({
-      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
-      page: pagination?.pageIndex ? pagination?.pageIndex + 1 : 1
-    }).subscribe((res: any) => {
-      this.lockers = res.products;
-      this.counts = res.count;
-      this.isLoading = false;
-      this.isLoadInput = false;
-    }, err => {
-      this.isLoading = false;
-      this.isLoadInput = false;
-      throw err;
-    });
+  openModal(content: any) {
+    this.modalService.open(content, { size: 'xl', centered: true });
   }
 
-  onSearch(event: any) {
-    if (event.target.value.length >= 5) {
-      this.isLoadInput = true;
-      this._lockers.getDataByGuideNumber(event.target.value)
-        .subscribe((res: any) => {
-          this.lockers = res;
-          this.counts = res.length;
-          if (this.counts === 0) {
-            this.getAllLockers();
-          }
-          this.isLoadInput = false;
-        }, err => {
-          this.isLoadInput = false;
-          throw err;
-        });
-    }
-  }
+  resetFilters() {
+    this.showData = false;
+    setTimeout(() => {      
+      this.showData = true;
+    }, 300);
 
-  refreshTableReceive(event): void {
-    this.refreshTable = event;
-    if (this.refreshTable) {
-      this.getAllLockers();
-    }
   }
+  // getAllLockers(pagination?: any) {
+  //   this.isLoading = true;
+  //   this.isLoadInput = true;
+  //   this._lockers.getAllLockers({
+  //     pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+  //     page: pagination?.pageIndex ? pagination?.pageIndex + 1 : 1
+  //   }).subscribe((res: any) => {
+  //     this.lockers = res.products;
+  //     this.counts = res.count;
+  //     this.isLoading = false;
+  //     this.isLoadInput = false;
+  //   }, err => {
+  //     this.isLoading = false;
+  //     this.isLoadInput = false;
+  //     throw err;
+  //   });
+  // }
+
+  // onSearch() {
+  //   if (this.search.length > 5) {
+  //     this.isLoadInput = true;
+  //     this._lockers.getDataByGuideNumber(this.search)
+  //       .subscribe((res: any) => {
+  //         this.lockers = res;
+  //         this.counts = res.length;
+  //         if (this.counts === 0) {
+  //           this.getAllLockers();
+  //         }
+  //         this.isLoadInput = false;
+  //       }, err => {
+  //         this.isLoadInput = false;
+  //         throw err;
+  //       });
+  //   } else if (this.search == '') {
+  //     this.getAllLockers();
+  //   }
+
+
+  // }
+
+  // refreshTableReceive(event): void {
+  //   this.refreshTable = event;
+  //   if (this.refreshTable) {
+  //     this.getAllLockers();
+  //   }
+  // }
 
 }

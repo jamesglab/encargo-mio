@@ -39,7 +39,7 @@ export class ModalEditLockersComponent implements OnInit {
   ngOnChanges() {
     if (this.lockerSelected) {
       this.isLoading = true;
-      this._lockers.getLockerDetail(this.lockerSelected.product.id)
+      this._lockers.getLockerDetail(this.lockerSelected.product)
         .subscribe((res: any) => {
           this.buildForm(res);
           this.isLoading = false;
@@ -57,19 +57,18 @@ export class ModalEditLockersComponent implements OnInit {
   buildForm(res: any): void {
     this.lockerEditForm = this._fb.group({
       id: [res.id ? res.id : null],
-      guide_number: [res.guide_number ? res.guide_number : null],
+      guide_number: [res.guide_number_alph ? res.guide_number_alph : res.guide_number],
       conveyor: [null],
       locker: [res.locker ? `CA${res.locker.id} | ${res.locker.user.name} ${res.locker.user.last_name}` : '', [Validators.required]],
       locker_info: [res.locker ? res.locker : null],
-      order: [res.order_purchase ? `${res.order_purchase.id} | ${res.product.name}` : null],
-      order_info: [res.order_purchase ? res.order_purchase : null],
+      order: [res.order_service ? `${res.order_service} | ${res.product.name}` : null],
       name: [res.product ? res.product.name : null],
       weight: [res.weight ? res.weight : 0, [Validators.required]],
       date_recieved: [res.receipt_date ? { day: parseInt(moment(res.receipt_date).format("D")), month: parseInt(moment(res.receipt_date).format("M")), year: parseInt(moment(res.receipt_date).format("YYYY")) } : null],
       permanent_shipping_value: [res.permanent_shipping_value ? res.permanent_shipping_value : 0],
       declared_value_admin: [res.declared_value_admin ? res.declared_value_admin : 0, [Validators.required]],
       product_description: [res.product_description ? res.product_description : null],
-      force_commercial_shipping: [false],
+      force_commercial_shipping: [res.force_commercial_shipping],
       images: [res.images ? res.images : []],
       product: [res.product ? res.product : null]
       // estimated_delivery_date: [null],
@@ -131,10 +130,6 @@ export class ModalEditLockersComponent implements OnInit {
     this.cancelModalStatus.emit(true);
   }
 
-  closeModal(): void {
-    this.closeModalEditLockers.emit(false);
-  }
-
   onSubmit(): void {
 
     if (this.lockerEditForm.invalid) {
@@ -160,6 +155,10 @@ export class ModalEditLockersComponent implements OnInit {
       throw err;
     });
 
+  }
+
+  closeModal(): void {
+    this.closeModalEditLockers.emit(false);
   }
 
 }

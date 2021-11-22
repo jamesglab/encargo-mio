@@ -14,7 +14,9 @@
         <div class="h4">
           #000{{orderSelected?.id}}
         </div>
-
+        <div class="h5">
+          {{ (orderSelected?.user.name + ' ' + orderSelected?.user.last_name) || 'Encargomio' }}
+        </div>
         <div class="h5">
           {{orderSelected?.created_at | date }}
         </div>
@@ -22,6 +24,16 @@
           TRM cotización:
           {{ (orderSelected ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
         </div>
+
+        <br>
+        <ng-container *ngIf="orderSelected">
+          <div class="form-check form-switch text-truncate h5">
+            <label for="form-group">Compra anticipada</label>
+            <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" disabled
+              [checked]="orderSelected.advance_purchase">
+          </div>
+        </ng-container>
+
       </div>
 
       <div class="col-5 d-flex justify-content-center align-items-center">
@@ -91,28 +103,30 @@
       <div class="row">
 
         <div class="col-3 d-flex justify-content-center">
-          <div class="edit-image">
-            <a (click)="openModal(item,createImage,'md ')"><i class="far fa-edit"></i></a>
+
+          <div class="edit-image" *ngIf="status == 0 || status == 1 || status == 2">
+            <a (click)="openModal(item,createImage,'md ')">
+              <i class="far fa-edit"></i>
+            </a>
           </div>
+
           <div>
             <a [href]="item.link" target="_blank">
               <img [src]="item.image" (error)="$event.target.src = 'assets/images/default.jpg'" class="avatar"
                 style="object-fit: contain;" />
             </a>
           </div>
+
         </div>
+
         <div class="col-4">
 
           <div>
             <div class="form-group">
               <label for="exampleInputEmail1" class="text-truncate h5">Nombre * </label>
               <input type="text" class="form-control" placeholder="escribe el nombre del producto"
-                [(ngModel)]="item.name">
+                [(ngModel)]="item.name" [disabled]="disabledAllInputs">
             </div>
-          </div>
-
-          <div>
-            {{ item.description }}
           </div>
 
           <div class="mt-2">
@@ -136,19 +150,33 @@
           </div>
 
           <div class="mt-2 h5 d-flex">
-            <div class="mx-2" *ngIf="item.quantity > 1 && status == 0 || status == 1">
-              <a (click)=" item.quantity = item.quantity - 1 ; getFormula(i)">
-                <i class="fas fa-minus"></i>
-              </a>
-            </div>
+
+            <ng-container *ngIf="status === 0 || status === 1">
+              <div class="mx-2" *ngIf="orderSelected.products.length > 1">
+                <a (click)="deleteProduct(i);">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="status == 0 || status == 1">
+              <div class="mx-2" *ngIf="item.quantity > 1">
+                <a (click)="calculateWeightSubstract(i); getFormula(i)">
+                  <i class="fas fa-minus"></i>
+                </a>
+              </div>
+            </ng-container>
+
             <div class="item-quantity">
               Cantidad: {{ item.quantity }}
             </div>
+
             <div class="mx-2" *ngIf="status == 0 || status == 1">
-              <a (click)="item.quantity = item.quantity + 1; getFormula(i)">
+              <a (click)="calculateWeightAdd(i); getFormula(i)">
                 <i class="fas fa-plus"></i>
               </a>
             </div>
+
           </div>
 
         </div>
@@ -180,10 +208,9 @@
               <div class="form-group">
                 <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
                 <div>
-                  <input type="number" class="form-control" placeholder="Tax" [ngModel]="item.tax | number: '1.2-2'"
+                  <input type="number" class="form-control" placeholder="Tax" [(ngModel)]="item.tax"
                     (ngModelChange)="item.tax = $event" min="0" (keypress)="numberOnly($event);"
                     (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || disabledAllInputs">
-
                   <br>
 
                   <div class="container-calcs">
@@ -286,6 +313,21 @@
 
   </ng-container>
 
+  <ng-container *ngIf="status == 7">
+    <button class="btn btn-primary" (click)="sendQuotation();" [disabled]="isLoading || isLoadingQuery">
+
+      <ng-container *ngIf="isLoading">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Cargando...
+      </ng-container>
+
+      <ng-container *ngIf="!isLoading">
+        Cambiar a cotizada
+      </ng-container>
+
+    </button>
+  </ng-container>
+
 </div>
 
 <ng-template #createImage role="document" let-modal>
@@ -293,5 +335,5 @@
   <!-- (close) CERRAMOS EL MODALE CUANDO LO QUEIRAN CERRAR -->
   <!--  (imageUpdated) SELECCIONAMOS EL METODO DE ACTUALIZAR IMAGEN DEL PRODUCTO SELECCIONADO-->
   <app-create-image [product]="productSelected" (close)="modal.close()"
-    (imageUpdated)="upadteImageByProduct($event);modal.close()"></app-create-image>
+    (imageUpdated)="upadteImageByProduct($event); modal.close()"></app-create-image>
 </ng-template>

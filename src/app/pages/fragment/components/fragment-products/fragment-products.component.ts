@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class FragmentProductsComponent implements OnInit {
 
-  @Input() products = [];// ARRAY DE PRODUCTOS 
+  @Input() public products: any = [];// ARRAY DE PRODUCTOS 
   @Input() public conveyors: any = [];
   @Input() public addresses: any = [];
   @Input() public shipping: any;
@@ -62,14 +62,19 @@ export class FragmentProductsComponent implements OnInit {
 
   //CREAMOS LOS FRAGMENTOS Y VALIDAMOS QUE NO SEAN MAYORES AL NUMERO DE PRODUCTOS QUE TIENE EL ENVIO 
   addFragment() {
+    if (this.shipping && this.shipping.length <= 1) {
+      this._notifyService.show('Error', `No puedes fraccionar ${this.shipping.length} producto.`, 'warning');
+      return;
+    }
+
     let fragments = this.fragmentsArray;
     if (fragments.value.length != this.products_quantity) {
       fragments.push(this.createFragment());//CREATE FRAGMENT
       this.setShippingValue();//CALCULATE SHIPPING VALUE
     } else {
-      this._notifyService.show('Error', `Has alcanzado la cantidad máxima de fragmentos permitidos 
-      (${this.products.length})`, 'warning')
+      this._notifyService.show('Error', `Has alcanzado la cantidad máxima de fragmentos permitidos (${this.products.length})`, 'warning');
     }
+
   }
 
   // DROP DE PRODUCTOS ENTRE LOS DIFERENTES SELECTORES
@@ -102,9 +107,9 @@ export class FragmentProductsComponent implements OnInit {
       var totalWeight = 0; //VALIDATE ALL WEIGHT OF PRODUCTS BY FRAGMENT fragment: { products:[...] }
       fragment.products.map((product) => {
         totalWeight += product.weight;
-      })
+      });
       this.fragmentsArray.controls[i].get('weight').setValue(totalWeight);
-    })
+    });
   }
 
   totalWeight() {
@@ -125,8 +130,8 @@ export class FragmentProductsComponent implements OnInit {
 
       if (!currentWeight || currentWeight === 0) { //IF DOESN´T EXISTS WEIGHT
         // MAKE A SUBSTRACT OF WEIGHT (PARENTWEIGHT - TOTALWEIGHT OF FRAGMENTS) 
-        let substract = this.shipping.total_weight - totalWeight; 
-        
+        let substract = this.shipping.total_weight - totalWeight;
+
         if (substract < 0) {//VALIDATE NEGATIVE WEIGHTS
           fragment.get('weight').setValue((0));
         } else {
@@ -169,16 +174,20 @@ export class FragmentProductsComponent implements OnInit {
 
     const { fragments } = this.form.getRawValue(); //DESCTRUCTING FRAGMENTS, AND SEND REQUEST
     const insertFragmentsSubscr = this.fragmentService.insert({ fragments, shipping: this.shipping })
-    .subscribe((res) => {
-      this._notifyService.show('!hecho¡', 'El envío ha sido fragmentado con exito.', 'success');
-      this.router.navigate(['/ecommerce/orders-shippings'])
-    }, err => {
-      throw err;
-    })
+      .subscribe((res) => {
+        this._notifyService.show('¡Hecho!', 'El envío ha sido fragmentado con exito.', 'success');
+        this.router.navigate(['/ecommerce/orders-shippings'])
+      }, err => {
+        throw err;
+      })
     this.unsuscribe.push(insertFragmentsSubscr);
   }
 
-  ngOnDestroy(){
+  errorImage(event: any): void {
+    event.target.src = 'assets/images/default.jpg';
+  }
+
+  ngOnDestroy() {
     this.unsuscribe.forEach((sb) => sb.unsubscribe());
   }
 

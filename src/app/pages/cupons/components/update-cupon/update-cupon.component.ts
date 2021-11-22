@@ -25,7 +25,7 @@ export class UpdateCuponComponent implements OnInit {
     this.buildForm();
   }
   buildForm() {
-    console.log('cupon',this.cuponSelected)
+    // console.log('cupon',this.cuponSelected)
     this.updateCuponForm = this._formBuilder.group({
       id: [this.cuponSelected.id],
       price: [this.cuponSelected.price, Validators.required],
@@ -52,12 +52,12 @@ export class UpdateCuponComponent implements OnInit {
       this.isLoading = true;
       const date_init = new Date(
         this.updateCuponForm.value.date_init.year,
-        this.updateCuponForm.value.date_init.month,
+        this.updateCuponForm.value.date_init.month -1 ,
         this.updateCuponForm.value.date_init.day
       )
       const date_finish = new Date(
         this.updateCuponForm.value.date_finish.year,
-        this.updateCuponForm.value.date_finish.month,
+        this.updateCuponForm.value.date_finish.month - 1,
         this.updateCuponForm.value.date_finish.day
       )
       this._cuponsService.updateCupons({

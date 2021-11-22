@@ -49,10 +49,10 @@ export class LoginComponent implements OnInit {
 
     this.isLoading = true;
     this._authService.login(this.loginForm.getRawValue()).subscribe((res: any) => {
-      this.router.navigate(['/ecommerce/orders']);
+      this.router.navigate(['/']);
       this.isLoading = false;
     }, err => {
-      this._notify.show("Atención", "Hemos tenido un error al intentar loguearte.", "warning");
+      this._notify.show("Atención", err.error.message ? err.error.message : 'Hemos tenido un error al intentar loguearte.', "warning");
       this.isLoading = false;
       throw err;
     });

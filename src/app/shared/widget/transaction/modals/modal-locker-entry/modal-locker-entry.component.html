@@ -5,6 +5,13 @@
 
 <div class="container p-4">
 
+  <div class="alert alert-primary" role="alert" *ngIf="toHome.status">
+    <strong>Nota:</strong>
+    <div>
+      {{ toHome.to_home ? 'Producto para envío a Casa' : 'Producto para envío a Casillero' }}
+    </div>
+  </div>
+
   <form [formGroup]="lockerForm">
 
     <div class="row">
@@ -15,12 +22,12 @@
 
           <label for="guia">Número Guia Origen</label>
           <input matInput type="text" id="guia" class="form-control" placeholder="Busca el número de guía"
-            formControlName="guide_number" [matAutocomplete]="auto" (input)="autoCompleteGuide($event.target.value);"
-            title="{{ lockerForm.controls.guide_number.value ? lockerForm.controls.guide_number.value : '' }}">
+            formControlName="guide_number_alph" [matAutocomplete]="auto" (input)="autoCompleteGuide($event.target.value);"
+            title="{{ lockerForm.controls.guide_number_alph.value ? lockerForm.controls.guide_number_alph.value : '' }}">
 
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let guide of allGuides" [value]="guide">
-              {{ guide.guide_number ? guide.guide_number : '' }}
+              {{ guide.guide_number_alph ? guide.guide_number_alph : guide.guide_number }}
             </mat-option>
           </mat-autocomplete>
 
@@ -32,16 +39,16 @@
 
         <div class="form-group">
 
-          <label for="orders">Orden</label>
-
-          <input matInput type="text" id="orders" class="form-control" placeholder="Busca la orden..."
+          <label for="orders">Orden de Compra</label>
+          <!-----(input)="autoCompleteGuide($event.target.value);"-->
+          <input matInput type="text" id="orders" class="form-control"
+            placeholder="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : 'Busca la orden...' }}"
             formControlName="guide_order" [matAutocomplete]="auto_order"
-            (input)="autoCompleteGuide($event.target.value);"
             title="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : '' }}">
 
-          <mat-autocomplete #auto_order="matAutocomplete">
-            <mat-option *ngFor="let order of allOrders" [value]="order">
-              {{ order.id ? order.id : '' }} | {{ order.product.name ? order.product.name : '' }}
+          <mat-autocomplete #auto_order="matAutocomplete" [displayWith]="displayFn">
+            <mat-option *ngFor="let order of filteredOrders | async" [value]="order">
+              {{ order.order_service?.id ? order.order_service?.id : '' }} | {{ order.product.name ? order.product.name : '' }}
             </mat-option>
           </mat-autocomplete>
 
@@ -85,9 +92,13 @@
             (input)="autoCompleteLocker($event.target.value);" [matAutocomplete]="auto_locker"
             placeholder="Búsqueda de casillero...">
 
+          <div class="spinner-border text-dark" role="status" *ngIf="loaderLockers">
+            <span class="sr-only"></span>
+          </div>
+
           <mat-autocomplete #auto_locker="matAutocomplete">
             <mat-option *ngFor="let locker of allLockers" [value]="locker">
-              CA{{ locker.locker ? locker.locker.id : 0 }} | {{ locker.name }} {{ locker.last_name }}
+              CA{{ locker.locker_id ? locker.locker_id : 0 }} | {{ locker.us_name }} {{ locker.us_last_name }}
             </mat-option>
           </mat-autocomplete>
 
@@ -98,10 +109,11 @@
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
-          <label for="description-product">Descripción del Producto </label>
-          <textarea class="form-control" id="description-product" formControlName="product_description"
+          <label for="description-product">Nombre del Producto </label>
+          <input type="text" class="form-control" id="description-product" formControlName="product_description">
+          <!-- <textarea class="form-control" id="description-product" formControlName="product_description"
             style="height: 37px; min-height: 37px !important; max-height: 300px !important;">
-          </textarea>
+          </textarea> -->
         </div>
 
       </div>
@@ -142,9 +154,9 @@
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
-          <label for="envio">Valor Envío</label>
+          <label for="envio">Valor Envío Fijo :</label>
           <input type="number" class="form-control" id="envio" (keypress)="numberOnly($event);" min="0"
-            formControlName="shipping_value">
+            formControlName="permanent_shipping_value">
         </div>
 
       </div>
@@ -204,6 +216,8 @@
 
   </form>
 
+  <br>
+
 </div>
 
 <div class="modal-footer">
@@ -213,16 +227,7 @@
   </button>
 
   <button class="btn btn-primary" (click)="addLocker();" [disabled]="isLoading || getQueries">
-
-    <ng-container *ngIf="isLoading">
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Cargando...
-    </ng-container>
-
-    <ng-container *ngIf="!isLoading">
-      Guardar
-    </ng-container>
-
+    Guardar
   </button>
 
 </div>

@@ -29,10 +29,10 @@ export class OrdersBuysComponent implements OnInit {
   }
   getUsersAdmin() {
     this._userService.getUsersAdmin().subscribe(users => {
-      console.log('users', users);
+      // console.log('users', users);
       this.users = users;
     },err=>{
-      console.log('error',err)
+      // console.log('error',err)
     })
   }
 
@@ -48,7 +48,7 @@ export class OrdersBuysComponent implements OnInit {
         type :'purchase'
       })
       .subscribe((res) => {
-        console.log("ORDERS RESPONSE", res);
+        // console.log("ORDERS RESPONSE", res);
         this.transactions = res.orders;
         this.counts = res.count;
       });

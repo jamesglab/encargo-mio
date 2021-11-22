@@ -131,7 +131,7 @@
           </div>
         </div>
       </div>
-      <button type="submit" class="btn btn-success" id="btn-save-event">
+      <button type="submit" class="btn btn-success" id="btn-save-event" [disabled]="isLoading">
         Crear Permiso
       </button>
     </form>
@@ -152,6 +152,9 @@
           <ul class="list-group">
             <li class="list-group-item" *ngFor="let item of permissionsRole ;let i = index">{{item.value}}
               <a href="javascript: void(0);" ngbTooltip="agregar a rol"(click)="addPermisionToRole(item,i)"><i class="bx bx-label"></i></a>
+              <p>
+                {{item.description}}
+                </p>
             </li>
           </ul>
         </div>
@@ -162,6 +165,10 @@
               *ngFor="let item of roleSelected.permissions; let i =index" >
               {{item.value}}
               <a href="javascript: void(0);" (click)="deletePermission(item,i)" ><i class="bx bx-trash-alt"></i></a>
+              <p>
+              {{item.description}}
+              </p>
+
             </li>
           </ul>
         </div>

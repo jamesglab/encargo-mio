@@ -1,33 +1,56 @@
 <div class="container-fluid">
+
   <app-page-title title="Pagos" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
   <ul class="nav nav-pills mb-3">
+
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':status==2}" (click)="getTransactions(2)">Pendientes</a>
+      <a class="nav-link" [ngClass]="{'active': status == 1 }" (click)="status = 1; getTransactions(1)">Aprobadas</a>
     </li>
+
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':status==1}" (click)="status = 1; getTransactions(1)">Aprobadas</a>
+      <a class="nav-link" [ngClass]="{'active': status == 2 }" (click)="status = 2; getTransactions(2);">Pendientes</a>
     </li>
+
     <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active':status==3}" (click)="status = 2 ;getTransactions(3)">Rechazadas</a>
+      <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 2; getTransactions(3)">Rechazadas</a>
     </li>
+
   </ul>
 
   <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
     No hay datos de pagos activos...
   </div>
 
-  <div *ngIf="isLoading">
-    Cargando...
-  </div>
-
   <div class="row">
+
     <div class="col-12">
+
       <div class="card">
+
         <div class="card-body">
+
           <div class="row mb-2">
-            <div class="col-sm-4">
+
+            <div class="col-sm-12">
+              <div class="text-sm-end">
+                <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+                  <i class="bx bx-trash-alt mr-1"></i>
+                  Eliminar Filtros
+                </button  >
+              </div>
+              
+              <!-- <div class="search-box me-2 mb-2 d-inline-block">
+                <div class="position-relative">
+                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term"
+                    (keyup.enter)="searchFilter(status)">
+                  <i class="bx bx-search-alt search-icon"></i>
+                </div>
+              </div> -->
+
+
             </div>
+
             <div class="col-sm-8">
               <!-- <div class="text-sm-end">
                 <button type="button" class="btn btn-success btn-rounded mb-2 mr-2" (click)="openModal(content)">
@@ -35,50 +58,123 @@
                 </button>
               </div> -->
             </div>
-            <!-- end col-->
+
           </div>
-          <div class="table-responsive">
+
+          <div class="table-responsive" style="min-height: 30rem;">
 
             <table class="table align-middle table-nowrap">
 
-              <thead>
+              <thead class="table-light">
                 <tr>
-                  <th>#</th>
-                  <th>Order</th>
-                  <th>Methodo de Pago</th>
-                  <th>Pasarela de Pago</th>
-                  <th>Referencia</th>
-                  <th>Estado</th>
-                  <th>Valor</th>
+                  <th>#
+                    <div class="mt-2">
+                      <input type="" [formControl]="filterId" class="form-control min-width"
+                        (keyup.enter)="getTransactions(status)" />
+                    </div>
+                  </th>
+                  <th>Orden
+
+                    <div class="mt-2">
+                      <input type="" [formControl]="filterOrder" class="form-control min-width"
+                        (keyup.enter)="getTransactions(status)" />
+                    </div>
+                  </th>
+                  <th>Método de Pago
+                    <div class="mt-2" style="width: 8rem;">
+                      <select class="form-select mt-2 " aria-label="Default select example"
+                        [formControl]="filterPaymentMethod" (change)="getTransactions(status)">
+                        <option selected disabled>Seleccione un metodo de pago</option>
+                        <option value="credit">Credito</option>
+                        <option value="transfer">Transferencia</option>
+                      </select>
+                    </div>
+                  </th>
+                  <th>Fecha de Pago
+
+                    <div class="input-group clockpicker mt-2">
+                      <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
+                        (ngModelChange)="getTransactions(status)" #dl="ngbDatepicker" [formControl]="filterDate">
+                      <div class="input-group-append" (click)="dl.toggle()">
+                        <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                      </div>
+                    </div>
+
+                  </th>
+
+                  <th>Referencia
+                    <div class="mt-2">
+                      <input type="" [formControl]="filterReference" class="form-control min-width"
+                        (keyup.enter)="getTransactions(status)" />
+                    </div>
+                  </th>
+                  <th>Usuario
+                    <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
+                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)"/>
+                    <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+                      <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+                        (click)="getTransactions(status)">
+                        CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </th>
+                  <th>Tipo
+                    <div class="mt-2">
+                      <select class="form-select mt-2" aria-label="Default select example " [formControl]="filterType"
+                        (change)="getTransactions(status)">
+                        <option  [value]="null">Todos</option>
+                        <option [value]="'compra'">Compra</option>
+                        <option [value]="'envio'">Envio</option>
+                      </select>
+                    </div>
+                  </th>
+                  <th>Valor
+                    <div class="mt-2">
+                      <input type="" [formControl]="filterValue" class="form-control min-width"
+                        (keyup.enter)="getTransactions(status)" />
+                    </div>
+                  </th>
                   <th>Opciones</th>
                 </tr>
               </thead>
 
               <tbody>
 
-                <tr *ngFor="let transaction of transactions | filter: term; let i = index">
+                <tr *ngFor="let transaction of transactions; let i = index">
 
                   <td>
-                    <div class="form-check font-size-16">
-                      {{ transaction.id }}
-                    </div>
+                    {{ transaction.id }}
                   </td>
-
-                  <td>{{ transaction.order_service }}</td>
 
                   <td>
-                    <p class="mb-1">{{ transaction.payment_method }}</p>
+                    {{ transaction.order_service ? transaction.order_service :
+                    (transaction.shipping_order ? transaction.shipping_order : '-') }}
                   </td>
-
-                  <td>{{ transaction.payment_gateway }}</td>
-
-                  <td>{{ transaction.reference }}</td>
 
                   <td>
-                    {{ transaction.status }}
+                    <p class="mb-1">
+                      {{ transaction.payment_method == 'credit' ? 'Credito':'Transferencia' }}
+                    </p>
                   </td>
 
-                  <td>{{ transaction.value }}</td>
+                  <td>
+                    {{ transaction.created_at | date: 'medium' }}
+                  </td>
+                  <td>{{ transaction.reference ? transaction.reference : '-' }}</td>
+
+                  <td>
+                    {{ transaction ? (transaction.user.name + ' ' + transaction.user.last_name) : '' }}
+                  </td>
+
+                  <td>
+                    {{ transaction.type? transaction.type : '-' }}
+                  </td>
+
+                  <td>
+                    {{ (transaction.type =='envio') ? transaction.value + ' / ' +  ((transaction.value  * transaction.so_trm ) | currency: 'COP': 'symbol' : '1.0-0')
+                    : transaction.value + ' / ' + ((transaction.value  * transaction.or_trm ) | currency: ' COP' : 'symbol' : '1.0-0' )
+                      }}
+                  </td>
 
                   <td>
                     <div class="dropdown" ngbDropdown placement="bottom-right">
@@ -114,12 +210,23 @@
             </table>
 
           </div>
+
+          <div class="text-center" *ngIf="isLoading">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Cargando...</span>
+            </div>
+          </div>
+
           <!-- pagination -->
           <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions(status,$event)">
           </mat-paginator>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
 
   <!-- Modal Detalles de la orden  -->
@@ -143,7 +250,7 @@
             </div>
 
             <div class="h5">
-              Fecha de Pago: {{ orderSelected.updated_at | date :'MM/d/y hh:mm a' }}
+              Fecha de Pago: {{ orderSelected.updated_at | date :'medium' }}
             </div>
 
             <div class="h5">
@@ -169,7 +276,8 @@
                 <div>
                   USD {{ orderSelected.total_value ? orderSelected.total_value : 0 }}
                   / {{
-                  ((orderSelected.total_value ? orderSelected.total_value : 0) * orderSelected.trm) | currency: 'COP' :
+                  ((orderSelected.total_value ? orderSelected.total_value : 0) * orderSelected.trm.value) | currency:
+                  'COP' :
                   'symbol' : '1.0-0'
                   }}
                 </div>
@@ -191,9 +299,14 @@
 
           <div class="row">
 
-            <div class="col-2 d-flex justify-content-center align-items-center">
-              <img [src]="item.image" alt class="avatar" />
+            <div class="col-2 d-flex justify-content-center align-items-center" *ngIf="item.image && !item.images">
+              <img [src]="item.image" alt class="avatar" style="object-fit: contain; " draggable="false" />
             </div>
+
+            <ng-container *ngIf="item.images">
+              <img *ngFor="let image of item.images" [src]="image.Location" style="height: 200px; object-fit: contain;"
+                alt="" draggable="false">
+            </ng-container>
 
             <div class="col-6">
 
@@ -204,11 +317,11 @@
               </div>
 
               <div>
-                {{ item.description ? item.description: 'El artículo no tiene descripción' }}
+                {{ item.product_description ? item.product_description: 'El artículo no tiene descripción' }}
               </div>
 
               <div class="mt-2 h5">
-                Precio del Artículo: {{ item.product_value ? item.product_value : 0 }} USD
+                Precio del Artículo: {{ item.product_value ? item.declared_value_admin : 0 }} USD
               </div>
 
               <div class="mt-2 h5">
@@ -259,8 +372,15 @@
 
     <div class="modal-body">
       <div class="center">
+        <carousel [cellWidth]="700" [height]="700">
+          <div class="carousel-cell" *ngFor="let image of referenceImage ">
+            <a [href]="image.Location" target="blank">
+              <img [src]="image.Location" alt="" style="object-fit: contain;" class="img-reference">
+
+            </a>
+          </div>
+        </carousel>
         <div>
-          <img [src]="referenceImage" alt="" class="img-reference">
         </div>
       </div>
     </div>

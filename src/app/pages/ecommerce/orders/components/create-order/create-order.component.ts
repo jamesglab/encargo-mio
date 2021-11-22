@@ -4,6 +4,8 @@ import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.
 import { NotifyService } from 'src/app/_services/notify.service';
 import { OrderService } from '../../../_services/orders.service';
 import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
+import { Observable } from 'rxjs-compat';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-order',
@@ -18,6 +20,8 @@ export class CreateOrderComponent implements OnInit {
   @Input() public trm: any;
   @Input() public users: any = [];
 
+  public filteredUsers: Observable<string[]>;
+
   public typeTax: number = 0.07;
   public createProductForm: FormGroup;
   public products: FormArray;
@@ -25,6 +29,7 @@ export class CreateOrderComponent implements OnInit {
   public isLoadingFormula: boolean = false;
   public totalFormulas: any = [];
   public totalValues: any = [];
+  public files: any = [];
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -47,8 +52,11 @@ export class CreateOrderComponent implements OnInit {
       image: [null],
       products: this._formBuilder.array([]),
       user: [null],
+      advance_purchase: [false],
       price: [0]
     });
+
+    this.filteredUsers = this.createProductForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
   // Retorna los controles del formulario que se consumen desde el HTML
@@ -66,7 +74,7 @@ export class CreateOrderComponent implements OnInit {
       description: [this.createProductForm.value.description],
       image: [this.createProductForm.value.image,],
       quantity: [this.createProductForm.value.quantity],
-      product_value: [this.createProductForm.value.price ? this.createProductForm.value.price : 0,],
+      product_value: [this.createProductForm.value.price ? this.createProductForm.value.price : 0],
       tax: [0],
       weight: [0],
       discount: [0],
@@ -75,11 +83,16 @@ export class CreateOrderComponent implements OnInit {
       free_shipping: [false],
       tax_manually: [false],
       sub_total: [0],
-      selected_tax: ["1"]
+      selected_tax: [null],
+      initial_weight: [0]
     });
 
     return createProduct;
 
+  }
+
+  displayFnUserName(name: any) {
+    return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
 
   //creamos un producto nuevo que sera pusheado en los formArray
@@ -91,31 +104,17 @@ export class CreateOrderComponent implements OnInit {
       this.isLoading = true;
 
       if (this.form.link.value) {
-        this.quotationService.getProductInfo(this.form.link.value.trim())
+
+        let newUrl: any;
+        newUrl = "https" + this.form.link.value.split("https")[1];
+        this.quotationService.getProductInfo(newUrl)
           .subscribe((res) => {
-            if (res) {
-              this.form.image.setValue(res.image);
-              this.form.name.setValue(res.name);
-              this.form.description.setValue(res.description || 'No existe descripción');
-              this.form.price.setValue(res.price ? res.price : 0);
-              this.products.push(this.createProduct());
-              this.getFormula(this.products.controls.length - 1); // LLAMAMOS AL MÉTODO DE LA FORMULA
-              this.cleanForm(); // LLAMAMOS AL MÉTODO PARA RESETEAR EL FORMULARIO
-              this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
-            } else {
-              this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
-            }
+            this.addItem(res);
+            this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
             this.isLoading = false;
           }, err => {
-            // this._notify.show('Algo ha sucedido y no hemos encontrado la información de tu producto.', '', 'warning');
+            this.addItem(null);
             this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
-            this.form.image.setValue(null);
-            this.form.name.setValue(null);
-            this.form.description.setValue(null);
-            this.form.price.setValue(null);
-            this.products.push(this.createProduct());
-            this.getFormula(this.products.controls.length - 1); // LLAMAMOS AL MÉTODO DE LA FORMULA
-            this.cleanForm(); // LLAMAMOS AL MÉTODO PARA RESETEAR EL FORMULARIO
             this.isLoading = false;
             throw err;
           });
@@ -129,6 +128,44 @@ export class CreateOrderComponent implements OnInit {
       this._notify.show('Los datos del producto están incompletos.', '', 'warning');
     }
 
+  }
+
+  _filter(value: string, array: any): string[] {
+    const filterValue = this._normalizeValue(value, array);
+    let fileterdData = this[array].filter(option => this._normalizeValue(option, array).includes(filterValue));
+    if (fileterdData.length > 0) {
+      return fileterdData;
+    } else {
+      return this[array];
+    }
+  }
+
+  private _normalizeValue(value: any, array: any): string {
+    if (typeof value === 'object') {
+      if (array === 'conveyors') {
+        return value.name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'users') {
+        return value.full_name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'address') {
+        return value.address.toLowerCase().replace(/\s/g, '');
+      }
+    } else {
+      return value.toLowerCase().replace(/\s/g, '');
+    }
+  }
+
+  onSelect(event) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
+    this.files.push(...event.addedFiles);
+  }
+
+  addItem(res: any) {
+    this.form.image.setValue(res ? res.image : null);
+    this.form.name.setValue(res ? res.name : null);
+    this.form.description.setValue(res ? res.description : null);
+    this.form.price.setValue(res ? res.price : 0);
+    this.products.push(this.createProduct());
+    this.getFormula(this.products.controls.length - 1); // LLAMAMOS AL MÉTODO DE LA FORMULA
+    this.cleanForm(); // LLAMAMOS AL MÉTODO PARA RESETEAR EL FORMULARIO
   }
 
   cleanForm(): void { //RESET CREATE PRODUCT FORM
@@ -164,13 +201,10 @@ export class CreateOrderComponent implements OnInit {
       this.products.controls[i]['controls'].tax.setValue(0); // Seteamos el valor del tax en 0
     } else {
       if (!this.products.controls[i]['controls'].tax_manually.value) { // Validar si el tax se calcula manual o automatico
-        var total_tax: number = 0;
-        if (this.products.controls[i]['controls'].free_shipping.value === "1" || this.products.controls[i]['controls'].free_shipping.value != null) { // Si elige la primer calculadora
-          total_tax = parseFloat((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value * 0.07).toFixed(2)); // Se obtiene el product_value * la quantity * 7%
-          this.products.controls[i]['controls'].tax.setValue(total_tax); // Seteamos en el tax el valor calculado (total_tax)
-        } else {
-          total_tax = parseFloat((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value + this.products.controls[i]['controls'].shipping_origin_value_product.value * 0.07).toFixed(2)); // Se obtiene el product_value * la quantity + shipping_origin_value_product * 7%
-          this.products.controls[i]['controls'].tax.setValue(total_tax); // Seteamos en el tax el valor calculado (total_tax)
+        if (this.products.controls[i]['controls'].selected_tax.value == "1") { // Si elige la primer calculadora
+          this.products.controls[i]['controls'].tax.setValue(parseFloat((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value * 0.07).toFixed(2))); // Se obtiene el product_value * la quantity * 7%
+        } else if (this.products.controls[i]['controls'].selected_tax.value == "2") {
+          this.products.controls[i]['controls'].tax.setValue(parseFloat((((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value) + this.products.controls[i]['controls'].shipping_origin_value_product.value) * 0.07).toFixed(2))); // Se obtiene el product_value * la quantity + shipping_origin_value_product * 7%
         }
       }
     }
@@ -183,6 +217,7 @@ export class CreateOrderComponent implements OnInit {
   changeCalculator(item: string, i: number) {
     this.products.controls[i]['controls'].tax_manually.setValue(false);
     this.products.controls[i]['controls'].selected_tax.setValue(item);
+    this.calculateTax(i);
     this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
   }
 
@@ -206,6 +241,22 @@ export class CreateOrderComponent implements OnInit {
       this.isLoadingFormula = false;
       throw err;
     });
+  }
+
+  calculateWeightSubstract(i: number) {
+    let product_weight = this.products.controls[i]['controls'].weight.value;//OBTAIN PRODUCT WEIGHT
+    let product_quantity = this.products.controls[i]['controls'].quantity.value;//OBTAIN PRODUCT QUANTITY
+    this.products.controls[i]['controls'].quantity.setValue(product_quantity - 1); //SUBSTRACT 1 TO QUANTITY
+    let unit_weight = (product_weight / product_quantity);// CALC WEIGHT FOR UNIT
+    this.products.controls[i]['controls'].weight.setValue(parseFloat((product_weight - unit_weight).toFixed(2)));//SUBSTRACT 1 UNIT TO WEIGHT
+  }
+
+  calculateWeightAdd(i: number) {
+    let product_weight = this.products.controls[i]['controls'].weight.value;//OBTAIN PRODUCT WEIGHT
+    let product_quantity = this.products.controls[i]['controls'].quantity.value;//OBTAIN PRODUCT QUANTITY
+    this.products.controls[i]['controls'].quantity.setValue(product_quantity + 1);//SUBSTRACT 1 TO QUANTITY
+    let unit_weight = (product_weight / product_quantity);// CALC WEIGHT FOR UNIT
+    this.products.controls[i]['controls'].weight.setValue(parseFloat((product_weight + unit_weight).toFixed(2)));//SUBSTRACT 1 UNIT TO WEIGHT
   }
 
   calculateTotalArticles() {
@@ -234,15 +285,20 @@ export class CreateOrderComponent implements OnInit {
     if (this.createProductForm.valid) {
 
       this.isLoading = true;
+      var formData = new FormData();
+      this.files.forEach((file) => { formData.append('images', file) });
+      const { user, products, advance_purchase } = this.createProductForm.getRawValue();
 
-      this.quotationService.createQuotation({
+      formData.append('payload', JSON.stringify({
         ...getInsertCreateOrder(
-          this.createProductForm.getRawValue().user,
-          this.createProductForm.getRawValue().products,
+          user,
+          products,
           this.totalFormulas,
-          this.trm
-        )
-      }).subscribe(res => {
+          this.trm,
+          advance_purchase)
+      }));
+
+      this.quotationService.createQuotation(formData).subscribe(res => {
         this._notify.show('Transacción Exitosa', res.message, 'success');
         this.isLoading = false;
         this.close_modale.emit();
@@ -259,4 +315,7 @@ export class CreateOrderComponent implements OnInit {
 
   }
 
+  onRemove(event) { // ELIMINAMOS LA IMAGEN
+    this.files.splice(this.files.indexOf(event), 1);
+  }
 }

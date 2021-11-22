@@ -94,7 +94,7 @@ export class ExportPdfService {
           canvas: [
             {
               type: 'rect',
-              x: 30, y: -320,
+              x: 30, y: -340,
               w: 285, h: 3,
               color: '#e8e9ea'
             }
@@ -106,26 +106,26 @@ export class ExportPdfService {
             color: '#4f5159',
             'bold': true,
             fontSize: '18',
-            absolutePosition: { x: 70, y: 240 },
+            absolutePosition: { x: 70, y: 220 },
           },
           {
             image: await this.getBase64ImageFromURL("https://locker-products.s3.amazonaws.com/label/house.png"),
             height: 80,
             width: 80,
-            absolutePosition: { x: 85, y: 280 }
+            absolutePosition: { x: 85, y: 270 }
           },
           {
             text: `${information.user.name} ${information.user.last_name}`,
             color: '#f08001',
-            fontSize: '15',
+            fontSize: '13',
             'bold': true,
-            absolutePosition: { x: 190, y: 270 }
+            absolutePosition: { x: 180, y: 225 }
           },
           {
-            text: `${address.address} ${address.description ? address.description : ''}\n${address.locality.name}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
+            text: `${address.address} ${address.description ? address.description : ''}\n${address.city.name}, ${address.department.name}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
             fontSize: '10',
             color: '#4f5159',
-            absolutePosition: { x: 190, y: 305 }
+            absolutePosition: { x: 180, y: 270 }
           },
         ],
         {

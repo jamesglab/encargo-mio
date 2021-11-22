@@ -1,29 +1,38 @@
 <div class="container-fluid">
 
-    <app-page-title title="Casilleros"></app-page-title>
+  <app-page-title title="Casilleros"></app-page-title>
 
-    <div class="row">
+  <div class="row">
 
-        <div class="col-12">
+    <div class="col-12">
 
-            <div class="card">
+      <div class="card">
+ 
+        <div class="card-body">
 
-                <div class="card-body">
+          <div class="row mb-2">
+            <div class="text-sm-end">
+              <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+                <i class="bx bx-trash-alt mr-1"></i>
+                Eliminar Filtros
+              </button  >
+              <button type="button" class="btn btn-info btn-rounded mb-2 me-2" (click)="openModal(modal_locker_entry)">
+                <i class="mdi mdi-plus mr-1"></i>
+                Ingreso a Casillero
+              </button>
 
-                    <div class="row mb-2">
 
-                        <div class="col-sm-4">
-
+              <!-- 
                             <div class="search-box me-2 mb-2 d-inline-block">
                                 <div class="position-relative">
                                     <input type="text" class="form-control" title="Buscar por número de Guía..."
                                         placeholder="Buscar por Guía..." [(ngModel)]="search"
-                                        (input)="onSearch($event);" [disabled]="isLoadInput">
+                                        (input)="onSearch();" [disabled]="isLoadInput">
                                     <i class="bx bx-search-alt search-icon"></i>
                                 </div>
-                            </div>
+                            </div> -->
 
-                            <!-- <div class="col-sm-8">
+              <!-- <div class="col-sm-8">
 
                                 <div class="text-sm-end">
 
@@ -36,33 +45,36 @@
 
                             </div> -->
 
-                        </div>
-
-                    </div>
-
-                    <div class="text-center" *ngIf="isLoading">
-                        <div class="spinner-border" role="status">
-                            <span class="sr-only">Cargando...</span>
-                        </div>
-                    </div>
-
-                    <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
-
-                        <app-lockers-table class="mt-1" [lockers]="lockers"
-                            (refreshTable)="refreshTableReceive($event);">
-                        </app-lockers-table>
-
-                        <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getAllLockers($event);">
-                        </mat-paginator>
-
-                    </div>
-
-                </div>
-
             </div>
+
+          </div>
+
+          <!-- <div class="text-center" *ngIf="isLoading">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Cargando...</span>
+            </div>
+          </div> -->
+
+          <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
+
+            <app-lockers-table class="mt-1" *ngIf="showData">
+            </app-lockers-table>
+
+            <!-- <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getAllLockers($event);">
+                        </mat-paginator> -->
+
+          </div>
 
         </div>
 
+      </div>
+
     </div>
 
+  </div>
+
 </div>
+
+<ng-template #modal_locker_entry role="document" let-modal>
+  <app-modal-locker-entry ></app-modal-locker-entry>
+</ng-template>

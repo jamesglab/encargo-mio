@@ -11,8 +11,8 @@ a {
   color: #adadad !important;
 }
 .img-reference{
-  width: 36rem;
-  height: 36rem;
+  width: 36rem !important;
+  height: 36rem !important;
   background-size: cover;
   background-position: center;
 }
@@ -20,4 +20,7 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.min-width{
+  min-width: 10rem;
 }

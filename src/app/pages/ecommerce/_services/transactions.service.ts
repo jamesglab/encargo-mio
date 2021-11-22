@@ -25,11 +25,30 @@ export class TransactionService {
       );
   }
 
-  updateTransaction(transaction: any, status): Observable<any> {
+  updateTransaction(transaction: any, status: any): Observable<any> {
+
+    let paramsTypes: any = {};
+
+    if (transaction.order_service) {
+      paramsTypes = { order_service: transaction.order_service };
+    } else {
+      paramsTypes = { shipping_order: transaction.shipping_order };
+    }
+
     return this.http.put<any>(
       `${environment.microservices.management}transactions`,
-      { status, order_service: transaction.order_service },
+      { status, ...paramsTypes },
       { headers: header, params: { id: transaction.id, } }).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getTransactionsFilterI(params) {
+    return this.http.get<any>(
+      `${environment.microservices.management}transactions/filter-for-page`, { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),

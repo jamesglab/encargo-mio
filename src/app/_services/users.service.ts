@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-
 import { header, handleError } from 'src/app/_helpers/tools/header.tool';
 import { StorageService } from './storage.service';
 import { environment } from 'src/environments/environment';
@@ -11,8 +10,8 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
 
+export class UserService {
 
   constructor(private http: HttpClient) { }
 
@@ -59,13 +58,26 @@ export class UserService {
       );
   }
 
-  getAddressByUser(params){
+  getAddressByUser(params) {
     return this.http.get<any>(`${environment.microservices.user}address`,
-       { headers: header, params}).pipe(
+      { headers: header, params }).pipe(
         map((res: any) => {
           return res;
         }),
         catchError(handleError)
       );
   }
+
+  deleteProductOnLocker(product: string): Observable<any> {
+    return this.http.delete<any>(
+      `${environment.microservices.management}locker/delete-product`,
+      { headers: header, params: { product } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
 }

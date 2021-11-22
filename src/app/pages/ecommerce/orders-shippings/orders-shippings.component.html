@@ -1,26 +1,46 @@
 <div class="container-fluid">
+
   <app-page-title title="Envios"></app-page-title>
 
   <div class="row">
+
     <div class="col-12">
+
       <div class="card">
+
         <div class="card-body">
+
           <div class="row mb-2">
+
             <div class="col-sm-4">
+
               <div class="search-box me-2 mb-2 d-inline-block" style="width:100%">
                 <div class="position-relative">
                   <input type="text" class="form-control" placeholder="Busca por producto o guia..." [(ngModel)]="term">
                   <i class="bx bx-search-alt search-icon"></i>
                 </div>
               </div>
+
             </div>
+
             <div class="col-sm-8">
+
               <div class="text-sm-end">
+
+                <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters();">
+                  <i class="bx bx-trash-alt mr-1"></i>
+                  Eliminar Filtros
+                </button>
+
                 <button type="button" class="btn btn-success btn-rounded mb-2 me-2"
                   (click)="openModal(createShipping,'xl')" [disabled]="!trm"><i class="mdi mdi-plus mr-1"></i>
-                  Crear un Envío</button>
-              </div><!-- end col-->
-            </div><!-- end col-->
+                  Crear un Envío
+                </button>
+
+              </div>
+
+            </div>
+
           </div>
           <!-- 0 Consolidación (Viene de ordenes de compra)
           1 Por empacar (En espera de que el administrador realice el envío) (INCLUIR BOTON DE EMPACADO)
@@ -34,50 +54,54 @@
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 0 }" (click)="status = 0;  getTransactions()">
-                Consolidación {{ counts[0] }}
+                Consolidación {{ counts.consolidation ? counts.consolidation : 0}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 1}" (click)="status = 1 ;  getTransactions()">
-                Por empacar {{ counts[1] }}
+                Por empacar {{ counts.for_packing ? counts.for_packing : 0}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active':status == 2}" (click)="status = 2;  getTransactions()">
-                En Generación de Guía {{ counts[2] }}
+                En Generación de Guía {{ counts.in_guide ? counts.in_guide : 0}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active':status == 3}" (click)="status = 3;  getTransactions()">
-                Enviado {{ counts[3] }}
+                Enviado {{ counts.sended ? counts.sended : 0}}
               </a>
             </li>
 
             <li class="nav-item">
+              <a class="nav-link" [ngClass]="{'active':status == 7}" (click)="status = 7;  getTransactions()">
+                Entregado {{ counts.delivered ? counts.delivered : 0}}
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 4 }" (click)="status = 4;  getTransactions()">
-                Cancelado {{ counts[4] }}
+                Cancelado {{ counts.cancel ? counts.cancel : 0}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 5 }" (click)="status = 5;  getTransactions()">
-                Pago en revisión {{ counts[5] }}
+                Pago en revisión {{ counts.in_check ? counts.in_check : 0}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 6 }" (click)="status = 6;  getTransactions()">
-                Fragmentado {{ counts[6] }}
+                Fragmentado {{ counts.fragmented ? counts.fragmented : 0}}
               </a>
             </li>
-
           </ul>
           <!-- Table data -->
 
-          <div class="d-flex justify-content-center" *ngIf="isLoading">
+          <div class="d-flex justify-content-center mt-3" *ngIf="isLoading">
             <div class="spinner-border" role="status">
               <span class="sr-only"></span>
             </div>
@@ -85,11 +109,14 @@
 
           <hr>
 
-          <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term"
-            (shippingSelected)="shippingToUpdate=$event ;openModal(updateShipping,'xl')">
+          <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term" [users]="users" [status]="status"
+            (shippingSelected)="shippingToUpdate = $event; openModal(updateShipping,'xl')"
+            (shippingTracking)="shippingTracking = $event; openModal(shipment_tracking,'xl')"
+            (filterData)="shippingFilterReceive($event);" (defaultResetValues)="defaultResetValuesReceive($event);"
+            [resetAllFilters]="resetAllFilters">
           </app-shippings-table>
 
-          <mat-paginator [length]="counts[status]" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
+          <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
           </mat-paginator>
 
         </div>
@@ -103,13 +130,18 @@
 </div>
 
 <ng-template #createShipping role="document" let-modal>
-  <app-modal-create-shipping [users]="users" [trm]="trm" (getTransactions)="getTransactions()">
+  <app-modal-create-shipping [users]="users" [trm]="trm" (getTransactions)="getTransactions();getCountsTabs()">
   </app-modal-create-shipping>
 </ng-template>
 
 
 <ng-template #updateShipping role="document" let-modal>
   <app-modal-update-shipping [users]="users" [trm]="trm" [status]="status" [shippingToUpdate]="shippingToUpdate"
-    (getTransactions)="getTransactions()">
+    (getTransactions)="getTransactions();getCountsTabs()">
   </app-modal-update-shipping>
+</ng-template>
+
+<ng-template #shipment_tracking role="document" let-modal>
+  <app-shipment-tracking [shippingTracking]="shippingTracking" (refreshTable)="getTransactions() ;getCountsTabs()">
+  </app-shipment-tracking>
 </ng-template>

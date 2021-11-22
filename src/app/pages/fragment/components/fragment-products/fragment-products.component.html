@@ -13,7 +13,16 @@
             <div class="row">
 
               <div class="col-4">
-                <img [src]="item.image" class="img-cont" title="{{item.name}}">
+
+                <img *ngIf="item.images && item.images.length > 0" [src]="item.images[0].Location"
+                  (error)="errorImage($event);" class="img-cont" title="{{item.name}}">
+
+                <img *ngIf="!item.images" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
+                  alt="">
+
+                <img *ngIf="item.images && item.images.length === 0" class="img-cont" [src]="item.product.image"
+                  (error)="errorImage($event);" alt="">
+
               </div>
 
               <div class="col-8 pt-3">
@@ -40,7 +49,7 @@
             <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="addFragment()"><i
                 class="mdi mdi-plus mr-1"></i>
               Crear Fragmento</button>
-            <button *ngIf="form.get('fragments').value.length > 0" type="button" 
+            <button *ngIf="form.get('fragments').value.length > 0" type="button"
               class="btn btn-success btn-rounded mb-2 me-2" (click)="onSubmit();" [disabled]="isLoading">
               <i class="fas fa-save mr-1"></i>
               Guardar </button>
@@ -63,7 +72,7 @@
             <div [formGroupName]="i" class="row mt-2">
 
               <div class="col-xl-12 col-sm-12">
-               <label>Envio # {{shipping.id}}-{{i + 1}}</label>
+                <label>Envio # {{shipping.id}}-{{i + 1}}</label>
               </div>
 
               <div class="col-sm-3 col-12">
@@ -82,7 +91,16 @@
                       cdkDrag>
 
                       <div style="text-align: center; align-items: center; width: 100%;">
-                        <img [src]="item.image" class="img-fragment" alt="">
+
+                        <img *ngIf="item.images && item.images.length > 0" [src]="item.images[0].Location"
+                          (error)="errorImage($event);" class="img-cont" title="{{item.name}}">
+
+                        <img *ngIf="item.images && item.images.length === 0" [src]="item.product.image"
+                          (error)="errorImage($event);" class="img-cont" alt="">
+
+                        <img *ngIf="!item.images" [src]="item.product.image" class="img-cont"
+                          (error)="errorImage($event);" alt="">
+
                       </div>
 
                     </div>
@@ -98,7 +116,7 @@
                   <div class="col-sm-6 col-12">
                     <div class="form-group">
                       <label for="guide_number">Número de guia *</label>
-                      <input type="number" class="form-control" id="guide_number" formControlName="guide_number">
+                      <input class="form-control" id="guide_number" formControlName="guide_number">
                     </div>
                   </div>
 
@@ -119,8 +137,9 @@
                   <div class="col-sm-3 col-12">
                     <div class="form-group">
                       <label for="shipping_value">Valor Envío *</label>
-                      <input type="number" class="form-control" id="shipping_value" formControlName="shipping_value" readonly>
-                      <span *ngIf="submit && obtainForm(i).get('shipping_value').errors" class="text-danger small">El valor ingresado no es correcto</span>
+                      <input type="number" class="form-control" id="shipping_value" formControlName="shipping_value">
+                      <span *ngIf="submit && obtainForm(i).get('shipping_value').errors" class="text-danger small">El
+                        valor ingresado no es correcto</span>
                     </div>
 
                   </div>
@@ -130,7 +149,8 @@
                       <label for="weight">Peso en libras</label>
                       <input type="number" class="form-control" id="weight" formControlName="weight"
                         (blur)="setShippingValue()">
-                      <span *ngIf="submit && obtainForm(i).get('weight').errors" class="text-danger small">Verifica el peso ingresado</span>
+                      <span *ngIf="submit && obtainForm(i).get('weight').errors" class="text-danger small">Verifica el
+                        peso ingresado</span>
                     </div>
                   </div>
 
@@ -141,7 +161,8 @@
                       <select class="form-control" id="address" formControlName="address">
                         <option [value]="null" disabled>Seleccióna Direccion</option>
                         <option *ngFor="let address of addresses" [ngValue]="address">
-                          {{address.name}}</option>
+                          {{address.address}}
+                        </option>
                       </select>
                       <span *ngIf="submit && obtainForm(i).get('address').errors" class="text-danger small">
                         Es necesario que selecciones una dirección.

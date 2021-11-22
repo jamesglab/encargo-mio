@@ -11,9 +11,9 @@
 
       <div class="container">
 
-        <div class="row">
+        <div class="row ">
 
-          <div class="col-7">
+          <div class="col-xl-7 col-md-7 col-sm-12">
 
             <div class="form-group h5">
               <label for="exampleInputEmail1">Link </label>
@@ -31,11 +31,38 @@
             <div class="form-group h5">
 
               <label for="exampleInputEmail1">Usuario </label>
-              <select class="form-select" id="staticEmail" aria-label="Selecciona un usuario" formControlName="user">
-                <option selected disabled value="">Selecciona un usuario...</option>
-                <option *ngFor="let user of users" [ngValue]="user">{{user.email}}</option>
-              </select>
+              <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
+                placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
 
+              <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+                <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                  CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+
+            <div>
+              <div class="custom-dropzone mt-3" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+
+                <ngx-dropzone-label>
+                  <div>
+                    <h2>Inserta las Imagenes de facturación</h2>
+                  </div>
+                </ngx-dropzone-label>
+
+                <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
+                  [removable]="true" (removed)="onRemove(f)">
+                </ngx-dropzone-image-preview>
+
+              </div>
+            </div>
+
+            <br>
+            <div class="form-check form-switch text-truncate h5">
+
+              <label for="form-group">Compra anticipada</label>
+              <input class="form-check-input" type="checkbox" formControlName="advance_purchase"
+                id="flexSwitchCheckChecked">
             </div>
 
             <div class="d-flex h5">
@@ -140,12 +167,12 @@
         <div>
           <hr>
           <div class="row" [formGroupName]="i">
-            <div class="col-3 d-flex justify-content-center align-items-center">
+            <div class="col-xl-3 col-md-3 col-sm-12 d-flex justify-content-center align-items-center">
               <img style="object-fit: contain;"
                 src="{{createProductForm.get('products')['controls'][i].controls.image.value }}"
                 (error)="onImageError($event);" class="avatar" />
             </div>
-            <div class="col-4">
+            <div class="col-xl-4 col-md-4 col-sm-12">
               <div>
                 <a [href]="createProductForm.get('products')['controls'][i].controls.link.value" target="blank">
                   <h5 class="text-truncate h5">
@@ -173,8 +200,7 @@
 
               <div class="mt-2 h5 d-flex">
                 <div class="mx-2" *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value > 1">
-                  <a (click)="createProductForm.get('products')['controls'][i].controls.quantity.value = 
-                  createProductForm.get('products')['controls'][i].controls.quantity.value - 1 ; getFormula(i)">
+                  <a (click)="calculateWeightSubstract(i); getFormula(i)">
                     <i class="fas fa-minus"></i>
                   </a>
                 </div>
@@ -182,8 +208,7 @@
                   Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
                 </div>
                 <div class="mx-2">
-                  <a (click)="createProductForm.get('products')['controls'][i].controls.quantity.value = 
-                  createProductForm.get('products')['controls'][i].controls.quantity.value + 1; getFormula(i)">
+                  <a (click)="calculateWeightAdd(i); getFormula(i)">
                     <i class="fas fa-plus"></i>
                   </a>
                 </div>
@@ -191,11 +216,11 @@
 
             </div>
 
-            <div class="col-5">
+            <div class="col-xl-5 col-md-5 col-sm-12">
 
               <div class="row">
 
-                <div class="col-6">
+                <div class="col-xl-6 col-md-6 col-sm-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo USD *</label>
                     <input type="number" class="form-control" placeholder="Valor en USD" formControlName="product_value"
@@ -203,7 +228,7 @@
                   </div>
                 </div>
 
-                <div class="col-3">
+                <div class="col-xl-3 col-md-3 col-sm-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1" class="text-truncate h5">Desc. (%)</label>
                     <input type="number" class="form-control" placeholder="% descuento" formControlName="discount"
@@ -211,7 +236,7 @@
                   </div>
                 </div>
 
-                <div class="col-3">
+                <div class="col-xl-3 col-md-3 col-sm-12">
 
                   <div class="form-group">
 
