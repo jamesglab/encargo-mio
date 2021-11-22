@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import * as moment from 'moment';
 import { Observable } from 'rxjs-compat';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { UserService } from "src/app/_services/users.service";
 
 @Component({
@@ -24,6 +24,7 @@ export class TablePurchasesComponent implements OnInit {
   public users: [] = [];
 
   public filterCode = new FormControl('');
+  public filterOrderService = new FormControl('');
   public filterDate = new FormControl('');
   public productName = new FormControl('');
   public purchaseNumber = new FormControl('');
@@ -62,6 +63,7 @@ export class TablePurchasesComponent implements OnInit {
 
   resetFilters() {
     this.filterCode.reset();
+    this.filterOrderService.reset();
     this.filterUser.reset();
     this.filterDate.reset();
     this.productName.reset();
@@ -70,16 +72,23 @@ export class TablePurchasesComponent implements OnInit {
   }
 
   filterPurchase() {
-    const filterValues: any = {};
-    if (this.filterCode.value && this.filterCode.value != '') {
+    const filterValues = {}
+    if (this.filterCode.value && this.filterCode.value.trim() != '') {
       filterValues['id'] = this.filterCode.value
-    } if (this.filterDate.value && this.filterDate.value.year != '') {
+    }
+    if(this.filterOrderService.value && this.filterOrderService.value.trim() != ''){
+      filterValues['order_service'] = this.filterOrderService.value;
+    }
+    if (this.filterDate.value && this.filterDate.value.year.trim() != '') {
       filterValues['purchase_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
-    } if (this.filterUser.value != null && this.filterUser.value != '') {
+    } 
+    if (this.filterUser.value != null && this.filterUser.value.trim() != '') {
       filterValues['user'] = this.filterUser.value.id;
-    } if (this.productName.value != null && this.productName.value != '') {
+    } 
+    if (this.productName.value != null && this.productName.value.trim() != '') {
       filterValues['product_name'] = this.productName.value;
-    } if (this.purchaseNumber.value != null && this.purchaseNumber.value != '') {
+    }
+    if (this.purchaseNumber.value != null && this.purchaseNumber.value.trim() != '') {
       filterValues['invoice_number'] = this.purchaseNumber.value;
     }
     this.filterValues.emit(filterValues);

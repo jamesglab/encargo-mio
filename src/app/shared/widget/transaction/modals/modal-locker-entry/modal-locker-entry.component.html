@@ -27,7 +27,7 @@
 
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let guide of allGuides" [value]="guide">
-              {{ guide.guide_number_alph ? guide.guide_number_alph : '' }}
+              {{ guide.guide_number_alph ? guide.guide_number_alph : guide.guide_number }}
             </mat-option>
           </mat-autocomplete>
 

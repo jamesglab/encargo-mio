@@ -79,14 +79,14 @@
 
         <td>{{ data.total_value ? data.total_value : "" }}</td>
 
-        <td class="d-flex justify-content-around" *ngIf="status != '4'">
+        <td class="d-flex justify-content-around">
           <!-- validamos el boton que se muestra dependiendo del estado de la orden -->
           <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(data, editOrder,'xl');"
-            [disabled]="isLoading" *ngIf="data.status != '4'">
-            <ng-container *ngIf="data.status == '3'">
+            [disabled]="isLoading">
+            <ng-container *ngIf="getStatusNumber(data.status) >= 2">
               Ver Detalle
             </ng-container>
-            <ng-container *ngIf="data.status != '3'">
+            <ng-container *ngIf="getStatusNumber(data.status) < 2">
               Editar
             </ng-container>
           </button>

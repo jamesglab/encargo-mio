@@ -102,6 +102,10 @@ export class TransactionComponent implements OnInit {
     }
   }
 
+  getStatusNumber(status: string): number {
+    return parseInt(status || '0');
+  }
+
   private _normalizeValue(value: any, array: any): string {
     if (typeof value === 'object') {
       if (array === 'conveyors') {
