@@ -25,9 +25,11 @@ export class ShipmentTrackingComponent implements OnInit {
   ngOnInit(): void {
     if (this.shippingTracking.conveyor_status) {
       this.shippingTracking.conveyor_status = JSON.parse(this.shippingTracking.conveyor_status);
-      this.shippingTracking.conveyor_status.map((item: any) => {
-        item.date = item.date.trim()
-      });
+      if (this.shippingTracking.conveyor_status && this.shippingTracking.conveyor_status.length > 0) {
+        this.shippingTracking.conveyor_status.map((item: any) => {
+          item.date = item.date.trim()
+        });
+      }
     }
   }
 
