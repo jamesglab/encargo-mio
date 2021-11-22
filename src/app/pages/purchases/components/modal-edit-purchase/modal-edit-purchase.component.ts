@@ -53,7 +53,7 @@ export class ModalEditPurchaseComponent implements OnInit {
         month: parseInt(moment(this.purchaseSelected.purchase_date).format('M')),
         day: parseInt(moment(this.purchaseSelected.purchase_date).format('D')),
       }, Validators.required],
-      guide_number: [this.purchaseSelected.guide_number_alph || this.purchaseSelected.guide_number, Validators.required],
+      guide_number: [this.purchaseSelected.guide_number_alph || this.purchaseSelected.guide_number],
       invoice_number: [this.purchaseSelected.invoice_number, Validators.required],
       locker_entry_date: [{
         year: parseInt(moment(this.purchaseSelected.locker_entry_date).format('YYYY')),
