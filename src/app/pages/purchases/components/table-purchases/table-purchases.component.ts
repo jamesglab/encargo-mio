@@ -20,7 +20,9 @@ export class TablePurchasesComponent implements OnInit {
 
 
   public isLoading: boolean = false;
+
   public users: [] = [];
+
   public filterCode = new FormControl('');
   public filterDate = new FormControl('');
   public productName = new FormControl('');
@@ -29,7 +31,6 @@ export class TablePurchasesComponent implements OnInit {
   public total_value = new FormControl('');
 
   public filteredUsers: Observable<string[]>;
-
 
   constructor(private _userService: UserService) { }
 
@@ -59,20 +60,17 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
-
   resetFilters() {
     this.filterCode.reset();
     this.filterUser.reset();
     this.filterDate.reset();
-    // console.log('fiormat date',this.filterDate)
     this.productName.reset();
     this.purchaseNumber.reset();
     this.filterPurchase();
   }
 
-
   filterPurchase() {
-    const filterValues = {}
+    const filterValues: any = {};
     if (this.filterCode.value && this.filterCode.value != '') {
       filterValues['id'] = this.filterCode.value
     } if (this.filterDate.value && this.filterDate.value.year != '') {
@@ -85,7 +83,6 @@ export class TablePurchasesComponent implements OnInit {
       filterValues['invoice_number'] = this.purchaseNumber.value;
     }
     this.filterValues.emit(filterValues);
-
   }
 
   displayFnUserName(name: any) {
@@ -119,8 +116,6 @@ export class TablePurchasesComponent implements OnInit {
       return value.toLowerCase().replace(/\s/g, '');
     }
   }
-
-
 
 }
 
