@@ -34,6 +34,7 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit() {
     this.getTransactions();
+    this.getActualTrm();
     this.getUsersAdmin();
     this.countsTabs();
   }
@@ -53,7 +54,7 @@ export class OrdersComponent implements OnInit {
         this.counts_tabs = res;
       }, err => {
         throw err;
-      })
+      });
   }
 
   resetFilters() {
@@ -62,22 +63,26 @@ export class OrdersComponent implements OnInit {
     this.getTransactions();
   }
 
-  async getTransactions(pagination?, filterValues?) {
+  getActualTrm(): void {
+    this._orderService.getTRM().subscribe((res: any) => {
+      this.trm = res;
+    }, err => {
+      throw err;
+    });
+  }
+
+  getTransactions(pagination?: any, filterValues?: any) {
+
     if (filterValues) {
       this.filterValues = filterValues;
     }
 
     this.isLoading = true;
 
-    await this._orderService.getTRM().subscribe(res => {
-      this.trm = res;
-    });
-
-    await this._orderService.getQuotations({
+    this._orderService.getQuotations({
       pageSize: pagination?.pageSize ? pagination.pageSize : 10,
       page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
       status: this.status,
-      type: 'quotation',
       ...this.filterValues
     }).subscribe((res) => {
       this.transactions = res.orders;

@@ -1,60 +1,83 @@
 <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
+
   <div class="table-responsive mb-0" style="min-height: 500px;">
 
-    
-      <div class="col-sm-12">
-        <div class="text-sm-end">
-          <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
-            <i class="bx bx-trash-alt mr-1"></i>
-            Eliminar Filtros
-          </button>
-        </div>
+    <div class="col-sm-12">
+      <div class="text-sm-end">
+        <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+          <i class="bx bx-trash-alt mr-1"></i>
+          Eliminar Filtros
+        </button>
       </div>
-    
+    </div>
+
     <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
       No hay datos disponibles...
     </div>
- 
+
     <table class="table table-centered table-nowrap mt-3">
 
       <thead class="table-light">
+
         <tr>
+
           <th class="align-middle">
             #
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="filterCode" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
+
+          <th class="align-middle">
+            Cotización
+            <div class="mt-2">
+              <input type="text" class="form-control" [formControl]="filterOrderService" (keyup.enter)="filterPurchase()" />
+            </div>
+          </th>
+
+          <th class="align-middle">
+            Estado Cotización
+            <select class="form-select" [formControl]="filterOrderServiceStatus" (change)="filterPurchase();">
+              <option disabled value="" title="Selecciona filtro...">Selecciona filtro...</option>
+              <option [value]="null">Todos</option>
+              <option [value]="3">Proceso Compra</option>
+              <option [value]="4">Ingresar Producto</option>
+              <option [value]="5">Finalizada</option>
+              <option [value]="6">Cancelada</option>
+            </select>
+          </th><!--SEARCH STATES ON UTILS.TOOL.TS (GET_STATUS)-->
+
           <th class="align-middle">Fecha
             <div class="input-group clockpicker mt-2"  style="min-width: 150px;">
               <input  placeholder="yyyy-mm-dd"  class="form-control"
               [value]="formatDate()" disabled>
               
               <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
-                (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate" style="display: none;">
+                (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate"
+                style="display: none;">
               <div class="input-group-append" (click)="dl.toggle()">
                 <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
               </div>
             </div>
-
           </th>
+
           <th class="align-middle">Nombre del Producto
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="productName" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
+
           <th class="align-middle">Numero de Compra
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="purchaseNumber" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
+
           <th class="align-middle">
             Usuario
-            <!-- se cambiara por el autocomplete -->
             <div class="mt-2">
-              <input type="text" id="user_id" class="form-control" autocomplete="off" [formControl]="filterUser" (keyup.enter)="filterPurchase()"
-                placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
-
+              <input type="text" id="user_id" class="form-control" autocomplete="off" [formControl]="filterUser"
+                (keyup.enter)="filterPurchase()" placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
               <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
                 <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="filterPurchase()">
                   CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
@@ -62,17 +85,15 @@
               </mat-autocomplete>
             </div>
           </th>
-          <th class="align-middle">
-            Código Orden
-            <div class="mt-2">
-            </div>
-          </th>
+
           <th class="align-middle">Total de la Compra
             <div class="mt-2">
               <!-- <input type="text" class="form-control" [formControl]="total_value" (keyup.enter)="filterPurchase()" /> -->
             </div>
           </th>
+
           <th class="align-middle">Opciones</th>
+
         </tr>
 
       </thead>
@@ -80,45 +101,58 @@
       <tbody>
 
         <tr *ngFor="let data of purchases">
+
           <td>
             <a class="text-body fw-bold">
-              {{ data.id}}
+              {{ data.id }}
             </a>
           </td>
+
           <td>
-            {{data.purchase_date | date }} </td>
+            {{data.order_service || '-'}}
+          </td>
+
           <td>
+            {{ getStatus(data.order_service_status) }}
+          </td>
+
+          <td>
+            {{data.purchase_date | date }} 
+          </td>
+
+          <td title="{{ data.product_name ? data.product_name : '' }}">
             {{ (data.product_name ? (data.product_name.length > 50) ? (data.product_name | slice:0:50 ) + '...' :  data.product_name : '' )   }}
           </td>
+
           <td>
-            {{ data.invoice_number}}
+            {{ data.invoice_number }}
           </td>
+
           <td>
-            CA{{data.locker_id + ' ' + data?.user_name + ' '+  data?.last_name}}
+            CA{{data.locker_id + ' ' + data?.user_name + ' '+ data?.last_name}}
           </td>
+
           <td>
-            {{data.encrypted_id}}
+            USD {{ data.product_price ? data.product_price : 0 }} /
+            {{((data.product_price ? data.product_price : 0) * data.trm_value) | currency:'COP ' :'symbol' : '1.0-0'}}
           </td>
+
           <td>
-            USD {{ data.product_price  ? data.product_price  : 0 }} /
-            {{((data.product_price  ? data.product_price  : 0) * data.trm_value) | currency:'COP ' :'symbol' : '1.0-0'}}
-          </td>
-          <td>
-            <!-- btns options -->
             <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
               (click)="selectPurchase(data)">
               Editar
             </button>
           </td>
+
         </tr>
+
       </tbody>
+
     </table>
+
   </div>
+
   <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]" aria-label="Select page"
     (page)="emitPage($event)">
   </mat-paginator>
 </div>
-
-
-
-<!-- end table -->

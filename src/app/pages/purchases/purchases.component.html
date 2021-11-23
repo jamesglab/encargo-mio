@@ -3,16 +3,16 @@
     <div class="card">
       <div class="card-body">
         <app-page-title title="Compras"></app-page-title>
+
         <app-table-purchases [purchases]="purchases" [count]="count"
           (editPurchase)="receivePurchase($event , updateCupon, 'lg')" (filterPaginator)="getPurchases($event)"
           (filterValues)="getPurchases(null,$event)">
         </app-table-purchases>
+        
       </div>
     </div>
   </div>
 
-
-  
 
   <ng-template #updateCupon role="document" let-modal>
     <app-modal-edit-purchase [purchaseSelected]="purchaseSelected" (successUpload)="modal.close();getPurchases()">

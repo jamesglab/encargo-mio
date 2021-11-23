@@ -1,18 +1,20 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import * as moment from "moment";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
+import Swal from "sweetalert2"
+
 import { LockersService } from "src/app/pages/lockers/_services/lockers.service";
 import { updateShipping } from "src/app/_helpers/tools/create-order-parse.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
-import Swal from "sweetalert2";
 import { ExportPdfService } from "../../../_services/export-pdf.service";
 import { OrderService } from "../../../_services/orders.service";
+import { DragdropService } from "../../_services/dragdrop.service";
 
 @Component({
   selector: "app-modal-update-shipping",
@@ -32,6 +34,9 @@ export class ModalUpdateShippingComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingLabel: boolean = false;
   public isLoadingData: boolean = false;
+
+  public disabledInLocker: boolean = false;
+  public disabledInShipping: boolean = false;
 
   public conveyors: any = [];
   public address: any = [];
@@ -59,7 +64,9 @@ export class ModalUpdateShippingComponent implements OnInit {
     private _notify: NotifyService,
     public modalService: NgbModal,
     public _label: ExportPdfService,
-    public _router: Router
+    public _router: Router,
+    private clipboard: Clipboard,
+    private _dragdrop: DragdropService
   ) { }
 
   ngOnInit(): void { }
@@ -99,7 +106,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
       trm: [this.trm],
-      total_weight:[{value : this.shippingToUpdate.total_weight,disabled : true}],
+      total_weight: [{ value: this.shippingToUpdate.total_weight, disabled: true }],
       guide_number: [shipping.guide_number_alph, Validators.required],
       conveyor: [this.conveyors.find((item) => item.id == shipping.conveyor), [Validators.required]],
       // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
@@ -131,10 +138,6 @@ export class ModalUpdateShippingComponent implements OnInit {
     await this._userService.getAddressByUser({ id: this.updateShippingForm.get("user").value.id })
       .subscribe((res: any) => {
         this.address = res;
-        // this.address.map((item: any) => { // Recorrermos el arreglo de address 
-        //   item.last_name = item.name; // Creamos una nueva posición llamada last_name y le asginamos la propiedad de name
-        //   delete item.name; // Eliminamos el item.nombre para que en el filtro no hayan errores
-        // });
       }, err => {
         throw err;
       });
@@ -161,13 +164,47 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.isLoadingLabel = false;
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    // console.log("EVENTO DEL DROP", event.previousContainer.data[event.previousIndex]);
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<string[]>, type: string) {
+    if (this.status != 0) {
+      let objProduct: any = event.previousContainer.data[event.previousIndex];
+      if (event.previousContainer === event.container) {
+        moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      } else {
+        if (type === 'shipping') {
+          this.disabledAllDrag();
+          this._dragdrop.moveAddProduct({ shipping: this.shippingToUpdate.id, product: objProduct })
+            .subscribe((res: any) => {
+              transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+              this.enableAllDrag();
+            }, err => {
+              this.enableAllDrag();
+              this._notify.show('', 'Hemos tenido un error al intentar mover el producto.', 'warning');
+              throw err;
+            });
+        } else {
+          this.disabledAllDrag();
+          this._dragdrop.removeAddProduct({ shipping: this.shippingToUpdate.id, product: objProduct.product.id })
+            .subscribe((res: any) => {
+              transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+              this.enableAllDrag();
+            }, err => {
+              this.enableAllDrag();
+              this._notify.show('', 'Hemos tenido un error al intentar mover el producto.', 'warning');
+              throw err;
+            });
+        }
+      }
     }
+  }
+
+  disabledAllDrag(): void {
+    this.disabledInLocker = true;
+    this.disabledInShipping = true;
+  }
+
+  enableAllDrag(): void {
+    this.disabledInLocker = false;
+    this.disabledInShipping = false;
   }
 
   updateShippingPacked() {
@@ -231,15 +268,8 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   displayFnUserName(name: any) {
     if (name) {
-      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name  + ' ' + name.last_name : '';
+      return name ? 'CA ' + name.locker[0].id + ' | ' + name.name + ' ' + name.last_name : '';
     }
-  }
-
-  deleteProduct(array: any, index: number) {
-    this.deleted_products.push(this[array][index]);
-    this.inLocker.unshift(this[array][index]);
-    this[array].splice(index, 1);
-    this._notify.show('', 'Eliminaste el producto correctamente', 'info');
   }
 
   generateLabel() {
@@ -272,6 +302,13 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   closeModale(): void {
     this.modalService.dismissAll();
+  }
+
+  copyMessage(item: any) {
+    if (item) {
+      this.clipboard.copy(`Producto ID: #${item.product.id ? item.product.id : ''}\nNombre: ${item.product.name ? item.product.name : 'N/A'}\n# Orden: ${item.order_service ? item.order_service : 'N/A'}\nPeso: ${item.weight ? item.weight : 0} lb\nDescripción: ${item.product.description ? item.product.description : 'N/A'}\nGuía Origen: ${item.guide_number_alph ? item.guide_number_alph : 'N/A'}\nValor Declarado Admin: $${item.declared_value_admin ? item.declared_value_admin : 0}USD\nValor Declarado Cliente: $${item.declared_value_client ? item.declared_value_client : 0}USD`);
+      Swal.fire('Información copida. ', '', 'info');
+    }
   }
 
   updateShipping() {

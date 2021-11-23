@@ -6,26 +6,27 @@
 <div class="modal-body">
 
   <ng-container *ngIf="isLoadingData">
-    Estámos obteniendo la información del envío...
+    Estamos obteniendo la información del envío...
   </ng-container>
 
   <div class="d-flex">
+
     <div class="count">
+
       <ul class="events">
-        <li *ngFor="let status of shippingTracking.conveyor_status ">
+        <li *ngFor="let status of shippingTracking.conveyor_status | sortDate:'date'">
           <time>{{status.date}}</time>
           <span><strong>{{status.location}}</strong>{{status.status}}</span>
         </li>
       </ul>
-    </div>
-    <div class="">
-      <img src="assets/mesa_trabajo.png" alt="" style="object-fit: cover; width: 100%;">
+
     </div>
 
+    <div>
+      <img src="assets/mesa_trabajo.png" alt="" draggable="false" style="object-fit: cover; width: 100%;">
+    </div>
 
   </div>
-
-
 
 </div>
 
@@ -34,7 +35,6 @@
   <button class="btn btn-secondary" (click)="closeModale()">
     Cancelar
   </button>
-
 
   <ng-container>
     <button class="btn btn-primary" [disabled]="isLoading" (click)="isDelivered()">

@@ -143,7 +143,12 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   }
 
   displayProperty(option: any): void {
-    return option ? option.name : '';
+    if (option) {
+      if (option.name) {
+        return option.name
+      }
+      return option.id
+    }
   }
 
   private _filter(value: any, array: any): string[] {

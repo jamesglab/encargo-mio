@@ -18,6 +18,9 @@ export class LockersTableComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Input() public lockers: any = [];
+
+  @Input() public refreshTableStatus: boolean;
+
   public lockerSelected: any = {};
 
   // ALMACENAMOS OBJETOS PARA LOS SELECTORES
@@ -30,7 +33,6 @@ export class LockersTableComponent implements OnInit {
   public filterStatus = new FormControl('');
   public filterIdProduct = new FormControl('');
   public filterDate = new FormControl('');
-
 
   //SUBSCRIPCIONES PARA LOS AUTOCOMPLETS 
   public filteredUsers: Observable<string[]>;
@@ -46,6 +48,12 @@ export class LockersTableComponent implements OnInit {
   ngOnInit(): void {
     this.getUsers();
     this.getAllLockers();
+  }
+
+  ngOnChanges(){
+    if(this.refreshTableStatus){
+      this.getAllLockers();
+    }
   }
 
   getAllLockers(pagination?: any) {
@@ -79,12 +87,10 @@ export class LockersTableComponent implements OnInit {
     if (this.filterIdProduct.value != null && this.filterIdProduct.value != '' && this.filterIdProduct.value != 'all') {
       options['product'] = this.filterIdProduct.value
     }
-
     if (this.filterDate.value && this.filterDate.value.year != '') {
       options['receipt_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
     }
-
-    return options
+    return options;
   }
 
   // CONSULTAMOS LOS USUARIOS PARA VISUALIZAR LOS CASILLEROS QUE TIENEN

@@ -46,6 +46,21 @@ export const numberOnly = (event): boolean => {
     return true;
 }
 
+export const GET_STATUS = (state: string) => {
+
+    let status = {
+        "0": "Por aprobar",
+        "1": "Cotizada",
+        "2": "En Pago",
+        "3": "Proceso compra",
+        "4": "Ingresar Producto",
+        "5": "Finalizada",
+        "6": "Cancelada",
+        "7": "Vencida"
+    };
+    return status[state || status['0']];
+}
+
 export const validateShippingstatus = (status) => {
     // 0 Consolidación (Viene de ordenes de compra)
     // 1 Por empacar (En espera de que el administrador realice el envío) (INCLUIR BOTON DE EMPACADO)

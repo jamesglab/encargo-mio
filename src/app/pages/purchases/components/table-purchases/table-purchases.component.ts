@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import * as moment from 'moment';
 import { Observable } from 'rxjs-compat';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
+import { GET_STATUS } from 'src/app/_helpers/tools/utils.tool';
 import { UserService } from "src/app/_services/users.service";
 
 @Component({
@@ -20,8 +21,12 @@ export class TablePurchasesComponent implements OnInit {
 
 
   public isLoading: boolean = false;
+
   public users: [] = [];
+
   public filterCode = new FormControl('');
+  public filterOrderService = new FormControl('');
+  public filterOrderServiceStatus = new FormControl('');
   public filterDate = new FormControl('');
   public productName = new FormControl('');
   public purchaseNumber = new FormControl('');
@@ -29,7 +34,6 @@ export class TablePurchasesComponent implements OnInit {
   public total_value = new FormControl('');
 
   public filteredUsers: Observable<string[]>;
-
 
   constructor(private _userService: UserService) { }
 
@@ -59,33 +63,41 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
-
   resetFilters() {
     this.filterCode.reset();
+    this.filterOrderService.reset();
+    this.filterOrderServiceStatus.reset();
     this.filterUser.reset();
     this.filterDate.reset();
-    // console.log('fiormat date',this.filterDate)
     this.productName.reset();
     this.purchaseNumber.reset();
     this.filterPurchase();
   }
 
-
   filterPurchase() {
     const filterValues = {}
-    if (this.filterCode.value && this.filterCode.value != '') {
+    if (this.filterCode.value && this.filterCode.value.trim() != '') {
       filterValues['id'] = this.filterCode.value
-    } if (this.filterDate.value && this.filterDate.value.year != '') {
+    }
+    if(this.filterOrderService.value && this.filterOrderService.value.trim() != '') {
+      filterValues['order_service'] = this.filterOrderService.value;
+    }
+    if(this.filterOrderServiceStatus.value != null && this.filterOrderServiceStatus.value != 'null') {
+      filterValues['order_service_status'] = this.filterOrderServiceStatus.value;
+    }
+    if (this.filterDate.value && this.filterDate.value.year.trim() != '') {
       filterValues['purchase_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
-    } if (this.filterUser.value != null && this.filterUser.value != '') {
+    } 
+    if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
-    } if (this.productName.value != null && this.productName.value != '') {
+    } 
+    if (this.productName.value != null && this.productName.value.trim() != '') {
       filterValues['product_name'] = this.productName.value;
-    } if (this.purchaseNumber.value != null && this.purchaseNumber.value != '') {
+    }
+    if (this.purchaseNumber.value != null && this.purchaseNumber.value.trim() != '') {
       filterValues['invoice_number'] = this.purchaseNumber.value;
     }
     this.filterValues.emit(filterValues);
-
   }
 
   displayFnUserName(name: any) {
@@ -106,6 +118,10 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
+  getStatus(status: string): string {
+    return GET_STATUS(status);
+  }
+
   private _normalizeValue(value: any, array: any): string {
     if (typeof value === 'object') {
       if (array === 'conveyors') {
@@ -119,8 +135,6 @@ export class TablePurchasesComponent implements OnInit {
       return value.toLowerCase().replace(/\s/g, '');
     }
   }
-
-
 
 }
 
