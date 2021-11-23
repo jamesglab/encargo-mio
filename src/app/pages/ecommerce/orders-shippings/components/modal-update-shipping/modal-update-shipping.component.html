@@ -239,13 +239,15 @@
 
             <h2>En Casillero</h2>
 
-            <div cdkDropList [cdkDropListData]="inLocker" class="example-list" (cdkDropListDropped)="drop($event, 'locker');">
+            <div cdkDropList [cdkDropListData]="inLocker" class="example-list"
+              (cdkDropListDropped)="drop($event, 'locker');">
 
               <div *ngIf="inLocker && inLocker.length === 0">
                 No hay productos en el casillero
               </div>
 
-              <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag [cdkDragDisabled]="disabledInLocker">
+              <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag
+                [cdkDragDisabled]="disabledInLocker">
 
                 <div class="d-flex justify-content-between" style="cursor: pointer;">
                   <a (click)="copyMessage(item);"><i class="far fa-copy"></i></a>
@@ -272,8 +274,8 @@
                 <div> #{{ item.product.id }}</div>
 
                 <div title="{{ item.product.name ? item.product.name : '' }}">
-                  {{ (item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...' :
-                  item.product.name}}
+                  {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...' :
+                  item.product.name) : 'N/A' }}
                 </div>
 
                 <div>
@@ -320,13 +322,15 @@
 
             <h2>En este Envío</h2>
 
-            <div cdkDropList [cdkDropListData]="outLocker" class="example-list" (cdkDropListDropped)="drop($event, 'shipping')">
+            <div cdkDropList [cdkDropListData]="outLocker" class="example-list"
+              (cdkDropListDropped)="drop($event, 'shipping')">
 
               <div *ngIf="outLocker && outLocker.length === 0">
                 No hay productos en este envío
               </div>
 
-              <div class="example-box" *ngFor="let item of outLocker; let i = index" cdkDrag [cdkDragDisabled]="disabledInShipping">
+              <div class="example-box" *ngFor="let item of outLocker; let i = index" cdkDrag
+                [cdkDragDisabled]="disabledInShipping">
 
                 <div class="d-flex justify-content-between" style="cursor: pointer;">
                   <a (click)="copyMessage(item);"><i class="far fa-copy"></i></a>
@@ -353,8 +357,8 @@
                 <div> #{{ item.product ? item.product.id : '' }}</div>
 
                 <div title="{{ item.product.name ? item.product.name : '' }}">
-                  {{ (item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...' :
-                  item.product.name}}
+                  {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...' :
+                  item.product.name) : 'N/A' }}
                 </div>
 
                 <div>
