@@ -56,6 +56,7 @@ export class ModalCreateShippingComponent implements OnInit {
       address: [null, [Validators.required]],
       observations: [null],
       products: [null, [Validators.required]],
+      consolidated: [false]
     });
     this.filteredUsers = this.createShippingForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
     this.filteredAddress = this.createShippingForm.controls.address.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'address')));

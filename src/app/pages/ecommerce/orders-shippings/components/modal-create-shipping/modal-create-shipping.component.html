@@ -7,6 +7,14 @@
 
   <form [formGroup]="createShippingForm">
 
+    <br>
+    <div class="form-check form-switch text-truncate h5">
+
+      <label for="form-group">Envío Consolidado</label>
+      <input class="form-check-input" type="checkbox" formControlName="consolidated"
+        id="flexSwitchCheckChecked">
+    </div>
+
     <div class="row mt-3">
 
       <div class="col-12 col-sm-6">
