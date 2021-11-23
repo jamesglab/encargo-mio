@@ -142,6 +142,6 @@
 </ng-template>
 
 <ng-template #shipment_tracking role="document" let-modal>
-  <app-shipment-tracking [shippingTracking]="shippingTracking" (refreshTable)="getTransactions() ;getCountsTabs()">
+  <app-shipment-tracking [shipping_order]="shippingTracking" (refreshTable)="getTransactions(); getCountsTabs()">
   </app-shipment-tracking>
 </ng-template>

@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h5 class="modal-title mt-0">Seguimiento de Envio | # {{shippingTracking.id}}</h5>
+  <h5 class="modal-title mt-0">Seguimiento de Envio | # {{shipping_order.id}}</h5>
   <button type="button" class="btn-close" (click)="closeModale()" aria-hidden="true"></button>
 </div>
 
@@ -9,24 +9,40 @@
     Estamos obteniendo la información del envío...
   </ng-container>
 
-  <div class="d-flex">
+  <ng-container *ngIf="showNoConveyor">
+    <p class="no-conveyor">EL ENVÍO NO POSEE UNA TRANSPORTADORA </p>
+  </ng-container>
 
-    <div class="count">
+  <ng-container *ngIf="!showNoConveyor && !isLoadingData">
+    <div class="row">
 
-      <ul class="events">
-        <li *ngFor="let status of shippingTracking.conveyor_status | sortDate:'date'">
-          <time>{{status.date}}</time>
-          <span><strong>{{status.location}}</strong>{{status.status}}</span>
-        </li>
-      </ul>
+      <div class="col-xl-12 col-md-12 col-sm-12">
+
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Fecha</th>
+              <th>ESTADO</th>
+              <th>DESCRIPCIÓN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="shipping_order.conveyor_status">
+              <tr *ngFor="let status of shipping_order.conveyor_status | sortDate:'date' ; let i = index;">
+                <td> {{ (i + 1) }}</td>
+                <td> {{ status.date }} </td>
+                <td> {{ status.location }} | {{ status.status }} </td>
+                <td> {{ status.detail }} </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+
+      </div>
 
     </div>
-
-    <div>
-      <img src="assets/mesa_trabajo.png" alt="" draggable="false" style="object-fit: cover; width: 100%;">
-    </div>
-
-  </div>
+  </ng-container>
 
 </div>
 
