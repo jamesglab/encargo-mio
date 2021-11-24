@@ -307,8 +307,10 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   copyMessage(item: any) {
     if (item) {
-      this.clipboard.copy(`Producto ID: #${item.product.id ? item.product.id : ''}\nNombre: ${item.product.name ? item.product.name : 'N/A'}\n# Orden: ${item.order_service ? item.order_service : 'N/A'}\nPeso: ${item.weight ? item.weight : 0} lb\nDescripción: ${item.product.description ? item.product.description : 'N/A'}\nGuía Origen: ${item.guide_number_alph ? item.guide_number_alph : 'N/A'}\nValor Declarado Admin: $${item.declared_value_admin ? item.declared_value_admin : 0}USD\nValor Declarado Cliente: $${item.declared_value_client ? item.declared_value_client : 0}USD`);
+      this.clipboard.copy(item);
       Swal.fire('Información copida. ', '', 'info');
+    } else {
+      Swal.fire('', 'No hay información a copiar.', 'error');
     }
   }
 
