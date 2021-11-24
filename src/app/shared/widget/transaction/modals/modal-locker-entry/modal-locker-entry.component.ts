@@ -104,6 +104,7 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.valueChanges.subscribe((orderPurchase: any) => {
       if (orderPurchase && orderPurchase.id) {
+        this.files = [];
         this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id+ ' | ' + orderPurchase.product.name));
         this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
         this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
