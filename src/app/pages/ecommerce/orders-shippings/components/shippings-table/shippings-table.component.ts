@@ -110,11 +110,7 @@ export class ShippingsTableComponent implements OnInit {
   }
 
   sendShippingTracking(data: any) {
-    if (data.conveyor_status) {
-      this.shippingTracking.emit(data);
-    } else {
-      Swal.fire('No hay registro de la transportadora.', '', 'info');
-    }
+    this.shippingTracking.emit(data);
   }
 
   numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input

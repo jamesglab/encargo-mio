@@ -29,6 +29,7 @@ export class LockersTableComponent implements OnInit {
   //CREAMOS LOS CONTROLES PARA LOS INPUTS
   public filterUserLocker = new FormControl('');
   public filterGuide = new FormControl('');
+  public filterOrderService = new FormControl('');
   public filterProduct = new FormControl('');
   public filterStatus = new FormControl('');
   public filterIdProduct = new FormControl('');
@@ -74,6 +75,9 @@ export class LockersTableComponent implements OnInit {
     const options = {};
     if (this.filterGuide.value != null && this.filterGuide.value != '') {
       options['guide_number'] = this.filterGuide.value
+    }
+    if (this.filterOrderService.value != null && this.filterOrderService.value.trim() != '') {
+      options['order_service'] = this.filterOrderService.value;
     }
     if (this.filterProduct.value != null && this.filterProduct.value != '') {
       options['name'] = this.filterProduct.value

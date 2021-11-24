@@ -88,6 +88,7 @@ export const updateShipping = (data: any): any => {
         "shipping_type": data.shipping_type,
         "status": data.status,
         "total_value": data.total_value,
+        "consolidated": data.consolidated,
         "trm": data.trm,
         "user": data.user
     };

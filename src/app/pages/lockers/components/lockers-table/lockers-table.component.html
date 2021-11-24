@@ -6,12 +6,21 @@
   <table class="table table-centered table-nowrap">
     <thead class="table-light">
       <tr>
+        
         <th>
           Número de Guía
           <div class="mt-2">
             <input type="" [formControl]="filterGuide" class="form-control" (keyup.enter)="getAllLockers()" />
           </div>
         </th>
+
+        <th>
+          Cotización
+          <div class="mt-2">
+            <input type="" [formControl]="filterOrderService" class="form-control" (keyup.enter)="getAllLockers()" />
+          </div>
+        </th>
+
         <th class="align-middle">
           Fecha de ingreso
           <div class="input-group clockpicker mt-2">
@@ -24,6 +33,7 @@
             </div>
           </div>
         </th>
+
         <th class="align-middle">
           Id Producto
           <div class="mt-2">
@@ -37,6 +47,7 @@
             <input type="text" class="form-control" [formControl]="filterProduct" (keyup.enter)="getAllLockers()" />
           </div>
         </th>
+
         <th class="align-middle">
           Casillero
           <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
@@ -47,6 +58,7 @@
             </mat-option>
           </mat-autocomplete>
         </th>
+
         <th class="align-middle">
           Estado
           <select class="form-select mt-2" aria-label="Default select example" [formControl]="filterStatus"
@@ -56,8 +68,11 @@
             <option value="1">Consolidacion</option>
           </select>
         </th>
+
         <th class="align-middle">Peso</th>
+
         <th class="align-middle">Opciones</th>
+
       </tr>
     </thead>
 
@@ -66,6 +81,11 @@
         <td>
           {{ data.guide_number_alph ? data.guide_number_alph : "" }}
         </td>
+        
+        <td>
+          {{data.order_service || '-'}}
+        </td>
+
         <td>
           {{data.receipt_date |date}}
         </td>

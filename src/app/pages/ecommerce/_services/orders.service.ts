@@ -404,4 +404,15 @@ export class OrderService {
       );
   }
 
+  //UPDATE CONVEYOR STATUS LAMBDA
+  updateStatusConveyor(shipping_order): Observable<any> {
+    return this.http.post<any>(
+      `${environment.microservices.updateConveyor}`, shipping_order).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
 }

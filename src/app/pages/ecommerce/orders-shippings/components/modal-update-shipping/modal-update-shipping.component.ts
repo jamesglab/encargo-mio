@@ -115,7 +115,8 @@ export class ModalUpdateShippingComponent implements OnInit {
       user: [shipping.user, Validators.required,],
       address: [shipping.address ? shipping.address : null, [Validators.required]],
       observations: [shipping.observations],
-      products: [shipping.products ? shipping.products : null, Validators.required]
+      products: [shipping.products ? shipping.products : null, Validators.required],
+      consolidated: [shipping.consolidated ? shipping.consolidated : false]
     });
 
     this.updateShippingForm.controls.shipping_type.disable();
@@ -331,7 +332,7 @@ export class ModalUpdateShippingComponent implements OnInit {
         })).subscribe((res: any) => {
           this.modalService.dismissAll();
           this.getTransactions.emit(true);
-          this._notify.show('Orden de envio Actualizada.', '', 'success');
+          this._notify.show('Envío Actualizado.', '', 'success');
         }, err => {
           this.isLoading = false;
           this._notify.show('Error', 'No pudimos actualizar la orden, intenta de nuevo.', 'error');
