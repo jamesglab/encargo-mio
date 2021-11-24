@@ -230,11 +230,13 @@ export class CreateOrderComponent implements OnInit {
           this.products.controls[i]['controls'].tax.setValue(0);
           this.calculateTotalPrices(i); // Calcular el total de precios
           this.calculateTotalArticles(); // Calcular el valor de todos los artículos
+          this.calculateTotalShippingOrigin();
         });
       } else {
         this.calculateTax(i); // Calculamos el tax
         this.calculateTotalPrices(i); // Calcular el total de precios
         this.calculateTotalArticles(); // Calcular el valor de todos los artículos
+        this.calculateTotalShippingOrigin();
       }
       this.isLoadingFormula = false;
     }, err => {
@@ -265,6 +267,12 @@ export class CreateOrderComponent implements OnInit {
     this.products.value.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; }); // Hacemos la sumatoria del sub_total y weight
     this.totalValues.total_value = sub_total;
     this.totalValues.total_weight = total_weight;
+  }
+
+  calculateTotalShippingOrigin(): void {
+    var total_shipping: number = 0;
+    this.products.value.map((product: any) => { total_shipping += product.shipping_origin_value_product; });
+    this.totalValues.total_shipping_products = total_shipping;
   }
 
   // Consumimos el endPoint de creación de orden por parte del administrador 
