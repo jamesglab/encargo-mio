@@ -86,11 +86,13 @@ export class ModalEditOrderComponent implements OnInit {
               product.tax = 0; // Volver el tax 0
               this.calculateTotalPrices(i); // Calculamos el total de prices
               this.calculateTotalArticles(); // Luego calculamos el total de los articulos
+              this.calculateTotalShippingOrigin();
             });
           } else {
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
             this.calculateTotalArticles(); // Luego calculamos el total de los articulos
+            this.calculateTotalShippingOrigin();
           }
           this.isLoadingFormula = false;
         }, err => {
@@ -153,6 +155,12 @@ export class ModalEditOrderComponent implements OnInit {
     this.orderSelected.products.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; });
     this.orderSelected.sub_total = sub_total;
     this.orderSelected.total_weight = total_weight;
+  }
+
+  calculateTotalShippingOrigin(): void {
+    var total_shipping: number = 0;
+    this.orderSelected.products.map((product: any) => { total_shipping += product.shipping_origin_value_product; });
+    this.orderSelected.total_shipping_products = total_shipping;
   }
 
   changeCalculator(item: string, i: number) {

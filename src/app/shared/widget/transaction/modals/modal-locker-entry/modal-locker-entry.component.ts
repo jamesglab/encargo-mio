@@ -102,21 +102,22 @@ export class ModalLockerEntryComponent implements OnInit {
       }
     });
 
-    this.lockerForm.controls.guide_order.valueChanges.subscribe((guide: any) => {
-      if (guide && guide.id) {
-        this.lockerForm.controls.guide_order.setValue((guide.order_service.id+ ' | ' + guide.product.name));
-        this.lockerForm.controls.guide_number.setValue(guide.guide_number);
-        this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
-        this.lockerForm.controls.order_purchase.setValue(guide.id);
-        this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
-        this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
-        this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
-        this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
-        this.lockerForm.controls.user.setValue((guide.order_service.user.id ? guide.order_service.user.id : null));
-        this.lockerForm.controls.permanent_shipping_value.setValue((guide.permanent_shipping_value ? guide.permanent_shipping_value : 0));
-        this.getTypeShipping(guide);
-        this.pushImagesResponse(guide.product.image ? guide.product.image : null);
-      } else if (typeof guide === 'string' && guide !== null && guide.length === 0) {
+    this.lockerForm.controls.guide_order.valueChanges.subscribe((orderPurchase: any) => {
+      if (orderPurchase && orderPurchase.id) {
+        this.files = [];
+        this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id+ ' | ' + orderPurchase.product.name));
+        this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
+        this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        this.lockerForm.controls.order_purchase.setValue(orderPurchase.id);
+        this.lockerForm.controls.weight.setValue((orderPurchase.weight ? orderPurchase.weight : 0));
+        this.lockerForm.controls.declared_value_admin.setValue((orderPurchase.product_price ? orderPurchase.product_price : 0));
+        this.lockerForm.controls.product.setValue((orderPurchase.product.id ? orderPurchase.product.id : null));
+        this.lockerForm.controls.product_description.setValue(orderPurchase.product.name ? orderPurchase.product.name : null);
+        this.lockerForm.controls.user.setValue((orderPurchase.order_service.user.id ? orderPurchase.order_service.user.id : null));
+        this.lockerForm.controls.permanent_shipping_value.setValue((orderPurchase.permanent_shipping_value ? orderPurchase.permanent_shipping_value : 0));
+        this.getTypeShipping(orderPurchase);
+        this.pushImagesResponse(orderPurchase.product.image ? orderPurchase.product.image : null);
+      } else if (typeof orderPurchase === 'string' && orderPurchase !== null && orderPurchase.length === 0) {
         this.cleanData();
       }
     });
