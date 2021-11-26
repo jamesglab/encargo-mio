@@ -48,7 +48,8 @@
 
             <div>
               <strong>Valor artículos:</strong>
-              {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }} USD
+              {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (orderSelected.total_shipping_products ?
+              orderSelected.total_shipping_products : 0)) | currency: 'USD' }} USD
             </div>
 
             <div>
@@ -63,9 +64,8 @@
               </div>
               <div>
                 <strong>Envio a casa ({{formula.name}})</strong>
-                {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) +
-                (formula.value ? formula.value : 0) |
-                number : '1.2-2' }}
+                {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (orderSelected.total_shipping_products ?
+                orderSelected.total_shipping_products : 0)) + (formula.value ? formula.value : 0) | number : '1.2-2' }}
                 USD
               </div>
             </ng-container>
@@ -129,10 +129,6 @@
             </div>
           </div>
 
-          <div class="mt-2">
-            {{ item.aditional_info }}
-          </div>
-
           <div class="form-group mt-2 h5">
             <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
             <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
@@ -161,7 +157,7 @@
 
             <ng-container *ngIf="status == 0 || status == 1">
               <div class="mx-2" *ngIf="item.quantity > 1">
-                <a (click)="calculateWeightSubstract(i); getFormula(i)">
+                <a (click)="calculateWeightSubstract(i); getFormula(i);">
                   <i class="fas fa-minus"></i>
                 </a>
               </div>
@@ -172,7 +168,7 @@
             </div>
 
             <div class="mx-2" *ngIf="status == 0 || status == 1">
-              <a (click)="calculateWeightAdd(i); getFormula(i)">
+              <a (click)="calculateWeightAdd(i); getFormula(i);">
                 <i class="fas fa-plus"></i>
               </a>
             </div>
@@ -237,7 +233,8 @@
               <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen</label>
               <input type="number" class="form-control" placeholder="Envio origen"
                 [(ngModel)]="item.shipping_origin_value_product" (keypress)="numberOnly($event);"
-                (blur)="getFormula(i);" [disabled]="item.free_shipping || disabledAllInputs">
+                (blur)="getFormula(i); calculateTotalShippingOrigin();"
+                [disabled]="item.free_shipping || disabledAllInputs">
             </div>
           </div>
 

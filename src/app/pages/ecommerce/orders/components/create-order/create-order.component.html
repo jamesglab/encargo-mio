@@ -112,7 +112,8 @@
 
                 <div>
                   <strong>Valor de Artículos:</strong>
-                  {{ (totalValues.total_value ? totalValues.total_value : 0) | number : '1.2-2' }} USD
+                  {{ ((totalValues.total_value ? totalValues.total_value : 0) + (totalValues.total_shipping_products ?
+                  totalValues.total_shipping_products : 0)) | number : '1.2-2' }} USD
                 </div>
 
                 <div>
@@ -130,8 +131,9 @@
                 <ng-container *ngFor="let formula of totalFormulas">
                   <div>
                     <strong>Envio a casa ({{formula.name}})</strong>
-                    {{ (totalValues.total_value ? totalValues.total_value : 0)
-                    + (formula.value ? formula.value : 0) | number : '1.2-2' }}
+                    {{ ((totalValues.total_value ? totalValues.total_value : 0) + (totalValues.total_shipping_products ?
+                    totalValues.total_shipping_products : 0)) + (formula.value ? formula.value : 0) | number : '1.2-2'
+                    }}
                     USD
                   </div>
                 </ng-container>
@@ -275,7 +277,7 @@
                   <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen (USD)</label>
                   <input type="number" class="form-control" placeholder="Envio origen"
                     formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
-                    (blur)="getFormula(i);" min="0">
+                    (blur)="getFormula(i); calculateTotalShippingOrigin();" min="0">
                 </div>
 
               </div>

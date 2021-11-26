@@ -222,24 +222,20 @@ export class CreateOrderComponent implements OnInit {
   }
 
   getFormula(i: number) {
-    this.isLoadingFormula = true;
-    this.quotationService.calculateShipping(this.products.value).subscribe((res: any) => { // Llamamos al método para calcular los valores de envío
-      this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
-      if (res[0].name === 'No aplica') {
-        this.products.value.map((product: any, i: number) => {
-          this.products.controls[i]['controls'].tax.setValue(0);
-          this.calculateTotalPrices(i); // Calcular el total de precios
-          this.calculateTotalArticles(); // Calcular el valor de todos los artículos
-        });
-      } else {
+    return new Promise((resolve, reject) => {
+      this.isLoadingFormula = true;
+      this.quotationService.calculateShipping(this.products.value).subscribe((res: any) => { // Llamamos al método para calcular los valores de envío
+        this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
         this.calculateTax(i); // Calculamos el tax
         this.calculateTotalPrices(i); // Calcular el total de precios
         this.calculateTotalArticles(); // Calcular el valor de todos los artículos
-      }
-      this.isLoadingFormula = false;
-    }, err => {
-      this.isLoadingFormula = false;
-      throw err;
+        this.isLoadingFormula = false;
+        resolve("ok");
+      }, err => {
+        this.isLoadingFormula = false;
+        reject(err);
+        throw err;
+      });
     });
   }
 
@@ -267,8 +263,14 @@ export class CreateOrderComponent implements OnInit {
     this.totalValues.total_weight = total_weight;
   }
 
+  calculateTotalShippingOrigin(): void {
+    var total_shipping: number = 0;
+    this.products.value.map((product: any) => { total_shipping += product.shipping_origin_value_product; });
+    this.totalValues.total_shipping_products = total_shipping;
+  }
+
   // Consumimos el endPoint de creación de orden por parte del administrador 
-  createOrder() {
+  async createOrder() {
 
     if (!this.createProductForm.value.user) { // Si no hay un usuario asignado a través del selector no se deja pasar.
       this._notify.show("Atención", "Selecciona un usuario al cual asignar el producto.", "info");
@@ -283,6 +285,8 @@ export class CreateOrderComponent implements OnInit {
     }
 
     if (this.createProductForm.valid) {
+
+      await this.getFormula(0);
 
       this.isLoading = true;
       var formData = new FormData();

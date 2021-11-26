@@ -17,6 +17,13 @@
             (keyup.enter)="sendFilter();">
         </th>
 
+        <th class="align-middle">
+          Cotización
+          <input type="text" class="form-control mt-2" formControlName="order_service"
+          placeholder="Filtra por el número de Cotización..." title="Filtra por el número de Cotización..."
+          (keyup.enter)="sendFilter();">
+        </th>
+
         <th class="th-align">
           Guía
           <input type="text" class="form-control mt-2" formControlName="guide_number"
@@ -90,6 +97,10 @@
               - F{{ data.parent_id }}
             </ng-container>
           </a>
+        </td>
+        
+        <td>
+          {{ data.order_service || '-' }}
         </td>
 
         <td>{{ data.guide_number_alph ? data.guide_number_alph : data.guide_number }}</td>

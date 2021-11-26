@@ -29,11 +29,10 @@
     <form [formGroup]="updateShippingForm">
 
       <ng-container *ngIf="shippingToUpdate.status != '0' &&  shippingToUpdate.status != '1'">
-        
+
         <div class="form-check form-switch text-truncate h5">
           <label for="form-group">Envío Consolidado</label>
-          <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox"
-          formControlName="consolidated">
+          <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" formControlName="consolidated">
         </div>
 
         <div class="row mt-3">
@@ -242,10 +241,6 @@
               <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag
                 [cdkDragDisabled]="disabledInLocker">
 
-                <div class="d-flex justify-content-between" style="cursor: pointer;">
-                  <a (click)="copyMessage(item);"><i class="far fa-copy"></i></a>
-                </div>
-
                 <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
@@ -264,45 +259,53 @@
                   </a>
                 </div>
 
-                <div> #{{ item.product.id }}</div>
-
                 <div title="{{ item.product.name ? item.product.name : '' }}">
-                  {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...' :
-                  item.product.name) : 'N/A' }}
+                  <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
+                    {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...'
+                    : item.product.name) : 'N/A' }}
+                  </a>
                 </div>
 
                 <div>
                   <strong># Orden:</strong>
-                  {{ item.order_service ? item.order_service : 'N/A' }}
+                  <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
+                    {{ item.order_service ? item.order_service : 'N/A' }}
+                  </a>
                 </div>
 
                 <div>
-                  <strong>Peso: </strong>
-                  {{ item.weight }} lb.
+                  <strong>Peso:</strong>
+                  <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                    {{ (item.weight ? item.weight : 0 )}} lb.
+                  </a>
+                </div>
+
+                <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
+                  <strong>Descripción:</strong>
+                  <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
+                    {{ item.product.description ? item.product.description : 'N/A' }}
+                  </a>
                 </div>
 
                 <div>
-
-                  <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
-                    <strong>Descripción</strong>
-                    {{ item.product.description }}
-                  </div>
-
-                  <div>
-                    <strong>Guía Origen:</strong>
+                  <strong>Guía Origen:</strong>
+                  <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
                     {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
-                  </div>
+                  </a>
+                </div>
 
-                  <div>
-                    <strong>Valor Declarado Admin.:</strong>
+                <div>
+                  <strong>Valor Declarado Admin.:</strong>
+                  <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
                     {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
-                  </div>
+                  </a>
+                </div>
 
-                  <div>
-                    <strong>Valor Declarado Cliente: </strong>
+                <div>
+                  <strong>Valor Declarado Cliente: </strong>
+                  <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
                     {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
-                  </div>
-
+                  </a>
                 </div>
 
               </div>
@@ -325,10 +328,6 @@
               <div class="example-box" *ngFor="let item of outLocker; let i = index" cdkDrag
                 [cdkDragDisabled]="disabledInShipping">
 
-                <div class="d-flex justify-content-between" style="cursor: pointer;">
-                  <a (click)="copyMessage(item);"><i class="far fa-copy"></i></a>
-                </div>
-
                 <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                   <a [href]="item.product.link" target="_blank">
                     <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
@@ -347,40 +346,59 @@
                   </a>
                 </div>
 
-                <div> #{{ item.product ? item.product.id : '' }}</div>
+                <div>
+                  <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
+                    #{{ item.product ? item.product.id : '' }}
+                  </a>
+                </div>
 
                 <div title="{{ item.product.name ? item.product.name : '' }}">
-                  {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...' :
-                  item.product.name) : 'N/A' }}
+                  <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
+                    {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...'
+                    : item.product.name) : 'N/A' }}
+                  </a>
                 </div>
 
                 <div>
                   <strong># Orden:</strong>
-                  {{ item.order_service ? item.order_service : 'N/A' }}
+                  <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
+                    {{ item.order_service ? item.order_service : 'N/A' }}
+                  </a>
                 </div>
 
                 <div>
-                  <strong>Peso:</strong> {{ (item.weight ? item.weight : 0 )}} lb.
+                  <strong>Peso:</strong>
+                  <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                    {{ (item.weight ? item.weight : 0 )}} lb.
+                  </a>
                 </div>
 
                 <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
-                  <strong>Descripción</strong>
-                  {{ item.product.description }}
+                  <strong>Descripción:</strong>
+                  <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
+                    {{ item.product.description ? item.product.description : 'N/A' }}
+                  </a>
                 </div>
 
                 <div>
                   <strong>Guía Origen:</strong>
-                  {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
+                  <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
+                    {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
+                  </a>
                 </div>
 
                 <div>
                   <strong>Valor Declarado Admin.:</strong>
-                  {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
+                  <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
+                    {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
+                  </a>
                 </div>
 
                 <div>
                   <strong>Valor Declarado Cliente: </strong>
-                  {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
+                  <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
+                    {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
+                  </a>
                 </div>
 
               </div>

@@ -57,7 +57,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       observations: [null],
       store: [{ value: null, disabled: true }, [Validators.required]],
       product_price: [null],
-      purchase_date: [null, Validators.required],
+      purchase_date: [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }, [Validators.required]],
       invoice_number: [null, Validators.required],
       locker_entry_date: [null],
       conveyor: [{ value: null, disabled: true }],
