@@ -22,7 +22,6 @@ export class ExportPdfService {
   constructor() { }
 
   async exportToLabel(information: any, address: any, UID: string) {
-
     const docDefinitions: any = {
       pageSize: 'A5',
       pageOrientation: 'portrait',
@@ -122,7 +121,7 @@ export class ExportPdfService {
             absolutePosition: { x: 180, y: 225 }
           },
           {
-            text: `${address.address} ${address.description ? address.description : ''}\n${address.city.name}, ${address.department.name}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
+            text: `${address.address} ${address.description ? address.description : ''}\n${address.city ? address.city.name : ''}, ${address.department ? address.department.name : ''}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
             fontSize: '10',
             color: '#4f5159',
             absolutePosition: { x: 180, y: 270 }
