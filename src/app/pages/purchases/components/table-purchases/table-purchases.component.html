@@ -22,6 +22,11 @@
         <tr>
 
           <th class="align-middle">
+            Imagen
+            <div class="mt-2"></div>
+          </th>
+
+          <th class="align-middle">
             #
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="filterCode" (keyup.enter)="filterPurchase()" />
@@ -101,6 +106,13 @@
       <tbody>
 
         <tr *ngFor="let data of purchases">
+
+          <td>
+            <div class="image-product">
+              <img [src]="data.product_image || 'https://i.imgur.com/riKFnErh.jpg'"
+              (error)="$event.src = 'https://i.imgur.com/riKFnErh.jpg'" draggable="false" >
+            </div>
+          </td>
 
           <td>
             <a class="text-body fw-bold">

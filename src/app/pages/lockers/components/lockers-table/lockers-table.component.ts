@@ -170,6 +170,16 @@ export class LockersTableComponent implements OnInit {
     }
   }
 
+  getStatusLocker(status: number): string {
+    let statuses = {
+      "0": "EN BODEGA",
+      "1": "EN CONSOLIDACIÓN",
+      "2": "ENVIADO",
+      "3": "ENTREGADO"
+    };
+    return statuses[status] || statuses[0];
+  }
+
   deleteProduct(product: any): void {
     if (product) {
       Swal.fire({

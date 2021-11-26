@@ -151,6 +151,12 @@ export class ModalEditOrderComponent implements OnInit {
     this.orderSelected.total_weight = total_weight;
   }
 
+  calculateTotalShippingOrigin(): void {
+    var total_shipping: number = 0;
+    this.orderSelected.products.map((product: any) => { total_shipping += product.shipping_origin_value_product; });
+    this.orderSelected.total_shipping_products = total_shipping;
+  }
+
   changeCalculator(item: string, i: number) {
     this.orderSelected.products[i].tax_manually = false; // Setear que el tax_manually estará automatico
     this.orderSelected.products[i].selected_tax = item;

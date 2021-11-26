@@ -64,8 +64,10 @@
           <select class="form-select mt-2" aria-label="Default select example" [formControl]="filterStatus"
             (change)="getAllLockers()">
             <option [value]="'all'" selected>Seleccione un Estado</option>
-            <option value="0">En Casillero</option>
-            <option value="1">Consolidacion</option>
+            <option value="0">EN BODEGA</option>
+            <option value="1">EN CONSOLIDACIÓN</option>
+            <option value="2">ENVIADO</option>
+            <option value="3">ENTREGADO</option>
           </select>
         </th>
 
@@ -108,7 +110,7 @@
           {{(data.locker_id ? "CA " + data.locker_id : "") + " | " + data.user_name + " " + data.last_name }}
         </td>
 
-        <td>{{ (data.status == '1') ? 'CONSOLIDACION' : 'EN CASILLERO' }}</td>
+        <td>{{ getStatusLocker(data.status) }}</td>
 
         <td>{{ data.weight ? data.weight + " lb" : 0 }}</td>
 

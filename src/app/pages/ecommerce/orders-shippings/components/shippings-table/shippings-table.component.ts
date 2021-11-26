@@ -5,7 +5,7 @@ import * as moment from "moment";
 import { OrderService } from '../../../_services/orders.service';
 import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shippings-table',
@@ -43,6 +43,7 @@ export class ShippingsTableComponent implements OnInit {
     this.getTypes();
     this.shippingsFilters = this._fb.group({
       shipping: [null],
+      order_service: [null],
       created_at: [null],
       user: [null],
       guide_number: [null],
@@ -133,17 +134,25 @@ export class ShippingsTableComponent implements OnInit {
 
   filterValidation() {
     const filterValues: any = {};
-    if (this.form.shipping.value) {
+    if (this.form.shipping.value && this.form.shipping.value.trim() != '') {
       filterValues['shipping'] = this.form.shipping.value;
-    } if (this.form.created_at.value && this.form.created_at.value.year) {
+    }
+    if(this.form.order_service.value && this.form.order_service.value.trim() != ''){
+      filterValues['order_service'] = this.form.order_service.value;
+    }
+    if (this.form.created_at.value && this.form.created_at.value.year) {
       filterValues['created_at'] = this.formatDate();
-    } if (this.form.user.value) {
+    } 
+    if (this.form.user.value) {
       filterValues['user'] = this.form.user.value.id;
-    } if (this.form.guide_number.value) {
+    } 
+    if (this.form.guide_number.value && this.form.guide_number.value.trim() != '') {
       filterValues['guide_number'] = this.form.guide_number.value;
-    } if (this.form.shipping_type.value && this.form.shipping_type.value != 'null' && this.form.shipping_type.value != null) {
+    } 
+    if (this.form.shipping_type.value && this.form.shipping_type.value != 'null' && this.form.shipping_type.value != null) {
       filterValues['shipping_type'] = this.form.shipping_type.value;
-    } if (this.form.shipping_value.value > 0) {
+    } 
+    if (this.form.shipping_value.value > 0) {
       filterValues['shipping_value'] = this.form.shipping_value.value;
     }
     return filterValues;

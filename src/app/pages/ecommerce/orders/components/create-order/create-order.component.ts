@@ -263,6 +263,12 @@ export class CreateOrderComponent implements OnInit {
     this.totalValues.total_weight = total_weight;
   }
 
+  calculateTotalShippingOrigin(): void {
+    var total_shipping: number = 0;
+    this.products.value.map((product: any) => { total_shipping += product.shipping_origin_value_product; });
+    this.totalValues.total_shipping_products = total_shipping;
+  }
+
   // Consumimos el endPoint de creación de orden por parte del administrador 
   async createOrder() {
 
