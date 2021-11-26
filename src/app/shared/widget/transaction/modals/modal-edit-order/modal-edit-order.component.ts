@@ -75,29 +75,25 @@ export class ModalEditOrderComponent implements OnInit {
     }
   }
 
-  getFormula(position?: number) {
-    if (this.status == 0 || this.status == 1 || this.status == 7) {
-      this.isLoadingFormula = true;
-      this._orders.calculateShipping(this.orderSelected.products)
-        .subscribe((res: any) => {
-          this.orderSelected.shipping_value_admin = res;
-          if (res[0].name === "No aplica") {
-            this.orderSelected.products.map((product: any, i: number) => {// Mapeamos todos los productos
-              product.tax = 0; // Volver el tax 0
-              this.calculateTotalPrices(i); // Calculamos el total de prices
-              this.calculateTotalArticles(); // Luego calculamos el total de los articulos
-            });
-          } else {
+  getFormula(position: number) {
+    return new Promise((resolve, reject) => {
+      if (this.status == 0 || this.status == 1 || this.status == 7) {
+        this.isLoadingFormula = true;
+        this._orders.calculateShipping(this.orderSelected.products)
+          .subscribe((res: any) => {
+            this.orderSelected.shipping_value_admin = res;
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
             this.calculateTotalArticles(); // Luego calculamos el total de los articulos
-          }
-          this.isLoadingFormula = false;
-        }, err => {
-          this.isLoadingFormula = false;
-          throw err;
-        });
-    }
+            resolve("ok");
+            this.isLoadingFormula = false;
+          }, err => {
+            this.isLoadingFormula = false;
+            reject(err);
+            throw err;
+          });
+      }
+    });
   }
 
   calculateWeightSubstract(i: number) {
@@ -211,13 +207,14 @@ export class ModalEditOrderComponent implements OnInit {
     }
   }
 
-  sendQuotation() {
+  async sendQuotation() {
     // VALIDAMOS LOS CAMPOS QUE SON REQUERIDOS EN EL INPUT
     if (validateErrors(this.orderSelected.products, ['name', 'weight', 'product_value'])) {
       Swal.fire('Error', 'Campos requeridos incompletos', 'warning');
-      return
+      return;
     }
     this.isLoading = true;
+    await this.getFormula(0);
     this._orders.updateOrder(this.orderSelected)
       .subscribe((res: any) => {
         this._notify.show("Cotización Actualizada", `Actualizaste la cotización # ${this.orderSelected.id}`, "success");
