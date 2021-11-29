@@ -244,10 +244,6 @@ export class OrderService {
   }
 
   updateShipping(payload: any) {
-    if (payload.status === 3) {
-      delete payload.deleted_products;
-      delete payload.products;
-    }
     return this.http.put<any>(
       `${environment.microservices.management}shipping-order/`, payload, { headers: header }).pipe(
         map((res: any) => {
