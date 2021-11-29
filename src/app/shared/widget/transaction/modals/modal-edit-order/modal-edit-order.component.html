@@ -129,10 +129,6 @@
             </div>
           </div>
 
-          <div class="mt-2">
-            {{ item.aditional_info }}
-          </div>
-
           <div class="form-group mt-2 h5">
             <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
             <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
@@ -161,7 +157,7 @@
 
             <ng-container *ngIf="status == 0 || status == 1">
               <div class="mx-2" *ngIf="item.quantity > 1">
-                <a (click)="calculateWeightSubstract(i); getFormula(i)">
+                <a (click)="calculateWeightSubstract(i); getFormula(i);">
                   <i class="fas fa-minus"></i>
                 </a>
               </div>
@@ -172,7 +168,7 @@
             </div>
 
             <div class="mx-2" *ngIf="status == 0 || status == 1">
-              <a (click)="calculateWeightAdd(i); getFormula(i)">
+              <a (click)="calculateWeightAdd(i); getFormula(i);">
                 <i class="fas fa-plus"></i>
               </a>
             </div>

@@ -22,7 +22,7 @@ export class ExportPdfService {
   constructor() { }
 
   async exportToLabel(information: any, address: any, UID: string) {
-
+    console.log(information);
     const docDefinitions: any = {
       pageSize: 'A5',
       pageOrientation: 'portrait',
@@ -75,19 +75,19 @@ export class ExportPdfService {
             color: '#f08001',
             fontSize: '15',
             'bold': true,
-            absolutePosition: { x: 190, y: 120 }
+            absolutePosition: { x: 190, y: 100 }
           },
           {
             text: 'Calle 11 #24 - 75 \n La Ceja - Antioquia \n Tel: 318 242 8086',
             fontSize: '14',
-            absolutePosition: { x: 190, y: 140 },
+            absolutePosition: { x: 190, y: 120 },
             color: '#4f5159'
           },
           {
             text: '+13053996614',
             fontSize: '14',
             color: '#4f5159',
-            absolutePosition: { x: 210, y: 194 }
+            absolutePosition: { x: 210, y: 184 }
           }
         ],
         {
@@ -115,14 +115,14 @@ export class ExportPdfService {
             absolutePosition: { x: 85, y: 270 }
           },
           {
-            text: `${information.user.name} ${information.user.last_name}`,
+            text: `${information.address ? information.address.first_name : ''}`,
             color: '#f08001',
             fontSize: '13',
             'bold': true,
             absolutePosition: { x: 180, y: 225 }
           },
           {
-            text: `${address.address} ${address.description ? address.description : ''}\n${address.city.name}, ${address.department.name}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
+            text: `${address.address} ${address.description ? address.description : ''}\n${address.city ? address.city.name : ''}, ${address.department ? address.department.name : ''}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
             fontSize: '10',
             color: '#4f5159',
             absolutePosition: { x: 180, y: 270 }
