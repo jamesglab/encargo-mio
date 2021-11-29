@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { dataURLtoFile } from 'src/app/_helpers/tools/utils.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { FragmentService } from '../../services/fragment.service';
 import { Router } from '@angular/router';
@@ -19,7 +20,8 @@ export class FragmentProductsComponent implements OnInit {
   @Input() public shipping: any;
   @Input() public products_quantity: number; //CONTADOR DE PRODUCTOs
 
-  public form: FormGroup;// CREAMOS EL FORMULARIO
+  public fragmentsForm: FormGroup;// CREAMOS EL FORMULARIO
+
   public submit: boolean = false;
   public isLoading: boolean = false;
 
@@ -34,17 +36,21 @@ export class FragmentProductsComponent implements OnInit {
 
   // CREAMOS EL FORM ARRAY PARA LOS FRAGMENTOS
   buildForm() {
-    this.form = this.fb.group({
+    this.fragmentsForm = this.fb.group({
       fragments: this.fb.array([]),
     });
   }
 
   get fragmentsArray(): FormArray {
-    return this.form.get("fragments") as FormArray
+    return this.fragmentsForm.get("fragments") as FormArray
   }
 
   obtainForm(i) {
-    return this.form.get('fragments')['controls'][i];
+    return this.fragmentsForm.get('fragments')['controls'][i];
+  }
+
+  getProductsOfFragment(index: number): any {
+    return this.fragmentsForm.get('fragments')['controls'][index].get('products').value;
   }
 
   // CREACION DE FORMULARIO PARA PUSHEAR LOS FRAGMENTOS CON SUS CAMPOS
@@ -77,8 +83,66 @@ export class FragmentProductsComponent implements OnInit {
 
   }
 
+  setImages(product) { //FOR SET IMAGES THAT ARE IN DB
+
+    if (!product.files) {
+      product.files = [];
+    }
+    product.isLoadingImages = true;
+    Promise.all(
+      product.images.map(async (image) => {//ITERATE PRODUCT IMAGES
+        await new Promise((resolve, reject) => { //NEW PROMISE
+
+          this.fragmentService.getImage(image).subscribe(async (blob) => {//HTTP OBSERVABLE
+            const dataUrl = await new Promise((resolve, reject) => {// NEW PROMISE TO READER FILE
+              const reader = new FileReader()
+              reader.onloadend = () => resolve(reader.result)
+              reader.onerror = reject
+              reader.readAsDataURL(blob)
+            })
+
+            product.files.push(dataURLtoFile(dataUrl, "imagen.jpg")); // PUSH IMAGES INTO PRODUCT.FILES ARRAY
+            resolve("ok")
+
+          }, err => { product.isLoadingImages = false; reject(err); throw err; });
+
+        })
+      })
+    ).then(() => product.isLoadingImages = false) // END LOADING
+
+  }
+
+  addImage($event: any, fragmentIndex: number, productIndex: number) { //ADD IMAGE TO ONE PRODUCT OF FRAGMENT
+    const products = this.getProductsOfFragment(fragmentIndex); //GET PRODUCTS
+    products[productIndex].files.unshift(...$event.addedFiles); // ADD NEW IMAGE
+    this.setImagesProductFragment(products[productIndex]);
+  }
+
+  removeImage(file, fragmentIndex: number, productIndex: number) {// DELETE IMAFE FROM ONE PRODUCT OF FRAGMENT
+    const products = this.getProductsOfFragment(fragmentIndex); //GET PRODUCTS
+    products[productIndex].files
+      .splice(products[productIndex].files.indexOf(file), 1); //DELETE IMAGE
+    this.setImagesProductFragment(products[productIndex]);
+  }
+
+  setImagesProductFragment(product: { [key: string]: any }): void {
+    product.isLoadingImages = true;
+
+    var formData = new FormData();
+    //ITERATE PRODUCT AND ADD TO "FILES" FIELD OF FORMDATA
+    product.files.forEach((file) => { console.log("file", file); formData.append('files', file) });
+    const { images } = product;//DESTRUCT IMAGES
+    formData.append("payload", JSON.stringify({ images, product })); // ADD PRODUCT AND IMAGE
+
+    this.fragmentService.setImageProductFragment(formData)
+      .subscribe((res) => {
+        product.images = res.new_images; //SET NEW ARRAY OF IMAGES [{Location, Key}]
+        product.isLoadingImages = false;
+      }, err => { product.isLoadingImages = false; throw err; });
+  }
+
   // DROP DE PRODUCTOS ENTRE LOS DIFERENTES SELECTORES
-  drop(event: CdkDragDrop<string[]>) {
+  async drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -86,15 +150,15 @@ export class FragmentProductsComponent implements OnInit {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
+      this.setImages(event.container.data[event.currentIndex]);
     }
+
     this.setWeightAfterDrop();//VALIDATE ALL WEIGHT ACCORD WEIGHT OF PRODUCTS DROPPED
     this.setShippingValue();//VALIDATE SHIPPING VALUE OF FRAGMENT AGAIN
   }
 
-
   removeFragment(i) {
-
-    if (this.form.get('fragments')['controls'][i].get('products').value.length == 0) {
+    if (this.fragmentsForm.get('fragments')['controls'][i].get('products').value.length == 0) {
       this.fragmentsArray.removeAt(i)
     } else {
       this._notifyService.show('Alto', 'No es posible eliminar un fragmento que contiene productos.', 'warning')
@@ -153,7 +217,7 @@ export class FragmentProductsComponent implements OnInit {
 
     this.submit = true;
     this.isLoading = true;
-    if (this.form.invalid) { //VALIDATE IF FORM IS INVALID
+    if (this.fragmentsForm.invalid) { //VALIDATE IF FORM IS INVALID
       this.isLoading = false;
       return;
     }
@@ -172,7 +236,7 @@ export class FragmentProductsComponent implements OnInit {
       return;
     }
 
-    const { fragments } = this.form.getRawValue(); //DESCTRUCTING FRAGMENTS, AND SEND REQUEST
+    const { fragments } = this.fragmentsForm.getRawValue(); //DESCTRUCTING FRAGMENTS, AND SEND REQUEST
     const insertFragmentsSubscr = this.fragmentService.insert({ fragments, shipping: this.shipping })
       .subscribe((res) => {
         this._notifyService.show('¡Hecho!', 'El envío ha sido fragmentado con exito.', 'success');
