@@ -17,11 +17,16 @@
     Esta es una fracción del envío # {{shippingToUpdate.parent_id}}
   </ng-container>
 
-  <div class="d-flex justify-content-around" *ngIf="shippingToUpdate.status == '2'">
+  <div class="d-flex justify-content-around">
+
     <button class="btn btn-success" (click)="generateLabel();" [disabled]="isLoadingLabel">
-      Generar Rótulo</button>
-    <button class="btn btn-warning" (click)="goToFragment();">
-      Fraccionar Envío</button>
+      Generar Rótulo
+    </button>
+
+    <ng-container *ngIf="shippingToUpdate.status == '2'">
+      <button class="btn btn-warning" (click)="goToFragment();">
+        Fraccionar Envío</button>
+    </ng-container>
   </div>
 
   <ng-container *ngIf="!isLoadingData">
@@ -346,7 +351,7 @@
                   </a>
                 </div>
 
-                <div>
+                <div *ngIf="item.arrived">
                   <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
                     #{{ item.product ? item.product.id : '' }}
                   </a>
@@ -399,6 +404,10 @@
                   <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
                     {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
                   </a>
+                </div>
+
+                <div *ngIf="!item.arrived">
+                  <p class="no-arrived">EL PRODUCTO NO HA LLEGADO A CASILLERO</p>
                 </div>
 
               </div>
