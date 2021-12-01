@@ -13,7 +13,6 @@ export class ImageCompressService {
     return new Promise((resolve, reject) => {
       this.imageCompress.compressFile(base64, -1, 50, 50).then(result => {
         let obj = { url: result, file: this.dataURItoBlob(result.split(',')[1]), type: 'image/base64' };
-        console.log(obj);
         resolve(obj);
         return obj;
       }, err => {
