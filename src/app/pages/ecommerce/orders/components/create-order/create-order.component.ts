@@ -229,6 +229,7 @@ export class CreateOrderComponent implements OnInit {
         this.calculateTax(i); // Calculamos el tax
         this.calculateTotalPrices(i); // Calcular el total de precios
         this.calculateTotalArticles(); // Calcular el valor de todos los artículos
+        this.calculateTotalShippingOrigin();
         this.isLoadingFormula = false;
         resolve("ok");
       }, err => {
