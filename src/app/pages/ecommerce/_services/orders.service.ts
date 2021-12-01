@@ -46,7 +46,8 @@ export class OrderService {
       );
   }
 
-  createQuotation(body) {
+  createQuotation(body: any) {
+    if (body && body.length > 0) { body.map((item: any) => { delete item.uploadedFiles; }); }
     return this.http.post<any>(
       `${environment.microservices.management}orders`, body).pipe(
         map((res: any) => {
@@ -78,6 +79,7 @@ export class OrderService {
   }
 
   calculateShipping(products: any) {
+    if (products && products.length > 0) { products.map((item: any) => { delete item.uploadedFiles; }); }
     return this.http.post<any>(
       `${environment.microservices.management}orders/calculate-shipping`, { products: products, type: 'quotation' }
     ).pipe(
@@ -256,6 +258,16 @@ export class OrderService {
   updateImageByProduct(payload) {
     return this.http.post<any>(
       `${environment.microservices.management}orders/update-image`, payload).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  uploadNewImage(payload: any) {
+    return this.http.post<any>(
+      `${environment.microservices.management}orders/add-image`, payload).pipe(
         map((res: any) => {
           return res;
         }),

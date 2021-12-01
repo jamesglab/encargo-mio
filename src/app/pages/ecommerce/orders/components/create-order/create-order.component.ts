@@ -6,6 +6,8 @@ import { OrderService } from '../../../_services/orders.service';
 import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
 import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
+import { FileHandle } from 'src/app/_directives/file-handle';
+import { ImageCompressService } from 'src/app/_services/image-compress.service';
 
 @Component({
   selector: 'app-create-order',
@@ -17,6 +19,7 @@ export class CreateOrderComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Output() public close_modale = new EventEmitter<any>();
+
   @Input() public trm: any;
   @Input() public users: any = [];
 
@@ -25,8 +28,10 @@ export class CreateOrderComponent implements OnInit {
   public typeTax: number = 0.07;
   public createProductForm: FormGroup;
   public products: FormArray;
+
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
+
   public totalFormulas: any = [];
   public totalValues: any = [];
   public files: any = [];
@@ -34,7 +39,9 @@ export class CreateOrderComponent implements OnInit {
   constructor(
     private _formBuilder: FormBuilder,
     private quotationService: OrderService,
-    private _notify: NotifyService
+    private _notify: NotifyService,
+    private _compress: ImageCompressService,
+    private _orders: OrderService
   ) { }
 
   ngOnInit(): void {
@@ -69,10 +76,10 @@ export class CreateOrderComponent implements OnInit {
 
     let createProduct = this._formBuilder.group({
       link: [this.createProductForm.value.link],
-      name: [this.createProductForm.value.name],
+      name: [this.createProductForm.value.name ? this.createProductForm.value.name.trim() : null],
       aditional_info: [this.createProductForm.value.aditional_info],
       description: [this.createProductForm.value.description],
-      image: [this.createProductForm.value.image,],
+      image: [this.createProductForm.value.image],
       quantity: [this.createProductForm.value.quantity],
       product_value: [this.createProductForm.value.price ? this.createProductForm.value.price : 0],
       tax: [0],
@@ -84,9 +91,10 @@ export class CreateOrderComponent implements OnInit {
       tax_manually: [false],
       sub_total: [0],
       selected_tax: [null],
-      initial_weight: [0]
+      initial_weight: [0],
+      uploadedFiles: [this.createProductForm.value.image ? { file: null, type: 'image', url: this.createProductForm.value.image } : ""],
+      key_aws_bucket: [null]
     });
-
     return createProduct;
 
   }
@@ -169,7 +177,6 @@ export class CreateOrderComponent implements OnInit {
   }
 
   cleanForm(): void { //RESET CREATE PRODUCT FORM
-
     for (const field in this.createProductForm.controls) {
       if (this.isRequired(field)) {
         this.createProductForm.controls[field].reset();
@@ -178,17 +185,13 @@ export class CreateOrderComponent implements OnInit {
     this.createProductForm.controls.quantity.setValue(1);
   }
 
-  onImageError(event) {
-    event.target.src = "assets/images/default.jpg";
-  }
+  onImageError(event) { event.target.src = "assets/images/default.jpg"; }
 
   isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
 
   numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
 
-  resetProductValue(i: number) {
-    this.getFormula(i);
-  }
+  resetProductValue(i: number) { this.getFormula(i); }
 
   calculateTaxManually(i: number): void {
     this.products.controls[i]['controls'].tax_manually.setValue(true); // Setear que el tax_muanlly está manual
@@ -270,7 +273,53 @@ export class CreateOrderComponent implements OnInit {
     this.totalValues.total_shipping_products = total_shipping;
   }
 
-  // Consumimos el endPoint de creación de orden por parte del administrador 
+  filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
+    if (file[0].file.type && file[0].file.type.includes('image')) {
+      this._compress.compressImage(file[0].base64).then((res: any) => {
+        this.products.controls[position]['controls'].uploadedFiles.setValue(res);
+        this.createFormData(res, position);
+      }, err => {
+        this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
+    } else {
+      this._notify.show('', 'El archivo que seleccionaste no es una imagen.', 'info');
+    }
+  }
+
+  createFormData(res: any, position: number) {
+    const formData = new FormData();
+    formData.append("image", res.file);
+    formData.append("payload", this.products.controls[position].value.key_aws_bucket);
+    this._orders.uploadNewImage(formData).subscribe((res: any) => {
+      this.products.controls[position]['controls'].image.setValue(res.Location);
+      this.products.controls[position]['controls'].key_aws_bucket.setValue(res.Key);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  uploadImage(position: number) {
+    this._compress.uploadImage().then((res) => {
+      this.products.controls[position]['controls'].uploadedFiles.setValue(res);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  removeProduct(position: number): void {
+    this._notify.show('', 'Has eliminado el producto correctamente.', 'info');
+    this.products.controls.splice(position, 1);
+    if (this.products.controls.length > 0) {
+      this.calculateTax(this.products.controls.length - 1); // Calculamos el tax
+      this.calculateTotalPrices(this.products.controls.length - 1); // Calcular el total de precios
+      this.calculateTotalArticles(); // Calcular el valor de todos los artículos
+      this.calculateTotalShippingOrigin();
+    }
+  }
+
   async createOrder() {
 
     if (!this.createProductForm.value.user) { // Si no hay un usuario asignado a través del selector no se deja pasar.

@@ -16,6 +16,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { ImageDragDirective } from './_directives/image-drag.directive';
+import { NgxImageCompressService } from 'ngx-image-compress';
 
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
@@ -48,8 +50,8 @@ registerLocaleData(localeEs, 'es');
   ],
   bootstrap: [AppComponent],
   providers: [
-    { provide: LOCALE_ID, useValue: 'es' }
-    
+    { provide: LOCALE_ID, useValue: 'es' },
+    NgxImageCompressService
   ],
 })
 export class AppModule { }

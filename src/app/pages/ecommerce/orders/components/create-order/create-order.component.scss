@@ -30,3 +30,22 @@
 .selected-tax {
   color: #ef8921;
 }
+
+.dropzone-in-create {
+  text-align: center;
+  border-style: dashed;
+  background: white !important;
+  border-radius: 16px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.container-img-dropzone {
+  img {
+    height: 170px;
+    width: 100%;
+    object-fit: contain;
+  }
+}
