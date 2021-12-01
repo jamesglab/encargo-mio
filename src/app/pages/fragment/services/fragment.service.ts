@@ -48,6 +48,33 @@ export class FragmentService {
       );
   }
 
+  // getImage(url: string): Observable<Blob> {
+  //   return this.http.get(url, { responseType: 'blob' });
+  // }
+
+  getImage(image: { Location: string, Key: string }): Observable<Blob> {
+    return this.http.get<any>(
+      `${environment.microservices.management}shipping-order/get-image`,
+      { headers: header, params: image }).pipe(
+        map((res: any) => {
+          const byteArray = new Uint8Array(res.body.data);
+          return new Blob([byteArray], { type: res.type });
+        }),
+        catchError(handleError)
+      );
+  }
+
+  setImageProductFragment(payload) {
+    return this.http.post<any>(
+      `${environment.microservices.management}shipping-order/product-fragment-image`, 
+      payload).pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
   insert(payload) {
     return this.http.post<any>(
       `${environment.microservices.management}shipping-order/fragment`, payload, { headers: header }).pipe(

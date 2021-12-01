@@ -167,6 +167,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   drop(event: CdkDragDrop<string[]>, type: string) {
     if (this.status != 0) {
+
       let objProduct: any = event.previousContainer.data[event.previousIndex];
       if (event.previousContainer === event.container) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -279,7 +280,10 @@ export class ModalUpdateShippingComponent implements OnInit {
     UID = this.updateShippingForm.getRawValue().id;
     if (this.updateShippingForm.getRawValue()) {
       for (let index = 0; index < this.updateShippingForm.getRawValue().products.length; index++) {
-        UID = UID + '-' + this.updateShippingForm.getRawValue().products[index].product.id;
+        let product = this.updateShippingForm.getRawValue().products[index];
+        if(product.arrived){
+         UID += '-' + this.updateShippingForm.getRawValue().products[index].product.id
+        }
       }
       this._label.exportToLabel(this.updateShippingForm.getRawValue(), this.addressSelected, UID).then(() => {
         this.isLoadingLabel = false;
