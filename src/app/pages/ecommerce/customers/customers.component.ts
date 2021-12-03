@@ -124,14 +124,18 @@ export class CustomersComponent implements OnInit {
     if (transaction.order_service) {
       this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
         this.orderSelected = res;
+        console.log(this.orderSelected);
         this.modalService.open(content, { size: 'xl', centered: true });
       });
     } else {
       this._orderService.getShippingById({ id: transaction.shipping_order }).subscribe(res => {
         this.orderSelected = res;
+        console.log(this.orderSelected);
         this.modalService.open(content, { size: 'xl', centered: true });
       });
     }
+
+
 
     if (transaction.image) {
       this.referenceImage = transaction.image;
