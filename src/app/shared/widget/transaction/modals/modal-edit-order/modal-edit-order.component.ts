@@ -4,6 +4,8 @@ import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { numberOnly, validateErrors } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import Swal from "sweetalert2";
+import { FileHandle } from "src/app/_directives/file-handle";
+import { ImageCompressService } from "src/app/_services/image-compress.service";
 
 @Component({
   selector: "app-modal-edit-order",
@@ -15,6 +17,7 @@ export class ModalEditOrderComponent implements OnInit {
 
   @Input() public orderSelected: any = null;
   @Input() public status: any;
+
   @Output() public refreshTable = new EventEmitter<any>();
 
   public subTotalPrice: number = 0;
@@ -31,7 +34,8 @@ export class ModalEditOrderComponent implements OnInit {
   constructor(
     private _orders: OrderService,
     public _notify: NotifyService,
-    public modalService: NgbModal
+    public modalService: NgbModal,
+    private _compress: ImageCompressService
   ) { }
 
   ngOnInit(): void { }
@@ -47,11 +51,6 @@ export class ModalEditOrderComponent implements OnInit {
     this._orders.detailOrder({ id: this.orderSelected.id })
       .subscribe((res: any) => {
         if (res) {
-          if (res.products.length == 0) {
-            Swal.fire('No existen productos.', '', 'info');
-            this.modalService.dismissAll();
-            return;
-          }
           this.orderSelected.trm = res.trm;
           this.orderSelected.products = res.products;
           this.orderSelected.products.map((products: any, index: number) => {
@@ -63,6 +62,7 @@ export class ModalEditOrderComponent implements OnInit {
             this.calculateTotalShippingOrigin();
             this.getFormula(index);
           });
+          console.log("ORDER SELECTED: ", this.orderSelected.products);
         }
         this.isLoadingQuery = false;
       }, err => {
@@ -131,8 +131,10 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   calculateTotalPrices(position: number) {
+    console.log(this.orderSelected.products[position]);
+    
     if (this.status == 0 || this.status == 1 || this.status == 7) {
-      this.orderSelected.products[position].sub_total = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].tax;
+      this.orderSelected.products[position].sub_total = (((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].shipping_origin_value_product) + this.orderSelected.products[position].tax);
     }
   }
 
@@ -182,7 +184,7 @@ export class ModalEditOrderComponent implements OnInit {
       title: '¿Estás seguro que deseas borrar el producto ' + this.orderSelected.products[i].name + '?',
       showDenyButton: true,
       confirmButtonText: 'Eliminar',
-      denyButtonText: `Cancelar`,
+      denyButtonText: `Cancelar`
     }).then((result) => {
       if (result.isConfirmed) {
         this._orders.deleteProduct(this.orderSelected.products[i].id)
@@ -200,9 +202,47 @@ export class ModalEditOrderComponent implements OnInit {
     });
   }
 
-  numberOnly(event): boolean {  // Función para que sólo se permitan números en un input
+  filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
+    if (file[0].file.type && file[0].file.type.includes('image')) {
+      this._compress.compressImage(file[0].base64).then((res: any) => {
+        this.orderSelected.products[position].uploadedFiles = res;
+        this.createFormData(res, position);
+      }, err => {
+        this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
+    } else {
+      this._notify.show('', 'El archivo que seleccionaste no es una imagen.', 'info');
+    }
+  }
+
+  createFormData(res: any, position: number) {
+    const formData = new FormData();
+    formData.append("image", res.file);
+    formData.append("payload", this.orderSelected.products[position].key_aws_bucket);
+    this._orders.uploadNewImage(formData).subscribe((res: any) => {
+      this.orderSelected.products[position].image = res.Location;
+      this.orderSelected.products[position].key_aws_bucket = res.Key;
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  uploadImage(position: number) {
+    this._compress.uploadImage().then((res) => {
+      this.orderSelected.products[position].uploadedFiles = res;
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  numberOnly(event): boolean {// Función para que sólo se permitan números en un input
     return numberOnly(event);
   }
+
+  onImageError(event) { event.target.src = "assets/images/default.jpg"; }
 
   upadteImageByProduct(image) {
     this.productSelected.image = image;
@@ -216,7 +256,6 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   async sendQuotation() {
-    // VALIDAMOS LOS CAMPOS QUE SON REQUERIDOS EN EL INPUT
     if (validateErrors(this.orderSelected.products, ['name', 'weight', 'product_value'])) {
       Swal.fire('Error', 'Campos requeridos incompletos', 'warning');
       return;

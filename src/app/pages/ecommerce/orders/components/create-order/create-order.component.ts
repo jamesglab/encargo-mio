@@ -62,7 +62,6 @@ export class CreateOrderComponent implements OnInit {
       advance_purchase: [false],
       price: [0]
     });
-
     this.filteredUsers = this.createProductForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
