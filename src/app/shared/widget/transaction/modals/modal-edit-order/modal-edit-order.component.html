@@ -26,6 +26,25 @@
         </div>
 
         <br>
+
+        <div *ngIf="orderSelected.shopper_images && orderSelected.shopper_images.length > 0">
+
+          <div class="h5">
+            Imagenes de Facturación
+          </div>
+
+          <carousel>
+            <div class="carousel-cell" *ngFor="let item of orderSelected.shopper_images">
+              <a [href]="item.Location" target="_blank">
+                <img [src]="item.Location" draggable="false" (error)="onImageError($event);">
+              </a>
+            </div>
+          </carousel>
+
+        </div>
+
+        <br>
+
         <ng-container *ngIf="orderSelected">
           <div class="form-check form-switch text-truncate h5">
             <label for="form-group">Compra anticipada</label>
@@ -48,8 +67,7 @@
 
             <div>
               <strong>Valor artículos:</strong>
-              {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (orderSelected.total_shipping_products ?
-              orderSelected.total_shipping_products : 0)) | currency: 'USD' }} USD
+              {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }}
             </div>
 
             <div>
@@ -60,13 +78,13 @@
             <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
               <div>
                 <strong>Valor del envío ({{formula.name}}): </strong>
-                {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} USD
+                {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} US$
               </div>
               <div>
                 <strong>Envio a casa ({{formula.name}})</strong>
-                {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (orderSelected.total_shipping_products ?
-                orderSelected.total_shipping_products : 0)) + (formula.value ? formula.value : 0) | number : '1.2-2' }}
-                USD
+                {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (formula.value ? formula.value : 0)) |
+                number : '1.2-2' }}
+                US$
               </div>
             </ng-container>
 
@@ -108,12 +126,13 @@
 
         <div class="row">
 
-          <div class="col-sm-3 d-flex align-items-center dropzone-in-create" (files)="filesDropped($event, i);">
+          <div class="col-sm-3 d-flex align-items-center dropzone-in-create" appImageDrag
+            (files)="filesDropped($event, i);">
 
             <div class="container-img-dropzone">
 
               <a [href]="item.link" target="_blank">
-                <img [src]="item.image" (error)="onImageError($event);" draggable="false" />
+                <img [src]="item.uploaded_files.url" (error)="onImageError($event);" draggable="false" />
               </a>
 
               <h5>
@@ -218,8 +237,7 @@
                       <label for="shipping-order" class="form-label">Envio Origen</label>
                       <input type="number" id="shipping-order" class="form-control" placeholder="Envio origen"
                         [(ngModel)]="item.shipping_origin_value_product" (keypress)="numberOnly($event);"
-                        (blur)="getFormula(i); calculateTotalShippingOrigin();"
-                        [disabled]="item.free_shipping || disabledAllInputs">
+                        (blur)="getFormula(i);" [disabled]="item.free_shipping || disabledAllInputs">
                     </div>
                   </div>
 
@@ -318,11 +336,3 @@
   </ng-container>
 
 </div>
-
-<ng-template #createImage role="document" let-modal>
-  <!--[product]  ANEXAMOS PRODUCTO SELECCIONADO -->
-  <!-- (close) CERRAMOS EL MODALE CUANDO LO QUEIRAN CERRAR -->
-  <!--  (imageUpdated) SELECCIONAMOS EL METODO DE ACTUALIZAR IMAGEN DEL PRODUCTO SELECCIONADO-->
-  <app-create-image [product]="productSelected" (close)="modal.close()"
-    (imageUpdated)="upadteImageByProduct($event); modal.close()"></app-create-image>
-</ng-template>

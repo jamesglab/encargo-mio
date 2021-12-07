@@ -39,8 +39,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { ShipmentTrackingComponent } from './orders-shippings/components/shipment-tracking/shipment-tracking.component';
 import { OrderByPipe } from './orders-shippings/pipes/sort.pipe';
+import { NgxImageCompressService } from 'ngx-image-compress';
 import { ImageDragDirective } from 'src/app/_directives/image-drag.directive';
-
 
 const config: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -56,7 +56,7 @@ const config: DropzoneConfigInterface = {
     CustomersComponent, OrdersComponent, CreateOrderComponent,
     OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent,
     ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent, ShipmentTrackingComponent,
-    OrderByPipe, ImageDragDirective
+    OrderByPipe
   ],
   imports: [
     CommonModule,
@@ -80,19 +80,20 @@ const config: DropzoneConfigInterface = {
     MatInputModule,
     MatAutocompleteModule,
     SharedModule,
-    DragDropModule,
-    IvyCarouselModule
+    DragDropModule
   ],
   exports: [
     MatSelectModule,
     MatAutocompleteModule,
-    ModalLockerEntryComponent
+    ModalLockerEntryComponent,
+    ImageDragDirective
   ],
   providers: [
     {
       provide: DROPZONE_CONFIG,
       useValue: config
-    }
+    },
+    NgxImageCompressService
   ]
 })
 

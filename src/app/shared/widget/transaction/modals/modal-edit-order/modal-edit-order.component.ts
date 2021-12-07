@@ -52,17 +52,18 @@ export class ModalEditOrderComponent implements OnInit {
       .subscribe((res: any) => {
         if (res) {
           this.orderSelected.trm = res.trm;
+          this.orderSelected.shopper_images = res.shopper_images;
           this.orderSelected.products = res.products;
           this.orderSelected.products.map((products: any, index: number) => {
+            products.name = (products.name ? products.name.trim() : null);
+            products.uploaded_files = (products.image ? { file: null, type: 'image', url: products.image } : "");
             products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.
             this.calculateTotalPrices(index);
             this.calculateDiscount(index);
             this.calculateTotalArticles();
-            this.calculateTotalShippingOrigin();
             this.getFormula(index);
           });
-          console.log("ORDER SELECTED: ", this.orderSelected.products);
         }
         this.isLoadingQuery = false;
       }, err => {
@@ -86,7 +87,6 @@ export class ModalEditOrderComponent implements OnInit {
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
             this.calculateTotalArticles(); // Luego calculamos el total de los articulos
-            this.calculateTotalShippingOrigin();
             resolve("ok");
             this.isLoadingFormula = false;
           }, err => {
@@ -131,10 +131,10 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   calculateTotalPrices(position: number) {
-    console.log(this.orderSelected.products[position]);
-    
     if (this.status == 0 || this.status == 1 || this.status == 7) {
-      this.orderSelected.products[position].sub_total = (((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].shipping_origin_value_product) + this.orderSelected.products[position].tax);
+      var sub_total: number = 0;
+      sub_total = (((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].tax) + this.orderSelected.products[position].shipping_origin_value_product);
+      this.orderSelected.products[position].sub_total = sub_total;
     }
   }
 
@@ -152,13 +152,7 @@ export class ModalEditOrderComponent implements OnInit {
     var total_weight: number = 0;
     this.orderSelected.products.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; });
     this.orderSelected.sub_total = sub_total;
-    this.orderSelected.total_weight = total_weight;
-  }
-
-  calculateTotalShippingOrigin(): void {
-    var total_shipping: number = 0;
-    this.orderSelected.products.map((product: any) => { total_shipping += product.shipping_origin_value_product; });
-    this.orderSelected.total_shipping_products = total_shipping;
+    this.orderSelected.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
   }
 
   changeCalculator(item: string, i: number) {
@@ -205,7 +199,7 @@ export class ModalEditOrderComponent implements OnInit {
   filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
       this._compress.compressImage(file[0].base64).then((res: any) => {
-        this.orderSelected.products[position].uploadedFiles = res;
+        this.orderSelected.products[position].uploaded_files = res;
         this.createFormData(res, position);
       }, err => {
         this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
@@ -220,10 +214,13 @@ export class ModalEditOrderComponent implements OnInit {
     const formData = new FormData();
     formData.append("image", res.file);
     formData.append("payload", this.orderSelected.products[position].key_aws_bucket);
+    this.isLoading = true;
     this._orders.uploadNewImage(formData).subscribe((res: any) => {
       this.orderSelected.products[position].image = res.Location;
       this.orderSelected.products[position].key_aws_bucket = res.Key;
+      this.isLoading = false;
     }, err => {
+      this.isLoading = false;
       this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
       throw err;
     });
@@ -231,7 +228,8 @@ export class ModalEditOrderComponent implements OnInit {
 
   uploadImage(position: number) {
     this._compress.uploadImage().then((res) => {
-      this.orderSelected.products[position].uploadedFiles = res;
+      this.orderSelected.products[position].uploaded_files = res;
+      this.createFormData(res, position);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
       throw err;

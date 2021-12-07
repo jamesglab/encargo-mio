@@ -7,7 +7,6 @@ import { map, startWith } from "rxjs/operators";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
 
-
 @Component({
   selector: "app-transaction",
   templateUrl: "./transaction.component.html",
@@ -73,7 +72,7 @@ export class TransactionComponent implements OnInit {
       throw err;
     });
   }
-  
+
   openModal(order: any, modal: any, sizeModale: string) {
     this.modalService.open(modal, { size: sizeModale, centered: true });
     this.orderSelected = order
