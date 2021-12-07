@@ -22,7 +22,6 @@ export class ExportPdfService {
   constructor() { }
 
   async exportToLabel(information: any, address: any, UID: string) {
-    console.log(information);
     const docDefinitions: any = {
       pageSize: 'A5',
       pageOrientation: 'portrait',
@@ -161,7 +160,7 @@ export class ExportPdfService {
         font: 'Poppins'
       }
     };
-    pdfMake.createPdf(docDefinitions).open();
+    pdfMake.createPdf(docDefinitions).download();
   }
 
   getBase64ImageFromURL(url: any) {

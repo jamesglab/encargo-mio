@@ -37,9 +37,9 @@
                 <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
                   <i class="bx bx-trash-alt mr-1"></i>
                   Eliminar Filtros
-                </button  >
+                </button>
               </div>
-              
+
               <!-- <div class="search-box me-2 mb-2 d-inline-block">
                 <div class="position-relative">
                   <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term"
@@ -110,7 +110,8 @@
                   </th>
                   <th>Usuario
                     <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
-                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)"/>
+                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user"
+                      (keyup.enter)="getTransactions(status)" />
                     <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
                       <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
                         (click)="getTransactions(status)">
@@ -122,7 +123,7 @@
                     <div class="mt-2">
                       <select class="form-select mt-2" aria-label="Default select example " [formControl]="filterType"
                         (change)="getTransactions(status)">
-                        <option  [value]="null">Todos</option>
+                        <option [value]="null">Todos</option>
                         <option [value]="'compra'">Compra</option>
                         <option [value]="'envio'">Envio</option>
                       </select>
@@ -171,9 +172,11 @@
                   </td>
 
                   <td>
-                    {{ (transaction.type =='envio') ? transaction.value + ' / ' +  ((transaction.value  * transaction.so_trm ) | currency: 'COP': 'symbol' : '1.0-0')
-                    : transaction.value + ' / ' + ((transaction.value  * transaction.or_trm ) | currency: ' COP' : 'symbol' : '1.0-0' )
-                      }}
+                    {{ (transaction.type =='envio') ? transaction.value + ' / ' + ((transaction.value *
+                    transaction.so_trm ) | currency: 'COP': 'symbol' : '1.0-0')
+                    : transaction.value + ' / ' + ((transaction.value * transaction.or_trm ) | currency: ' COP' :
+                    'symbol' : '1.0-0' )
+                    }}
                   </td>
 
                   <td>
@@ -185,11 +188,6 @@
                       </a>
 
                       <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
-                        <li>
-                          <a href="javascript: void(0);" class="dropdown-item"
-                            (click)="openModalReference(reference, transaction)"><i
-                              class="far fa-clipboard me-1"></i>Comprobante</a>
-                        </li>
                         <li>
                           <a href="javascript: void(0);" class="dropdown-item"
                             (click)="openModalOrderService(content, transaction)">
@@ -321,7 +319,7 @@
               </div>
 
               <div class="mt-2 h5">
-                Precio del Artículo: {{ item.product_value ? item.declared_value_admin : 0 }} USD
+                Precio del Artículo: {{ item.declared_value_admin ? item.declared_value_admin : item.product_value }} USD
               </div>
 
               <div class="mt-2 h5">
@@ -335,6 +333,22 @@
           <hr>
 
         </div>
+
+        <br>
+
+        <h5 class="modal-title mt-0">Comprobante de Pago</h5>
+
+        <br>
+
+        <carousel [cellWidth]="700" [height]="700" [arrowsTheme]="'dark'">
+
+          <div class="carousel-cell" *ngFor="let image of referenceImage">
+            <a [href]="image.Location" target="blank">
+              <img [src]="image.Location" alt="" style="object-fit: contain;" class="img-reference">
+            </a>
+          </div>
+
+        </carousel>
 
       </div>
 
@@ -357,43 +371,6 @@
         </button>
 
       </ng-container>
-
-    </div>
-
-  </ng-template>
-
-  <!-- Modal Pago caso efectivo -->
-  <ng-template #reference role="document" let-modal>
-
-    <div class="modal-header">
-      <h5 class="modal-title mt-0">Comprobante de Pago</h5>
-      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-
-    <div class="modal-body">
-      <div class="center">
-        <carousel [cellWidth]="700" [height]="700">
-          <div class="carousel-cell" *ngFor="let image of referenceImage ">
-            <a [href]="image.Location" target="blank">
-              <img [src]="image.Location" alt="" style="object-fit: contain;" class="img-reference">
-
-            </a>
-          </div>
-        </carousel>
-        <div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-footer" *ngIf="status == 2">
-
-      <button class="btn btn-danger" (click)="updateTransaction(3);" [disabled]="isLoadingTransaction">
-        Rechazar Pago
-      </button>
-
-      <button class="btn btn-success" (click)="updateTransaction(1);" [disabled]="isLoadingTransaction">
-        Aprobar Pago
-      </button>
 
     </div>
 

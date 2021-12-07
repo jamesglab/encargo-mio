@@ -43,7 +43,6 @@ export class CustomersComponent implements OnInit {
   filterType = new FormControl('');
   filterValue = new FormControl('');
 
-
   //SUBSCRIPCIONES PARA LOS AUTOCOMPLETS 
   public filteredUsers: Observable<string[]>;
 
@@ -60,12 +59,9 @@ export class CustomersComponent implements OnInit {
     this.currentpage = 1;
     this.getTransactions(1);
     this.getUsers();
-
   }
 
   getTransactions(status?, pagination?) {
-    // console.log('filtramos')
-    // if (this.term != '') {
     this.isLoading = true;
     this.status = status;
     this._transactionService.getTransactionsFilterI({
@@ -81,13 +77,9 @@ export class CustomersComponent implements OnInit {
     }, err => {
       throw err;
     });
-    // } else {
-    //   this.searchFilter(status, pagination);
-    // }
   }
 
   filterOptions() {
-    // console.log('estamos filtrando')
     const options = {}
     if (this.filterId.value != null && this.filterId.value != '') {
       options['id'] = this.filterId.value
@@ -107,14 +99,12 @@ export class CustomersComponent implements OnInit {
       options['type'] = this.filterType.value
     } if (this.filterValue.value != null && this.filterValue.value != '') {
       options['value'] = this.filterValue.value
-
     }
     return options;
   }
 
 
   resetFilters() {
-
     this.filterId.reset();
     this.filterUser.reset();
     this.filterOrder.reset();
@@ -125,36 +115,37 @@ export class CustomersComponent implements OnInit {
     this.filterType.reset();
     this.filterValue.reset();
     this.getTransactions(this.status);
-
   }
+
   openModalOrderService(content: any, transaction: any) {
+
     this.transactionSelected = transaction;
+
     if (transaction.order_service) {
       this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
         this.orderSelected = res;
+        console.log(this.orderSelected);
         this.modalService.open(content, { size: 'xl', centered: true });
       });
     } else {
       this._orderService.getShippingById({ id: transaction.shipping_order }).subscribe(res => {
         this.orderSelected = res;
+        console.log(this.orderSelected);
         this.modalService.open(content, { size: 'xl', centered: true });
       });
     }
 
-  }
 
-  openModalReference(modale: any, transaction: any) {
-    this.transactionSelected = transaction;
+
     if (transaction.image) {
       this.referenceImage = transaction.image;
-      this.modalService.open(modale, { size: 'lg', centered: true })
     } else {
       window.open(transaction.response);
     }
+
   }
 
   updateTransaction(status: any) {
-    // console.log(this.transactionSelected);
     this.isLoadingTransaction = true;
     this._transactionService.updateTransaction(this.transactionSelected, status)
       .subscribe(res => {
@@ -198,7 +189,7 @@ export class CustomersComponent implements OnInit {
       this.isLoading = false;
     }, err => {
       this.isLoading = false;
-      throw err; 
+      throw err;
     });
   }
 
@@ -210,7 +201,6 @@ export class CustomersComponent implements OnInit {
       this.initialFilterdsSubscriptions();
     });
   }
-
 
   initialFilterdsSubscriptions() {
     //HACEMOS UN FILTER CUANDO DETECTE CAMBIOS EL CONTROL DE "filterUserLocker" EVENTO QUE MANTIENE ESCUCHANDO CAMBIOS
@@ -244,7 +234,4 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-
 }
-
-

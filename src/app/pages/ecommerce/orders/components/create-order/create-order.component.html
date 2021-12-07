@@ -164,161 +164,164 @@
 
       <h4 class="h4">Productos</h4>
 
-      <!-- se crea el bucle que crea los formularios dinamicos para el usuario -->
       <div formArrayName="products" *ngFor="let item of createProductForm.get('products')['controls']; let i = index;">
-        <div>
-          <hr>
+
+        <hr>
+
+        <div class="container">
+
           <div class="row" [formGroupName]="i">
-            <div class="col-xl-3 col-md-3 col-sm-12 d-flex justify-content-center align-items-center">
-              <img style="object-fit: contain;"
-                src="{{createProductForm.get('products')['controls'][i].controls.image.value }}"
-                (error)="onImageError($event);" class="avatar" />
-            </div>
-            <div class="col-xl-4 col-md-4 col-sm-12">
-              <div>
-                <a [href]="createProductForm.get('products')['controls'][i].controls.link.value" target="blank">
-                  <h5 class="text-truncate h5">
-                    {{createProductForm.get('products')['controls'][i].controls.name.value}}
-                  </h5>
-                </a>
-              </div>
 
-              <div class="mt-2">
-                {{ item.aditional_info }}
-              </div>
+            <div class="col-sm-3 d-flex align-items-center dropzone-in-create" appImageDrag
+              (files)="filesDropped($event, i);">
 
-              <div class="form-group mt-2 h5">
-                <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="aditional_info"
-                  cols="30" rows="5"
-                  placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
-              </div>
+              <div class="container-img-dropzone">
 
-              <div class="form-group mt-2 h5">
-                <label for="exampleFormControlTextarea2">Observaciones del cliente</label>
-                <textarea class="form-control" id="exampleFormControlTextarea2" cols="30" rows="5"
-                  formControlName="description" placeholder="Observaciones del cliente"></textarea>
-              </div>
+                <img src="{{ createProductForm.get('products')['controls'][i].controls.uploadedFiles.value.url }}"
+                  draggable="false" (error)="onImageError($event);" />
 
-              <div class="mt-2 h5 d-flex">
-                <div class="mx-2" *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value > 1">
-                  <a (click)="calculateWeightSubstract(i); getFormula(i)">
-                    <i class="fas fa-minus"></i>
-                  </a>
-                </div>
-                <div class="item-quantity">
-                  Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
-                </div>
-                <div class="mx-2">
-                  <a (click)="calculateWeightAdd(i); getFormula(i)">
-                    <i class="fas fa-plus"></i>
-                  </a>
-                </div>
+                <h5>Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
+                    (click)="uploadImage(i);">aquí.</a>
+                </h5>
+
               </div>
 
             </div>
 
-            <div class="col-xl-5 col-md-5 col-sm-12">
 
-              <div class="row">
+            <div class="col-sm-9">
 
-                <div class="col-xl-6 col-md-6 col-sm-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo USD *</label>
-                    <input type="number" class="form-control" placeholder="Valor en USD" formControlName="product_value"
-                      (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
+              <div class="row g-3">
+
+                <div class="col-md-6">
+
+                  <div class="mb-3">
+                    <label class="form-label" for="name">Nombre del Producto</label>
+                    <input type="text" id="name" class="form-control" formControlName="name"
+                      placeholder="Ingresa el nombre del producto..."
+                      title="{{ createProductForm.get('products')['controls'][i].controls.name.value ? createProductForm.get('products')['controls'][i].controls.name.value : ''}} ">
                   </div>
+
+                  <div class="mb-3">
+                    <label for="observations">Observaciones de Cotización</label>
+                    <textarea class="form-control" id="observations" formControlName="aditional_info" cols="30" rows="5"
+                      placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="observations-client">Observaciones del Cliente</label>
+                    <textarea class="form-control" id="observations-client" cols="30" rows="5"
+                      formControlName="description" placeholder="Observaciones del cliente"></textarea>
+                  </div>
+
+                  <div class="h6">
+
+                    <a *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value === 1" (click)="removeProduct(i);">
+                      <i class="far fa-trash-alt"></i>
+                    </a>
+
+                    <a (click)="calculateWeightSubstract(i); getFormula(i);"
+                      *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value > 1">
+                      <i class="fas fa-minus"></i>
+                    </a>
+
+                    Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
+
+                    <a (click)="calculateWeightAdd(i); getFormula(i);">
+                      <i class="fas fa-plus"></i>
+                    </a>
+
+                  </div>
+
                 </div>
 
-                <div class="col-xl-3 col-md-3 col-sm-12">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1" class="text-truncate h5">Desc. (%)</label>
-                    <input type="number" class="form-control" placeholder="% descuento" formControlName="discount"
-                      (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
-                  </div>
-                </div>
+                <div class="col-md-6">
 
-                <div class="col-xl-3 col-md-3 col-sm-12">
+                  <div class="row g-3 mb-3">
 
-                  <div class="form-group">
+                    <div class="col-sm-7">
+                      <label for="article-value" class="form-label">Valor Artículo*</label>
+                      <input type="number" id="article-value" class="form-control" formControlName="product_value"
+                        placeholder="Valor del artículo en USD." title="Valor del Artículo en USD."
+                        (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
+                    </div>
 
-                    <label class="text-truncate h5">Tax</label>
+                    <div class="col-sm">
+                      <label for="discount" class="form-label">Descuento</label>
+                      <input type="number" id="discount" class="form-control" placeholder="Descuento"
+                        title="Descuento del producto" formControlName="discount" (keypress)="numberOnly($event);"
+                        (blur)="getFormula(i);" min="0">
+                    </div>
 
-                    <div>
-
-                      <input type="number" class="form-control" placeholder="Tax" formControlName="tax" min="0"
-                        (keypress)="numberOnly($event);" (blur)="calculateTaxManually(i);">
-
+                    <div class="col-sm">
+                      <label for="tax" class="form-label">Tax</label>
+                      <input type="number" id="tax" class="form-control" placeholder="Tax" title="Tax del producto"
+                        formControlName="tax" min="0" (keypress)="numberOnly($event);"
+                        (blur)="calculateTaxManually(i);">
                       <div class="container-calcs">
-
                         <i class="fas fa-calculator"
                           [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
                           (click)="changeCalculator('1', i);" title="Sin envío Origen">
                         </i>
-
                         <i class="fas fa-calculator"
                           [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
                           (click)="changeCalculator('2', i);" title="Con envío Origen">
                         </i>
-
                       </div>
-
                     </div>
 
                   </div>
 
-                </div>
+                  <div class="row g-3 mb-3">
 
-              </div>
+                    <div class="col-sm">
+                      <label for="shipping-origin" class="form-label">Envío Origen</label>
+                      <input type="number" id="shipping-origin" class="form-control"
+                        placeholder="Envío de Origen en USD" title="Envío de Origen en USD."
+                        formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
+                        (blur)="getFormula(i); calculateTotalShippingOrigin();" min="0">
+                    </div>
 
-              <div class="row mt-4">
-
-                <div class="form-group col-12">
-                  <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen (USD)</label>
-                  <input type="number" class="form-control" placeholder="Envio origen"
-                    formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
-                    (blur)="getFormula(i); calculateTotalShippingOrigin();" min="0">
-                </div>
-
-              </div>
-
-              <div class="row mt-4">
-
-                <div class="col-6">
-                  <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
-                  <input type="number" class="form-control" placeholder="Peso en libras" formControlName="weight"
-                    (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
-                </div>
-
-                <div class="col-6">
-                  <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
-                  <input type="number" class="form-control" placeholder="Valor envio fijo"
-                    formControlName="permanent_shipping_value" (keypress)="numberOnly($event);" (blur)="getFormula(i);"
-                    min="0">
-                </div>
-
-              </div>
-
-              <div class="row mt-4">
-
-                <div class="col-6 text-truncate h5">
-
-                  <label for="total_price" class="text-truncate h5">Sub Total</label>
-
-                  <div>
-                    {{ createProductForm.get('products')['controls'][i].controls.sub_total.value | number : '1.2-2' }}
-                    USD
                   </div>
 
-                </div>
+                  <div class="row g-3 mb-3">
 
-                <div class="col-6">
+                    <div class="col-sm">
+                      <label for="weight" class="form-label">Peso</label>
+                      <input type="number" id="weight" class="form-control" placeholder="Peso del productos en libras."
+                        title="Peso del productos en libras." formControlName="weight" (keypress)="numberOnly($event);"
+                        (blur)="getFormula(i);" min="0">
+                    </div>
 
-                  <div class="form-check form-switch text-truncate h5">
+                    <div class="col-sm">
+                      <label for="permantent-shipping" class="form-label">Valor Envío Fijo</label>
+                      <input type="number" id="permantent-shipping" class="form-control"
+                        placeholder="Valor del envío fijo" title="Valor del envío fijo"
+                        formControlName="permanent_shipping_value" (keypress)="numberOnly($event);"
+                        (blur)="getFormula(i);" min="0">
+                    </div>
 
-                    <label for="form-group">Envio Gratis</label>
-                    <input class="form-check-input" type="checkbox" formControlName="free_shipping"
-                      id="flexSwitchCheckChecked" (change)="resetProductValue(i);">
+                  </div>
+
+                  <div class="row g-3">
+
+                    <div class="col-sm">
+                      <div class="h6">
+                        Sub Total:
+                        {{ createProductForm.get('products')['controls'][i].controls.sub_total.value | number :
+                        '1.2-2'}}
+                        USD
+                      </div>
+                    </div>
+
+                    <div class="col-sm">
+                      <div class="form-check form-switch text-truncate h6">
+                        <label for="form-group">Envio Gratis</label>
+                        <input class="form-check-input" type="checkbox" formControlName="free_shipping"
+                          id="flexSwitchCheckChecked" (change)="resetProductValue(i);">
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>

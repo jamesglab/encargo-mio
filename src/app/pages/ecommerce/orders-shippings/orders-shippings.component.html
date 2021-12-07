@@ -72,18 +72,18 @@
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active':status == 3}" (click)="status = 3;  getTransactions()">
-                Enviado {{ counts.sended ? counts.sended : 0}}
+                Enviados {{ counts.sended ? counts.sended : 0}}
               </a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active':status == 7}" (click)="status = 7;  getTransactions()">
-                Entregado {{ counts.delivered ? counts.delivered : 0}}
+                Entregados {{ counts.delivered ? counts.delivered : 0}}
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 4 }" (click)="status = 4;  getTransactions()">
-                Cancelado {{ counts.cancel ? counts.cancel : 0}}
+                Cancelados {{ counts.cancel ? counts.cancel : 0}}
               </a>
             </li>
 
@@ -95,7 +95,7 @@
 
             <li class="nav-item">
               <a class="nav-link" [ngClass]="{'active': status == 6 }" (click)="status = 6;  getTransactions()">
-                Fragmentado {{ counts.fragmented ? counts.fragmented : 0}}
+                Fracionados {{ counts.fragmented ? counts.fragmented : 0}}
               </a>
             </li>
           </ul>

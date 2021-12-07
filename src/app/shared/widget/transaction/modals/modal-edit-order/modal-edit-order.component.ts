@@ -60,6 +60,7 @@ export class ModalEditOrderComponent implements OnInit {
             this.calculateTotalPrices(index);
             this.calculateDiscount(index);
             this.calculateTotalArticles();
+            this.calculateTotalShippingOrigin();
             this.getFormula(index);
           });
         }
@@ -85,6 +86,7 @@ export class ModalEditOrderComponent implements OnInit {
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
             this.calculateTotalArticles(); // Luego calculamos el total de los articulos
+            this.calculateTotalShippingOrigin();
             resolve("ok");
             this.isLoadingFormula = false;
           }, err => {
