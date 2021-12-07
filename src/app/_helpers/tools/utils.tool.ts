@@ -38,6 +38,26 @@ export const isRequired = (item: string) => {
     return isRequired[item];
 }
 
+export const disabledItems = (item: string) => {
+
+    let isRequired = {
+        order_service: true,
+        guide_number: true,
+        product: false,
+        observations: true,
+        store: true,
+        product_price: true,
+        purchase_date: true,
+        invoice_number: true,
+        locker_entry_date: true,
+        conveyor: true,
+        sold_out: false
+    };
+
+    return isRequired[item];
+
+}
+
 export const numberOnly = (event): boolean => {
     const charCode = (event.which) ? event.which : event.keyCode;
     if (charCode > 31 && (charCode < 46 || charCode > 57)) {

@@ -15,10 +15,10 @@ export class TablePurchasesComponent implements OnInit {
 
   @Input() public purchases: [] = [];
   @Input() public count: number = 0;
+
   @Output() public editPurchase: EventEmitter<any> = new EventEmitter<any>();
   @Output() public filterPaginator: EventEmitter<any> = new EventEmitter<any>();
   @Output() public filterValues: EventEmitter<any> = new EventEmitter<any>();
-
 
   public isLoading: boolean = false;
 
@@ -26,12 +26,13 @@ export class TablePurchasesComponent implements OnInit {
 
   public filterCode = new FormControl('');
   public filterOrderService = new FormControl('');
-  public filterOrderServiceStatus = new FormControl('');
+  public filterOrderServiceStatus = new FormControl(null);
   public filterDate = new FormControl('');
   public productName = new FormControl('');
   public purchaseNumber = new FormControl('');
   public filterUser = new FormControl('');
   public total_value = new FormControl('');
+  public filterStatusProduct = new FormControl(null);
 
   public filteredUsers: Observable<string[]>;
 
@@ -40,7 +41,6 @@ export class TablePurchasesComponent implements OnInit {
   ngOnInit(): void {
     this.getUsersAdmin();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
-
   }
 
   getUsersAdmin() {
@@ -59,7 +59,7 @@ export class TablePurchasesComponent implements OnInit {
     if (this.filterDate.value?.year) {
       return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD')
     } else {
-      return ''
+      return '';
     }
   }
 
@@ -71,31 +71,35 @@ export class TablePurchasesComponent implements OnInit {
     this.filterDate.reset();
     this.productName.reset();
     this.purchaseNumber.reset();
+    this.filterStatusProduct.reset();
     this.filterPurchase();
   }
 
   filterPurchase() {
-    const filterValues = {}
+    const filterValues = {};
     if (this.filterCode.value && this.filterCode.value.trim() != '') {
       filterValues['id'] = this.filterCode.value
     }
-    if(this.filterOrderService.value && this.filterOrderService.value.trim() != '') {
+    if (this.filterOrderService.value && this.filterOrderService.value.trim() != '') {
       filterValues['order_service'] = this.filterOrderService.value;
     }
-    if(this.filterOrderServiceStatus.value != null && this.filterOrderServiceStatus.value != 'null') {
+    if (this.filterOrderServiceStatus.value != null && this.filterOrderServiceStatus.value != 'null') {
       filterValues['order_service_status'] = this.filterOrderServiceStatus.value;
     }
     if (this.filterDate.value && this.filterDate.value.year.trim() != '') {
       filterValues['purchase_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
-    } 
+    }
     if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
-    } 
+    }
     if (this.productName.value != null && this.productName.value.trim() != '') {
       filterValues['product_name'] = this.productName.value;
     }
     if (this.purchaseNumber.value != null && this.purchaseNumber.value.trim() != '') {
       filterValues['invoice_number'] = this.purchaseNumber.value;
+    }
+    if (this.filterStatusProduct.value != null && this.filterStatusProduct.value != '') {
+      filterValues['locker_has_product'] = this.filterStatusProduct.value;
     }
     this.filterValues.emit(filterValues);
   }

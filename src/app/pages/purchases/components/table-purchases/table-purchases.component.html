@@ -36,7 +36,8 @@
           <th class="align-middle">
             Cotización
             <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="filterOrderService" (keyup.enter)="filterPurchase()" />
+              <input type="text" class="form-control" [formControl]="filterOrderService"
+                (keyup.enter)="filterPurchase()" />
             </div>
           </th>
 
@@ -44,19 +45,19 @@
             Estado Cotización
             <select class="form-select" [formControl]="filterOrderServiceStatus" (change)="filterPurchase();">
               <option disabled value="" title="Selecciona filtro...">Selecciona filtro...</option>
-              <option [value]="null">Todos</option>
+              <option value="null">Todos</option>
               <option [value]="3">Proceso Compra</option>
               <option [value]="4">Ingresar Producto</option>
               <option [value]="5">Finalizada</option>
               <option [value]="6">Cancelada</option>
             </select>
-          </th><!--SEARCH STATES ON UTILS.TOOL.TS (GET_STATUS)-->
+          </th>
+          <!--SEARCH STATES ON UTILS.TOOL.TS (GET_STATUS)-->
 
           <th class="align-middle">Fecha
-            <div class="input-group clockpicker mt-2"  style="min-width: 150px;">
-              <input  placeholder="yyyy-mm-dd"  class="form-control"
-              [value]="formatDate()" disabled>
-              
+            <div class="input-group clockpicker mt-2" style="min-width: 150px;">
+              <input placeholder="yyyy-mm-dd" class="form-control" [value]="formatDate()" disabled>
+
               <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
                 (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate"
                 style="display: none;">
@@ -70,6 +71,16 @@
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="productName" (keyup.enter)="filterPurchase()" />
             </div>
+          </th>
+
+          <th class="align-middle">
+            Estado Producto
+            <select class="form-select" [formControl]="filterStatusProduct" (change)="filterPurchase();">
+              <option disabled title="Selecciona filtro...">Selecciona filtro...</option>
+              <option value="null">Todos</option>
+              <option [value]="0">Por Ingresar</option>
+              <option [value]="1">En Casillero</option>
+            </select>
           </th>
 
           <th class="align-middle">Numero de Compra
@@ -105,13 +116,18 @@
 
       <tbody>
 
-        <tr *ngFor="let data of purchases">
+        <tr *ngFor="let data of purchases" [ngClass]="{ 'sold-out' : data.sold_out }">
 
-          <td>
+          <td style="position: relative;">
             <div class="image-product">
-              <img [src]="data.product_image || 'https://i.imgur.com/riKFnErh.jpg'"
-              (error)="$event.src = 'https://i.imgur.com/riKFnErh.jpg'" draggable="false" >
+              <a [href]="data.product_link" target="_blank">
+                <img [src]="data.product_image || 'https://i.imgur.com/riKFnErh.jpg'"
+                  (error)="$event.src = 'https://i.imgur.com/riKFnErh.jpg'" draggable="false">
+              </a>
             </div>
+            <a [href]="data.product_link" target="_blank" *ngIf="data.sold_out">
+              <img class="img-sold-out" src="/assets/agotado.png" alt="" draggable="false">
+            </a>
           </td>
 
           <td>
@@ -129,11 +145,16 @@
           </td>
 
           <td>
-            {{data.purchase_date | date }} 
+            {{data.purchase_date | date }}
           </td>
 
           <td title="{{ data.product_name ? data.product_name : '' }}">
-            {{ (data.product_name ? (data.product_name.length > 50) ? (data.product_name | slice:0:50 ) + '...' :  data.product_name : '' )   }}
+            {{ (data.product_name ? (data.product_name.length > 50) ? (data.product_name | slice:0:50 ) + '...' :
+            data.product_name : '' ) }}
+          </td>
+
+          <td>
+            {{ data.locker_has_product ? 'En Casillero' : 'Por Ingresar' }}
           </td>
 
           <td>
@@ -151,7 +172,7 @@
 
           <td>
             <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
-              (click)="selectPurchase(data)">
+              (click)="selectPurchase(data);" *ngIf="!data.sold_out">
               Editar
             </button>
           </td>

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
-import { numberOnly } from "src/app/_helpers/tools/utils.tool";
+import { disabledItems, numberOnly } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { map, startWith } from "rxjs/operators";
 import { Observable } from "rxjs-compat";
@@ -16,6 +16,7 @@ import { Observable } from "rxjs-compat";
 export class ModalRegisterPurchaseComponent implements OnInit {
 
   @Input() public orderSelected: any;
+
   @Output() public closeModaleOut = new EventEmitter<any>();
   @Output() public refreshTable = new EventEmitter<any>();
 
@@ -34,8 +35,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
     private fb: FormBuilder,
     public _notify: NotifyService,
     public modalService: NgbModal,
-  ) {
-  }
+  ) { }
 
   ngOnInit(): void { }
 
@@ -61,6 +61,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       invoice_number: [null, Validators.required],
       locker_entry_date: [null],
       conveyor: [{ value: null, disabled: true }],
+      sold_out: [false]
       // payment_type: [null, Validators.required],
     });
     this.purchaseForm.controls.product.valueChanges.subscribe((product: any) => { if (product) { this.purchaseForm.get('product_price').setValue(product.product_value); } }); // Selecionar el valor del producto
@@ -114,34 +115,6 @@ export class ModalRegisterPurchaseComponent implements OnInit {
     this.closeModaleOut.emit(true);
   }
 
-  // ENVIAMOS LA SOLICITUD
-  registerPurchase() {
-    this.isLoading = true;
-    if (this.purchaseForm.valid) {
-      // CREAMOS LAS FECHAS CON EL METODO TO INSERT DATES
-      const purchase_date = this.toInsertDates()[0];
-      const locker_entry_date = this.toInsertDates()[1];
-      // ENVIAMOS LOS DATOS AL ENDPOINT
-      this._orderService.registerPurchase({
-        ...this.purchaseForm.getRawValue(),
-        purchase_date,
-        locker_entry_date,
-      }).subscribe((res: any) => {
-        this._notify.show(`Orden de Compra Creada #${res.order_purchase.id}`, res.message, "success");
-        this.refreshTable.emit(true);
-        this.modalService.dismissAll();
-      }, err => {
-        this._notify.show("Error", err ? err : "Ocurrio un error", "warning");
-        this.isLoading = false;
-        throw err;
-      });
-    } else {
-      this._notify.show("Campos incompletos", "", "info");
-      this.isLoading = false;
-    }
-
-  }
-
   displayProperty(option: any): void {
     if (option) {
       if (option.name) {
@@ -191,6 +164,51 @@ export class ModalRegisterPurchaseComponent implements OnInit {
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
     return numberOnly(event);
+  }
+
+  disabledItems(item: any) {
+    return disabledItems(item);
+  }
+
+  changeStatusInputs(): void {
+    for (const field in this.purchaseForm.controls) {
+      if (this.disabledItems(field)) {
+        if (this.purchaseForm.controls.sold_out.value) {
+          this.purchaseForm.controls[field].disable();
+        } else {
+          this.purchaseForm.controls[field].enable();
+        }
+      }
+    }
+
+  }
+
+  // ENVIAMOS LA SOLICITUD
+  registerPurchase() {
+    this.isLoading = true;
+    if (this.purchaseForm.valid) {
+      // CREAMOS LAS FECHAS CON EL METODO TO INSERT DATES
+      const purchase_date = this.toInsertDates()[0];
+      const locker_entry_date = this.toInsertDates()[1];
+      // ENVIAMOS LOS DATOS AL ENDPOINT
+      this._orderService.registerPurchase({
+        ...this.purchaseForm.getRawValue(),
+        purchase_date,
+        locker_entry_date,
+      }).subscribe((res: any) => {
+        this._notify.show(`Orden de Compra Creada #${res.order_purchase.id}`, res.message, "success");
+        this.refreshTable.emit(true);
+        this.modalService.dismissAll();
+      }, err => {
+        this._notify.show("Error", err ? err.error.message : "Ocurrió un error, intenta de nuevo.", "warning");
+        this.isLoading = false;
+        throw err;
+      });
+    } else {
+      this._notify.show("Campos incompletos", "", "info");
+      this.isLoading = false;
+    }
+
   }
 
 }
