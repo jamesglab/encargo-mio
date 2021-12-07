@@ -94,7 +94,6 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.locker_info.valueChanges.subscribe((data: any) => {
       if (data && data.locker_id) {
-        // this.cleanData();
         this.lockerForm.controls.locker_info.setValue((`CA${data.locker_id} | ${data.us_name} ${data.us_last_name}`));
         this.lockerForm.controls.locker.setValue(data.locker_id);
         this.lockerForm.controls.user.setValue(data.us_id);
@@ -105,9 +104,11 @@ export class ModalLockerEntryComponent implements OnInit {
     this.lockerForm.controls.guide_order.valueChanges.subscribe((orderPurchase: any) => {
       if (orderPurchase && orderPurchase.id) {
         this.files = [];
-        this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id+ ' | ' + orderPurchase.product.name));
+        this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id + ' | ' + orderPurchase.product.name));
         this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
-        this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        if (this.lockerForm.controls.guide_number_alph.value === "" || this.lockerForm.controls.guide_number_alph.value == null) {
+          this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        }
         this.lockerForm.controls.order_purchase.setValue(orderPurchase.id);
         this.lockerForm.controls.weight.setValue((orderPurchase.weight ? orderPurchase.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((orderPurchase.product_price ? orderPurchase.product_price : 0));
