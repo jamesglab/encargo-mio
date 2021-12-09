@@ -27,14 +27,18 @@ export class TransactionComponent implements OnInit {
     updated_at?: string;
     is_shipping_locker?: boolean;
   }>;
+
   public filterUser = new FormControl('');
   public filterId = new FormControl('');
   public filterDate = new FormControl({ value: '' });
   public filterAdvancePurchase = new FormControl(null);
+
   public filteredUsers: Observable<string[]>;
   public orderSelected: any = {};
-  public isLoading: boolean = false;
+
   public users: [] = [];
+
+  public isLoading: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -47,9 +51,7 @@ export class TransactionComponent implements OnInit {
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
-  ngOnChanges() {
-    // this.statusTab = this.status;
-  }
+  ngOnChanges() { }
 
   filterOrders() {
     const filterValues = {};
