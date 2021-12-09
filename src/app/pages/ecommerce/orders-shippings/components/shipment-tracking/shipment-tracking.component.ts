@@ -24,7 +24,6 @@ export class ShipmentTrackingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log("SHIPPINGTRACKING", this.shipping_order);
     if (!this.shipping_order.conveyor) {
       this.showNoConveyor = true;
     } else {
@@ -47,7 +46,7 @@ export class ShipmentTrackingComponent implements OnInit {
       .subscribe((res) => {
         const { updated_status } = res;
         this.isLoadingData = false;
-        if(updated_status){
+        if (updated_status) {
           this.shipping_order.conveyor_status = updated_status;
         } else {
           this.shipping_order.conveyor_status = JSON.parse(this.shipping_order.conveyor_status) || [];

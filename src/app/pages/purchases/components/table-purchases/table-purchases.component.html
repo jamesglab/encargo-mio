@@ -27,9 +27,10 @@
           </th>
 
           <th class="align-middle">
-            #
+            # Compra
             <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="filterCode" (keyup.enter)="filterPurchase()" />
+              <input type="text" class="form-control" [formControl]="filterCode" (keyup.enter)="filterPurchase()"
+                placeholder="Ingresa el Id de la compra" />
             </div>
           </th>
 
@@ -37,7 +38,7 @@
             Cotización
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="filterOrderService"
-                (keyup.enter)="filterPurchase()" />
+                placeholder="Ingresa el Id de cotización" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
 
@@ -67,9 +68,18 @@
             </div>
           </th>
 
+          <th class="align-middle">
+            Id del Producto
+            <div class="mt-2">
+              <input type="text" class="form-control" [formControl]="filterIdProduct" placeholder="Id del producto"
+                (keyup.enter)="filterPurchase()" />
+            </div>
+          </th>
+
           <th class="align-middle">Nombre del Producto
             <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="productName" (keyup.enter)="filterPurchase()" />
+              <input type="text" class="form-control" [formControl]="productName"
+                placeholder="Ingresa el nombre del producto" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
 
@@ -85,7 +95,8 @@
 
           <th class="align-middle">Numero de Compra
             <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="purchaseNumber" (keyup.enter)="filterPurchase()" />
+              <input type="text" class="form-control" placeholder="Ingresa el número de compra"
+                [formControl]="purchaseNumber" (keyup.enter)="filterPurchase()" />
             </div>
           </th>
 
@@ -146,6 +157,10 @@
 
           <td>
             {{data.purchase_date | date }}
+          </td>
+
+          <td>
+            {{ data.product_id ? data.product_id : '-' }}
           </td>
 
           <td title="{{ data.product_name ? data.product_name : '' }}">

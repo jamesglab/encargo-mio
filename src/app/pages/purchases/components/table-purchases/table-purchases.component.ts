@@ -33,6 +33,7 @@ export class TablePurchasesComponent implements OnInit {
   public filterUser = new FormControl('');
   public total_value = new FormControl('');
   public filterStatusProduct = new FormControl(null);
+  public filterIdProduct = new FormControl('');
 
   public filteredUsers: Observable<string[]>;
 
@@ -72,13 +73,17 @@ export class TablePurchasesComponent implements OnInit {
     this.productName.reset();
     this.purchaseNumber.reset();
     this.filterStatusProduct.reset();
+    this.filterIdProduct.reset();
     this.filterPurchase();
   }
 
   filterPurchase() {
     const filterValues = {};
     if (this.filterCode.value && this.filterCode.value.trim() != '') {
-      filterValues['id'] = this.filterCode.value
+      filterValues['id'] = this.filterCode.value;
+    }
+    if (this.filterIdProduct.value && this.filterIdProduct.value.trim() != '') {
+      filterValues['product_id'] = this.filterIdProduct.value;
     }
     if (this.filterOrderService.value && this.filterOrderService.value.trim() != '') {
       filterValues['order_service'] = this.filterOrderService.value;

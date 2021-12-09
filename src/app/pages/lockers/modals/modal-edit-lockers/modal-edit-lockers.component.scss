@@ -39,9 +39,26 @@
 }
 
 .container-img-dropzone {
+    overflow-x: auto;
     img {
         height: 170px;
-        width: 100%;
         object-fit: contain;
+    }
+    .content-img-dropzone {
+        position: relative;
+        margin: 10px;
+        .remove-item-content {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            cursor: pointer;
+        }
+        .remove-item {
+            border: none;
+            background-color: #0000005e;
+            color: white;
+            border-radius: 20px;
+            font-size: 13px;
+        }
     }
 }

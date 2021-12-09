@@ -25,7 +25,7 @@ export class ModalLockerEntryComponent implements OnInit {
   public getQueries: boolean = false;
   public loaderLockers: boolean = false;
 
-  public lockers = [];
+  public lockers: any = [];
   public orders_purchase: [] = [];
   public conveyors: [] = [];
   public files: File[] = [];

@@ -36,7 +36,7 @@ export const insertInLocker = (data: any): any => {
         "guide_number_alph": (data.guide_number_alph ? data.guide_number_alph : null),
         "order_purchase": (data.order_purchase ? data.order_purchase : null),
         "locker": (data.locker ? data.locker : null),
-        "permanent_shipping_value":(data.permanent_shipping_value ? data.permanent_shipping_value : 0),
+        "permanent_shipping_value": (data.permanent_shipping_value ? data.permanent_shipping_value : 0),
         "product": (data.product ? data.product : null),
         "product_description": (data.product_description ? data.product_description : null),
         "weight": (data.weight ? data.weight : 0),
@@ -67,7 +67,8 @@ export const updateLocker = (data: any): any => {
         "product_description": (data.product_description ? data.product_description : null),
         "permanent_shipping_value": (data.permanent_shipping_value ? data.permanent_shipping_value : 0),
         "weight": (data.weight ? data.weight : 0),
-        "images": (data.images ? data.images : [])
+        "images": (data.images ? data.images : []),
+        "deleted_images": (data.deleted_images ? data.deleted_images : null)
     };
 
     return locker;

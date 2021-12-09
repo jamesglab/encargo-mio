@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { LockersService } from '../../_services/lockers.service';
-import { dataURLtoFile, numberOnly } from '../../../../_helpers/tools/utils.tool'
+import { numberOnly } from '../../../../_helpers/tools/utils.tool'
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import { updateLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { FileHandle } from 'src/app/_directives/file-handle';
@@ -19,13 +20,15 @@ export class ModalEditLockersComponent implements OnInit {
 
   @Output() public closeModalEditLockers: EventEmitter<boolean> = new EventEmitter();
   @Output() public cancelModalStatus: EventEmitter<boolean> = new EventEmitter();
+
   @Input() public lockerSelected: any = {};
 
   public isLoading: boolean = false;
   public isLoadingQuery: boolean = false;
   public lockerEditForm: FormGroup;
-  public files: File[] = [];
+
   public allConveyors: any = [];
+  public allImages: any = [];
 
   constructor(
     private _lockers: LockersService,
@@ -73,14 +76,14 @@ export class ModalEditLockersComponent implements OnInit {
       product_description: [res.product_description ? res.product_description : null],
       force_commercial_shipping: [res.force_commercial_shipping],
       images: [res.images ? res.images : []],
+      deleted_images: [[]],
       product: [res.product ? res.product : null]
       // estimated_delivery_date: [null],
       // national_conveyor: [null],
       // guide_number_national: [null],
     });
     this.pushConveyorSelected(res.conveyor);
-    this.lockerEditForm.controls.images.setValue(res.images);
-    console.log(this.lockerEditForm.value);
+    this.pushImages();
   }
 
   getConveyors(): void {
@@ -98,49 +101,39 @@ export class ModalEditLockersComponent implements OnInit {
     }
   }
 
+  pushImages(): void {
+    let backendImages: any = [];
+    for (let index = 0; index < this.lockerEditForm.controls.images.value.length; index++) {
+      backendImages.push(this.lockerEditForm.controls.images.value[index]);
+    }
+    this.allImages = backendImages;
+  }
+
   filesDropped(file: FileHandle[]) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
-
-      let imageArray: any = [];
-      imageArray.push(this.lockerEditForm.controls.images.value);
+      this.isLoadingQuery = true;
       this._compress.compressImage(file[0].base64).then((res: any) => {
-
-  
-
-        this.lockerEditForm.controls.images.setValue(res);
-
+        this.allImages.push({ Key: null, Location: res.url, file: res.file });
+        this.isLoadingQuery = false;
       }, err => {
+        this.isLoadingQuery = false;
         this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
         throw err;
       });
     } else {
+      this.isLoadingQuery = false;
       this._notify.show('', 'El archivo que seleccionaste no es una imagen.', 'info');
     }
   }
 
   uploadImage(): void {
-    this._compress.uploadImage().then((res) => {
-      console.log("RESPONSE DAATA", res);
-      this.createFormData(res);
+    this.isLoadingQuery = true;
+    this._compress.uploadImage().then((res: any) => {
+      this.allImages.push({ Key: null, Location: res.url, file: res.file });
+      this.isLoadingQuery = false;
     }, err => {
+      this.isLoadingQuery = false;
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
-      throw err;
-    });
-  }
-
-  createFormData(res: any) {
-    const formData = new FormData();
-    formData.append("image", res.file);
-    // formData.append("payload", this.products.controls[position].value.key_aws_bucket);
-    this.isLoading = true;
-    this._orders.uploadNewImage(formData).subscribe((res: any) => {
-      console.log("RESPONSE: ", res);
-      // this.products.controls[position]['controls'].image.setValue(res.Location);
-      // this.products.controls[position]['controls'].key_aws_bucket.setValue(res.Key);
-      this.isLoading = false;
-    }, err => {
-      this.isLoading = false;
-      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
       throw err;
     });
   }
@@ -151,17 +144,27 @@ export class ModalEditLockersComponent implements OnInit {
 
   onImageError(event) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 
-  onSelectImage(event: any) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
-    this.files.push(...event.addedFiles);
+  onRemoveImage(position: number) {
+    Swal.fire({
+      text: "¿Estás seguro de borrar la imagen?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, quiero borrarla',
+      cancelButtonText: ' Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let temporalyDeletedImg: any = this.lockerEditForm.controls.deleted_images.value;
+        temporalyDeletedImg.push(this.allImages[position]);
+        this.lockerEditForm.controls.deleted_images.setValue(temporalyDeletedImg);
+        this.allImages.splice(position, 1);
+        this.lockerEditForm.controls.images.setValue(this.allImages);
+      }
+    });
   }
 
-  onRemoveImage(event: any) { // ELIMINAMOS LA IMAGEN
-    this.files.splice(this.files.indexOf(event), 1);
-  }
-
-  cancelModal(): void {
-    this.cancelModalStatus.emit(true);
-  }
+  cancelModal(): void { this.cancelModalStatus.emit(true); }
 
   onSubmit(): void {
 
@@ -172,8 +175,21 @@ export class ModalEditLockersComponent implements OnInit {
 
     this.isLoadingQuery = true;
     var formData = new FormData();
-    this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+
+    this.allImages.map((image: any) => { formData.append('images', image.file) });
+
+    if (this.lockerEditForm.controls.images.value && this.lockerEditForm.controls.images.value.length > 0) {
+      let newArrayImages: any = [];
+      this.lockerEditForm.controls.images.value.map((item: any) => {
+        if (item.Key) {
+          newArrayImages.push(item);
+        }
+      });
+      this.lockerEditForm.controls.images.setValue(newArrayImages);
+    }
+
     let payload = updateLocker(this.lockerEditForm.getRawValue());
+
     formData.append("payload", JSON.stringify(payload));
 
     this._orders.updateProductLocker(formData).subscribe((res: any) => {
@@ -187,7 +203,6 @@ export class ModalEditLockersComponent implements OnInit {
       this.isLoadingQuery = false;
       throw err;
     });
-
   }
 
   closeModal(): void {
