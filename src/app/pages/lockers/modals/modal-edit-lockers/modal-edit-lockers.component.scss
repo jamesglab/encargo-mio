@@ -24,3 +24,24 @@
         height: 200px;
     }
 }
+
+.dropzone-in-create {
+    text-align: center;
+    border-style: dashed;
+    background: white !important;
+    border-radius: 16px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.container-img-dropzone {
+    img {
+        height: 170px;
+        width: 100%;
+        object-fit: contain;
+    }
+}

@@ -6,6 +6,8 @@ import { dataURLtoFile, numberOnly } from '../../../../_helpers/tools/utils.tool
 import * as moment from 'moment';
 import { updateLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
+import { FileHandle } from 'src/app/_directives/file-handle';
+import { ImageCompressService } from 'src/app/_services/image-compress.service';
 
 @Component({
   selector: 'app-modal-edit-lockers',
@@ -29,7 +31,8 @@ export class ModalEditLockersComponent implements OnInit {
     private _lockers: LockersService,
     public _fb: FormBuilder,
     private _orders: OrderService,
-    private _notify: NotifyService
+    private _notify: NotifyService,
+    private _compress: ImageCompressService
   ) { }
 
   ngOnInit(): void {
@@ -76,7 +79,16 @@ export class ModalEditLockersComponent implements OnInit {
       // guide_number_national: [null],
     });
     this.pushConveyorSelected(res.conveyor);
-    this.pushImagesResponse(res.images);
+    this.lockerEditForm.controls.images.setValue(res.images);
+    console.log(this.lockerEditForm.value);
+  }
+
+  getConveyors(): void {
+    this._orders.getConvenyor().subscribe((res: any) => {
+      this.allConveyors = res;
+    }, err => {
+      throw err;
+    });
   }
 
   pushConveyorSelected(conveyor: number): void {
@@ -86,29 +98,58 @@ export class ModalEditLockersComponent implements OnInit {
     }
   }
 
-  pushImagesResponse(images: any): void { // Pusheamos las imagenes que están guardadas en la base de datos.
-    for (let index = 0; index < images.length; index++) {
-      const toDataURL = url => fetch(url)
-        .then(response => response.blob())
-        .then(blob => new Promise((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onloadend = () => resolve(reader.result)
-          reader.onerror = reject
-          reader.readAsDataURL(blob)
-        }))
-      toDataURL(images[index].Location)
-        .then(dataUrl => {
-          var fileData = dataURLtoFile(dataUrl, "imagen.jpg");
-          this.files.push(fileData);
-        });
+  filesDropped(file: FileHandle[]) { // Método el cual entra cuando un usuario hace el "drop"
+    if (file[0].file.type && file[0].file.type.includes('image')) {
+
+      let imageArray: any = [];
+      imageArray.push(this.lockerEditForm.controls.images.value);
+      this._compress.compressImage(file[0].base64).then((res: any) => {
+
+  
+
+        this.lockerEditForm.controls.images.setValue(res);
+
+      }, err => {
+        this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
+    } else {
+      this._notify.show('', 'El archivo que seleccionaste no es una imagen.', 'info');
     }
   }
 
-  displayWith(option: any) { // Formato para mostrar simplemente el nombre en el autocomplete
-    return option ? option.name : '';
+  uploadImage(): void {
+    this._compress.uploadImage().then((res) => {
+      console.log("RESPONSE DAATA", res);
+      this.createFormData(res);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
   }
 
+  createFormData(res: any) {
+    const formData = new FormData();
+    formData.append("image", res.file);
+    // formData.append("payload", this.products.controls[position].value.key_aws_bucket);
+    this.isLoading = true;
+    this._orders.uploadNewImage(formData).subscribe((res: any) => {
+      console.log("RESPONSE: ", res);
+      // this.products.controls[position]['controls'].image.setValue(res.Location);
+      // this.products.controls[position]['controls'].key_aws_bucket.setValue(res.Key);
+      this.isLoading = false;
+    }, err => {
+      this.isLoading = false;
+      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  displayWith(option: any) { return option ? option.name : ''; }  // Formato para mostrar simplemente el nombre en el autocomplete
+
   numberOnly(event): boolean { return numberOnly(event); } // Función para que sólo se permitan números en un input
+
+  onImageError(event) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 
   onSelectImage(event: any) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
     this.files.push(...event.addedFiles);
@@ -116,14 +157,6 @@ export class ModalEditLockersComponent implements OnInit {
 
   onRemoveImage(event: any) { // ELIMINAMOS LA IMAGEN
     this.files.splice(this.files.indexOf(event), 1);
-  }
-
-  getConveyors(): void {
-    this._orders.getConvenyor().subscribe((res: any) => {
-      this.allConveyors = res;
-    }, err => {
-      throw err;
-    });
   }
 
   cancelModal(): void {

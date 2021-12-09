@@ -80,7 +80,7 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
         this.lockerForm.controls.locker.setValue(guide.locker.id);
-        this.lockerForm.controls.locker_info.setValue(`CA${(guide.locker.id ? guide.locker.id : 0)} | ${guide.user.name} ${guide.user.last_name}`);
+        this.lockerForm.controls.locker_info.setValue(`${guide.user.name} ${guide.user.last_name}`);
         this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
         this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
@@ -200,11 +200,8 @@ export class ModalLockerEntryComponent implements OnInit {
     this.lockerForm.controls.guide_order.disable();
     this._orderService.getLockersByUser(params)
       .subscribe((res: any) => {
-        if (res.length > 0) {
+        if (res && res.length > 0) {
           this.allOrders = res;
-          // } else {
-          // this._notify.show('', 'No hay ordenes asociadas al casillero.', 'info');
-          // this.cleanData();
         }
         this.lockerForm.controls.guide_order.enable();
         this.getQueries = false;
