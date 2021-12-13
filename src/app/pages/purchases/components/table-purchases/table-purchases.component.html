@@ -3,12 +3,21 @@
   <div class="table-responsive mb-0" style="min-height: 500px;">
 
     <div class="col-sm-12">
+
       <div class="text-sm-end">
+
         <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
           <i class="bx bx-trash-alt mr-1"></i>
           Eliminar Filtros
         </button>
+
+        <button type="button" class="btn btn-info btn-rounded mb-2 me-2" (click)="openLocker();">
+          Ingresar a Casillero
+        </button>
+
       </div>
+
+
     </div>
 
     <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">

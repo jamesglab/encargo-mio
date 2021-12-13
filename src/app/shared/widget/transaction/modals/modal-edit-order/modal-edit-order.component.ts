@@ -3,9 +3,9 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { numberOnly, validateErrors } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
-import Swal from "sweetalert2";
 import { FileHandle } from "src/app/_directives/file-handle";
 import { ImageCompressService } from "src/app/_services/image-compress.service";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-modal-edit-order",
@@ -72,7 +72,7 @@ export class ModalEditOrderComponent implements OnInit {
         this.modalService.dismissAll();
         throw err;
       });
-    if (this.status == 2 || this.status == 3) {
+    if (this.status == 2 || this.status == 3 || this.status == 5) {
       this.disabledAllInputs = true;
     }
   }
@@ -227,6 +227,9 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   uploadImage(position: number) {
+    if (this.status == 2 || this.status == 3 || this.status == 5) {
+      return;
+    }
     this._compress.uploadImage().then((res) => {
       this.orderSelected.products[position].uploaded_files = res;
       this.createFormData(res, position);

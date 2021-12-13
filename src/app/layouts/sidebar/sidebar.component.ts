@@ -167,7 +167,6 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
     });
     // });
     this.menuItems = new_menu;
-    console.log(this.menuItems);
   }
 
   /**

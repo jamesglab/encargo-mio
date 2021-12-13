@@ -145,5 +145,9 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
+  openLocker(){
+    console.log("OPEN LOCKER MODAL");
+  }
+
 }
 

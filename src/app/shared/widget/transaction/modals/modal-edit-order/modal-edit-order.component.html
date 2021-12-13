@@ -22,7 +22,7 @@
         </div>
         <div class="h5">
           TRM cotización:
-          {{ (orderSelected ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
+          {{ (orderSelected.trm ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
         </div>
 
         <br>
@@ -116,11 +116,19 @@
 
   <h4 class="h4">Productos</h4>
 
+  <div class="alert alert-primary" role="alert" *ngIf="orderSelected.products && orderSelected.products.length === 0">
+    <strong>La orden no tiene productos asociados.</strong>
+  </div>
+
   <div class="table-responsive">
 
     <ng-container *ngFor="let item of orderSelected.products; let i = index;">
 
       <hr *ngIf="i > 0">
+
+      <div class="alert alert-warning" role="alert" *ngIf="item.order_purchase && item.order_purchase.sold_out">
+        <strong>Este producto se encuentra agotado.</strong>
+      </div>
 
       <div class="container">
 
@@ -135,7 +143,7 @@
                 <img [src]="item.uploaded_files.url" (error)="onImageError($event);" draggable="false" />
               </a>
 
-              <h5>
+              <h5 *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
                 Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
                   (click)="uploadImage(i);">aquí.</a>
               </h5>
@@ -300,7 +308,7 @@
 <div class="modal-footer">
 
   <button class="btn btn-secondary" [disabled]="isLoading || isLoadingQuery" (click)="modalService.dismissAll()">
-    Cancelar
+    Cerrar
   </button>
 
   <ng-container *ngIf="status == 0 || status == 1">
