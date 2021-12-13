@@ -140,7 +140,7 @@
             <div class="container-img-dropzone">
 
               <a [href]="item.link" target="_blank">
-                <img [src]="item.uploaded_files.url" (error)="onImageError($event);" draggable="false" />
+                <img src="{{item.uploaded_files ? item.uploaded_files.url : ''}}" (error)="onImageError($event);" draggable="false" />
               </a>
 
               <h5 *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
