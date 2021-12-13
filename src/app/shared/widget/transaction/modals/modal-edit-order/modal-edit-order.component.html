@@ -140,13 +140,19 @@
             <div class="container-img-dropzone">
 
               <a [href]="item.link" target="_blank">
-                <img src="{{item.uploaded_files ? item.uploaded_files.url : ''}}" (error)="onImageError($event);" draggable="false" />
+                <img src="{{item.image ? item.image : ''}}" (error)="onImageError($event);" draggable="false" />
               </a>
 
               <h5 *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
                 Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
                   (click)="uploadImage(i);">aquí.</a>
               </h5>
+
+              <ng-container *ngIf="isLoadingUpload">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </ng-container>
 
             </div>
 

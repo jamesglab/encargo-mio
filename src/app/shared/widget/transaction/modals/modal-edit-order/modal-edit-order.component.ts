@@ -28,6 +28,7 @@ export class ModalEditOrderComponent implements OnInit {
   public disabledInputs: boolean = false;
   public disabledAllInputs: boolean = false;
   public isLoadingQuery: boolean = false;
+  public isLoadingUpload: boolean = false;
 
   public productSelected: any;
 
@@ -56,7 +57,6 @@ export class ModalEditOrderComponent implements OnInit {
           this.orderSelected.products = res.products;
           this.orderSelected.products.map((products: any, index: number) => {
             products.name = (products.name ? products.name.trim() : null);
-            products.uploaded_files = (products.image ? { file: null, type: 'image', url: products.image } : "");
             products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.
             this.calculateTotalPrices(index);
@@ -199,7 +199,6 @@ export class ModalEditOrderComponent implements OnInit {
   filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
       this._compress.compressImage(file[0].base64).then((res: any) => {
-        this.orderSelected.products[position].uploaded_files = res;
         this.createFormData(res, position);
       }, err => {
         this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
@@ -215,11 +214,14 @@ export class ModalEditOrderComponent implements OnInit {
     formData.append("image", res.file);
     formData.append("payload", this.orderSelected.products[position].key_aws_bucket);
     this.isLoading = true;
+    this.isLoadingUpload = true;
     this._orders.uploadNewImage(formData).subscribe((res: any) => {
       this.orderSelected.products[position].image = res.Location;
       this.orderSelected.products[position].key_aws_bucket = res.Key;
+      this.isLoadingUpload = false;
       this.isLoading = false;
     }, err => {
+      this.isLoadingUpload = false;
       this.isLoading = false;
       this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
       throw err;
@@ -231,7 +233,6 @@ export class ModalEditOrderComponent implements OnInit {
       return;
     }
     this._compress.uploadImage().then((res) => {
-      this.orderSelected.products[position].uploaded_files = res;
       this.createFormData(res, position);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');

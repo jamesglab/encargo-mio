@@ -79,7 +79,6 @@ export class OrderService {
   }
 
   calculateShipping(products: any) {
-    if (products && products.length > 0) { products.map((item: any) => { delete item.uploaded_files; }); }
     return this.http.post<any>(
       `${environment.microservices.management}orders/calculate-shipping`, { products: products, type: 'quotation' }
     ).pipe(
