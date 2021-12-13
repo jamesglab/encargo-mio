@@ -3,13 +3,13 @@ import { MenuItem } from './menu.model';
 export const MENU: MenuItem[] = [
     {
         id: 12,
-        label: 'MENUITEMS.ECOMMERCE.TEXT',
+        label: 'Pedidos',
         showItem : false,
         icon: 'bx-store',
         subItems: [
             {
                 id: 15,
-                label: 'MENUITEMS.ECOMMERCE.LIST.ORDERS',
+                label: 'Cotizaciones',
                 link: '/ecommerce/orders',
                 parentId: 12,
                 code : 'CO000',
@@ -24,7 +24,7 @@ export const MENU: MenuItem[] = [
             // },
             {
                 id: 153,
-                label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-SHIPPING',
+                label: 'Envios',
                 link: '/ecommerce/orders-shippings',
                 parentId: 12,
                 code : 'ENV000',
@@ -32,7 +32,7 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 154,
-                label: 'MENUITEMS.ECOMMERCE.LIST.PURCHASE',
+                label: 'Compras',
                 link: '/purchases',
                 parentId: 12,
                 code : 'COM000',
@@ -40,7 +40,7 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 16,
-                label: 'MENUITEMS.ECOMMERCE.LIST.CUSTOMERS',
+                label: 'Pagos',
                 link: '/ecommerce/customers',
                 parentId: 12,
                 code : 'PAG000',
@@ -48,7 +48,7 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 17,
-                label: 'MENUITEMS.ECOMMERCE.LIST.CUPONS',
+                label: 'Cupones',
                 link: '/cupons',
                 parentId: 12,
                 code : 'CUP000',
@@ -58,13 +58,13 @@ export const MENU: MenuItem[] = [
     },
     {
         id: 48,
-        label: 'MENUITEMS.CONTACTS.TEXT',
+        label: 'Usuarios',
         icon: 'bxs-user-detail',
         showItem : false,
         subItems: [
             {
                 id: 49,
-                label: 'MENUITEMS.CONTACTS.LIST.USERGRID',
+                label: 'Roles y Permisos',
                 link: '/contacts/grid',
                 parentId: 48,
                 code : 'ROL000',
@@ -72,7 +72,7 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 50,
-                label: 'MENUITEMS.CONTACTS.LIST.USERLIST',
+                label: 'Lista de Usuarios',
                 link: '/contacts/list',
                 parentId: 48,
                 code : 'US000',
