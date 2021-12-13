@@ -232,7 +232,7 @@
                   <div class="col-sm">
                     <label for="tax" class="form-label">Tax</label>
                     <input type="number" class="form-control" id="tax" placeholder="Tax" [(ngModel)]="item.tax"
-                      (ngModelChange)="item.tax = $event" min="0" (keypress)="numberOnly($event);"
+                      (ngModelChange)="taxOnChanges(i, $event);" min="0" (keypress)="numberOnly($event);"
                       (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || disabledAllInputs">
 
                     <div class="container-calcs">

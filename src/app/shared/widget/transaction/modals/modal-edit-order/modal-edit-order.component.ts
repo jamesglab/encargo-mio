@@ -42,6 +42,7 @@ export class ModalEditOrderComponent implements OnInit {
   ngOnInit(): void { }
 
   ngOnChanges() {
+    console.log(this.status)
     if (this.orderSelected) {
       this.calculateValuesInit();
     }
@@ -167,6 +168,10 @@ export class ModalEditOrderComponent implements OnInit {
     this.calculateTotalPrices(i); // Calcular el total de precios
     this.calculateDiscount(i); // Calculamos el descuento
     this.calculateTotalArticles(); // Llamamos la función para obtener los valores totales
+  }
+
+  taxOnChanges(i: number, event: any) {
+    this.orderSelected.products[i].tax = (event ? event : 0);
   }
 
   setPermanentShipping(i: number): void {
