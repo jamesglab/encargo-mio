@@ -122,6 +122,18 @@ export const validateShippingstatus = (status) => {
     return status_name
 
 }
+
+export const SHIPPING_STATUS = [
+    { "status": 0, "name": "Consolidación", "english": "consolidation" },
+    { "status": 1, "name": "Por empacar", "english": "for_packing" },
+    { "status": 2, "name": "En generación de guía", "english": "in_guide" },
+    { "status": 3, "name": "Enviado", "english": "sended" },
+    { "status": 7, "name": "Entregado", "english": "delivered" },
+    { "status": 4, "name": "Cancelado", "english": "cancel" },
+    { "status": 5, "name": "Pago en revisión", "english": "in_check" },
+    { "status": 6, "name": "Fragmentado", "english": "fragmented" }
+];
+
 // MEOTODO QUE RECIBE UN ARRAY Y LOS CAMPOS QUE SON REQUERIDOS EN LA SOLICITUD
 // objectsValidate : [{},{},{}]
 // validators : ['name',description,'value'...etc]
