@@ -1,7 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
-import { CookieService } from 'ngx-cookie-service';
 import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
@@ -24,7 +23,6 @@ export class TopbarComponent implements OnInit {
 
   constructor(
     @Inject(DOCUMENT) private document: any, private router: Router,
-    public _cookiesService: CookieService,
     private _storage: StorageService
   ) {
   }
@@ -39,8 +37,6 @@ export class TopbarComponent implements OnInit {
     // console.log(this.user);
     this.openMobileMenu = false;
     this.element = document.documentElement;
-
-    this.cookieValue = this._cookiesService.get('lang');
 
   }
 
