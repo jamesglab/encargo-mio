@@ -85,9 +85,7 @@ export class FragmentProductsComponent implements OnInit {
 
   setImages(product) { //FOR SET IMAGES THAT ARE IN DB
 
-    if (!product.files) {
-      product.files = [];
-    }
+    product.files = [];
     product.isLoadingImages = true;
     Promise.all(
       product.images.map(async (image) => {//ITERATE PRODUCT IMAGES
@@ -150,7 +148,7 @@ export class FragmentProductsComponent implements OnInit {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
-      this.setImages(event.container.data[event.currentIndex]);
+        this.setImages(event.container.data[event.currentIndex]);
     }
 
     this.setWeightAfterDrop();//VALIDATE ALL WEIGHT ACCORD WEIGHT OF PRODUCTS DROPPED
