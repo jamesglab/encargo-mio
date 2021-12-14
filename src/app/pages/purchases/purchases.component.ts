@@ -45,4 +45,10 @@ export class PurchasesComponent implements OnInit {
     this.modalService.open(modal, { size: sizeModale, centered: true });
   }
 
+  refreshTableReceive(event: boolean): void {
+    if(event){
+      this.getPurchases();
+    }
+  }
+
 }

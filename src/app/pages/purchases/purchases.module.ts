@@ -1,13 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { PurchasesRoutingModule } from './purchases-routing.module';
-import { PurchasesComponent } from './purchases.component';
-import { TablePurchasesComponent } from './components/table-purchases/table-purchases.component';
-import { ModalEditPurchaseComponent } from './components/modal-edit-purchase/modal-edit-purchase.component';
-
-
-
 import { NgbDatepickerModule, NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
@@ -19,11 +11,18 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
+import { PurchasesRoutingModule } from './purchases-routing.module';
+import { PurchasesComponent } from './purchases.component';
+import { TablePurchasesComponent } from './components/table-purchases/table-purchases.component';
+import { ModalEditPurchaseComponent } from './components/modal-edit-purchase/modal-edit-purchase.component';
+import { LockerEntryComponent } from './components/table-purchases/modals/locker-entry/locker-entry.component';
+
 @NgModule({
   declarations: [
     PurchasesComponent,
     TablePurchasesComponent,
-    ModalEditPurchaseComponent
+    ModalEditPurchaseComponent,
+    LockerEntryComponent
   ],
   imports: [
     CommonModule,

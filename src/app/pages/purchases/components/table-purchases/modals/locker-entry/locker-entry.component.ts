@@ -1,24 +1,24 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.tool';
-import { NotifyService } from 'src/app/_services/notify.service';
-import { OrderService } from '../../../_services/orders.service';
-import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
-import { Observable } from 'rxjs-compat';
-import { map, startWith } from 'rxjs/operators';
-import { FileHandle } from 'src/app/_directives/file-handle';
+import { Observable } from 'rxjs';
+import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
+import { NotifyService } from 'src/app/_services/notify.service';
+import { map, startWith } from 'rxjs/operators';
+import { isRequired, numberOnly } from 'src/app/_helpers/tools/utils.tool';
+import { FileHandle } from 'src/app/_directives/file-handle';
+import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.tool';
 
 @Component({
-  selector: 'app-create-order',
-  templateUrl: './create-order.component.html',
-  styleUrls: ['./create-order.component.scss']
+  selector: 'app-locker-entry',
+  templateUrl: './locker-entry.component.html',
+  styleUrls: ['./locker-entry.component.scss']
 })
 
-export class CreateOrderComponent implements OnInit {
+export class LockerEntryComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
-  @Output() public close_modale = new EventEmitter<any>();
+  @Output() public closeModal: EventEmitter<any> = new EventEmitter<any>();
 
   @Input() public trm: any;
   @Input() public users: any = [];
@@ -317,6 +317,10 @@ export class CreateOrderComponent implements OnInit {
     }
   }
 
+  onRemove(event) { // ELIMINAMOS LA IMAGEN
+    this.files.splice(this.files.indexOf(event), 1);
+  }
+
   async createOrder() {
 
     if (!this.createProductForm.value.user) { // Si no hay un usuario asignado a través del selector no se deja pasar.
@@ -352,7 +356,7 @@ export class CreateOrderComponent implements OnInit {
       this.quotationService.createQuotation(formData).subscribe(res => {
         this._notify.show('Transacción Exitosa', res.message, 'success');
         this.isLoading = false;
-        this.close_modale.emit();
+        this.closeModal.emit(false);
         this.refreshTable.emit(true);
       }, err => {
         this._notify.show('Error', err, 'error');
@@ -364,10 +368,6 @@ export class CreateOrderComponent implements OnInit {
       this._notify.show('Datos incompletos', `Revisa que hayas llenado los campos.`, 'info');
     }
 
-  }
-
-  onRemove(event) { // ELIMINAMOS LA IMAGEN
-    this.files.splice(this.files.indexOf(event), 1);
   }
 
 }

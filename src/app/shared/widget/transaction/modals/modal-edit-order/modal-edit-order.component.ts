@@ -42,7 +42,6 @@ export class ModalEditOrderComponent implements OnInit {
   ngOnInit(): void { }
 
   ngOnChanges() {
-    console.log(this.status)
     if (this.orderSelected) {
       this.calculateValuesInit();
     }
