@@ -1,7 +1,6 @@
-<div class="container-fluid">
-  <!-- start page title -->
+<!-- <div class="container-fluid">
+
   <app-page-title title="Kanban Board" [breadcrumbItems]="breadCrumbItems"></app-page-title>
-  <!-- end page title -->
 
   <div class="row">
     <div class="col-lg-4">
@@ -15,8 +14,7 @@
               <a class="dropdown-item" href="javascript: void(0);">Edit</a>
               <a class="dropdown-item" href="javascript: void(0);">Delete</a>
             </div>
-          </div> <!-- end dropdown -->
-
+          </div> 
           <h4 class="card-title mb-4">Upcoming</h4>
           <div id="upcoming-task" class="pb-1 task-list" dndDropzone dndEffectAllowed="move"
             (dndDrop)="onDrop($event, upcomingTasks,'upcoming-task')">
@@ -37,7 +35,7 @@
         </div>
       </div>
     </div>
-    <!-- end col -->
+
 
     <div class="col-lg-4">
       <div class="card">
@@ -50,8 +48,7 @@
               <a class="dropdown-item" href="javascript: void(0);">Edit</a>
               <a class="dropdown-item" href="javascript: void(0);">Delete</a>
             </div>
-          </div> <!-- end dropdown -->
-
+          </div> 
           <h4 class="card-title mb-4">In Progress</h4>
           <div id="Progress-task" class="pb-1 task-list" dndDropzone dndEffectAllowed="move"
             (dndDrop)="onDrop($event, inprogressTasks,'Progress-task')">
@@ -82,7 +79,7 @@
               <a class="dropdown-item" href="javascript: void(0);">Edit</a>
               <a class="dropdown-item" href="javascript: void(0);">Delete</a>
             </div>
-          </div> <!-- end dropdown -->
+          </div>
 
           <h4 class="card-title mb-4">Completed</h4>
           <div id="completed-task" class="pb-1 task-list" dndDropzone dndEffectAllowed="move"
@@ -107,7 +104,6 @@
   </div>
 </div>
 
-<!-- Task  -->
 <ng-template #TaskContent let-task='task'>
   <div class="card task-box">
     <div class="card-body">
@@ -143,4 +139,4 @@
       </div>
     </div>
   </div>
-</ng-template>
+</ng-template> -->

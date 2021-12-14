@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, EventEmitter, Output, Input } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -18,7 +18,7 @@ export class CreatetaskComponent implements OnInit {
   // bread crumb items
   breadCrumbItems: Array<{}>;
 
-  public Editor = ClassicEditor;
+  public Editor;
 
   form = new FormGroup({
     member: new FormArray([
