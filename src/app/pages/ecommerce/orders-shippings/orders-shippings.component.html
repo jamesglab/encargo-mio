@@ -52,52 +52,13 @@
           6 Fragmentado -->
           <ul class="nav nav-pills d-flex justify-content-center">
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 0 }" (click)="status = 0;  getTransactions()">
-                Consolidación {{ counts.consolidation ? counts.consolidation : 0}}
+            <li *ngFor="let item of SHIPPING_STATUS" class="nav-item">
+              <a class="nav-link" [ngClass]="{'active': status == item.status }"
+                (click)="status = item.status; getTransactions()">
+                {{ item.name }} {{ counts[item.english] ? counts[item.english] : 0 }}
               </a>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 1}" (click)="status = 1 ;  getTransactions()">
-                Por empacar {{ counts.for_packing ? counts.for_packing : 0}}
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status == 2}" (click)="status = 2;  getTransactions()">
-                En Generación de Guía {{ counts.in_guide ? counts.in_guide : 0}}
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status == 3}" (click)="status = 3;  getTransactions()">
-                Enviados {{ counts.sended ? counts.sended : 0}}
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status == 7}" (click)="status = 7;  getTransactions()">
-                Entregados {{ counts.delivered ? counts.delivered : 0}}
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 4 }" (click)="status = 4;  getTransactions()">
-                Cancelados {{ counts.cancel ? counts.cancel : 0}}
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 5 }" (click)="status = 5;  getTransactions()">
-                Pago en revisión {{ counts.in_check ? counts.in_check : 0}}
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 6 }" (click)="status = 6;  getTransactions()">
-                Fracionados {{ counts.fragmented ? counts.fragmented : 0}}
-              </a>
-            </li>
           </ul>
           <!-- Table data -->
 
@@ -112,6 +73,7 @@
           <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term" [users]="users" [status]="status"
             (shippingSelected)="shippingToUpdate = $event; openModal(updateShipping,'xl')"
             (shippingTracking)="shippingTracking = $event; openModal(shipment_tracking,'xl')"
+            (showChangeStatusModal)="showChangeStatusModal($event, update_status_modal);"
             (filterData)="shippingFilterReceive($event);" (defaultResetValues)="defaultResetValuesReceive($event);"
             [resetAllFilters]="resetAllFilters">
           </app-shippings-table>
@@ -130,15 +92,19 @@
 </div>
 
 <ng-template #createShipping role="document" let-modal>
-  <app-modal-create-shipping [users]="users" [trm]="trm" (getTransactions)="getTransactions();getCountsTabs()">
+  <app-modal-create-shipping [users]="users" [trm]="trm" (getTransactions)="getTransactions(); getCountsTabs()">
   </app-modal-create-shipping>
 </ng-template>
 
 
 <ng-template #updateShipping role="document" let-modal>
   <app-modal-update-shipping [users]="users" [trm]="trm" [status]="status" [shippingToUpdate]="shippingToUpdate"
-    (getTransactions)="getTransactions();getCountsTabs()">
+    (getTransactions)="getTransactions(); getCountsTabs()">
   </app-modal-update-shipping>
+</ng-template>
+
+<ng-template #update_status_modal role="document" let-modal>
+  <app-edit-shipping-status [shipping]="shipping_status" (onClose)="getTransactions(); getCountsTabs();"></app-edit-shipping-status>
 </ng-template>
 
 <ng-template #shipment_tracking role="document" let-modal>

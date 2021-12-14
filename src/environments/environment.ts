@@ -13,16 +13,6 @@ export const environment = {
     orders: "https://dev-api.encargomio.com/api/v1/orders/",
     scraping: 'https://t8cjnb3q08.execute-api.us-east-1.amazonaws.com/prod/web-scrapping-page',
     updateConveyor: 'https://t8cjnb3q08.execute-api.us-east-1.amazonaws.com/prod/update-status-conveyor'
-  },
-  firebaseConfig: {
-    apiKey: '',
-    authDomain: '',
-    databaseURL: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
-    measurementId: ''
   }
 };
 
