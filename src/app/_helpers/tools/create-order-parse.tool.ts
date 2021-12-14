@@ -76,7 +76,6 @@ export const updateLocker = (data: any): any => {
 }
 
 export const updateShipping = (data: any): any => {
-    console.log(data);
 
     let shipping = {
         "id": data.id ? data.id : null,

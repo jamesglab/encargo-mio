@@ -1,16 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import * as moment from 'moment';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs-compat';
-import { filter, map, startWith } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { GET_STATUS } from 'src/app/_helpers/tools/utils.tool';
 import { UserService } from "src/app/_services/users.service";
+import * as moment from 'moment';
+import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 
 @Component({
   selector: 'app-table-purchases',
   templateUrl: './table-purchases.component.html',
   styleUrls: ['./table-purchases.component.scss']
 })
+
 export class TablePurchasesComponent implements OnInit {
 
   @Input() public purchases: [] = [];
@@ -19,10 +22,12 @@ export class TablePurchasesComponent implements OnInit {
   @Output() public editPurchase: EventEmitter<any> = new EventEmitter<any>();
   @Output() public filterPaginator: EventEmitter<any> = new EventEmitter<any>();
   @Output() public filterValues: EventEmitter<any> = new EventEmitter<any>();
+  @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isLoading: boolean = false;
 
   public users: [] = [];
+  public trm: any
 
   public filterCode = new FormControl('');
   public filterOrderService = new FormControl('');
@@ -37,19 +42,30 @@ export class TablePurchasesComponent implements OnInit {
 
   public filteredUsers: Observable<string[]>;
 
-  constructor(private _userService: UserService) { }
+  constructor(private _userService: UserService, private modalService: NgbModal, private _orderService: OrderService) { }
 
   ngOnInit(): void {
     this.getUsersAdmin();
+    this.getTrm();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
-  getUsersAdmin() {
-    this._userService.getUsersAdmin().subscribe(users => {
-      this.users = users;
-    }, err => {
-      throw err;
-    });
+  getUsersAdmin(): void {
+    this._userService.getUsersAdmin()
+      .subscribe((users: any) => {
+        this.users = users;
+      }, err => {
+        throw err;
+      });
+  }
+
+  getTrm(): void {
+    this._orderService.getTRM()
+      .subscribe((res: any) => {
+        this.trm = res;
+      }, err => {
+        throw err;
+      });
   }
 
   selectPurchase(purchase) {
@@ -145,8 +161,16 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
-  openLocker(){
-    console.log("OPEN LOCKER MODAL");
+  openLocker(content: any): void {
+    this.modalService.open(content, { size: 'xl', centered: true });
+  }
+
+  closeModalReceive(event: any) {
+    event.close();
+  }
+
+  refreshTableReceive(event: boolean) {
+    this.refreshTable.emit(event);
   }
 
 }

@@ -1,0 +1,51 @@
+.fas {
+    cursor: pointer;
+}
+
+.avatar {
+    width: 10rem;
+    height: 10rem;
+}
+
+.c-gray {
+    color: #adadad !important;
+}
+
+.container-calculator {
+    font-size: 15px;
+}
+
+.container-calcs {
+    font-size: 20px;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
+
+.container-tax {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.selected-tax {
+    color: #ef8921;
+}
+
+.dropzone-in-create {
+    text-align: center;
+    border-style: dashed;
+    background: white !important;
+    border-radius: 16px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.container-img-dropzone {
+    img {
+        height: 170px;
+        width: 100%;
+        object-fit: contain;
+    }
+}

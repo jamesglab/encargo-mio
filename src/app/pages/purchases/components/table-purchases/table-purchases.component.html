@@ -1,24 +1,25 @@
 <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
 
-  <div class="table-responsive mb-0" style="min-height: 500px;">
+  <div class="col-sm">
 
-    <div class="col-sm-12">
+    <div class="text-sm-end">
 
-      <div class="text-sm-end">
+      <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+        <i class="bx bx-trash-alt mr-1"></i>
+        Eliminar Filtros
+      </button>
 
-        <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
-          <i class="bx bx-trash-alt mr-1"></i>
-          Eliminar Filtros
-        </button>
-
-        <button type="button" class="btn btn-info btn-rounded mb-2 me-2" (click)="openLocker();">
-          Ingresar a Casillero
-        </button>
-
-      </div>
-
+      <button type="button" class="btn btn-info btn-rounded mb-2 me-2" (click)="openLocker(modal);">
+        Ingresar a Casillero
+      </button>
 
     </div>
+
+
+  </div>
+
+
+  <div class="table-responsive mb-0" style="min-height: 500px;">
 
     <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
       No hay datos disponibles...
@@ -212,4 +213,11 @@
   <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]" aria-label="Select page"
     (page)="emitPage($event)">
   </mat-paginator>
+
 </div>
+
+<ng-template #modal role="document" let-modal>
+  <app-locker-entry [users]="users" [trm]="trm" (refreshTable)="refreshTableReceive($event);"
+    (closeModal)="closeModalReceive(modal);">
+  </app-locker-entry>
+</ng-template>
