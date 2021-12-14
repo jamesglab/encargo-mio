@@ -95,3 +95,13 @@ li {
 .no-arrived {
   color: red;
 }
+
+.container-drags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.padding-container-empty {
+  padding: 10px;
+}

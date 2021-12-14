@@ -44,6 +44,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   public inLocker: any = [];
   public outLocker: any = [];
+  public newShipping: any = [];
 
   public shipping_types: [] = [];
   public deleted_products: any = [];
@@ -72,19 +73,16 @@ export class ModalUpdateShippingComponent implements OnInit {
   ngOnInit(): void { }
 
   getConveyorsAndShippings() {
-
     this._orderService.getConvenyor().subscribe((res: any) => {
       this.conveyors = res;
     }, err => {
       throw err;
     });
-
     this._orderService.getShippingTypes().subscribe((res: any) => {
       this.shipping_types = res;
     }, err => {
       throw err;
     });
-
   }
 
   ngOnChanges() {
@@ -166,9 +164,10 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<string[]>, type: string) {
-    if (this.status != 0) {
 
-      let objProduct: any = event.previousContainer.data[event.previousIndex];
+    let objProduct: any = event.previousContainer.data[event.previousIndex];
+
+    if (objProduct.arrived) {
       if (event.previousContainer === event.container) {
         moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       } else {
@@ -183,7 +182,7 @@ export class ModalUpdateShippingComponent implements OnInit {
               this._notify.show('', 'Hemos tenido un error al intentar mover el producto.', 'warning');
               throw err;
             });
-        } else {
+        } else if (type === 'locker') {
           this.disabledAllDrag();
           this._dragdrop.removeAddProduct({ shipping: this.shippingToUpdate.id, product: objProduct.product.id })
             .subscribe((res: any) => {
@@ -194,9 +193,15 @@ export class ModalUpdateShippingComponent implements OnInit {
               this._notify.show('', 'Hemos tenido un error al intentar mover el producto.', 'warning');
               throw err;
             });
+        } else if (type === 'new-shipping') {
+          this.disabledAllDrag();
+          transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
         }
       }
+    } else {
+      this._notify.show('', 'No puedes cambiar el estado debido a que el producto no ha llegado al casillero.', 'info');
     }
+
   }
 
   disabledAllDrag(): void {
@@ -281,8 +286,8 @@ export class ModalUpdateShippingComponent implements OnInit {
     if (this.updateShippingForm.getRawValue()) {
       for (let index = 0; index < this.updateShippingForm.getRawValue().products.length; index++) {
         let product = this.updateShippingForm.getRawValue().products[index];
-        if(product.arrived){
-         UID += '-' + this.updateShippingForm.getRawValue().products[index].product.id
+        if (product.arrived) {
+          UID += '-' + this.updateShippingForm.getRawValue().products[index].product.id
         }
       }
       this._label.exportToLabel(this.updateShippingForm.getRawValue(), this.addressSelected, UID).then(() => {
@@ -318,35 +323,42 @@ export class ModalUpdateShippingComponent implements OnInit {
     }
   }
 
-  updateShipping() {
+  updateShipping(): void {
 
     if (this.status == 2) {
       if (this.updateShippingForm.controls.guide_number.value == '' || this.updateShippingForm.controls.guide_number.value == null ||
         this.updateShippingForm.controls.conveyor.value == '' || this.updateShippingForm.controls.conveyor.value == null) {
         Swal.fire('Numero de guia y transportadora requerido', '', 'info');
-        return
+        return;
       }
     }
+
     this.updateShippingForm.controls.products.enable();
     if (this.updateShippingForm.valid && this.updateShippingForm.value.products.length > 0) {
-      this.isLoading = true;
-      this._orderService
-        .updateShipping(updateShipping({
-          ...this.updateShippingForm.getRawValue(),
-          deleted_products: this.deleted_products,
-          status: (this.status == 2) ? 3 : this.status
-        })).subscribe((res: any) => {
-          this.modalService.dismissAll();
-          this.getTransactions.emit(true);
-          this._notify.show('Envío Actualizado.', '', 'success');
-        }, err => {
-          this.isLoading = false;
-          this._notify.show('Error', 'No pudimos actualizar la orden, intenta de nuevo.', 'error');
-          throw err;
-        });
+      this.updateConsolidate();
     } else {
       this._notify.show('', 'Revisa el formulario hay campos requeridos incompletos.', 'info');
     }
+
+  }
+
+  updateConsolidate(): void {
+    this.isLoading = true;
+    this._orderService
+      .updateShipping(updateShipping({
+        ...this.updateShippingForm.getRawValue(),
+        deleted_products: this.deleted_products,
+        status: (this.status == 2) ? 3 : this.status,
+        newShipping: this.newShipping
+      })).subscribe((res: any) => {
+        this.modalService.dismissAll();
+        this.getTransactions.emit(true);
+        this._notify.show('Envío Actualizado.', '', 'success');
+      }, err => {
+        this.isLoading = false;
+        this._notify.show('Error', 'No pudimos actualizar la orden, intenta de nuevo.', 'error');
+        throw err;
+      });
   }
 
 }

@@ -76,22 +76,24 @@ export const updateLocker = (data: any): any => {
 }
 
 export const updateShipping = (data: any): any => {
+    console.log(data);
 
     let shipping = {
-        "id": data.id,
-        "address": data.address.id,
-        "conveyor": data.conveyor.id,
-        "deleted_products": data.deleted_products,
-        "delivery_date": data.delivery_date,
-        "guide_number": data.guide_number,
-        "observations": data.observations,
-        "products": data.products,
-        "shipping_type": data.shipping_type,
-        "status": data.status,
-        "total_value": data.total_value,
-        "consolidated": data.consolidated,
+        "id": data.id ? data.id : null,
+        "address": data.address ? data.address.id : null,
+        "conveyor": data.conveyor ? data.conveyor.id : null,
+        "deleted_products": data.deleted_products ? data.deleted_products : null,
+        "delivery_date": data.delivery_date ? data.delivery_date : null,
+        "guide_number": data.guide_number ? data.guide_number : null,
+        "observations": data.observations ? data.observations : null,
+        "products": data.products ? data.products : [],
+        "shipping_type": data.shipping_type ? data.shipping_type : null,
+        "status": data.status ? data.status : null,
+        "total_value": data.total_value ? data.total_value : 0,
+        "consolidated": data.consolidated ? data.consolidated : null,
         "trm": data.trm,
-        "user": data.user
+        "user": data.user,
+        "new_shipping": data.newShipping ? data.newShipping : []
     };
 
     return shipping;
