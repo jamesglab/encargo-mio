@@ -3,7 +3,7 @@ import { MenuItem } from './menu.model';
 export const MENU: MenuItem[] = [
     {
         id: 12,
-        label: 'Pedidos',
+        label: 'General',
         showItem : false,
         icon: 'bx-store',
         subItems: [
@@ -15,13 +15,6 @@ export const MENU: MenuItem[] = [
                 code : 'CO000',
                 showItem: false
             },
-
-            // {
-            //     id: 155,
-            //     label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-BUY',
-            //     link: '/ecommerce/orders-buy',
-            //     parentId: 12
-            // },
             {
                 id: 153,
                 label: 'Envios',

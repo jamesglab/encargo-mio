@@ -22,6 +22,7 @@ export class ShippingsTableComponent implements OnInit {
 
   @Output() public shippingSelected = new EventEmitter<any>();
   @Output() public shippingTracking = new EventEmitter<any>();
+  @Output() public showChangeStatusModal: EventEmitter<any> = new EventEmitter<any>();
   @Output() public shipping = new EventEmitter<any>();
   @Output() public filterData = new EventEmitter<any>();
   @Output() public defaultResetValues = new EventEmitter<any>();
@@ -112,6 +113,10 @@ export class ShippingsTableComponent implements OnInit {
 
   sendShippingTracking(data: any) {
     this.shippingTracking.emit(data);
+  }
+
+  changeStatusModal(shipping_order: { [ key: string ]: any }): void {
+   this.showChangeStatusModal.emit(shipping_order);
   }
 
   numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input

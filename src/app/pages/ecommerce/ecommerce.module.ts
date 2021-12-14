@@ -41,6 +41,7 @@ import { ShipmentTrackingComponent } from './orders-shippings/components/shipmen
 import { OrderByPipe } from './orders-shippings/pipes/sort.pipe';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { ImageDragDirective } from 'src/app/_directives/image-drag.directive';
+import { EditShippingStatusComponent } from './orders-shippings/components/edit-status/edit-shipping-status.component';
 
 const config: DropzoneConfigInterface = {
   // Change this to your upload POST address:
@@ -56,7 +57,8 @@ const config: DropzoneConfigInterface = {
     CustomersComponent, OrdersComponent, CreateOrderComponent,
     OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent,
     ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent, ShipmentTrackingComponent,
-    OrderByPipe
+    OrderByPipe,
+    EditShippingStatusComponent
   ],
   imports: [
     CommonModule,
