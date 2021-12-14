@@ -1,4 +1,4 @@
-# Skote -  Angular 12 Responsive Admin Dashboard Template 
+# Encargomio Backoffice - Based by Skote Angular 12 Responsive Admin Dashboard Template 
 
 ## Development server
 

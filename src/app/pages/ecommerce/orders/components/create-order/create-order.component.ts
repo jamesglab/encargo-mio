@@ -62,7 +62,6 @@ export class CreateOrderComponent implements OnInit {
       advance_purchase: [false],
       price: [0]
     });
-
     this.filteredUsers = this.createProductForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
@@ -185,7 +184,7 @@ export class CreateOrderComponent implements OnInit {
     this.createProductForm.controls.quantity.setValue(1);
   }
 
-  onImageError(event) { event.target.src = "assets/images/default.jpg"; }
+  onImageError(event) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 
   isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
 
@@ -213,8 +212,10 @@ export class CreateOrderComponent implements OnInit {
     }
   }
 
-  calculateTotalPrices(i: number) { // Calculamos el valor total aplicando la fórmula
-    this.products.controls[i]['controls'].sub_total.setValue(this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value + this.products.controls[i]['controls'].tax.value); // Calculamos el sub_total de un producto (product_value * quantity + tax)
+  calculateTotalPrices(i: number) { // Calculamos el valor total aplicando la fórmula+
+    var sub_total: number = 0;
+    sub_total = (((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value) + this.products.controls[i]['controls'].tax.value) + this.products.controls[i]['controls'].shipping_origin_value_product.value);
+    this.products.controls[i]['controls'].sub_total.setValue(sub_total);
   }
 
   changeCalculator(item: string, i: number) {
@@ -232,7 +233,6 @@ export class CreateOrderComponent implements OnInit {
         this.calculateTax(i); // Calculamos el tax
         this.calculateTotalPrices(i); // Calcular el total de precios
         this.calculateTotalArticles(); // Calcular el valor de todos los artículos
-        this.calculateTotalShippingOrigin();
         this.isLoadingFormula = false;
         resolve("ok");
       }, err => {
@@ -264,13 +264,7 @@ export class CreateOrderComponent implements OnInit {
     var total_weight: number = 0;
     this.products.value.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; }); // Hacemos la sumatoria del sub_total y weight
     this.totalValues.total_value = sub_total;
-    this.totalValues.total_weight = total_weight;
-  }
-
-  calculateTotalShippingOrigin(): void {
-    var total_shipping: number = 0;
-    this.products.value.map((product: any) => { total_shipping += product.shipping_origin_value_product; });
-    this.totalValues.total_shipping_products = total_shipping;
+    this.totalValues.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
   }
 
   filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
@@ -291,10 +285,13 @@ export class CreateOrderComponent implements OnInit {
     const formData = new FormData();
     formData.append("image", res.file);
     formData.append("payload", this.products.controls[position].value.key_aws_bucket);
+    this.isLoading = true;
     this._orders.uploadNewImage(formData).subscribe((res: any) => {
       this.products.controls[position]['controls'].image.setValue(res.Location);
       this.products.controls[position]['controls'].key_aws_bucket.setValue(res.Key);
+      this.isLoading = false;
     }, err => {
+      this.isLoading = false;
       this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
       throw err;
     });
@@ -303,6 +300,7 @@ export class CreateOrderComponent implements OnInit {
   uploadImage(position: number) {
     this._compress.uploadImage().then((res) => {
       this.products.controls[position]['controls'].uploadedFiles.setValue(res);
+      this.createFormData(res, position);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
       throw err;
@@ -316,7 +314,6 @@ export class CreateOrderComponent implements OnInit {
       this.calculateTax(this.products.controls.length - 1); // Calculamos el tax
       this.calculateTotalPrices(this.products.controls.length - 1); // Calcular el total de precios
       this.calculateTotalArticles(); // Calcular el valor de todos los artículos
-      this.calculateTotalShippingOrigin();
     }
   }
 

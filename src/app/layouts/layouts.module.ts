@@ -14,22 +14,17 @@ import { FooterComponent } from './footer/footer.component';
 import { RightsidebarComponent } from './rightsidebar/rightsidebar.component';
 import { HorizontalComponent } from './horizontal/horizontal.component';
 import { VerticalComponent } from './vertical/vertical.component';
-import { HorizontaltopbarComponent } from './horizontaltopbar/horizontaltopbar.component';
-import { LanguageService } from '../core/services/language.service';
-import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   // tslint:disable-next-line: max-line-length
-  declarations: [LayoutComponent, SidebarComponent, TopbarComponent, FooterComponent, RightsidebarComponent, HorizontalComponent, VerticalComponent, HorizontaltopbarComponent],
+  declarations: [LayoutComponent, SidebarComponent, TopbarComponent, FooterComponent, RightsidebarComponent, HorizontalComponent, VerticalComponent],
   imports: [
     CommonModule,
-    TranslateModule,
     RouterModule,
     NgbDropdownModule,
     ClickOutsideModule,
     UIModule,
     SimplebarAngularModule,
-  ],
-  providers: [LanguageService]
+  ]
 })
 export class LayoutsModule { }

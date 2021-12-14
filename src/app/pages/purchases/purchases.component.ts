@@ -7,11 +7,11 @@ import { OrderService } from '../ecommerce/_services/orders.service';
   templateUrl: './purchases.component.html',
   styleUrls: ['./purchases.component.scss']
 })
+
 export class PurchasesComponent implements OnInit {
 
   public purchases: any;
   public purchaseSelected: any;
-  
   public count;
   public filterValues: any = {};
 

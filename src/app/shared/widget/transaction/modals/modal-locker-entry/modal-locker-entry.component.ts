@@ -25,7 +25,7 @@ export class ModalLockerEntryComponent implements OnInit {
   public getQueries: boolean = false;
   public loaderLockers: boolean = false;
 
-  public lockers = [];
+  public lockers: any = [];
   public orders_purchase: [] = [];
   public conveyors: [] = [];
   public files: File[] = [];
@@ -80,7 +80,7 @@ export class ModalLockerEntryComponent implements OnInit {
         this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
         this.lockerForm.controls.locker.setValue(guide.locker.id);
-        this.lockerForm.controls.locker_info.setValue(`CA${(guide.locker.id ? guide.locker.id : 0)} | ${guide.user.name} ${guide.user.last_name}`);
+        this.lockerForm.controls.locker_info.setValue(`${guide.user.name} ${guide.user.last_name}`);
         this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
         this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
@@ -94,7 +94,6 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.locker_info.valueChanges.subscribe((data: any) => {
       if (data && data.locker_id) {
-        // this.cleanData();
         this.lockerForm.controls.locker_info.setValue((`CA${data.locker_id} | ${data.us_name} ${data.us_last_name}`));
         this.lockerForm.controls.locker.setValue(data.locker_id);
         this.lockerForm.controls.user.setValue(data.us_id);
@@ -107,7 +106,9 @@ export class ModalLockerEntryComponent implements OnInit {
         this.files = [];
         this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id + ' | ' + orderPurchase.product.name));
         this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
-        this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        if (this.lockerForm.controls.guide_number_alph.value === "" || this.lockerForm.controls.guide_number_alph.value == null) {
+          this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        }
         this.lockerForm.controls.order_purchase.setValue(orderPurchase.id);
         this.lockerForm.controls.weight.setValue((orderPurchase.weight ? orderPurchase.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((orderPurchase.product_price ? orderPurchase.product_price : 0));

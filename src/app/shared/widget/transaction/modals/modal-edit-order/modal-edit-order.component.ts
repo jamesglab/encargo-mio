@@ -3,6 +3,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { numberOnly, validateErrors } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
+import { FileHandle } from "src/app/_directives/file-handle";
+import { ImageCompressService } from "src/app/_services/image-compress.service";
 import Swal from "sweetalert2";
 
 @Component({
@@ -15,6 +17,7 @@ export class ModalEditOrderComponent implements OnInit {
 
   @Input() public orderSelected: any = null;
   @Input() public status: any;
+
   @Output() public refreshTable = new EventEmitter<any>();
 
   public subTotalPrice: number = 0;
@@ -25,18 +28,21 @@ export class ModalEditOrderComponent implements OnInit {
   public disabledInputs: boolean = false;
   public disabledAllInputs: boolean = false;
   public isLoadingQuery: boolean = false;
+  public isLoadingUpload: boolean = false;
 
   public productSelected: any;
 
   constructor(
     private _orders: OrderService,
     public _notify: NotifyService,
-    public modalService: NgbModal
+    public modalService: NgbModal,
+    private _compress: ImageCompressService
   ) { }
 
   ngOnInit(): void { }
 
   ngOnChanges() {
+    console.log(this.status)
     if (this.orderSelected) {
       this.calculateValuesInit();
     }
@@ -47,20 +53,16 @@ export class ModalEditOrderComponent implements OnInit {
     this._orders.detailOrder({ id: this.orderSelected.id })
       .subscribe((res: any) => {
         if (res) {
-          if (res.products.length == 0) {
-            Swal.fire('No existen productos.', '', 'info');
-            this.modalService.dismissAll();
-            return;
-          }
           this.orderSelected.trm = res.trm;
+          this.orderSelected.shopper_images = res.shopper_images;
           this.orderSelected.products = res.products;
           this.orderSelected.products.map((products: any, index: number) => {
+            products.name = (products.name ? products.name.trim() : null);
             products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.
             this.calculateTotalPrices(index);
             this.calculateDiscount(index);
             this.calculateTotalArticles();
-            this.calculateTotalShippingOrigin();
             this.getFormula(index);
           });
         }
@@ -71,7 +73,7 @@ export class ModalEditOrderComponent implements OnInit {
         this.modalService.dismissAll();
         throw err;
       });
-    if (this.status == 2 || this.status == 3) {
+    if (this.status == 2 || this.status == 3 || this.status == 5) {
       this.disabledAllInputs = true;
     }
   }
@@ -86,7 +88,6 @@ export class ModalEditOrderComponent implements OnInit {
             this.calculateTotalPrices(position); // Calcular el total de precios
             this.calculateDiscount(position); // Calculamos el descuento
             this.calculateTotalArticles(); // Luego calculamos el total de los articulos
-            this.calculateTotalShippingOrigin();
             resolve("ok");
             this.isLoadingFormula = false;
           }, err => {
@@ -132,7 +133,9 @@ export class ModalEditOrderComponent implements OnInit {
 
   calculateTotalPrices(position: number) {
     if (this.status == 0 || this.status == 1 || this.status == 7) {
-      this.orderSelected.products[position].sub_total = this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity + this.orderSelected.products[position].tax;
+      var sub_total: number = 0;
+      sub_total = (((this.orderSelected.products[position].product_value * this.orderSelected.products[position].quantity) + this.orderSelected.products[position].tax) + this.orderSelected.products[position].shipping_origin_value_product);
+      this.orderSelected.products[position].sub_total = sub_total;
     }
   }
 
@@ -150,13 +153,7 @@ export class ModalEditOrderComponent implements OnInit {
     var total_weight: number = 0;
     this.orderSelected.products.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; });
     this.orderSelected.sub_total = sub_total;
-    this.orderSelected.total_weight = total_weight;
-  }
-
-  calculateTotalShippingOrigin(): void {
-    var total_shipping: number = 0;
-    this.orderSelected.products.map((product: any) => { total_shipping += product.shipping_origin_value_product; });
-    this.orderSelected.total_shipping_products = total_shipping;
+    this.orderSelected.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
   }
 
   changeCalculator(item: string, i: number) {
@@ -173,6 +170,10 @@ export class ModalEditOrderComponent implements OnInit {
     this.calculateTotalArticles(); // Llamamos la función para obtener los valores totales
   }
 
+  taxOnChanges(i: number, event: any) {
+    this.orderSelected.products[i].tax = (event ? event : 0);
+  }
+
   setPermanentShipping(i: number): void {
     this.getFormula(i);
   }
@@ -182,7 +183,7 @@ export class ModalEditOrderComponent implements OnInit {
       title: '¿Estás seguro que deseas borrar el producto ' + this.orderSelected.products[i].name + '?',
       showDenyButton: true,
       confirmButtonText: 'Eliminar',
-      denyButtonText: `Cancelar`,
+      denyButtonText: `Cancelar`
     }).then((result) => {
       if (result.isConfirmed) {
         this._orders.deleteProduct(this.orderSelected.products[i].id)
@@ -200,9 +201,55 @@ export class ModalEditOrderComponent implements OnInit {
     });
   }
 
-  numberOnly(event): boolean {  // Función para que sólo se permitan números en un input
+  filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
+    if (file[0].file.type && file[0].file.type.includes('image')) {
+      this._compress.compressImage(file[0].base64).then((res: any) => {
+        this.createFormData(res, position);
+      }, err => {
+        this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
+    } else {
+      this._notify.show('', 'El archivo que seleccionaste no es una imagen.', 'info');
+    }
+  }
+
+  createFormData(res: any, position: number) {
+    const formData = new FormData();
+    formData.append("image", res.file);
+    formData.append("payload", this.orderSelected.products[position].key_aws_bucket);
+    this.isLoading = true;
+    this.isLoadingUpload = true;
+    this._orders.uploadNewImage(formData).subscribe((res: any) => {
+      this.orderSelected.products[position].image = res.Location;
+      this.orderSelected.products[position].key_aws_bucket = res.Key;
+      this.isLoadingUpload = false;
+      this.isLoading = false;
+    }, err => {
+      this.isLoadingUpload = false;
+      this.isLoading = false;
+      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  uploadImage(position: number) {
+    if (this.status == 2 || this.status == 3 || this.status == 5) {
+      return;
+    }
+    this._compress.uploadImage().then((res) => {
+      this.createFormData(res, position);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  numberOnly(event): boolean {// Función para que sólo se permitan números en un input
     return numberOnly(event);
   }
+
+  onImageError(event) { event.target.src = "assets/images/default.jpg"; }
 
   upadteImageByProduct(image) {
     this.productSelected.image = image;
@@ -216,7 +263,6 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   async sendQuotation() {
-    // VALIDAMOS LOS CAMPOS QUE SON REQUERIDOS EN EL INPUT
     if (validateErrors(this.orderSelected.products, ['name', 'weight', 'product_value'])) {
       Swal.fire('Error', 'Campos requeridos incompletos', 'warning');
       return;

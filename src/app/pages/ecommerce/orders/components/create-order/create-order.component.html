@@ -42,6 +42,7 @@
             </div>
 
             <div>
+
               <div class="custom-dropzone mt-3" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
 
                 <ngx-dropzone-label>
@@ -55,6 +56,7 @@
                 </ngx-dropzone-image-preview>
 
               </div>
+
             </div>
 
             <br>
@@ -112,8 +114,7 @@
 
                 <div>
                   <strong>Valor de Artículos:</strong>
-                  {{ ((totalValues.total_value ? totalValues.total_value : 0) + (totalValues.total_shipping_products ?
-                  totalValues.total_shipping_products : 0)) | number : '1.2-2' }} USD
+                  {{ (totalValues.total_value ? totalValues.total_value : 0) | number : '1.2-2' }} USD
                 </div>
 
                 <div>
@@ -131,10 +132,8 @@
                 <ng-container *ngFor="let formula of totalFormulas">
                   <div>
                     <strong>Envio a casa ({{formula.name}})</strong>
-                    {{ ((totalValues.total_value ? totalValues.total_value : 0) + (totalValues.total_shipping_products ?
-                    totalValues.total_shipping_products : 0)) + (formula.value ? formula.value : 0) | number : '1.2-2'
-                    }}
-                    USD
+                    {{ ((totalValues.total_value ? totalValues.total_value : 0) + (formula.value ? formula.value : 0)) |
+                    number : '1.2-2'}} USD
                   </div>
                 </ng-container>
 
@@ -166,7 +165,7 @@
 
       <div formArrayName="products" *ngFor="let item of createProductForm.get('products')['controls']; let i = index;">
 
-        <hr>
+        <hr *ngIf="i > 0">
 
         <div class="container">
 
@@ -177,8 +176,10 @@
 
               <div class="container-img-dropzone">
 
-                <img src="{{ createProductForm.get('products')['controls'][i].controls.uploadedFiles.value.url }}"
-                  draggable="false" (error)="onImageError($event);" />
+                <a href="{{ createProductForm.get('products')['controls'][i].controls.link.value }}" target="_blank">
+                  <img src="{{ createProductForm.get('products')['controls'][i].controls.uploadedFiles.value.url }}"
+                    draggable="false" (error)="onImageError($event);" />
+                </a>
 
                 <h5>Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
                     (click)="uploadImage(i);">aquí.</a>
@@ -187,7 +188,6 @@
               </div>
 
             </div>
-
 
             <div class="col-sm-9">
 
@@ -216,7 +216,8 @@
 
                   <div class="h6">
 
-                    <a *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value === 1" (click)="removeProduct(i);">
+                    <a *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value === 1"
+                      (click)="removeProduct(i);">
                       <i class="far fa-trash-alt"></i>
                     </a>
 
@@ -279,7 +280,7 @@
                       <input type="number" id="shipping-origin" class="form-control"
                         placeholder="Envío de Origen en USD" title="Envío de Origen en USD."
                         formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
-                        (blur)="getFormula(i); calculateTotalShippingOrigin();" min="0">
+                        (blur)="getFormula(i);" min="0">
                     </div>
 
                   </div>
@@ -287,15 +288,15 @@
                   <div class="row g-3 mb-3">
 
                     <div class="col-sm">
-                      <label for="weight" class="form-label">Peso</label>
+                      <label for="weight" class="form-label">Peso(Libras)</label>
                       <input type="number" id="weight" class="form-control" placeholder="Peso del productos en libras."
                         title="Peso del productos en libras." formControlName="weight" (keypress)="numberOnly($event);"
                         (blur)="getFormula(i);" min="0">
                     </div>
 
                     <div class="col-sm">
-                      <label for="permantent-shipping" class="form-label">Valor Envío Fijo</label>
-                      <input type="number" id="permantent-shipping" class="form-control"
+                      <label for="permanent-shipping" class="form-label">Valor Envío Fijo</label>
+                      <input type="number" id="permanent-shipping" class="form-control"
                         placeholder="Valor del envío fijo" title="Valor del envío fijo"
                         formControlName="permanent_shipping_value" (keypress)="numberOnly($event);"
                         (blur)="getFormula(i);" min="0">

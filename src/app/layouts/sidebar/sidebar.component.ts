@@ -7,7 +7,6 @@ import { HttpClient } from '@angular/common/http';
 
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
-import { TranslateService } from '@ngx-translate/core';
 import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
@@ -30,7 +29,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('sideMenu') sideMenu: ElementRef;
 
   constructor(private eventService: EventService, private router: Router,
-    public translate: TranslateService, private http: HttpClient,
+    private http: HttpClient,
     private _storageService: StorageService
 
   ) {

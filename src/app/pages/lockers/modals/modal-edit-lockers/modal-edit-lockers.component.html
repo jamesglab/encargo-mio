@@ -139,9 +139,43 @@
 
     <div class="form-row">
 
-        <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="onSelectImage($event)">
+        <div class="align-items-center dropzone-in-create" appImageDrag (files)="filesDropped($event);">
 
-            <ngx-dropzone-label>
+            <div class="container-img-dropzone d-flex">
+
+                <ng-container *ngFor="let image of allImages; let i = index;">
+
+                    <div class="content-img-dropzone">
+
+                        <div class="remove-item-content">
+                            <button type="button" class="close remove-item" aria-label="Close"
+                                (click)="onRemoveImage(i);">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <img src="{{image.Location}}" draggable="false" (error)="onImageError($event);" />
+
+                    </div>
+
+                </ng-container>
+
+            </div>
+
+            <div>
+                <h5>
+                    Arrastra tu imagen o haz clic
+                    <a class="font-weight-bold cursor-pointer" (click)="uploadImage();">
+                        aquí.
+                    </a>
+                </h5>
+            </div>
+
+        </div>
+
+        <!-- <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="onSelectImage($event)"> -->
+
+        <!-- <ngx-dropzone-label>
                 <div>
                     <h2>Inserta las Imagenes del Producto</h2>
                 </div>
@@ -149,19 +183,19 @@
 
             <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview" *ngFor="let f of files" [file]="f"
                 [removable]="true" (removed)="onRemoveImage(f);">
-            </ngx-dropzone-image-preview>
+            </ngx-dropzone-image-preview> -->
 
-        </div>
+        <!-- </div> -->
 
     </div>
 
-    <div class="container-imagen">
+    <!-- <div class="container-imagen">
         <div>Imagen de Origen:</div>
-        <a [href]="form.product.value.link" target="_blank" >
+        <a [href]="form.product.value.link" target="_blank">
             <img [src]="form.product.value.image" alt=""
                 title="{{ form.product.value.name ? form.product.value.name : '' }}" draggable="false">
         </a>
-    </div>
+    </div> -->
 
     <br>
 

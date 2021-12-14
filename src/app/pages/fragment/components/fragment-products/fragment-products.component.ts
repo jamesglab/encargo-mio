@@ -130,7 +130,7 @@ export class FragmentProductsComponent implements OnInit {
 
     var formData = new FormData();
     //ITERATE PRODUCT AND ADD TO "FILES" FIELD OF FORMDATA
-    product.files.forEach((file) => { console.log("file", file); formData.append('files', file) });
+    product.files.forEach((file) => { formData.append('files', file) });
     const { images } = product;//DESTRUCT IMAGES
     formData.append("payload", JSON.stringify({ images, product })); // ADD PRODUCT AND IMAGE
 
