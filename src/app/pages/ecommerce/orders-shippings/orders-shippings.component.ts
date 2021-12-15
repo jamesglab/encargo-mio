@@ -48,7 +48,6 @@ export class OrdersShippingsComponent implements OnInit {
   }
 
   getCountsTabs() {
-    console.log("ENTRO")
     this._orderService.countsTabsShipping()
       .subscribe((res: any) => {
         this.counts = res;

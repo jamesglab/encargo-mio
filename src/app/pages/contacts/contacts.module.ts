@@ -12,9 +12,10 @@ import { UserlistComponent } from './userlist/userlist.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ModalUserComponent } from './components/modal-user/modal-user.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { UsersgridComponent } from './usersgrid/usersgrid.component';
 
 @NgModule({
-  declarations: [UserlistComponent, ModalUserComponent],
+  declarations: [UserlistComponent, ModalUserComponent, UsersgridComponent],
   imports: [
     CommonModule,
     ContactsRoutingModule,

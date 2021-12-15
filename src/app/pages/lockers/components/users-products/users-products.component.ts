@@ -15,9 +15,14 @@ export class UsersProductsComponent implements OnInit {
 
   public filterUser = new FormControl('');
   public filteredUsers: Observable<string[]>;
-  public users: [] = [];
-  public products;
+
+  public users: any[] = [];
+  public products: any = [];
+
   public count: number = 0;
+
+  public isLoading: boolean = false;
+  public isEmpty: boolean = false;
 
   constructor(private usersService: UserService, private lockerService: LockersService) { }
 
@@ -27,9 +32,12 @@ export class UsersProductsComponent implements OnInit {
   }
 
   getUsers() {
-    this.usersService.getUsersAdmin().subscribe(res => {
-      this.users = res;
-    })
+    this.usersService.getUsersAdmin()
+      .subscribe((res: any) => {
+        this.users = res;
+      }, err => {
+        throw err;
+      });
   }
 
   displayFnUserName(name: any) {
@@ -61,17 +69,29 @@ export class UsersProductsComponent implements OnInit {
     }
   }
 
-  filterProductsByUser(paginator?) {
+  filterProductsByUser(paginator?: any) {
+    this.filterUser.disable();
     if (this.filterUser.value.locker_id) {
+      this.isLoading = true;
       this.lockerService.getAllLockers({
         pageSize: paginator ? paginator.pageSize : 10,
         page: paginator ? paginator.pageIndex + 1 : 1,
         locker_id: this.filterUser.value.locker_id,
         status: 0
-      }).subscribe(res => {
+      }).subscribe((res: any) => {
         this.products = res.products;
         this.count = res.count;
-      })
+        if (this.products.length === 0) { this.isEmpty = true; }
+        this.isLoading = false;
+        this.filterUser.enable();
+        setTimeout(() => {
+          this.isEmpty = false;
+        }, 2000);
+      }, err => {
+        this.filterUser.enable();
+        this.isLoading = false;
+        throw err;
+      });
     }
   }
 

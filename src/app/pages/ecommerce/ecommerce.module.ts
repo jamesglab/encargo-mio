@@ -30,13 +30,14 @@ import { OrderByPipe } from './orders-shippings/pipes/sort.pipe';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { ImageDragDirective } from 'src/app/_directives/image-drag.directive';
 import { EditShippingStatusComponent } from './orders-shippings/components/edit-status/edit-shipping-status.component';
+import { CustomersComponent } from './customers/customers.component';
 
 @NgModule({
   declarations: [
     OrdersComponent, CreateOrderComponent,
     OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent,
     ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent, ShipmentTrackingComponent,
-    OrderByPipe, EditShippingStatusComponent
+    OrderByPipe, EditShippingStatusComponent, CustomersComponent
   ],
   imports: [
     CommonModule,
