@@ -29,14 +29,6 @@ export class ShipmentTrackingComponent implements OnInit {
     } else {
       this.updateConveyorStatus();
     }
-    // if (this.shipping_order.conveyor_status) {
-    //   this.shipping_order.conveyor_status = JSON.parse(this.shipping_order.conveyor_status);
-    //   if (this.shipping_order.conveyor_status && this.shipping_order.conveyor_status.length > 0) {
-    //     this.shipping_order.conveyor_status.map((item: any) => {
-    //       item.date = item.date.trim()
-    //     });
-    //   }
-    // }
   }
 
   updateConveyorStatus(): void {
@@ -56,6 +48,16 @@ export class ShipmentTrackingComponent implements OnInit {
 
   closeModale() {
     this._moodalService.dismissAll();
+  }
+
+  getDetailUrl(guide_number: { [key: string]: string }, type: string) {
+    if (type === '1') {
+      return `https://www.servientrega.com/wps/portal/rastreo-envio/detalle/!ut/p/z1/
+      04_Sj9CPykssy0xPLMnMz0vMAfIjo8ziLQ1NTDwMnA38_Z2CnQ0Czd2dnAw83Q0MfA31w8EKDHAARwP9KGL041EQhd_4cP0osBJTC0-gCSaG_u5-
+      LiYGgUFORr5-ho6exp4GeBUYOfoaQRXgsaQgNzTCINNTEQAH765M/dz/d5/L2dBISEvZ0FBIS9nQSEh/?id=${guide_number}&tipo=0`;
+    } else {
+      return `https://solucionservientrega.com/(S(zm05b1saoddxnzesflpm2jcn))/TrackEnvios.aspx?ID=${guide_number}`;
+    }
   }
 
   isDelivered() {
