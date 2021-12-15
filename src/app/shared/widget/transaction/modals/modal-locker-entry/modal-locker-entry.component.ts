@@ -213,7 +213,6 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   cleanData() {
-    // console.log("ENTRO AL CLEAN DATA");
     this.allGuides = [];
     this.toHome = { status: false, to_home: false };
     this.lockerForm.controls.product_description.setValue(null);
