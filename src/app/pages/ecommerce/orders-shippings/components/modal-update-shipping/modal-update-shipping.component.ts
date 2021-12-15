@@ -194,7 +194,6 @@ export class ModalUpdateShippingComponent implements OnInit {
               throw err;
             });
         } else if (type === 'new-shipping') {
-          this.disabledAllDrag();
           transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
         }
       }
