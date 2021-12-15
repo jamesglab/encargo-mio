@@ -1,7 +1,19 @@
-/* Importing Bootstrap SCSS file. */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap");
 @import "~bootstrap/scss/bootstrap";
 
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+* {
+  font-family: "Poppins", sans-serif !important;
+}
+
 .modal-holder {
   animation-name: example;
   animation-duration: 0.3s;
@@ -32,13 +44,4 @@
 .cdk-overlay-container,
 .cdk-overlay-pane {
   z-index: 9999 !important;
-}
-
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

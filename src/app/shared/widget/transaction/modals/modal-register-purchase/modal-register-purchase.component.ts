@@ -5,7 +5,7 @@ import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { disabledItems, numberOnly } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { map, startWith } from "rxjs/operators";
-import { Observable } from "rxjs-compat";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-modal-register-purchase",

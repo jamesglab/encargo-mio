@@ -8,50 +8,59 @@ import { OrderService } from '../_services/orders.service';
   templateUrl: './orders-buys.component.html',
   styleUrls: ['./orders-buys.component.scss']
 })
+
 export class OrdersBuysComponent implements OnInit {
-  term: any;
-  public page = 1;
-  public itemPerPage = 5;
-  public transactions;
+
+  public term: any;
+  public transactions: any;
+
+  public page: number = 1;
+  public itemPerPage: number = 5;
   public counts: number;
   public status: number;
   public trm: number;
-  public users = [];
+
+  public users: any = [];
 
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal
+  ) { }
 
   ngOnInit(): void {
     this.getTransactions();
     this.getUsersAdmin();
   }
+
   getUsersAdmin() {
-    this._userService.getUsersAdmin().subscribe(users => {
-      // console.log('users', users);
-      this.users = users;
-    },err=>{
-      // console.log('error',err)
-    })
+    this._userService.getUsersAdmin()
+      .subscribe((users: any) => {
+        this.users = users;
+      }, err => {
+        throw err;
+      });
   }
 
-  getTransactions(pagination?) {
-    this._orderService.getTRM().subscribe(res => {
-      this.trm = res.value;
-    })
-    this._orderService
-      .getQuotations({
-        pageSize: pagination?.pageSize ? pagination.pageSize : 10,
-        page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
-        status: this.status ? this.status : '0',
-        type :'purchase'
-      })
-      .subscribe((res) => {
-        // console.log("ORDERS RESPONSE", res);
-        this.transactions = res.orders;
-        this.counts = res.count;
+  getTransactions(pagination?: any) {
+
+    this._orderService.getTRM()
+      .subscribe((res: any) => {
+        this.trm = res.value;
       });
+
+    this._orderService.getQuotations({
+      pageSize: pagination?.pageSize ? pagination.pageSize : 10,
+      page: pagination?.pageIndex ? pagination.pageIndex + 1 : 1,
+      status: this.status ? this.status : '0',
+      type: 'purchase'
+    }).subscribe((res: any) => {
+      this.transactions = res.orders;
+      this.counts = res.count;
+    }, err => {
+      throw err;
+    });
+    
   }
 
   openModal(content: any) {

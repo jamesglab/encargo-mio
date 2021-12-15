@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs-compat';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { UserService } from "src/app/_services/users.service";
 import { RolesService } from '../_services/roles.service';

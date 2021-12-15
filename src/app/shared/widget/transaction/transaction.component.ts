@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
-import { Observable } from "rxjs-compat";
+import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";

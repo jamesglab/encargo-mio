@@ -5,9 +5,9 @@ import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { dataURLtoFile, numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { insertInLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
-import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
 import { LockersService } from 'src/app/pages/lockers/_services/lockers.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-modal-locker-entry',

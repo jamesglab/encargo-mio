@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
 import { UserService } from 'src/app/_services/users.service';
 import { LockersService } from '../../_services/lockers.service';
 import Swal from "sweetalert2";
 import * as moment from 'moment';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-lockers-table',

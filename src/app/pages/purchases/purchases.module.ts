@@ -6,7 +6,6 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { WidgetModule } from 'src/app/shared/widget/widget.module';
-import { Ng5SliderModule } from 'ng5-slider';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -36,7 +35,6 @@ import { LockerEntryComponent } from './components/table-purchases/modals/locker
     ReactiveFormsModule,
     UIModule,
     WidgetModule,
-    Ng5SliderModule,
     NgSelectModule,
     NgbPaginationModule,
     MatPaginatorModule,
@@ -44,4 +42,5 @@ import { LockerEntryComponent } from './components/table-purchases/modals/locker
     MatAutocompleteModule
   ]
 })
+
 export class PurchasesModule { }

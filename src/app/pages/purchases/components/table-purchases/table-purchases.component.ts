@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
 import { GET_STATUS } from 'src/app/_helpers/tools/utils.tool';
 import { UserService } from "src/app/_services/users.service";
 import * as moment from 'moment';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-table-purchases',

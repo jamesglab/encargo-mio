@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs-compat';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { UserService } from 'src/app/_services/users.service';
-import Swal from 'sweetalert2';
 import { LockersService } from '../../_services/lockers.service';
 
 @Component({
@@ -12,12 +10,15 @@ import { LockersService } from '../../_services/lockers.service';
   templateUrl: './users-products.component.html',
   styleUrls: ['./users-products.component.scss']
 })
+
 export class UsersProductsComponent implements OnInit {
+
   public filterUser = new FormControl('');
   public filteredUsers: Observable<string[]>;
   public users: [] = [];
   public products;
   public count: number = 0;
+
   constructor(private usersService: UserService, private lockerService: LockersService) { }
 
   ngOnInit(): void {
@@ -44,7 +45,7 @@ export class UsersProductsComponent implements OnInit {
       return [];
     }
   }
-  
+
   // VALIDAREMOS EL CAMPO EN EL OBJETO PARA FILTRAR EL VALOR EN EL ARRAY
   private _normalizeValue(value: any, array: any): string {
     // VALIDAMOS SI EL VALOR RECIVIDO ES UN OBJETO
