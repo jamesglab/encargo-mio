@@ -3,9 +3,9 @@
   <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
     No hay datos disponibles...
   </div>
-  
+
   <table class="table table-centered table-nowrap">
-    
+
     <thead class="table-light">
 
       <tr>
@@ -27,9 +27,8 @@
         <th class="align-middle">
           Fecha de Creación
           <div class="input-group clockpicker mt-2">
-            <input  placeholder="yyyy-mm-dd"  class="form-control"
-               [value]="formatDate()" disabled>
-            <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd" 
+            <input placeholder="yyyy-mm-dd" class="form-control" [value]="formatDate()" disabled>
+            <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
               (ngModelChange)="filterOrders()" #dl="ngbDatepicker" [formControl]="filterDate" style="display: none;">
             <div class="input-group-append" (click)="dl.toggle()">
               <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
@@ -64,7 +63,8 @@
           </a>
         </td>
 
-        <td> CA {{  (data.user.locker.id ? data.user.locker.id +' | ': '') + ' ' +   (data.user?.name ? data.user?.name: "") + ' ' + (data.user?.last_name ? data.user?.last_name: "") }}
+        <td> CA {{ (data.user.locker.id ? data.user.locker.id +' | ': '') + ' ' + (data.user?.name ? data.user?.name:
+          "") + ' ' + (data.user?.last_name ? data.user?.last_name: "") }}
         </td>
 
         <td>
@@ -83,16 +83,21 @@
           <!-- validamos el boton que se muestra dependiendo del estado de la orden -->
           <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(data, editOrder,'xl');"
             [disabled]="isLoading">
+
             <ng-container *ngIf="getStatusNumber(data.status) >= 2">
               Ver Detalle
             </ng-container>
+
             <ng-container *ngIf="getStatusNumber(data.status) < 2">
               Editar
             </ng-container>
+
           </button>
+
           <!-- ABRIMOS EL ESTADO DE LA ORDEN PARA MOSTRAR EL BOTON DE APROBAR PRODUCTOS -->
-          <button type="button" *ngIf="data.status == '3'" class="btn btn-primary btn-sm btn-rounded"
-            (click)="openModal(data, registerPurchase,'lg');" [disabled]="isLoading">
+          <button type="button" style="margin-left: 10px;" *ngIf="data.status == '3'"
+            class="btn btn-primary btn-sm btn-rounded" (click)="openModal(data, registerPurchase,'lg');"
+            [disabled]="isLoading">
             Registrar Compra
           </button>
         </td>

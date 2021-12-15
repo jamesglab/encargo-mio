@@ -1,49 +1,49 @@
 <div class="modal-header">
-    <h5 class="modal-title mt-0">Crear Orden</h5>
-    <button type="button" class="btn-close" aria-hidden="true" (click)="closeModal.emit(false);"></button>
-  </div>
-  
-  <div class="modal-body">
-  
-    <form [formGroup]="createProductForm">
-  
+  <h5 class="modal-title mt-0">Crear Orden</h5>
+  <button type="button" class="btn-close" aria-hidden="true" (click)="closeModal.emit(false);"></button>
+</div>
+
+<div class="modal-body">
+
+  <form [formGroup]="createProductForm">
+
+    <div class="container">
+
       <div class="container">
-  
-        <div class="container">
-  
-          <div class="row ">
-  
-            <div class="col-xl-7 col-md-7 col-sm-12">
-  
-              <div class="form-group h5">
-                <label for="exampleInputEmail1">Link </label>
-                <input type="text" class="form-control" placeholder="Pega aqui el link del producto"
-                  formControlName="link" />
-              </div>
-  
-              <div class="form-group h5">
-                <label for="exampleFormControlTextarea1">Información adicional</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="aditional_info" cols="30"
-                  rows="5"
-                  placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
-              </div>
-  
-              <div class="form-group h5">
-  
-                <label for="exampleInputEmail1">Usuario </label>
-                <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
-                  placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
-  
-                <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
-                  <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
-                    CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
-                  </mat-option>
-                </mat-autocomplete>
-              </div>
-  
-              <div>
-  
-                <!-- <div class="custom-dropzone mt-3" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
+
+        <div class="row ">
+
+          <div class="col-xl-7 col-md-7 col-sm-12">
+
+            <div class="form-group h5">
+              <label for="exampleInputEmail1">Link </label>
+              <input type="text" class="form-control" placeholder="Pega aqui el link del producto"
+                formControlName="link" />
+            </div>
+
+            <div class="form-group h5">
+              <label for="exampleFormControlTextarea1">Información adicional</label>
+              <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="aditional_info" cols="30"
+                rows="5"
+                placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
+            </div>
+
+            <div class="form-group h5">
+
+              <label for="exampleInputEmail1">Usuario </label>
+              <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
+                placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
+
+              <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+                <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                  CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                </mat-option>
+              </mat-autocomplete>
+            </div>
+
+            <div>
+
+              <!-- <div class="custom-dropzone mt-3" ngx-dropzone [accept]="'image/*'" (change)="onSelect($event)">
   
                   <ngx-dropzone-label>
                     <div>
@@ -56,308 +56,313 @@
                   </ngx-dropzone-image-preview>
   
                 </div> -->
-  
-              </div>
-  
-              <br>
-              <div class="form-check form-switch text-truncate h5">
-  
-                <label for="form-group">Compra anticipada</label>
-                <input class="form-check-input" type="checkbox" formControlName="advance_purchase"
-                  id="flexSwitchCheckChecked">
-              </div>
-  
-              <div class="d-flex h5">
-  
-                <div class="d-flex align-items-center mt-2">
-  
-                  <div>Cantidad:</div>
-  
-                  <div style="margin-left: 5px;">
-                    <a
-                      (click)="(createProductForm.get('quantity').value >=2) ? createProductForm.get('quantity').setValue(createProductForm.get('quantity').value - 1) :''"><i
-                        class="fas fa-minus"></i></a>
-                  </div>
-  
-                  <div class="mx-2">
-                    {{ createProductForm.get("quantity").value }}
-                  </div>
-  
-                  <div class="ml-2">
-  
-                    <a (click)="createProductForm
+
+            </div>
+
+            <br>
+            <div class="form-check form-switch text-truncate h5">
+
+              <label for="form-group">Compra anticipada</label>
+              <input class="form-check-input" type="checkbox" formControlName="advance_purchase"
+                id="flexSwitchCheckChecked">
+            </div>
+
+            <div class="d-flex h5">
+
+              <div class="d-flex align-items-center mt-2">
+
+                <div>Cantidad:</div>
+
+                <div style="margin-left: 5px;">
+                  <a
+                    (click)="(createProductForm.get('quantity').value >=2) ? createProductForm.get('quantity').setValue(createProductForm.get('quantity').value - 1) :''"><i
+                      class="mdi mdi-minus"></i></a>
+                </div>
+
+                <div class="mx-2">
+                  {{ createProductForm.get("quantity").value }}
+                </div>
+
+                <div class="ml-2">
+
+                  <a (click)="createProductForm
                         .get('quantity')
-                        .setValue(createProductForm.get('quantity').value + 1)"><i class="fas fa-plus"></i>
-                    </a>
-                  </div>
-  
-                </div>
-  
-                <div class="d-flex justify-content-end mt-3" style="margin-left: 1rem;">
-                  <button class="btn btn-success" type="button" (click)="addProduct();" [disabled]="isLoading">
-                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
-                    AGREGAR
-                  </button>
-                </div>
-              </div>
-            </div>
-  
-            <div class="col-5 d-flex justify-content-center align-items-center">
-  
-              <div class="row mt-2">
-  
-                <div class="container-calculator" *ngIf="!isLoadingFormula">
-  
-                  <div class="h4">
-                    Calculadora de Totales
-                  </div>
-  
-                  <div>
-                    <strong>Valor de Artículos:</strong>
-                    {{ (totalValues.total_value ? totalValues.total_value : 0) | number : '1.2-2' }} USD
-                  </div>
-  
-                  <div>
-                    <strong>Total de Libras:</strong>
-                    {{ (totalValues.total_weight ? totalValues.total_weight : 0) }} lb.
-                  </div>
-  
-                  <ng-container *ngFor="let formula of totalFormulas">
-                    <div>
-                      <strong>Valor del envío ({{formula.name}}): </strong>
-                      {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} USD
-                    </div>
-                  </ng-container>
-  
-                  <ng-container *ngFor="let formula of totalFormulas">
-                    <div>
-                      <strong>Envio a casa ({{formula.name}})</strong>
-                      {{ ((totalValues.total_value ? totalValues.total_value : 0) + (formula.value ? formula.value : 0)) |
-                      number : '1.2-2'}} USD
-                    </div>
-                  </ng-container>
-  
-                </div>
-  
-                <div class="loading-calulator" *ngIf="isLoadingFormula">
-  
-                  <div class="spinner-border" role="status">
-                    <span class="sr-only"></span>
-                  </div>
-  
-                  Estamos calculando el valor de envío...
-  
-                </div>
-  
-              </div>
-  
-            </div>
-  
-          </div>
-  
-        </div>
-  
-      </div>
-  
-      <div class="table-responsive p-3">
-  
-        <h4 class="h4">Productos</h4>
-  
-        <div formArrayName="products" *ngFor="let item of createProductForm.get('products')['controls']; let i = index;">
-  
-          <hr *ngIf="i > 0">
-  
-          <div class="container">
-  
-            <div class="row" [formGroupName]="i">
-  
-              <div class="col-sm-3 d-flex align-items-center dropzone-in-create" appImageDrag
-                (files)="filesDropped($event, i);">
-  
-                <div class="container-img-dropzone">
-  
-                  <a href="{{ createProductForm.get('products')['controls'][i].controls.link.value }}" target="_blank">
-                    <img src="{{ createProductForm.get('products')['controls'][i].controls.uploadedFiles.value.url }}"
-                      draggable="false" (error)="onImageError($event);" />
+                        .setValue(createProductForm.get('quantity').value + 1)"><i class="mdi mdi-plus"></i>
                   </a>
-  
-                  <h5>Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
-                      (click)="uploadImage(i);">aquí.</a>
-                  </h5>
-  
                 </div>
-  
+
               </div>
-  
-              <div class="col-sm-9">
-  
-                <div class="row g-3">
-  
-                  <div class="col-md-6">
-  
-                    <div class="mb-3">
-                      <label class="form-label" for="name">Nombre del Producto</label>
-                      <input type="text" id="name" class="form-control" formControlName="name"
-                        placeholder="Ingresa el nombre del producto..."
-                        title="{{ createProductForm.get('products')['controls'][i].controls.name.value ? createProductForm.get('products')['controls'][i].controls.name.value : ''}} ">
-                    </div>
-  
-                    <div class="mb-3">
-                      <label for="observations">Observaciones de Cotización</label>
-                      <textarea class="form-control" id="observations" formControlName="aditional_info" cols="30" rows="5"
-                        placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
-                    </div>
-  
-                    <div class="mb-3">
-                      <label for="observations-client">Observaciones del Cliente</label>
-                      <textarea class="form-control" id="observations-client" cols="30" rows="5"
-                        formControlName="description" placeholder="Observaciones del cliente"></textarea>
-                    </div>
-  
-                    <div class="h6">
-  
-                      <a *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value === 1"
-                        (click)="removeProduct(i);">
-                        <i class="far fa-trash-alt"></i>
-                      </a>
-  
-                      <a (click)="calculateWeightSubstract(i); getFormula(i);"
-                        *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value > 1">
-                        <i class="fas fa-minus"></i>
-                      </a>
-  
-                      Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
-  
-                      <a (click)="calculateWeightAdd(i); getFormula(i);">
-                        <i class="fas fa-plus"></i>
-                      </a>
-  
-                    </div>
-  
-                  </div>
-  
-                  <div class="col-md-6">
-  
-                    <div class="row g-3 mb-3">
-  
-                      <div class="col-sm-7">
-                        <label for="article-value" class="form-label">Valor Artículo*</label>
-                        <input type="number" id="article-value" class="form-control" formControlName="product_value"
-                          placeholder="Valor del artículo en USD." title="Valor del Artículo en USD."
-                          (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
-                      </div>
-  
-                      <div class="col-sm">
-                        <label for="discount" class="form-label">Descuento</label>
-                        <input type="number" id="discount" class="form-control" placeholder="Descuento"
-                          title="Descuento del producto" formControlName="discount" (keypress)="numberOnly($event);"
-                          (blur)="getFormula(i);" min="0">
-                      </div>
-  
-                      <div class="col-sm">
-                        <label for="tax" class="form-label">Tax</label>
-                        <input type="number" id="tax" class="form-control" placeholder="Tax" title="Tax del producto"
-                          formControlName="tax" min="0" (keypress)="numberOnly($event);"
-                          (blur)="calculateTaxManually(i);">
-                        <div class="container-calcs">
-                          <i class="fas fa-calculator"
-                            [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
-                            (click)="changeCalculator('1', i);" title="Sin envío Origen">
-                          </i>
-                          <i class="fas fa-calculator"
-                            [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
-                            (click)="changeCalculator('2', i);" title="Con envío Origen">
-                          </i>
-                        </div>
-                      </div>
-  
-                    </div>
-  
-                    <div class="row g-3 mb-3">
-  
-                      <div class="col-sm">
-                        <label for="shipping-origin" class="form-label">Envío Origen</label>
-                        <input type="number" id="shipping-origin" class="form-control"
-                          placeholder="Envío de Origen en USD" title="Envío de Origen en USD."
-                          formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
-                          (blur)="getFormula(i);" min="0">
-                      </div>
-  
-                    </div>
-  
-                    <div class="row g-3 mb-3">
-  
-                      <div class="col-sm">
-                        <label for="weight" class="form-label">Peso(Libras)</label>
-                        <input type="number" id="weight" class="form-control" placeholder="Peso del productos en libras."
-                          title="Peso del productos en libras." formControlName="weight" (keypress)="numberOnly($event);"
-                          (blur)="getFormula(i);" min="0">
-                      </div>
-  
-                      <div class="col-sm">
-                        <label for="permanent-shipping" class="form-label">Valor Envío Fijo</label>
-                        <input type="number" id="permanent-shipping" class="form-control"
-                          placeholder="Valor del envío fijo" title="Valor del envío fijo"
-                          formControlName="permanent_shipping_value" (keypress)="numberOnly($event);"
-                          (blur)="getFormula(i);" min="0">
-                      </div>
-  
-                    </div>
-  
-                    <div class="row g-3">
-  
-                      <div class="col-sm">
-                        <div class="h6">
-                          Sub Total:
-                          {{ createProductForm.get('products')['controls'][i].controls.sub_total.value | number :
-                          '1.2-2'}}
-                          USD
-                        </div>
-                      </div>
-  
-                      <div class="col-sm">
-                        <div class="form-check form-switch text-truncate h6">
-                          <label for="form-group">Envio Gratis</label>
-                          <input class="form-check-input" type="checkbox" formControlName="free_shipping"
-                            id="flexSwitchCheckChecked" (change)="resetProductValue(i);">
-                        </div>
-                      </div>
-  
-                    </div>
-  
-                  </div>
-  
-                </div>
-  
+
+              <div class="d-flex justify-content-end mt-3" style="margin-left: 1rem;">
+                <button class="btn btn-success" type="button" (click)="addProduct();" [disabled]="isLoading">
+                  <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+                  AGREGAR
+                </button>
               </div>
-  
             </div>
-  
           </div>
-  
-        </div>
-  
-        <div *ngIf="createProductForm.get('products')['controls'].length === 0">
-          <div class="mt-3 d-flex justify-content-center h6">
-            Aún no has agregado productos
+
+          <div class="col-5 d-flex justify-content-center align-items-center">
+
+            <div class="row mt-2">
+
+              <div class="container-calculator" *ngIf="!isLoadingFormula">
+
+                <div class="h4">
+                  Calculadora de Totales
+                </div>
+
+                <div>
+                  <strong>Valor de Artículos:</strong>
+                  {{ (totalValues.total_value ? totalValues.total_value : 0) | number : '1.2-2' }} USD
+                </div>
+
+                <div>
+                  <strong>Total de Libras:</strong>
+                  {{ (totalValues.total_weight ? totalValues.total_weight : 0) }} lb.
+                </div>
+
+                <ng-container *ngFor="let formula of totalFormulas">
+                  <div>
+                    <strong>Valor del envío ({{formula.name}}): </strong>
+                    {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} USD
+                  </div>
+                </ng-container>
+
+                <ng-container *ngFor="let formula of totalFormulas">
+                  <div>
+                    <strong>Envio a casa ({{formula.name}})</strong>
+                    {{ ((totalValues.total_value ? totalValues.total_value : 0) + (formula.value ? formula.value : 0)) |
+                    number : '1.2-2'}} USD
+                  </div>
+                </ng-container>
+
+              </div>
+
+              <div class="loading-calulator" *ngIf="isLoadingFormula">
+
+                <div class="spinner-border" role="status">
+                  <span class="sr-only"></span>
+                </div>
+
+                Estamos calculando el valor de envío...
+
+              </div>
+
+            </div>
+
           </div>
+
         </div>
-  
+
       </div>
-  
-    </form>
-  
-  </div>
-  
-  <div class="modal-footer">
-  
-    <button class="btn btn-secondary" (click)="closeModal.emit(false);">
-      Cancelar
-    </button>
-  
-    <button class="btn btn-primary" (click)="createOrder();" [disabled]="isLoading">
-      <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
-      Aprobar
-    </button>
-  
-  </div>
+
+    </div>
+
+    <div class="table-responsive p-3">
+
+      <h4 class="h4">Productos</h4>
+
+      <div formArrayName="products" *ngFor="let item of createProductForm.get('products')['controls']; let i = index;">
+
+        <hr *ngIf="i > 0">
+
+        <div class="container">
+
+          <div class="row" [formGroupName]="i">
+
+            <div class="col-sm-3 d-flex align-items-center dropzone-in-create" appImageDrag
+              (files)="filesDropped($event, i);">
+
+              <div class="container-img-dropzone">
+
+                <a href="{{ createProductForm.get('products')['controls'][i].controls.link.value }}" target="_blank">
+                  <img src="{{ createProductForm.get('products')['controls'][i].controls.uploadedFiles.value.url }}"
+                    draggable="false" (error)="onImageError($event);" />
+                </a>
+
+                <h5>Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
+                    (click)="uploadImage(i);">aquí.</a>
+                </h5>
+
+              </div>
+
+            </div>
+
+            <div class="col-sm-9">
+
+              <div class="row g-3">
+
+                <div class="col-md-6">
+
+                  <div class="mb-3">
+                    <label class="form-label" for="name">Nombre del Producto</label>
+                    <input type="text" id="name" class="form-control" formControlName="name"
+                      placeholder="Ingresa el nombre del producto..."
+                      title="{{ createProductForm.get('products')['controls'][i].controls.name.value ? createProductForm.get('products')['controls'][i].controls.name.value : ''}} ">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="observations">Observaciones de Cotización</label>
+                    <textarea class="form-control" id="observations" formControlName="aditional_info" cols="30" rows="5"
+                      placeholder="Escribenos la información adicional de producto como talla, color, etc."></textarea>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="observations-client">Observaciones del Cliente</label>
+                    <textarea class="form-control" id="observations-client" cols="30" rows="5"
+                      formControlName="description" placeholder="Observaciones del cliente"></textarea>
+                  </div>
+
+                  <div class="h6">
+
+                    <a *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value === 1"
+                      (click)="removeProduct(i);">
+                      <i class="far fa-trash-alt"></i>
+                    </a>
+
+                    <a (click)="calculateWeightSubstract(i); getFormula(i);"
+                      *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value > 1">
+                      <i class="mdi mdi-minus"></i>
+                    </a>
+
+                    Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
+
+                    <a (click)="calculateWeightAdd(i); getFormula(i);">
+                      <i class="mdi mdi-plus"></i>
+                    </a>
+
+                  </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                  <div class="row g-3 mb-3">
+
+                    <div class="col-sm-7">
+                      <label for="article-value" class="form-label">Valor Artículo*</label>
+                      <input type="number" id="article-value" class="form-control" formControlName="product_value"
+                        placeholder="Valor del artículo en USD." title="Valor del Artículo en USD."
+                        (keypress)="numberOnly($event);" (blur)="getFormula(i);" min="0">
+                    </div>
+
+                    <div class="col-sm">
+                      <label for="discount" class="form-label">Descuento</label>
+                      <input type="number" id="discount" class="form-control" placeholder="Descuento"
+                        title="Descuento del producto" formControlName="discount" (keypress)="numberOnly($event);"
+                        (blur)="getFormula(i);" min="0">
+                    </div>
+
+                    <div class="col-sm">
+                      <label for="tax" class="form-label">Tax</label>
+                      <input type="number" id="tax" class="form-control" placeholder="Tax" title="Tax del producto"
+                        formControlName="tax" min="0" (keypress)="numberOnly($event);"
+                        (blur)="calculateTaxManually(i);">
+
+                      <div class="container-calcs">
+
+                        <i class="mdi mdi-calculator"
+                          [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
+                          (click)="changeCalculator('1', i);" title="Sin envío Origen">
+                        </i>
+
+                        <i class="mdi mdi-calculator"
+                          [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
+                          (click)="changeCalculator('2', i);" title="Con envío Origen">
+                        </i>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row g-3 mb-3">
+
+                    <div class="col-sm">
+                      <label for="shipping-origin" class="form-label">Envío Origen</label>
+                      <input type="number" id="shipping-origin" class="form-control"
+                        placeholder="Envío de Origen en USD" title="Envío de Origen en USD."
+                        formControlName="shipping_origin_value_product" (keypress)="numberOnly($event);"
+                        (blur)="getFormula(i);" min="0">
+                    </div>
+
+                  </div>
+
+                  <div class="row g-3 mb-3">
+
+                    <div class="col-sm">
+                      <label for="weight" class="form-label">Peso(Libras)</label>
+                      <input type="number" id="weight" class="form-control" placeholder="Peso del productos en libras."
+                        title="Peso del productos en libras." formControlName="weight" (keypress)="numberOnly($event);"
+                        (blur)="getFormula(i);" min="0">
+                    </div>
+
+                    <div class="col-sm">
+                      <label for="permanent-shipping" class="form-label">Valor Envío Fijo</label>
+                      <input type="number" id="permanent-shipping" class="form-control"
+                        placeholder="Valor del envío fijo" title="Valor del envío fijo"
+                        formControlName="permanent_shipping_value" (keypress)="numberOnly($event);"
+                        (blur)="getFormula(i);" min="0">
+                    </div>
+
+                  </div>
+
+                  <div class="row g-3">
+
+                    <div class="col-sm">
+                      <div class="h6">
+                        Sub Total:
+                        {{ createProductForm.get('products')['controls'][i].controls.sub_total.value | number :
+                        '1.2-2'}}
+                        USD
+                      </div>
+                    </div>
+
+                    <div class="col-sm">
+                      <div class="form-check form-switch text-truncate h6">
+                        <label for="form-group">Envio Gratis</label>
+                        <input class="form-check-input" type="checkbox" formControlName="free_shipping"
+                          id="flexSwitchCheckChecked" (change)="resetProductValue(i);">
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div *ngIf="createProductForm.get('products')['controls'].length === 0">
+        <div class="mt-3 d-flex justify-content-center h6">
+          Aún no has agregado productos
+        </div>
+      </div>
+
+    </div>
+
+  </form>
+
+</div>
+
+<div class="modal-footer">
+
+  <button class="btn btn-secondary" (click)="closeModal.emit(false);">
+    Cancelar
+  </button>
+
+  <button class="btn btn-primary" (click)="createOrder();" [disabled]="isLoading">
+    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" *ngIf="isLoading"></span>
+    Aprobar
+  </button>
+
+</div>

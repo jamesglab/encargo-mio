@@ -75,8 +75,9 @@
 
                 <div style="margin-left: 5px;">
                   <a
-                    (click)="(createProductForm.get('quantity').value >=2) ? createProductForm.get('quantity').setValue(createProductForm.get('quantity').value - 1) :''"><i
-                      class="fas fa-minus"></i></a>
+                    (click)="(createProductForm.get('quantity').value >=2) ? createProductForm.get('quantity').setValue(createProductForm.get('quantity').value - 1) :''">
+                    <i class="mdi mdi-minus"></i>
+                  </a>
                 </div>
 
                 <div class="mx-2">
@@ -87,7 +88,7 @@
 
                   <a (click)="createProductForm
                       .get('quantity')
-                      .setValue(createProductForm.get('quantity').value + 1)"><i class="fas fa-plus"></i>
+                      .setValue(createProductForm.get('quantity').value + 1)"><i class="mdi mdi-plus"></i>
                   </a>
                 </div>
 
@@ -218,18 +219,18 @@
 
                     <a *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value === 1"
                       (click)="removeProduct(i);">
-                      <i class="far fa-trash-alt"></i>
+                      <i class="mdi mdi-delete"></i>
                     </a>
 
                     <a (click)="calculateWeightSubstract(i); getFormula(i);"
                       *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value > 1">
-                      <i class="fas fa-minus"></i>
+                      <i class="mdi mdi-minus"></i>
                     </a>
 
                     Cantidad: {{ createProductForm.get('products')['controls'][i].controls.quantity.value }}
 
                     <a (click)="calculateWeightAdd(i); getFormula(i);">
-                      <i class="fas fa-plus"></i>
+                      <i class="mdi mdi-plus"></i>
                     </a>
 
                   </div>
@@ -260,11 +261,11 @@
                         formControlName="tax" min="0" (keypress)="numberOnly($event);"
                         (blur)="calculateTaxManually(i);">
                       <div class="container-calcs">
-                        <i class="fas fa-calculator"
+                        <i class="mdi mdi-calculator"
                           [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '1' }"
                           (click)="changeCalculator('1', i);" title="Sin envío Origen">
                         </i>
-                        <i class="fas fa-calculator"
+                        <i class="mdi mdi-calculator"
                           [ngClass]="{ 'selected-tax': createProductForm.get('products')['controls'][i].controls.selected_tax.value == '2' }"
                           (click)="changeCalculator('2', i);" title="Con envío Origen">
                         </i>
