@@ -66,6 +66,7 @@ export const updateLocker = (data: any): any => {
         "product_name": (data.name ? data.name : ''),
         "product_description": (data.product_description ? data.product_description : null),
         "permanent_shipping_value": (data.permanent_shipping_value ? data.permanent_shipping_value : 0),
+        "locker": data.locker_info.locker_id,
         "weight": (data.weight ? data.weight : 0),
         "images": (data.images ? data.images : []),
         "deleted_images": (data.deleted_images ? data.deleted_images : null)
