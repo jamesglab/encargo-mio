@@ -34,7 +34,6 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit() {
     this.user = this._storage.getItem("currentUser");
-    // console.log(this.user);
     this.openMobileMenu = false;
     this.element = document.documentElement;
 

@@ -18,7 +18,7 @@
 
             <label for="conveyor">Transportadora Origen</label>
 
-            <input matInput class="form-control" id="conveyor" formControlName="conveyor"
+            <input class="form-control" id="conveyor" formControlName="conveyor"
                 [matAutocomplete]="auto_conveyor" placeholder="Búsqueda de transportadora...">
 
             <mat-autocomplete #auto_conveyor="matAutocomplete" [displayWith]="displayWith">
@@ -37,7 +37,7 @@
 
             <label for="lockers">Casillero*</label>
   
-            <input matInput class="form-control" id="locker" formControlName="locker_info"
+            <input class="form-control" id="locker" formControlName="locker_info"
               (input)="autoCompleteLocker($event.target.value);" [matAutocomplete]="auto_locker"
               placeholder="{{ allLockers.length > 0 ? '' : 'Escribe nombre de cliente' }}">
   

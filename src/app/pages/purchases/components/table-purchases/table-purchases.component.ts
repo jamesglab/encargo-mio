@@ -27,7 +27,8 @@ export class TablePurchasesComponent implements OnInit {
   public isLoading: boolean = false;
 
   public users: [] = [];
-  public trm: any
+  public trm: any;
+  public conveyors: any = [];
 
   public filterCode = new FormControl('');
   public filterOrderService = new FormControl('');
@@ -42,11 +43,14 @@ export class TablePurchasesComponent implements OnInit {
 
   public filteredUsers: Observable<string[]>;
 
+  public purchaseSelected: any = {};
+
   constructor(private _userService: UserService, private modalService: NgbModal, private _orderService: OrderService) { }
 
   ngOnInit(): void {
     this.getUsersAdmin();
     this.getTrm();
+    this.getConveyors();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
@@ -63,6 +67,15 @@ export class TablePurchasesComponent implements OnInit {
     this._orderService.getTRM()
       .subscribe((res: any) => {
         this.trm = res;
+      }, err => {
+        throw err;
+      });
+  }
+
+  getConveyors(): void {
+    this._orderService.getConvenyor()
+      .subscribe((res: any) => {
+        this.conveyors = res;
       }, err => {
         throw err;
       });
@@ -161,8 +174,9 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
-  openLocker(content: any): void {
+  openLocker(content: any, data: any): void {
     this.modalService.open(content, { size: 'xl', centered: true });
+    this.purchaseSelected = data;
   }
 
   closeModalReceive(event: any) {

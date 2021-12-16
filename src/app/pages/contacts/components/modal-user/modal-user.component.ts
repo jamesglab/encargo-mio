@@ -27,8 +27,6 @@ export class ModalUserComponent implements OnInit {
   }
 
   buildForm() {
-    // console.log("ROLESSS", this.roles);
-    // console.log("USERRR", this.user)
     this.editUserForm = this._formBuilder.group({
       id: [this.user.id],
       name: [this.user.name],

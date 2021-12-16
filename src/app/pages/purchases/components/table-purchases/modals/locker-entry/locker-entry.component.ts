@@ -1,13 +1,14 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
+import { LockersService } from 'src/app/pages/lockers/_services/lockers.service';
+import { FileHandle } from 'src/app/_directives/file-handle';
+import { insertInLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
+import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
-import { map, startWith } from 'rxjs/operators';
-import { isRequired, numberOnly } from 'src/app/_helpers/tools/utils.tool';
-import { FileHandle } from 'src/app/_directives/file-handle';
-import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.tool';
 
 @Component({
   selector: 'app-locker-entry',
@@ -20,258 +21,251 @@ export class LockerEntryComponent implements OnInit {
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Output() public closeModal: EventEmitter<any> = new EventEmitter<any>();
 
+  @Input() public conveyors: any = [];
   @Input() public trm: any;
   @Input() public users: any = [];
+  @Input() public purchaseSelected: any = {};
 
-  public filteredUsers: Observable<string[]>;
-
-  public typeTax: number = 0.07;
-  public createProductForm: FormGroup;
-  public products: FormArray;
+  public toHome = { status: false, to_home: false };
 
   public isLoading: boolean = false;
-  public isLoadingFormula: boolean = false;
+  public getQueries: boolean = false;
+  public loaderLockers: boolean = false;
+  public isLoadingUpload: boolean = false;
 
-  public totalFormulas: any = [];
-  public totalValues: any = [];
+  public lockerForm: FormGroup;
+
+  public lockers: any = [];
   public files: any = [];
+  public allGuides: any[] = [];
+  public allLockers: any[] = [];
+  public allOrders: any[] = [];
+
+  public filteredOrders: Observable<string[]>;
+  public filteredConveyors: Observable<string[]>;
 
   constructor(
-    private _formBuilder: FormBuilder,
-    private quotationService: OrderService,
-    private _notify: NotifyService,
+    private fb: FormBuilder,
+    public _notify: NotifyService,
+    private _lockers: LockersService,
+    public _cdr: ChangeDetectorRef,
+    private _orderService: OrderService,
     private _compress: ImageCompressService,
     private _orders: OrderService
   ) { }
 
-  ngOnInit(): void {
-    this.buildForm();
-  }
+  ngOnInit(): void { }
 
-  // Creación del formulario principal
-  buildForm() {
-    this.createProductForm = this._formBuilder.group({
-      link: [null],
-      name: [null],
-      description: [null],
-      quantity: [1],
-      aditional_info: [null],
-      image: [null],
-      products: this._formBuilder.array([]),
-      user: [null],
-      advance_purchase: [false],
-      price: [0]
-    });
-    this.filteredUsers = this.createProductForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
-  }
-
-  // Retorna los controles del formulario que se consumen desde el HTML
-  get form() {
-    return this.createProductForm.controls;
-  }
-
-  // Creación de productos con formularios reactivos y dinamicos multinivel
-  createProduct(): FormGroup {
-
-    let createProduct = this._formBuilder.group({
-      link: [this.createProductForm.value.link],
-      name: [this.createProductForm.value.name ? this.createProductForm.value.name.trim() : null],
-      aditional_info: [this.createProductForm.value.aditional_info],
-      description: [this.createProductForm.value.description],
-      image: [this.createProductForm.value.image],
-      quantity: [this.createProductForm.value.quantity],
-      product_value: [this.createProductForm.value.price ? this.createProductForm.value.price : 0],
-      tax: [0],
-      weight: [0],
-      discount: [0],
-      shipping_origin_value_product: [0],
-      permanent_shipping_value: [0],
-      free_shipping: [false],
-      tax_manually: [false],
-      sub_total: [0],
-      selected_tax: [null],
-      initial_weight: [0],
-      uploadedFiles: [this.createProductForm.value.image ? { file: null, type: 'image', url: this.createProductForm.value.image } : ""],
-      key_aws_bucket: [null]
-    });
-    return createProduct;
-
-  }
-
-  displayFnUserName(name: any) {
-    return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
-  }
-
-  //creamos un producto nuevo que sera pusheado en los formArray
-  addProduct(): void {
-
-    if (!this.createProductForm.invalid) {
-
-      this.products = this.createProductForm.get('products') as FormArray;
-      this.isLoading = true;
-
-      if (this.form.link.value) {
-
-        let newUrl: any;
-        newUrl = "https" + this.form.link.value.split("https")[1];
-        this.quotationService.getProductInfo(newUrl)
-          .subscribe((res) => {
-            this.addItem(res);
-            this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
-            this.isLoading = false;
-          }, err => {
-            this.addItem(null);
-            this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
-            this.isLoading = false;
-            throw err;
-          });
-      } else {
-        this._notify.show('No has añadido ningún producto.', '', 'warning');
-        this.isLoading = false;
-      }
-
+  ngOnChanges() {
+    if (this.purchaseSelected && !this.purchaseSelected.locker_has_product) {
+      this.getTypeShipping(this.purchaseSelected);
+      this.buildForm(this.purchaseSelected);
     } else {
-      this.isLoading = false;
-      this._notify.show('Los datos del producto están incompletos.', '', 'warning');
-    }
-
-  }
-
-  _filter(value: string, array: any): string[] {
-    const filterValue = this._normalizeValue(value, array);
-    let fileterdData = this[array].filter(option => this._normalizeValue(option, array).includes(filterValue));
-    if (fileterdData.length > 0) {
-      return fileterdData;
-    } else {
-      return this[array];
+      this._notify.show('', 'El producto ya ha sido ingresado a un casillero.', 'info');
+      this.closeModalStatus();
+      return;
     }
   }
 
-  private _normalizeValue(value: any, array: any): string {
-    if (typeof value === 'object') {
-      if (array === 'conveyors') {
-        return value.name.toLowerCase().replace(/\s/g, '');
-      } else if (array === 'users') {
-        return value.full_name.toLowerCase().replace(/\s/g, '');
-      } else if (array === 'address') {
-        return value.address.toLowerCase().replace(/\s/g, '');
-      }
-    } else {
-      return value.toLowerCase().replace(/\s/g, '');
-    }
-  }
-
-  onSelect(event) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
-    this.files.push(...event.addedFiles);
-  }
-
-  addItem(res: any) {
-    this.form.image.setValue(res ? res.image : null);
-    this.form.name.setValue(res ? res.name : null);
-    this.form.description.setValue(res ? res.description : null);
-    this.form.price.setValue(res ? res.price : 0);
-    this.products.push(this.createProduct());
-    this.getFormula(this.products.controls.length - 1); // LLAMAMOS AL MÉTODO DE LA FORMULA
-    this.cleanForm(); // LLAMAMOS AL MÉTODO PARA RESETEAR EL FORMULARIO
-  }
-
-  cleanForm(): void { //RESET CREATE PRODUCT FORM
-    for (const field in this.createProductForm.controls) {
-      if (this.isRequired(field)) {
-        this.createProductForm.controls[field].reset();
-      }
-    }
-    this.createProductForm.controls.quantity.setValue(1);
-  }
-
-  onImageError(event) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
-
-  isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
-
-  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
-
-  resetProductValue(i: number) { this.getFormula(i); }
-
-  calculateTaxManually(i: number): void {
-    this.products.controls[i]['controls'].tax_manually.setValue(true); // Setear que el tax_muanlly está manual
-    this.calculateTotalPrices(i); // Calcular el total de precios
-    this.calculateTotalArticles(); // Llamamos la función para obtener los valores totales
-  }
-
-  calculateTax(i: number) {
-    if (this.products.controls[i]['controls'].free_shipping.value) { // Si el valor del shipping está verdadero
-      this.products.controls[i]['controls'].tax.setValue(0); // Seteamos el valor del tax en 0
-    } else {
-      if (!this.products.controls[i]['controls'].tax_manually.value) { // Validar si el tax se calcula manual o automatico
-        if (this.products.controls[i]['controls'].selected_tax.value == "1") { // Si elige la primer calculadora
-          this.products.controls[i]['controls'].tax.setValue(parseFloat((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value * 0.07).toFixed(2))); // Se obtiene el product_value * la quantity * 7%
-        } else if (this.products.controls[i]['controls'].selected_tax.value == "2") {
-          this.products.controls[i]['controls'].tax.setValue(parseFloat((((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value) + this.products.controls[i]['controls'].shipping_origin_value_product.value) * 0.07).toFixed(2))); // Se obtiene el product_value * la quantity + shipping_origin_value_product * 7%
+  getTypeShipping(data: any) {
+    if (data.order_service) {
+      this._lockers.getTypeOfShipping(data.order_service).subscribe((res: any) => {
+        if (res) {
+          this.toHome.status = true;
+          this.toHome.to_home = res.to_home;
         }
-      }
-    }
-  }
-
-  calculateTotalPrices(i: number) { // Calculamos el valor total aplicando la fórmula+
-    var sub_total: number = 0;
-    sub_total = (((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value) + this.products.controls[i]['controls'].tax.value) + this.products.controls[i]['controls'].shipping_origin_value_product.value);
-    this.products.controls[i]['controls'].sub_total.setValue(sub_total);
-  }
-
-  changeCalculator(item: string, i: number) {
-    this.products.controls[i]['controls'].tax_manually.setValue(false);
-    this.products.controls[i]['controls'].selected_tax.setValue(item);
-    this.calculateTax(i);
-    this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
-  }
-
-  getFormula(i: number) {
-    return new Promise((resolve, reject) => {
-      this.isLoadingFormula = true;
-      this.quotationService.calculateShipping(this.products.value).subscribe((res: any) => { // Llamamos al método para calcular los valores de envío
-        this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
-        this.calculateTax(i); // Calculamos el tax
-        this.calculateTotalPrices(i); // Calcular el total de precios
-        this.calculateTotalArticles(); // Calcular el valor de todos los artículos
-        this.isLoadingFormula = false;
-        resolve("ok");
       }, err => {
-        this.isLoadingFormula = false;
-        reject(err);
         throw err;
       });
+    }
+  }
+
+  buildForm(data: any): void {
+
+    let searchConveyor: any = {};
+    searchConveyor = this.conveyors.filter(x => x.id === data.conveyor);
+
+    this.lockerForm = this.fb.group({
+      guide_number: [data.guide_number],
+      guide_number_alph: [data.guide_number_alph],
+      guide_order: [data.invoice_number ? data.invoice_number : null],
+      order_purchase: [data.id],
+      locker: [{ id: data.locker_id }, [Validators.required]],
+      locker_info: [{ value: (`CA ${data.locker_id} | ${data.user_name} ${data.last_name}`), disabled: true }],
+      product: [data.product_id],
+      product_description: [data.product_name],
+      weight: [data.weight ? data.weight : 0, [Validators.required, Validators.min(0.1)]],
+      receipt_date: [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }, [Validators.required]],
+      permanent_shipping_value: [data.permanent_shipping_value ? data.permanent_shipping_value : 0],
+      declared_value_admin: [data.declared_value_admin ? data.declared_value_admin : 0, [Validators.required, Validators.min(0)]],
+      conveyor: [searchConveyor ? searchConveyor[0] : null, [Validators.required]],
+      force_commercial_shipping: [data.force_commercial_shipping ? data.force_commercial_shipping : false],
+      product_observations: [data.product_observations],
+      user: [data.user_id]
     });
+
+    this.pushImagesResponse(data);
+
+    this.lockerForm.controls.guide_number_alph.valueChanges.subscribe((guide: any) => {
+      if (guide && guide.guide_number) {
+        this.allOrders = [];
+        this.lockerForm.controls.guide_order.setValue((guide.order_service.id + ' | ' + guide.product.name));
+        this.lockerForm.controls.guide_number.setValue(guide.guide_number);
+        this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
+        this.lockerForm.controls.order_purchase.setValue(guide.id);
+        this.lockerForm.controls.locker.setValue(guide.locker.id);
+        this.lockerForm.controls.locker_info.setValue(`${guide.user.name} ${guide.user.last_name}`);
+        this.lockerForm.controls.weight.setValue((guide.weight ? guide.weight : 0));
+        this.lockerForm.controls.declared_value_admin.setValue((guide.product_price ? guide.product_price : 0));
+        this.lockerForm.controls.product.setValue((guide.product.id ? guide.product.id : null));
+        //this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
+        this.lockerForm.controls.user.setValue((guide.user.id ? guide.user.id : null));
+        this.lockerForm.controls.permanent_shipping_value.setValue((guide.permanent_shipping_value ? guide.permanent_shipping_value : 0));
+        this.pushImagesResponse(guide.product.image ? guide.product.image : null);
+        this.getTypeShipping(guide);
+      }
+    });
+
+    this.lockerForm.controls.locker_info.valueChanges.subscribe((data: any) => {
+      if (data && data.locker_id) {
+        this.lockerForm.controls.locker_info.setValue((`CA${data.locker_id} | ${data.us_name} ${data.us_last_name}`));
+        this.lockerForm.controls.locker.setValue(data.locker_id);
+        this.lockerForm.controls.user.setValue(data.us_id);
+        this.autoCompleteUsers(data.us_id);
+      }
+    });
+
+    this.lockerForm.controls.guide_order.valueChanges.subscribe((orderPurchase: any) => {
+      if (orderPurchase && orderPurchase.id) {
+        this.files = [];
+        this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id + ' | ' + orderPurchase.product.name));
+        this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
+        if (this.lockerForm.controls.guide_number_alph.value === "" || this.lockerForm.controls.guide_number_alph.value == null) {
+          this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        }
+        this.lockerForm.controls.order_purchase.setValue(orderPurchase.id);
+        this.lockerForm.controls.weight.setValue((orderPurchase.weight ? orderPurchase.weight : 0));
+        this.lockerForm.controls.declared_value_admin.setValue((orderPurchase.product_price ? orderPurchase.product_price : 0));
+        this.lockerForm.controls.product.setValue((orderPurchase.product.id ? orderPurchase.product.id : null));
+        //this.lockerForm.controls.product_description.setValue(orderPurchase.product.name ? orderPurchase.product.name : null);
+        this.lockerForm.controls.user.setValue((orderPurchase.order_service.user.id ? orderPurchase.order_service.user.id : null));
+        this.lockerForm.controls.permanent_shipping_value.setValue((orderPurchase.permanent_shipping_value ? orderPurchase.permanent_shipping_value : 0));
+        this.getTypeShipping(orderPurchase);
+        this.pushImagesResponse(orderPurchase.product.image ? orderPurchase.product.image : null);
+      } else if (typeof orderPurchase === 'string' && orderPurchase !== null && orderPurchase.length === 0) {
+        this.cleanData();
+      }
+    });
+
+    this.filteredOrders = this.lockerForm.controls.guide_order.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'allOrders')));
+    this.filteredConveyors = this.lockerForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
+
   }
 
-  calculateWeightSubstract(i: number) {
-    let product_weight = this.products.controls[i]['controls'].weight.value;//OBTAIN PRODUCT WEIGHT
-    let product_quantity = this.products.controls[i]['controls'].quantity.value;//OBTAIN PRODUCT QUANTITY
-    this.products.controls[i]['controls'].quantity.setValue(product_quantity - 1); //SUBSTRACT 1 TO QUANTITY
-    let unit_weight = (product_weight / product_quantity);// CALC WEIGHT FOR UNIT
-    this.products.controls[i]['controls'].weight.setValue(parseFloat((product_weight - unit_weight).toFixed(2)));//SUBSTRACT 1 UNIT TO WEIGHT
+  get form() {
+    return this.lockerForm.controls;
   }
 
-  calculateWeightAdd(i: number) {
-    let product_weight = this.products.controls[i]['controls'].weight.value;//OBTAIN PRODUCT WEIGHT
-    let product_quantity = this.products.controls[i]['controls'].quantity.value;//OBTAIN PRODUCT QUANTITY
-    this.products.controls[i]['controls'].quantity.setValue(product_quantity + 1);//SUBSTRACT 1 TO QUANTITY
-    let unit_weight = (product_weight / product_quantity);// CALC WEIGHT FOR UNIT
-    this.products.controls[i]['controls'].weight.setValue(parseFloat((product_weight + unit_weight).toFixed(2)));//SUBSTRACT 1 UNIT TO WEIGHT
+  pushImagesResponse(data: any): void {
+    if (data) {
+      this.files.push({ image: data.product_image, Link: data.product_link, key_aws_bucket: null });
+    }
   }
 
-  calculateTotalArticles() {
-    var sub_total: number = 0;
-    var total_weight: number = 0;
-    this.products.value.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; }); // Hacemos la sumatoria del sub_total y weight
-    this.totalValues.total_value = sub_total;
-    this.totalValues.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
+  autoCompleteLocker(params: any): void {
+    if (params.length >= 2) {
+      this.loaderLockers = true;
+      this.getQueries = true;
+      this._orderService.getUsersByName(params)
+        .subscribe((res: any) => {
+          this.allLockers = res;
+          this.loaderLockers = false;
+          this.getQueries = false;
+          this._cdr.detectChanges();
+        }, err => {
+          this.loaderLockers = false;
+          this.getQueries = false;
+          throw err;
+        });
+    }
   }
 
-  filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
+  autoCompleteUsers(params: any): void {
+    this.getQueries = true;
+    this.lockerForm.controls.guide_order.disable();
+    this._orderService.getLockersByUser(params)
+      .subscribe((res: any) => {
+        if (res && res.length > 0) {
+          this.allOrders = res;
+        }
+        this.lockerForm.controls.guide_order.enable();
+        this.getQueries = false;
+      }, err => {
+        this.lockerForm.controls.guide_order.disable();
+        this.getQueries = false;
+        throw err;
+      });
+  }
+
+  autoCompleteGuide(params: any): void {
+    this.getQueries = true; // Ponemos un botón de carga en todo el modal en verdadero
+    this._orderService.getDataByGuide(params)
+      .subscribe((res: any) => { // Obtenemos los datos por los params de guía
+        this.allGuides = res; // Seteamos la respuesta del backend en el array de allGuides
+        this._cdr.detectChanges();
+        this.getQueries = false; // Ponemos un botón de carga en todo el modal en falso
+      }, err => {
+        this.getQueries = false; // Ponemos un botón de carga en todo el modal en falso
+        throw err;
+      });
+  }
+
+  cleanData(): void {  //Creamos esta función para limpiar el formulario
+    this.allGuides = [];
+    this.toHome = { status: false, to_home: false };
+    this.lockerForm.controls.product_description.setValue(null);
+    this.lockerForm.controls.weight.setValue(0);
+    this.lockerForm.controls.permanent_shipping_value.setValue(0);
+    this.lockerForm.controls.declared_value_admin.setValue(0);
+  }
+
+  displayFn(option: any) { if (option) { return option ? option : `${option.id} | ${option.product.name}`; } }
+
+  displayConveyors(option: any) { return option ? option.name : ''; } // Formato para mostrar simplemente el nombre en el autocomplete
+
+  numberOnly(event): boolean { return numberOnly(event); } // Función para que sólo se permitan números en un input
+
+  onImageError(event: any): void { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; } // Image failure method
+
+  private _filter(value: any, array: any): string[] {
+
+    if (typeof value === 'string' && value !== null) { // Si el valor es un string y es diferente a nulo
+
+      const filterValue = value.toLowerCase(); // El valor filtrado se convertirá a toLowerCase
+      let filtered: any; // Se asgina un valor para almacenar la data a través del filtro
+
+      if (array == 'allOrders') { // Si el arreglo es allOrders filtrará por option.product.name
+        filtered = this[array].filter(option => { option.product.name.toLowerCase().includes(filterValue) });
+      } else if (array == 'conveyors') { // Si el arreglo es conveyors filtrará por option.name
+        filtered = this[array].filter(option => { option.name.toLowerCase().includes(filterValue) });
+      }
+
+      if (filtered && filtered.length > 0) { // Si después de filtrar el length es mayor a 0 retornamos la data del arreglo
+        return filtered;
+      } else { // Si es cero entonces retornarmos el arreglo completo
+        return this[array];
+      }
+
+    } else { // Donde no cumpla ninguan de las dos condiciones se retorna el arreglo completo
+      return this[array];
+    }
+
+  }
+
+  filesDropped(file: FileHandle[]) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
       this._compress.compressImage(file[0].base64).then((res: any) => {
-        this.products.controls[position]['controls'].uploadedFiles.setValue(res);
-        this.createFormData(res, position);
+        this.createFormData(res);
       }, err => {
         this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
         throw err;
@@ -281,93 +275,68 @@ export class LockerEntryComponent implements OnInit {
     }
   }
 
-  createFormData(res: any, position: number) {
-    const formData = new FormData();
-    formData.append("image", res.file);
-    formData.append("payload", this.products.controls[position].value.key_aws_bucket);
-    this.isLoading = true;
-    this._orders.uploadNewImage(formData).subscribe((res: any) => {
-      this.products.controls[position]['controls'].image.setValue(res.Location);
-      this.products.controls[position]['controls'].key_aws_bucket.setValue(res.Key);
-      this.isLoading = false;
-    }, err => {
-      this.isLoading = false;
-      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
-      throw err;
-    });
-  }
-
-  uploadImage(position: number) {
-    this._compress.uploadImage().then((res) => {
-      this.products.controls[position]['controls'].uploadedFiles.setValue(res);
-      this.createFormData(res, position);
+  uploadImage(): void { // Creamos este método para que al dar clic en subir archivo pase primero por el serivicio de comprimirla
+    this._compress.uploadImage().then((res: any) => {
+      this.createFormData(res);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
       throw err;
     });
   }
 
-  removeProduct(position: number): void {
-    this._notify.show('', 'Has eliminado el producto correctamente.', 'info');
-    this.products.controls.splice(position, 1);
-    if (this.products.controls.length > 0) {
-      this.calculateTax(this.products.controls.length - 1); // Calculamos el tax
-      this.calculateTotalPrices(this.products.controls.length - 1); // Calcular el total de precios
-      this.calculateTotalArticles(); // Calcular el valor de todos los artículos
-    }
+  createFormData(res: any) { // Creamos este método para crear el form data de cada imagen que se sube.
+
+    const formData = new FormData();
+    formData.append("image", res.file);
+
+    this.isLoading = true;
+    this.isLoadingUpload = true;
+
+    this._orders.uploadNewImage(formData).subscribe((res: any) => {
+      this.files.push({ image: res.Location, key_aws_bucket: res.Key });
+      this.isLoadingUpload = false;
+      this.isLoading = false;
+    }, err => {
+      this.isLoadingUpload = false;
+      this.isLoading = false;
+      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+
   }
 
-  onRemove(event) { // ELIMINAMOS LA IMAGEN
-    this.files.splice(this.files.indexOf(event), 1);
+  closeModalStatus(): void {
+    this.closeModal.emit(false);
   }
 
-  async createOrder() {
+  registerInLocker(): void {
 
-    if (!this.createProductForm.value.user) { // Si no hay un usuario asignado a través del selector no se deja pasar.
-      this._notify.show("Atención", "Selecciona un usuario al cual asignar el producto.", "info");
+    if (this.lockerForm.invalid) {
+      this._notify.show('', 'El formulario no se ha completado correctamente.', 'info');
       return;
     }
 
-    if (this.createProductForm.value.products) { // Si no hay productos asignados no se deja pasar
-      if (this.createProductForm.value.products.length === 0) {
-        this._notify.show("Atención", "No hay productos asignados.", "info");
-        return;
-      }
+    var formData = new FormData();
+
+    if (this.files && this.files.length > 0) {
+      this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
     }
 
-    if (this.createProductForm.valid) {
+    let payload = insertInLocker(this.lockerForm.getRawValue());
+    formData.append("payload", JSON.stringify(payload)); // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
 
-      await this.getFormula(0);
-
-      this.isLoading = true;
-      var formData = new FormData();
-      this.files.forEach((file) => { formData.append('images', file) });
-      const { user, products, advance_purchase } = this.createProductForm.getRawValue();
-
-      formData.append('payload', JSON.stringify({
-        ...getInsertCreateOrder(
-          user,
-          products,
-          this.totalFormulas,
-          this.trm,
-          advance_purchase)
-      }));
-
-      this.quotationService.createQuotation(formData).subscribe(res => {
-        this._notify.show('Transacción Exitosa', res.message, 'success');
-        this.isLoading = false;
+    this.isLoading = true;
+    this._orderService.insertProductLocker(formData)  // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 
+      .subscribe((res: any) => {
+        this._notify.show('', res.message, "success");
         this.closeModal.emit(false);
         this.refreshTable.emit(true);
+        this.isLoading = false;
       }, err => {
-        this._notify.show('Error', err, 'error');
+        this._notify.show('', err.error ? err.error.message : "Ocurrió un error al intentar registrar el producto.", "info");
         this.isLoading = false;
         throw err;
       });
-
-    } else {
-      this._notify.show('Datos incompletos', `Revisa que hayas llenado los campos.`, 'info');
-    }
-
   }
 
 }

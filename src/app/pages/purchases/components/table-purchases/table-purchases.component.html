@@ -9,10 +9,6 @@
         Eliminar Filtros
       </button>
 
-      <button type="button" class="btn btn-info btn-rounded mb-2 me-2" (click)="openLocker(modal);">
-        Ingresar a Casillero
-      </button>
-
     </div>
 
 
@@ -196,10 +192,17 @@
           </td>
 
           <td>
+
             <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
               (click)="selectPurchase(data);" *ngIf="!data.sold_out">
               Editar
             </button>
+
+            <button type="button" *ngIf="!data.sold_out && !data.locker_has_product" style="margin-left: 10px;"
+              class="btn btn-success btn-sm btn-rounded" (click)="openLocker(modal, data);">
+              Ingresar a Casillero
+            </button>
+
           </td>
 
         </tr>
@@ -217,7 +220,7 @@
 </div>
 
 <ng-template #modal role="document" let-modal>
-  <app-locker-entry [users]="users" [trm]="trm" (refreshTable)="refreshTableReceive($event);"
-    (closeModal)="closeModalReceive(modal);">
+  <app-locker-entry [users]="users" [trm]="trm" [conveyors]="conveyors" [purchaseSelected]="purchaseSelected"
+    (refreshTable)="refreshTableReceive($event);" (closeModal)="closeModalReceive(modal);">
   </app-locker-entry>
 </ng-template>

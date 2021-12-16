@@ -26,7 +26,6 @@ export class ModalLockerEntryComponent implements OnInit {
   public loaderLockers: boolean = false;
 
   public lockers: any = [];
-  public orders_purchase: [] = [];
   public conveyors: [] = [];
   public files: File[] = [];
   public allGuides: any[] = [];
@@ -34,6 +33,7 @@ export class ModalLockerEntryComponent implements OnInit {
   public allOrders: any[] = [];
 
   public filteredOrders: Observable<string[]>;
+  public filteredConveyors: Observable<string[]>;
 
   constructor(
     public modalService: NgbModal,
@@ -57,7 +57,7 @@ export class ModalLockerEntryComponent implements OnInit {
       guide_order: [null],
       order_purchase: [null],
       locker: [null, [Validators.required]],
-      locker_info: [null],
+      locker_info: [null, [Validators.required]],
       product: [null],
       product_description: [null],
       weight: [0, [Validators.required, Validators.min(0.1)]],
@@ -123,8 +123,13 @@ export class ModalLockerEntryComponent implements OnInit {
       }
     });
 
-    this.filteredOrders = this.lockerForm.controls.guide_order.valueChanges.pipe(startWith(''), map(value => this._filter(value)));
+    this.filteredOrders = this.lockerForm.controls.guide_order.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'allOrders')));
+    this.filteredConveyors = this.lockerForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
 
+  }
+
+  get form() {
+    return this.lockerForm.controls;
   }
 
   getConvenyors() { // AGREGAMOS LAS TRANSPORTADORAS
@@ -221,20 +226,34 @@ export class ModalLockerEntryComponent implements OnInit {
     this.lockerForm.controls.declared_value_admin.setValue(0);
   }
 
-  private _filter(value: any): string[] {
-    if (typeof value === 'string' && value !== null) {
-      const filterValue = value.toLowerCase();
-      return this.allOrders.filter(option => option.product.name.toLowerCase().includes(filterValue));
-    } else {
-      return this.allOrders;
+  private _filter(value: any, array: any): string[] {
+
+    if (typeof value === 'string' && value !== null) { // Si el valor es un string y es diferente a nulo
+
+      const filterValue = value.toLowerCase(); // El valor filtrado se convertirá a toLowerCase
+      let filtered: any; // Se asgina un valor para almacenar la data a través del filtro
+
+      if (array == 'allOrders') { // Si el arreglo es allOrders filtrará por option.product.name
+        filtered = this[array].filter(option => { option.product.name.toLowerCase().includes(filterValue) });
+      } else if (array == 'conveyors') { // Si el arreglo es conveyors filtrará por option.name
+        filtered = this[array].filter(option => { option.name.toLowerCase().includes(filterValue) });
+      }
+
+      if (filtered && filtered.length > 0) { // Si después de filtrar el length es mayor a 0 retornamos la data del arreglo
+        return filtered;
+      } else { // Si es cero entonces retornarmos el arreglo completo
+        return this[array];
+      }
+
+    } else { // Donde no cumpla ninguan de las dos condiciones se retorna el arreglo completo
+      return this[array];
     }
+
   }
 
-  displayFn(option: any) {
-    if (option) {
-      return option ? option : `${option.id} | ${option.product.name}`;
-    }
-  }
+  displayFn(option: any) { if (option) { return option ? option : `${option.id} | ${option.product.name}`; } }
+
+  displayConveyors(option: any) { return option ? option.name : ''; } // Formato para mostrar simplemente el nombre en el autocomplete
 
   pushImagesResponse(image: any): void { // Pusheamos las imagenes que están guardadas en la base de datos.
     if (image) {
@@ -266,9 +285,11 @@ export class ModalLockerEntryComponent implements OnInit {
     }
 
     var formData = new FormData();
+
     if (this.files && this.files.length > 0) {
       this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
     }
+
     let payload = insertInLocker(this.lockerForm.getRawValue());
     formData.append("payload", JSON.stringify(payload)); // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
     this.isLoading = true;
