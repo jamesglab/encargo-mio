@@ -162,8 +162,6 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   initialize() {
     this.menuItems = [];
     const permissions = this._storageService.getItem("permissions");
-    console.log("Permissions", permissions);
-
     // RECORREMOS LOS PERMISOS
     let new_menu = MENU;
     //RECORREMOS LOS ITEMS PRINCIPALES
