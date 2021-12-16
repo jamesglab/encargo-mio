@@ -61,7 +61,7 @@
           </th>
           <!--SEARCH STATES ON UTILS.TOOL.TS (GET_STATUS)-->
 
-          <th class="align-middle">Fecha
+          <th class="align-middle">Fecha Compra
             <div class="input-group clockpicker mt-2" style="min-width: 150px;">
               <input placeholder="yyyy-mm-dd" class="form-control" [value]="formatDate()" disabled>
 
@@ -69,6 +69,19 @@
                 (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate"
                 style="display: none;">
               <div class="input-group-append" (click)="dl.toggle()">
+                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+              </div>
+            </div>
+          </th>
+
+          <th class="align-middle">Fecha Ingreso Casillero
+            <div class="input-group clockpicker mt-2" style="min-width: 150px;">
+              <input placeholder="yyyy-mm-dd" class="form-control" [value]="formatLockerDate()" disabled>
+
+              <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
+                (ngModelChange)="filterPurchase()" #dl2="ngbDatepicker" [formControl]="filterLockerDate"
+                style="display: none;">
+              <div class="input-group-append" (click)="dl2.toggle()">
                 <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
               </div>
             </div>
@@ -96,6 +109,16 @@
               <option value="null">Todos</option>
               <option [value]="0">Por Ingresar</option>
               <option [value]="1">En Casillero</option>
+            </select>
+          </th>
+
+          <th class="align-middle">
+            Tienda Origen
+            <select class="form-select" [formControl]="filterStore" (change)="filterPurchase();">
+              <option disabled title="Selecciona filtro...">Selecciona Tienda...</option>
+              <option value="null">Todas</option>
+              <option *ngFor="let store of stores" [value]="store.id">
+                {{ (store.name.length > 50) ? (store.name | slice:0:50 ) + '...' : store.name }}</option>
             </select>
           </th>
 
@@ -166,6 +189,10 @@
           </td>
 
           <td>
+            {{data.locker_entry_date | date }}
+          </td>
+
+          <td>
             {{ data.product_id ? data.product_id : '-' }}
           </td>
 
@@ -176,6 +203,10 @@
 
           <td>
             {{ data.locker_has_product ? 'En Casillero' : 'Por Ingresar' }}
+          </td>
+
+          <td>
+            {{ data.store_name }}
           </td>
 
           <td>

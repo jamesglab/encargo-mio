@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Clipboard } from '@angular/cdk/clipboard';
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { map, startWith } from "rxjs/operators";
 import Swal from "sweetalert2"
 
@@ -14,7 +14,10 @@ import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
 import { ExportPdfService } from "../../../_services/export-pdf.service";
 import { OrderService } from "../../../_services/orders.service";
+import { OrderShippingService } from '../../_services/order-shipping.service';
 import { DragdropService } from "../../_services/dragdrop.service";
+
+import { validateShippingstatus } from 'src/app/_helpers/tools/utils.tool';
 
 @Component({
   selector: "app-modal-update-shipping",
@@ -41,6 +44,7 @@ export class ModalUpdateShippingComponent implements OnInit {
   public conveyors: any = [];
   public address: any = [];
   public products: any = [];
+  public fractionedShippings: { [key: string]: string | number }[] = [];
 
   public inLocker: any = [];
   public outLocker: any = [];
@@ -57,10 +61,13 @@ export class ModalUpdateShippingComponent implements OnInit {
   public filteredAddress: Observable<string[]>;
   public filteredUsers: Observable<string[]>;
 
+  private unsubscribe: Subscription[] = [];
+
   constructor(
     private _userService: UserService,
     private _lockers: LockersService,
     private _orderService: OrderService,
+    private orderShippingService: OrderShippingService,
     private _formBuilder: FormBuilder,
     private _notify: NotifyService,
     public modalService: NgbModal,
@@ -125,6 +132,9 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.filteredUsers = this.updateShippingForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
 
     this.getInfoUser();
+    if(this.shippingToUpdate.status == "6"){ //ONLY FOR FRACTIONED
+      this.getFractionedChildren();
+    }
     this.disabledInputs();
   }
 
@@ -161,6 +171,18 @@ export class ModalUpdateShippingComponent implements OnInit {
 
     this.isLoadingData = false;
     this.isLoadingLabel = false;
+  }
+
+  getFractionedChildren(): void { //GET FRACIONED CHILDREN
+    const fractionedSubscr =
+      this.orderShippingService.getFractionedChildren(this.shippingToUpdate.id)
+        .subscribe(res => { this.fractionedShippings = res.fractioned_shippings;
+        }, err => { throw new err; })
+    this.unsubscribe.push(fractionedSubscr);
+  }
+
+  renderStatus(status: number): string {//USE THE CASE FUNCTION FOR RENDER STATUS OF FRACTION CHILDREN
+    return validateShippingstatus(status);
   }
 
   drop(event: CdkDragDrop<string[]>, type: string) {
@@ -358,6 +380,10 @@ export class ModalUpdateShippingComponent implements OnInit {
         this._notify.show('Error', 'No pudimos actualizar la orden, intenta de nuevo.', 'error');
         throw err;
       });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe.forEach((sb) => sb.unsubscribe());
   }
 
 }

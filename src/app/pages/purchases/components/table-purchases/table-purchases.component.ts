@@ -27,14 +27,17 @@ export class TablePurchasesComponent implements OnInit {
   public isLoading: boolean = false;
 
   public users: [] = [];
-  public trm: any;
+  public stores: any[] = [];
   public conveyors: any = [];
+  public trm: any
 
   public filterCode = new FormControl('');
   public filterOrderService = new FormControl('');
   public filterOrderServiceStatus = new FormControl(null);
   public filterDate = new FormControl('');
+  public filterLockerDate = new FormControl('');
   public productName = new FormControl('');
+  public filterStore = new FormControl(null);
   public purchaseNumber = new FormControl('');
   public filterUser = new FormControl('');
   public total_value = new FormControl('');
@@ -50,6 +53,7 @@ export class TablePurchasesComponent implements OnInit {
   ngOnInit(): void {
     this.getUsersAdmin();
     this.getTrm();
+    this.getStores();
     this.getConveyors();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
@@ -58,6 +62,15 @@ export class TablePurchasesComponent implements OnInit {
     this._userService.getUsersAdmin()
       .subscribe((users: any) => {
         this.users = users;
+      }, err => {
+        throw err;
+      });
+  }
+
+  getStores() {
+    this._orderService.getStores()
+      .subscribe((res: any) => {
+        this.stores = res;
       }, err => {
         throw err;
       });
@@ -93,12 +106,23 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
+  formatLockerDate() {
+    if (this.filterLockerDate.value?.year) {
+      return moment(new Date(this.filterLockerDate.value.year, this.filterLockerDate.value.month - 1, this.filterLockerDate.value.day))
+      .format('YYYY/MM/DD')
+    } else {
+      return '';
+    }
+  }
+
   resetFilters() {
     this.filterCode.reset();
     this.filterOrderService.reset();
     this.filterOrderServiceStatus.reset();
     this.filterUser.reset();
     this.filterDate.reset();
+    this.filterLockerDate.reset();
+    this.filterStore.reset();
     this.productName.reset();
     this.purchaseNumber.reset();
     this.filterStatusProduct.reset();
@@ -120,14 +144,20 @@ export class TablePurchasesComponent implements OnInit {
     if (this.filterOrderServiceStatus.value != null && this.filterOrderServiceStatus.value != 'null') {
       filterValues['order_service_status'] = this.filterOrderServiceStatus.value;
     }
-    if (this.filterDate.value && this.filterDate.value.year.trim() != '') {
+    if (this.filterDate.value && this.filterDate.value.year != '') {
       filterValues['purchase_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
+    }
+    if (this.filterLockerDate.value && this.filterLockerDate.value.year != '') {
+      filterValues['locker_entry_date'] = new Date(this.filterLockerDate.value.year, this.filterLockerDate.value.month - 1, this.filterLockerDate.value.day)
     }
     if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
     }
     if (this.productName.value != null && this.productName.value.trim() != '') {
       filterValues['product_name'] = this.productName.value;
+    }
+    if(this.filterStore.value != null && this.filterStore.value != 'null') {
+      filterValues['store'] = this.filterStore.value;
     }
     if (this.purchaseNumber.value != null && this.purchaseNumber.value.trim() != '') {
       filterValues['invoice_number'] = this.purchaseNumber.value;
