@@ -92,7 +92,7 @@ export const MENU: MenuItem[] = [
                 label: 'Productos de usuario',
                 parentId: 1,
                 link: '/lockers/user-products',
-                code : 'CAS000',
+                code : 'CAS100',
                 showItem: false
             },
         ]
