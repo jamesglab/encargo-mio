@@ -81,6 +81,11 @@
   align-items: center;
 }
 
+.fragmented-status {
+  display: block;
+  width: 100%;
+}
+
 li {
   list-style-type: none;
 }
@@ -104,4 +109,13 @@ li {
 
 .padding-container-empty {
   padding: 10px;
+}
+
+.status-box {
+  width: auto;
+  padding: 3px;
+  border: 1px solid #cbcbcb;
+  border-radius: 4px;
+  color: #727272;
+  font-weight: bold;
 }

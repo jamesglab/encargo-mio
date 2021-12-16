@@ -114,7 +114,7 @@ export const validateShippingstatus = (status) => {
             break
 
         case '6':
-            status_name = 'Fragmentado'
+            status_name = 'Fraccionado'
             break
         default:
             break;
@@ -131,7 +131,7 @@ export const SHIPPING_STATUS = [
     { "status": 7, "name": "Entregado", "english": "delivered" },
     { "status": 4, "name": "Cancelado", "english": "cancel" },
     { "status": 5, "name": "Pago en revisión", "english": "in_check" },
-    { "status": 6, "name": "Fragmentado", "english": "fragmented" }
+    { "status": 6, "name": "Fraccionado", "english": "fragmented" }
 ];
 
 // MEOTODO QUE RECIBE UN ARRAY Y LOS CAMPOS QUE SON REQUERIDOS EN LA SOLICITUD
