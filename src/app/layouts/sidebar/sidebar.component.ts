@@ -74,6 +74,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
       this.menu.dispose();
     }
   }
+
   _scrollElement() {
     setTimeout(() => {
       if (document.getElementsByClassName("mm-active").length > 0) {
@@ -158,31 +159,41 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * Initialize
    */
-  initialize(): void {
+  initialize() {
     this.menuItems = [];
     const permissions = this._storageService.getItem("permissions");
+    console.log("Permissions", permissions);
+
     // RECORREMOS LOS PERMISOS
-    var new_menu = MENU;
-    // Object.keys(permissions).map((p) => {
+    let new_menu = MENU;
     //RECORREMOS LOS ITEMS PRINCIPALES
     new_menu.map((m, i) => {
+      //BANDERA DE ACCESO AL MODULO
+      let validate_menu = false;
       //RECORREMOS LOS SUBITEMS QUE TIENEN LOS ACCESOS A LOS MODULOS
       if (m.subItems) {
         m.subItems.map((sub) => {
           //VALIDAMOS QUE EL CODIGO RECORRIDO SEA IGUAL A MODULO AL QUE VAMOS A DAR ACCESO
           if (permissions[sub.code]) {
             //ANEXAMOS EL PERMISO AL MODULO
+            //DAMOS ACCESO AL SELECTOR DEL MODULO
             sub.showItem = true;
             new_menu[i].showItem = true;
+            validate_menu = true;
           } else {
-            //DENEGAMOS EL ACCESO A LOS MODULOS
-            new_menu[i].showItem = false;
+            //DENEGAMOS EL ACCESO AL MODULO
             sub.showItem = false;
           }
         });
+
+        //SI NO TENEMOS ACCESO AL MODULO LO DENEGAMOS
+        if (!validate_menu) {
+          new_menu[i].showItem = false;
+        }
+        validate_menu = false;
       }
     });
-
+    //ASIGNAMOS EL MENU
     this.menuItems = new_menu;
   }
 
