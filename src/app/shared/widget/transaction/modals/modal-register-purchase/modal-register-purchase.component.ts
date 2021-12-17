@@ -180,7 +180,6 @@ export class ModalRegisterPurchaseComponent implements OnInit {
         }
       }
     }
-
   }
 
   putValueProduct(product: any): void {

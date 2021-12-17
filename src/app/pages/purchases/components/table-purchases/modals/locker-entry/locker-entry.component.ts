@@ -21,7 +21,7 @@ export class LockerEntryComponent implements OnInit {
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Output() public closeModal: EventEmitter<any> = new EventEmitter<any>();
 
-  @Input() public conveyors: any = [];
+  @Input() public conveyors: any[] = [];
   @Input() public trm: any;
   @Input() public users: any = [];
   @Input() public purchaseSelected: any = {};
@@ -242,12 +242,12 @@ export class LockerEntryComponent implements OnInit {
     if (typeof value === 'string' && value !== null) { // Si el valor es un string y es diferente a nulo
 
       const filterValue = value.toLowerCase(); // El valor filtrado se convertirá a toLowerCase
-      let filtered: any; // Se asgina un valor para almacenar la data a través del filtro
+      let filtered: any = null; // Se asgina un valor para almacenar la data a través del filtro
 
-      if (array == 'allOrders') { // Si el arreglo es allOrders filtrará por option.product.name
-        filtered = this[array].filter(option => { option.product.name.toLowerCase().includes(filterValue) });
-      } else if (array == 'conveyors') { // Si el arreglo es conveyors filtrará por option.name
-        filtered = this[array].filter(option => { option.name.toLowerCase().includes(filterValue) });
+      if (array === 'allOrders') { // Si el arreglo es allOrders filtrará por option.product.name
+        filtered = this[array].filter(option => option.product.name.toLowerCase().includes(filterValue));
+      } else if (array === 'conveyors') { // Si el arreglo es conveyors filtrará por option.name
+        filtered = this[array].filter(option => option.name.toLowerCase().includes(filterValue));
       }
 
       if (filtered && filtered.length > 0) { // Si después de filtrar el length es mayor a 0 retornamos la data del arreglo
