@@ -17,7 +17,7 @@ import { OrderService } from "../../../_services/orders.service";
 import { OrderShippingService } from '../../_services/order-shipping.service';
 import { DragdropService } from "../../_services/dragdrop.service";
 
-import { validateShippingstatus } from 'src/app/_helpers/tools/utils.tool';
+import { numberOnly, validateShippingstatus } from 'src/app/_helpers/tools/utils.tool';
 
 @Component({
   selector: "app-modal-update-shipping",
@@ -111,7 +111,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.updateShippingForm = this._formBuilder.group({
       id: [shipping.id],
       trm: [this.trm],
-      total_weight: [{ value: this.shippingToUpdate.total_weight, disabled: true }],
+      total_weight: [this.shippingToUpdate.total_weight],
       guide_number: [shipping.guide_number_alph, Validators.required],
       conveyor: [this.conveyors.find((item) => item.id == shipping.conveyor), [Validators.required]],
       // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
@@ -132,7 +132,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.filteredUsers = this.updateShippingForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
 
     this.getInfoUser();
-    if(this.shippingToUpdate.status == "6"){ //ONLY FOR FRACTIONED
+    if (this.shippingToUpdate.status == "6") { //ONLY FOR FRACTIONED
       this.getFractionedChildren();
     }
     this.disabledInputs();
@@ -156,7 +156,9 @@ export class ModalUpdateShippingComponent implements OnInit {
       shipping_id: this.updateShippingForm.controls.id.value
     }).subscribe((locker: any) => {
       this.inLocker = locker.in_locker;
+      this.inLocker.map((item: any) => { item.button = false });
       this.outLocker = locker.in_shipping;
+      this.outLocker.map((item: any) => { item.button = false });
       this.updateShippingForm.controls.products.setValue(this.outLocker);
     }, err => {
       throw err;
@@ -176,7 +178,8 @@ export class ModalUpdateShippingComponent implements OnInit {
   getFractionedChildren(): void { //GET FRACIONED CHILDREN
     const fractionedSubscr =
       this.orderShippingService.getFractionedChildren(this.shippingToUpdate.id)
-        .subscribe(res => { this.fractionedShippings = res.fractioned_shippings;
+        .subscribe(res => {
+          this.fractionedShippings = res.fractioned_shippings;
         }, err => { throw new err; })
     this.unsubscribe.push(fractionedSubscr);
   }
@@ -331,6 +334,8 @@ export class ModalUpdateShippingComponent implements OnInit {
     event.target.src = 'assets/images/default.jpg';
   }
 
+  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
+
   closeModale(): void {
     this.modalService.dismissAll();
   }
@@ -341,6 +346,26 @@ export class ModalUpdateShippingComponent implements OnInit {
       Swal.fire('Información copida. ', '', 'info');
     } else {
       Swal.fire('', 'No hay información a copiar.', 'error');
+    }
+  }
+
+  saveWeight(data: any, array: string): void {
+    this.disabledOrEnabled(array, true);
+    this._orderService.updateWeight(data)
+      .subscribe((res: any) => {
+        Swal.fire('', 'Se ha actualizado el peso del producto.', 'info');
+        this.updateShippingForm.controls.total_weight.setValue(res.total_weight);
+        this.disabledOrEnabled(array, false);
+      }, err => {
+        Swal.fire('', 'Ha ocurrido un error al intentar actualizar el peso. Intenta de nuevo.', 'error');
+        this.disabledOrEnabled(array, false);
+        throw err;
+      });
+  }
+
+  disabledOrEnabled(array: any, type: boolean) {
+    for (let index = 0; index < this[array].length; index++) {
+      this[array][index].button = type;
     }
   }
 

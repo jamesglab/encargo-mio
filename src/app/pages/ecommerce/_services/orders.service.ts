@@ -434,4 +434,16 @@ export class OrderService {
     );
   }
 
+  updateWeight(data: any): Observable<any> {
+    return this.http.put<any>(
+      `${environment.microservices.management}shipping-order/update-weight`,
+      { shipping: data.shipping_order.id, product: data.product.id, weight: data.weight }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
 }
