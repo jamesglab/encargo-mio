@@ -4,8 +4,10 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
+import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: "app-transaction",
@@ -43,7 +45,8 @@ export class TransactionComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     public _notify: NotifyService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _orders: OrderService
   ) { }
 
   ngOnInit() {
@@ -119,6 +122,28 @@ export class TransactionComponent implements OnInit {
     } else {
       return value.toLowerCase().replace(/\s/g, '');
     }
+  }
+
+  delete(data: any): void {
+    Swal.fire({
+      title: '¿Estás seguro de eliminar esta orden?',
+      text: 'Está acción no será reversible.',
+      icon: 'warning',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Sí',
+      denyButtonText: `Cancelar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._orders.anulateOrder(data.id)
+          .subscribe((res: any) => {
+            Swal.fire('', 'Has eliminado la orden correctamente.', 'success');
+            this.refreshTable.emit(true);
+          }, err => {
+            throw err;
+          });
+      }
+    });
   }
 
 }

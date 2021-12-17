@@ -422,4 +422,16 @@ export class OrderService {
       );
   }
 
+  anulateOrder(id: any): Observable<any> {
+    return this.http.put<any>(
+      `${environment.microservices.management}orders/anulate-order`, {},
+      { headers: header, params: { id } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
 }

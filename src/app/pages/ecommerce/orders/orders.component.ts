@@ -9,23 +9,28 @@ import { UserService } from "src/app/_services/users.service";
   styleUrls: ["./orders.component.scss"],
 })
 
-
 export class OrdersComponent implements OnInit {
 
-  breadCrumbItems: Array<{}>;
-  term: any;
-  public page = 1;
-  public itemPerPage = 5;
-  public transactions;
+  public breadCrumbItems: Array<{}>;
+
+  public term: any;
+  public transactions: any;
+
+  public page: number = 1;
+  public itemPerPage: number = 5;
   public counts: number;
   public status: number = 0;
   public trm: number;
+
   public users = [];
+
   public refreshTable: boolean = false;
   public isLoading: boolean = false;
+  public showData: boolean = false;
+  
   public filterValues: any = {};
   public counts_tabs: any = {};
-  public showData: boolean = false;
+
   constructor(
     private readonly _orderService: OrderService,
     private _userService: UserService,
