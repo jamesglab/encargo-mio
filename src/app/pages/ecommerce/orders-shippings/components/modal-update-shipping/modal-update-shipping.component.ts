@@ -239,7 +239,6 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   disabledInputs(): void {
-    console.log("STATUSSSS: ", this.status);
     if (this.shippingToUpdate.status != '0' && this.shippingToUpdate.status != '1') {
       for (const field in this.updateShippingForm.controls) {
         this.updateShippingForm.controls[field].enable();
@@ -346,7 +345,8 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.isLoading = true;
     this._orderService.updateShippingPacked({
       status: '2',
-      id: this.shippingToUpdate.id
+      id: this.shippingToUpdate.id,
+      total_weight: this.updateShippingForm.getRawValue().total_weight
     }).subscribe((res: any) => {
       this.modalService.dismissAll();
       this.getTransactions.emit(true);
