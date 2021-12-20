@@ -267,6 +267,12 @@ export class CreateOrderComponent implements OnInit {
     this.totalValues.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
   }
 
+  validateShipping(i: number): void {
+    if (!this.products.controls[i]['controls'].shipping_origin_value_product.value) {
+      this.products.controls[i]['controls'].shipping_origin_value_product.setValue(0);
+    }
+  }
+
   filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
       this._compress.compressImage(file[0].base64).then((res: any) => {

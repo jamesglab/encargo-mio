@@ -177,6 +177,12 @@ export class ModalEditOrderComponent implements OnInit {
     this.getFormula(i);
   }
 
+  validateShipping(i: number): void {
+    if (!this.orderSelected.products[i].shipping_origin_value_product) {
+      this.orderSelected.products[i].shipping_origin_value_product = 0;
+    }
+  }
+
   deleteProduct(i: number): void {
     Swal.fire({
       title: '¿Estás seguro que deseas borrar el producto ' + this.orderSelected.products[i].name + '?',
