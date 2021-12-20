@@ -39,7 +39,6 @@ export class LockerEntryComponent implements OnInit {
   public files: any = [];
   public allGuides: any[] = [];
   public allLockers: any[] = [];
-  // public imagesToSend: any = [];
   public allOrders: any[] = [];
 
   public filteredOrders: Observable<string[]>;
@@ -58,6 +57,7 @@ export class LockerEntryComponent implements OnInit {
   ngOnInit(): void { }
 
   ngOnChanges() {
+    console.log(this.purchaseSelected)
     if (this.purchaseSelected && !this.purchaseSelected.locker_has_product) {
       this.getTypeShipping(this.purchaseSelected);
       this.buildForm(this.purchaseSelected);

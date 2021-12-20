@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h5 class="modal-title mt-0">Ingreso a Casillero aaaaaa</h5>
+  <h5 class="modal-title mt-0">Ingreso a Casillero</h5>
   <button type="button" class="btn-close" aria-hidden="true" (click)="closeModalStatus()"></button>
 </div>
 
@@ -69,7 +69,7 @@
           <div class="container-img-dropzone">
 
             <ng-container *ngFor="let item of files">
-                <img src="{{item.base64 ? item.base64 : ''}}" (error)="onImageError($event);" draggable="false" />
+              <img src="{{item.base64 ? item.base64 : ''}}" (error)="onImageError($event);" draggable="false" />
             </ng-container>
 
           </div>
@@ -213,9 +213,8 @@
 
           <label for="conveyor">Transportadora Origen</label>
 
-          <input class="form-control" id="conveyor" formControlName="conveyor"
-            [matAutocomplete]="auto_conveyor" placeholder="Búsqueda de transportadora..."
-            [ngClass]="{ 'is-invalid' : form.conveyor.errors }">
+          <input class="form-control" id="conveyor" formControlName="conveyor" [matAutocomplete]="auto_conveyor"
+            placeholder="Búsqueda de transportadora..." [ngClass]="{ 'is-invalid' : form.conveyor.errors }">
 
           <div class="invalid-feedback" *ngIf="form.conveyor.errors">
             <ng-container *ngIf="form.conveyor.errors.required">
@@ -259,6 +258,20 @@
   </form>
 
   <br>
+
+  <div>
+
+    <div>
+      Imagen de Origen
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <a href="{{ purchaseSelected.product_link ? purchaseSelected.product_link : ''}}" target="_blank">
+        <img [src]="purchaseSelected.product_image" alt="" draggable="false" style="height: 300px">
+      </a>
+    </div>
+
+  </div>
 
 </div>
 
