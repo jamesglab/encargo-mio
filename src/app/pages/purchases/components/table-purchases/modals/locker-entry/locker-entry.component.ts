@@ -6,7 +6,7 @@ import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { LockersService } from 'src/app/pages/lockers/_services/lockers.service';
 import { FileHandle } from 'src/app/_directives/file-handle';
 import { insertInLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
-import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
+import { dataURLtoFile, numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
 
@@ -39,6 +39,7 @@ export class LockerEntryComponent implements OnInit {
   public files: any = [];
   public allGuides: any[] = [];
   public allLockers: any[] = [];
+  // public imagesToSend: any = [];
   public allOrders: any[] = [];
 
   public filteredOrders: Observable<string[]>;
@@ -104,8 +105,6 @@ export class LockerEntryComponent implements OnInit {
       user: [data.user_id]
     });
 
-    this.pushImagesResponse(data);
-
     this.lockerForm.controls.guide_number_alph.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
         this.allOrders = [];
@@ -121,7 +120,6 @@ export class LockerEntryComponent implements OnInit {
         //this.lockerForm.controls.product_description.setValue(guide.product.name ? guide.product.name : null);
         this.lockerForm.controls.user.setValue((guide.user.id ? guide.user.id : null));
         this.lockerForm.controls.permanent_shipping_value.setValue((guide.permanent_shipping_value ? guide.permanent_shipping_value : 0));
-        this.pushImagesResponse(guide.product.image ? guide.product.image : null);
         this.getTypeShipping(guide);
       }
     });
@@ -151,7 +149,6 @@ export class LockerEntryComponent implements OnInit {
         this.lockerForm.controls.user.setValue((orderPurchase.order_service.user.id ? orderPurchase.order_service.user.id : null));
         this.lockerForm.controls.permanent_shipping_value.setValue((orderPurchase.permanent_shipping_value ? orderPurchase.permanent_shipping_value : 0));
         this.getTypeShipping(orderPurchase);
-        this.pushImagesResponse(orderPurchase.product.image ? orderPurchase.product.image : null);
       } else if (typeof orderPurchase === 'string' && orderPurchase !== null && orderPurchase.length === 0) {
         this.cleanData();
       }
@@ -164,12 +161,6 @@ export class LockerEntryComponent implements OnInit {
 
   get form() {
     return this.lockerForm.controls;
-  }
-
-  pushImagesResponse(data: any): void {
-    if (data) {
-      this.files.push({ image: data.product_image, Link: data.product_link, key_aws_bucket: null });
-    }
   }
 
   autoCompleteLocker(params: any): void {
@@ -265,7 +256,7 @@ export class LockerEntryComponent implements OnInit {
   filesDropped(file: FileHandle[]) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
       this._compress.compressImage(file[0].base64).then((res: any) => {
-        this.createFormData(res);
+        this.files.push(file[0]);
       }, err => {
         this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
         throw err;
@@ -277,32 +268,32 @@ export class LockerEntryComponent implements OnInit {
 
   uploadImage(): void { // Creamos este método para que al dar clic en subir archivo pase primero por el serivicio de comprimirla
     this._compress.uploadImage().then((res: any) => {
-      this.createFormData(res);
+      this.files.push(res.file);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
       throw err;
     });
   }
 
-  createFormData(res: any) { // Creamos este método para crear el form data de cada imagen que se sube.
-    const formData = new FormData();
-    formData.append("image", res.file);
+  // createFormData(res: any) { // Creamos este método para crear el form data de cada imagen que se sube.
 
-    this.isLoading = true;
-    this.isLoadingUpload = true;
+  //   const formData = new FormData();
+  //   formData.append("image", res.file);
 
-    this._orders.uploadNewImage(formData).subscribe((res: any) => {
-      this.files.push({ image: res.Location, key_aws_bucket: res.Key });
-      this.isLoadingUpload = false;
-      this.isLoading = false;
-    }, err => {
-      this.isLoadingUpload = false;
-      this.isLoading = false;
-      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
-      throw err;
-    });
+  //   this.isLoading = true;
+  //   this.isLoadingUpload = true;
 
-  }
+  //   this._orders.uploadNewImage(formData).subscribe((res: any) => {
+  //     this.files.push({ image: res.Location, key_aws_bucket: res.Key });
+  //     this.isLoadingUpload = false;
+  //     this.isLoading = false;
+  //   }, err => {
+  //     this.isLoadingUpload = false;
+  //     this.isLoading = false;
+  //     this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
+  //     throw err;
+  //   });
+  // }
 
   closeModalStatus(): void {
     this.closeModal.emit(false);
@@ -318,12 +309,13 @@ export class LockerEntryComponent implements OnInit {
     var formData = new FormData();
 
     if (this.files && this.files.length > 0) {
-      this.files.forEach((file) => { if (file.key_aws_bucket) { formData.append('images', file) } });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+      this.files.map((item: any) => {
+        formData.append('images', item.file);
+      });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
     }
 
     let payload = insertInLocker(this.lockerForm.getRawValue());
     formData.append("payload", JSON.stringify(payload)); // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
-
     this._orderService.insertProductLocker(formData)  // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 
       .subscribe((res: any) => {
         this._notify.show('', res.message, "success");

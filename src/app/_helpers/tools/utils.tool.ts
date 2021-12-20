@@ -98,8 +98,6 @@ export const validateShippingstatus = (status) => {
         case '1':
             status_name = 'Por empacar'
             break
-
-
         case '2':
             status_name = 'En generación de guía'
             break

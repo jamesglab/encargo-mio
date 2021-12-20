@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h5 class="modal-title mt-0">Ingreso a Casillero</h5>
+  <h5 class="modal-title mt-0">Ingreso a Casillero aaaaaa</h5>
   <button type="button" class="btn-close" aria-hidden="true" (click)="closeModalStatus()"></button>
 </div>
 
@@ -69,9 +69,7 @@
           <div class="container-img-dropzone">
 
             <ng-container *ngFor="let item of files">
-              <a href="{{ item.link ? item.link: item.image }}" target="_blank">
-                <img src="{{item.image ? item.image : ''}}" (error)="onImageError($event);" draggable="false" />
-              </a>
+                <img src="{{item.base64 ? item.base64 : ''}}" (error)="onImageError($event);" draggable="false" />
             </ng-container>
 
           </div>
