@@ -24,9 +24,10 @@ export class ModalLockerEntryComponent implements OnInit {
   public isLoading: boolean = false;
   public getQueries: boolean = false;
   public loaderLockers: boolean = false;
+  public initLoad: boolean = false;
 
   public lockers: any = [];
-  public conveyors: [] = [];
+  public conveyors: any[] = [];
   public files: File[] = [];
   public allGuides: any[] = [];
   public allLockers: any[] = [];
@@ -45,8 +46,10 @@ export class ModalLockerEntryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.buildForm();
-    this.getConvenyors();
+    this.initLoad = true;
+    this.getConvenyors().then(() => {
+      this.buildForm();
+    });
   }
 
   buildForm() {
@@ -74,6 +77,7 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_number_alph.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
+        this.pushConveyorSelected(guide.conveyor);
         this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.order_service.id + ' | ' + guide.product.name));
         this.lockerForm.controls.guide_number.setValue(guide.guide_number);
@@ -103,6 +107,7 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.valueChanges.subscribe((orderPurchase: any) => {
       if (orderPurchase && orderPurchase.id) {
+        this.pushConveyorSelected(orderPurchase.conveyor);
         this.files = [];
         this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id + ' | ' + orderPurchase.product.name));
         this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
@@ -126,18 +131,32 @@ export class ModalLockerEntryComponent implements OnInit {
     this.filteredOrders = this.lockerForm.controls.guide_order.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'allOrders')));
     this.filteredConveyors = this.lockerForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
 
+    this.initLoad = false;
+
   }
 
   get form() {
     return this.lockerForm.controls;
   }
 
-  getConvenyors() { // AGREGAMOS LAS TRANSPORTADORAS
-    this._orderService.getConvenyor().subscribe((res: any) => {
-      this.conveyors = res;
-    }, err => {
-      throw err;
+  getConvenyors(): Promise<any> { // AGREGAMOS LAS TRANSPORTADORAS
+    return new Promise((resolve, reject) => {
+      this._orderService.getConvenyor()
+        .subscribe((res: any) => {
+          this.conveyors = res;
+          resolve(this.conveyors);
+        }, err => {
+          reject(err);
+          throw err;
+        });
     });
+  }
+
+  pushConveyorSelected(data: any) {
+    let filtered = this.conveyors.filter(x => x.id == data); // Buscamos el id de todas las transportadoras a través del id guardado en bd
+    if (filtered) { // Si existen datos
+      this.lockerForm.controls.conveyor.setValue(filtered[0]); //Seteamos el valor de conveyor con la respuesta del filtro.
+    }
   }
 
   onSelect(event) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES

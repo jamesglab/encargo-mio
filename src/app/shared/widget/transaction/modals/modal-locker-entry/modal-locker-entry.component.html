@@ -3,7 +3,7 @@
   <button type="button" class="btn-close" aria-hidden="true" (click)="closeModal()"></button>
 </div>
 
-<div class="container p-4">
+<div class="container p-4" *ngIf="!initLoad">
 
   <div class="alert alert-primary" role="alert" *ngIf="toHome.status">
     <strong>Nota:</strong>
@@ -248,6 +248,10 @@
   <br>
 
 </div>
+
+<ng-container *ngIf="initLoad">
+  Cargando.
+</ng-container>
 
 <div class="modal-footer">
 
