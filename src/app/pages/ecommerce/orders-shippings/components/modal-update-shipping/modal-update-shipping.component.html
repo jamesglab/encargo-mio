@@ -25,58 +25,57 @@
 
     <ng-container *ngIf="shippingToUpdate.status == '2'">
       <button class="btn btn-warning" (click)="goToFragment();">
-        Fraccionar Envío</button>
+        Fraccionar Envío
+      </button>
     </ng-container>
   </div>
 
   <ng-container *ngIf="!isLoadingData">
 
-    <ng-container *ngIf="shippingToUpdate.status != '0' &&  shippingToUpdate.status != '1'">
+    <form [formGroup]="updateShippingForm">
 
-      <form [formGroup]="updateShippingForm">
+      <div class="form-check form-switch text-truncate h5">
+        <label for="form-group">Envío Consolidado</label>
+        <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" formControlName="consolidated">
+      </div>
 
-        <div class="form-check form-switch text-truncate h5">
-          <label for="form-group">Envío Consolidado</label>
-          <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" formControlName="consolidated">
-        </div>
+      <div class="row mt-3">
 
-        <div class="row mt-3">
+        <div class="col-12 col-sm-6">
 
-          <div class="col-12 col-sm-6">
-
-            <div class="form-group">
-              <label for="guide_number">Número de Guía *</label>
-              <input type="text" class="form-control" placeholder="Ingresa tu número de guía" id="guide_number"
-                formControlName="guide_number">
-            </div>
-
+          <div class="form-group">
+            <label for="guide_number">Número de Guía *</label>
+            <input type="text" class="form-control" placeholder="Ingresa tu número de guía" id="guide_number"
+              formControlName="guide_number">
           </div>
 
-          <div class="col-12 col-sm-6">
+        </div>
 
-            <div class="form-group">
+        <div class="col-12 col-sm-6">
 
-              <label for="conveyor">Transportadora Internacional * </label>
+          <div class="form-group">
 
-              <input type="text" class="form-control" id="conveyor"
-                placeholder="Selecciona la Transportadora Internacional" formControlName="conveyor"
-                [matAutocomplete]="auto_conveyors">
+            <label for="conveyor">Transportadora Internacional * </label>
 
-              <mat-autocomplete #auto_conveyors="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
-                  {{ conveyor.name }}
-                </mat-option>
-              </mat-autocomplete>
+            <input type="text" class="form-control" id="conveyor"
+              placeholder="Selecciona la Transportadora Internacional" formControlName="conveyor"
+              [matAutocomplete]="auto_conveyors">
 
-            </div>
+            <mat-autocomplete #auto_conveyors="matAutocomplete" [displayWith]="displayFn">
+              <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
+                {{ conveyor.name }}
+              </mat-option>
+            </mat-autocomplete>
 
           </div>
 
         </div>
 
-        <div class="row mt-3">
+      </div>
 
-          <!-- <div class="col-12 col-sm-6">
+      <div class="row mt-3">
+
+        <!-- <div class="col-12 col-sm-6">
 
             <div class="form-group">
 
@@ -94,154 +93,153 @@
 
           </div> -->
 
-          <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
 
-            <div class="form-group">
-              <label for="total_value">Valor Pagado Cliente</label>
-              <input type="number" class="form-control" id="total_value" formControlName="total_value">
-            </div>
-
+          <div class="form-group">
+            <label for="total_value">Valor Pagado Cliente</label>
+            <input type="number" class="form-control" id="total_value" formControlName="total_value">
           </div>
 
-          <div class="col-12 col-sm-6">
-            <div class="form-group">
-              <label for="total_weight">Peso total:</label>
-              <input type="number" class="form-control" id="total_weight" formControlName="total_weight">
-            </div>
-          </div>
         </div>
 
-        <div class="row mt-3">
-
-          <div class="col-12 col-sm-6">
-
-            <div class="form-group">
-
-              <label for="store">Tipo de Envio *</label>
-
-              <select class="form-control" id="store" formControlName="shipping_type">
-
-                <option value="null" disabled>Selecciona tipo de envío</option>
-
-                <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
-                  {{ shipping.name }}
-                </option>
-
-              </select>
-
-            </div>
-
+        <div class="col-12 col-sm-6">
+          <div class="form-group">
+            <label for="total_weight">Peso total:</label>
+            <input type="number" class="form-control" id="total_weight" formControlName="total_weight">
           </div>
+        </div>
+      </div>
 
-          <div class="col-12 col-sm-6">
+      <div class="row mt-3">
 
-            <div class="form-group ">
+        <div class="col-12 col-sm-6">
 
-              <label for="user_id">Usuario *</label>
+          <div class="form-group">
 
-              <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
-                placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
+            <label for="store">Tipo de Envio *</label>
 
-              <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
-                <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
-                  CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
-                </mat-option>
-              </mat-autocomplete>
+            <select class="form-control" id="store" formControlName="shipping_type">
 
-            </div>
+              <option value="null" disabled>Selecciona tipo de envío</option>
+
+              <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
+                {{ shipping.name }}
+              </option>
+
+            </select>
 
           </div>
 
         </div>
 
-        <div class="row mt-3">
-          <div class="col-12">
-            <div class="form-group">
-              <label for="observations">Observaciones de Compra</label>
-              <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
-            </div>
-          </div>
-        </div>
+        <div class="col-12 col-sm-6">
 
-      </form>
+          <div class="form-group ">
 
-      <div class="row mt-3 mt-3">
+            <label for="user_id">Usuario *</label>
 
-        <div class="col-md-6 col-sm-12">
+            <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
+              placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
 
-          <div class="container-shipping">
+            <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+              <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+              </mat-option>
+            </mat-autocomplete>
 
-            <div class="container-img-shipping">
-              <img src="/assets/images/delivery.png" alt="" draggable="false">
-            </div>
-
-            <div>
-
-              <div class="mt-3">
-
-                <li>
-                  <strong>Ciudad: </strong>
-                  {{ form.address.value.city ? form.address.value.city.name : 'N/A' }}
-                </li>
-
-                <li>
-                  <strong>Departamento: </strong>
-                  {{ form.address.value.department ? form.address.value.department.name :'N/A' }}
-                </li>
-
-                <li> <strong>Dirección: </strong>
-                  {{ form.address.value.address ? form.address.value.address :'N/A'}}
-                </li>
-
-                <li title=" {{ form.address.value.description ? form.address.value.description : 'N/A' }}">
-                  <strong>Descripción:</strong>
-                  {{ form.address.value.description ? form.address.value.description : 'N/A' }}
-                </li>
-
-                <li><strong>Nombre de quien recibe: </strong>
-                  {{ form.address.value.address ? form.address.value.first_name : 'N/A' }}</li>
-
-                <li>
-                  <strong>Teléfono: </strong>
-                  {{ form.address.value.phone ? form.address.value.phone :'N/A' }}
-                </li>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="col-md-6 col-sm-12" *ngIf="shippingToUpdate.status == '6'">
-
-          <div class="fragmented-status">
-            <div class="row">
-
-              <div class="col-sm-12 col-md-6 col-xl-6" *ngFor="let item of fractionedShippings">
-                <div class="container-shipping">
-                  <div class="container-img-shipping" style="color: black;">
-                    Fracción # {{ item.id }}
-                    <div class="btn status-box">{{ renderStatus(item.status) }}</div>
-                  </div>
-                </div>
-                <br>
-              </div>
-
-            </div>
           </div>
 
         </div>
 
       </div>
 
-    </ng-container>
+      <div class="row mt-3">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="observations">Observaciones de Compra</label>
+            <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
+          </div>
+        </div>
+      </div>
 
-    <div class="col-12 col-sm-12 p-3 px-4 const-warning" *ngIf="message.await_products">
-      <a style="color:red">
-        <i class="fas fa-exclamation-triangle fa-2x"></i>
-      </a>
-      <span class="mx-2"> Aún no estan todos los productos del envío en el casillero</span>
+    </form>
+
+    <div class="row mt-3 mt-3">
+
+      <div class="col-md-6 col-sm-12">
+
+        <div class="container-shipping">
+
+          <div class="container-img-shipping">
+            <img src="/assets/images/delivery.png" alt="" draggable="false">
+          </div>
+
+          <div>
+
+            <div class="mt-3">
+
+              <li>
+                <strong>Ciudad: </strong>
+                {{ form.address.value.city ? form.address.value.city.name : 'N/A' }}
+              </li>
+
+              <li>
+                <strong>Departamento: </strong>
+                {{ form.address.value.department ? form.address.value.department.name :'N/A' }}
+              </li>
+
+              <li> <strong>Dirección: </strong>
+                {{ form.address.value.address ? form.address.value.address :'N/A'}}
+              </li>
+
+              <li title=" {{ form.address.value.description ? form.address.value.description : 'N/A' }}">
+                <strong>Descripción:</strong>
+                {{ form.address.value.description ? form.address.value.description : 'N/A' }}
+              </li>
+
+              <li><strong>Nombre de quien recibe: </strong>
+                {{ form.address.value.address ? form.address.value.first_name : 'N/A' }}</li>
+
+              <li>
+                <strong>Teléfono: </strong>
+                {{ form.address.value.phone ? form.address.value.phone :'N/A' }}
+              </li>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-md-6 col-sm-12" *ngIf="shippingToUpdate.status == '6'">
+
+        <div class="fragmented-status">
+          <div class="row">
+
+            <div class="col-sm-12 col-md-6 col-xl-6" *ngFor="let item of fractionedShippings">
+              <div class="container-shipping">
+                <div class="container-img-shipping" style="color: black;">
+                  Fracción # {{ item.id }}
+                  <div class="btn status-box">{{ renderStatus(item.status) }}</div>
+                </div>
+              </div>
+              <br>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-12 col-sm-12 p-3 px-4">
+      <div class="alert alert-danger" role="alert" *ngIf="message.await_products">
+        <strong>
+          Aún no estan todos los productos del envío en el casillero.
+        </strong>
+      </div>
     </div>
 
     <div class="row mt-3">
@@ -305,15 +303,9 @@
 
               <div>
                 <strong>Peso:</strong>
-                <div class="input-group mb-3">
-                  <input type="number" class="form-control" placeholder="Peso (Libras)" [(ngModel)]="item.weight"
-                    (keypress)="numberOnly($event);">
-                  <div class="input-group-append">
-                    <button class="btn btn-success" type="button" (click)="saveWeight(item, 'inLocker');" [disabled]="item.button">
-                      <i class="bx bx-save"></i>
-                    </button>
-                  </div>
-                </div>
+                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                  {{item.weight ? item.weight : 0}} lb.
+                </a>
               </div>
 
               <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
@@ -418,15 +410,9 @@
 
               <div>
                 <strong>Peso:</strong>
-                <div class="input-group mb-3">
-                  <input type="number" class="form-control" placeholder="Peso (Libras)" [(ngModel)]="item.weight"
-                    (keypress)="numberOnly($event);">
-                  <div class="input-group-append">
-                    <button class="btn btn-success" type="button" (click)="saveWeight(item, 'outLocker');" [disabled]="item.button">
-                      <i class="bx bx-save"></i>
-                    </button>
-                  </div>
-                </div>
+                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                  {{item.weight ? item.weight : 0}} lb.
+                </a>
               </div>
 
               <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
@@ -531,15 +517,9 @@
 
               <div>
                 <strong>Peso:</strong>
-                <div class="input-group mb-3">
-                  <input type="number" class="form-control" placeholder="Peso (Libras)" [(ngModel)]="item.weight"
-                    (keypress)="numberOnly($event);">
-                  <div class="input-group-append">
-                    <button class="btn btn-success" type="button" (click)="saveWeight(item, 'newShipping');" [disabled]="item.button">
-                      <i class="bx bx-save"></i>
-                    </button>
-                  </div>
-                </div>
+                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                  {{item.weight ? item.weight : 0}} lb.
+                </a>
               </div>
 
               <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
@@ -590,7 +570,7 @@
     Cancelar
   </button>
 
-  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPacked()"
+  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPacked();"
     *ngIf="shippingToUpdate.status =='1'">
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Empacado

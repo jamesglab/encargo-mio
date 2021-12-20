@@ -88,12 +88,13 @@ export const updateShipping = (data: any): any => {
         "observations": data.observations ? data.observations : null,
         "products": data.products ? data.products : [],
         "shipping_type": data.shipping_type ? data.shipping_type : null,
-        "status": data.status ? data.status : null,
+        "status": data.status,
         "total_value": data.total_value ? data.total_value : 0,
         "consolidated": data.consolidated ? data.consolidated : null,
         "trm": data.trm,
         "user": data.user,
-        "new_shipping": data.newShipping ? data.newShipping : []
+        "new_shipping": data.newShipping ? data.newShipping : [],
+        "total_weight": data.total_weight ? data.total_weight : 0
     };
 
     return shipping;

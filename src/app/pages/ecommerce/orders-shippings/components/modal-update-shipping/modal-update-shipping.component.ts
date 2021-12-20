@@ -238,30 +238,18 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.disabledInShipping = false;
   }
 
-  updateShippingPacked() {
-    this.isLoading = true;
-    this._orderService.updateShippingPacked({
-      status: '2',
-      id: this.shippingToUpdate.id
-    }).subscribe((res: any) => {
-      this.modalService.dismissAll();
-      this.getTransactions.emit(true);
-      this._notify.show('Orden de envío actualizada correctamente.', '', 'success');
-    }, err => {
-      this.isLoading = false;
-      this._notify.show('Error', 'No pudimos actualizar la orden, intenta de nuevo.', 'error');
-      throw err;
-    });
-  }
-
-  disabledInputs() {
-    if (this.status === 3) {
-      // this.updateShippingForm.controls.delivery_date.disable();
-      this.updateShippingForm.controls.total_value.disable();
-      this.updateShippingForm.controls.shipping_type.disable();
-      this.updateShippingForm.controls.user.disable();
-      this.updateShippingForm.controls.address.disable();
-      this.updateShippingForm.controls.observations.disable();
+  disabledInputs(): void {
+    console.log("STATUSSSS: ", this.status);
+    if (this.shippingToUpdate.status != '0' && this.shippingToUpdate.status != '1') {
+      for (const field in this.updateShippingForm.controls) {
+        this.updateShippingForm.controls[field].enable();
+      }
+    } else {
+      for (const field in this.updateShippingForm.controls) {
+        if (field != 'total_weight') {
+          this.updateShippingForm.controls[field].disable();
+        }
+      }
     }
   }
 
@@ -318,7 +306,6 @@ export class ModalUpdateShippingComponent implements OnInit {
         this.isLoadingLabel = false;
       });
     }
-
   }
 
   goToFragment() {
@@ -349,28 +336,29 @@ export class ModalUpdateShippingComponent implements OnInit {
     }
   }
 
-  saveWeight(data: any, array: string): void {
-    this.disabledOrEnabled(array, true);
-    this._orderService.updateWeight(data)
-      .subscribe((res: any) => {
-        Swal.fire('', 'Se ha actualizado el peso del producto.', 'info');
-        this.updateShippingForm.controls.total_weight.setValue(res.total_weight);
-        this.disabledOrEnabled(array, false);
-      }, err => {
-        Swal.fire('', 'Ha ocurrido un error al intentar actualizar el peso. Intenta de nuevo.', 'error');
-        this.disabledOrEnabled(array, false);
-        throw err;
-      });
-  }
-
   disabledOrEnabled(array: any, type: boolean) {
     for (let index = 0; index < this[array].length; index++) {
       this[array][index].button = type;
     }
   }
 
-  updateShipping(): void {
+  updateShippingPacked() {
+    this.isLoading = true;
+    this._orderService.updateShippingPacked({
+      status: '2',
+      id: this.shippingToUpdate.id
+    }).subscribe((res: any) => {
+      this.modalService.dismissAll();
+      this.getTransactions.emit(true);
+      this._notify.show('Orden de envío actualizada correctamente.', '', 'success');
+    }, err => {
+      this.isLoading = false;
+      this._notify.show('Error', 'No pudimos actualizar la orden, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
 
+  updateShipping(): void {
     if (this.status == 2) {
       if (this.updateShippingForm.controls.guide_number.value == '' || this.updateShippingForm.controls.guide_number.value == null ||
         this.updateShippingForm.controls.conveyor.value == '' || this.updateShippingForm.controls.conveyor.value == null) {
@@ -385,7 +373,6 @@ export class ModalUpdateShippingComponent implements OnInit {
     } else {
       this._notify.show('', 'Revisa el formulario hay campos requeridos incompletos.', 'info');
     }
-
   }
 
   updateConsolidate(): void {
