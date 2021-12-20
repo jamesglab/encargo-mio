@@ -285,7 +285,6 @@ export class LockerEntryComponent implements OnInit {
   }
 
   createFormData(res: any) { // Creamos este método para crear el form data de cada imagen que se sube.
-
     const formData = new FormData();
     formData.append("image", res.file);
 
@@ -319,13 +318,12 @@ export class LockerEntryComponent implements OnInit {
     var formData = new FormData();
 
     if (this.files && this.files.length > 0) {
-      this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+      this.files.forEach((file) => { if (file.key_aws_bucket) { formData.append('images', file) } });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
     }
 
     let payload = insertInLocker(this.lockerForm.getRawValue());
     formData.append("payload", JSON.stringify(payload)); // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
 
-    this.isLoading = true;
     this._orderService.insertProductLocker(formData)  // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 
       .subscribe((res: any) => {
         this._notify.show('', res.message, "success");
