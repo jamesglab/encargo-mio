@@ -22,13 +22,13 @@
 
           <label for="guia">Número Guia Origen</label>
           <input class="form-control" type="text" id="guia" placeholder="Busca el número de guía"
-            formControlName="guide_number_alph" [matAutocomplete]="auto"
+            formControlName="guide_number" [matAutocomplete]="auto"
             (input)="autoCompleteGuide($event.target.value);"
-            title="{{ lockerForm.controls.guide_number_alph.value ? lockerForm.controls.guide_number_alph.value : '' }}">
+            title="{{ lockerForm.controls.guide_number.value ? lockerForm.controls.guide_number.value : '' }}">
 
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let guide of allGuides" [value]="guide">
-              {{ guide.guide_number_alph ? guide.guide_number_alph : guide.guide_number }}
+              {{ guide.guide_number ? guide.guide_number : guide.guide_number }}
             </mat-option>
           </mat-autocomplete>
 

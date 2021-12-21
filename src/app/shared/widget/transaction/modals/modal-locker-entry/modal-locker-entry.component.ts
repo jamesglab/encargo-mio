@@ -56,7 +56,6 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm = this.fb.group({
       guide_number: [null],
-      guide_number_alph: [null],
       guide_order: [null],
       order_purchase: [null],
       locker: [null, [Validators.required]],
@@ -75,13 +74,12 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.disable();
 
-    this.lockerForm.controls.guide_number_alph.valueChanges.subscribe((guide: any) => {
-      if (guide && guide.guide_number) {
+    this.lockerForm.controls.guide_number.valueChanges.subscribe((guide: any) => {
+      if (guide && guide.guide_number_alph) {
         this.pushConveyorSelected(guide.conveyor);
         this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.order_service.id + ' | ' + guide.product.name));
-        this.lockerForm.controls.guide_number.setValue(guide.guide_number);
-        this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
+        this.lockerForm.controls.guide_number.setValue(guide.guide_number_alph);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
         this.lockerForm.controls.locker.setValue(guide.locker.id);
         this.lockerForm.controls.locker_info.setValue(`${guide.user.name} ${guide.user.last_name}`);
@@ -110,9 +108,8 @@ export class ModalLockerEntryComponent implements OnInit {
         this.pushConveyorSelected(orderPurchase.conveyor);
         this.files = [];
         this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id + ' | ' + orderPurchase.product.name));
-        this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
-        if (this.lockerForm.controls.guide_number_alph.value === "" || this.lockerForm.controls.guide_number_alph.value == null) {
-          this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        if (this.lockerForm.controls.guide_number.value === "" || this.lockerForm.controls.guide_number.value == null) {
+          this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number_alph);
         }
         this.lockerForm.controls.order_purchase.setValue(orderPurchase.id);
         this.lockerForm.controls.weight.setValue((orderPurchase.weight ? orderPurchase.weight : 0));
@@ -310,6 +307,7 @@ export class ModalLockerEntryComponent implements OnInit {
     }
 
     let payload = insertInLocker(this.lockerForm.getRawValue());
+
     formData.append("payload", JSON.stringify(payload)); // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
     this.isLoading = true;
     this._orderService.insertProductLocker(formData)  // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 
