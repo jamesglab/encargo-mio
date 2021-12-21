@@ -3,7 +3,7 @@ import { FormControl } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
 import { Observable } from "rxjs";
-import { map, startWith } from "rxjs/operators";
+import { filter, map, startWith } from "rxjs/operators";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
@@ -34,6 +34,8 @@ export class TransactionComponent implements OnInit {
   public filterId = new FormControl('');
   public filterDate = new FormControl({ value: '' });
   public filterAdvancePurchase = new FormControl(null);
+  public filterShippingType = new FormControl(null);
+  public filterPaymentMethod = new FormControl(null);
 
   public filteredUsers: Observable<string[]>;
   public orderSelected: any = {};
@@ -66,6 +68,10 @@ export class TransactionComponent implements OnInit {
       filterValues['user'] = this.filterUser.value.id;
     } if (this.filterAdvancePurchase.value != null && this.filterAdvancePurchase.value != 'null') {
       filterValues['advance_purchase'] = this.filterAdvancePurchase.value;
+    } if (this.filterShippingType.value != null && this.filterShippingType.value != 'null') {
+      filterValues['is_shipping_locker'] = this.filterShippingType.value;
+    } if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != 'null') {
+      filterValues['payment_method'] = this.filterPaymentMethod.value;
     }
     this.filterValues.emit(filterValues);
   }
@@ -108,6 +114,14 @@ export class TransactionComponent implements OnInit {
 
   getStatusNumber(status: string): number {
     return parseInt(status || '0');
+  }
+
+  formatPaymentMethod(payment_method: string): string {
+    if(payment_method){
+      return (payment_method == 'transfer') ? 'Transferencia' : 'Credito';
+    }
+    return '';
+    
   }
 
   private _normalizeValue(value: any, array: any): string {
