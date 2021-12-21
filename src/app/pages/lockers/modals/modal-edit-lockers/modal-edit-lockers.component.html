@@ -8,17 +8,17 @@
 
     <div class="form-row form-flex">
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-6 col-sm-12">
             <label for="guide">Número Guía Origen</label>
             <input type="text" class="form-control" id="guide" placeholder="Ingresa el Número Guía Origen..."
                 formControlName="guide_number">
         </div>
 
-        <div class="form-group col-md-6 margin-left-10 ">
+        <div class="form-group col-md-6 col-sm-12 margin-left-10 ">
 
             <label for="conveyor">Transportadora Origen</label>
 
-            <input matInput class="form-control" id="conveyor" formControlName="conveyor"
+            <input class="form-control" id="conveyor" formControlName="conveyor"
                 [matAutocomplete]="auto_conveyor" placeholder="Búsqueda de transportadora...">
 
             <mat-autocomplete #auto_conveyor="matAutocomplete" [displayWith]="displayWith">
@@ -33,11 +33,25 @@
 
     <div class="form-row form-flex">
 
-        <div class="form-group col-md-6">
-            <label for="locker">Casillero*</label>
-            <input type="text" class="form-control" id="locker" placeholder="Selecciona el casillero..."
-                formControlName="locker" readonly>
-        </div>
+        <div class="form-group col-md-6 col-sm-12">
+
+            <label for="lockers">Casillero*</label>
+  
+            <input class="form-control" id="locker" formControlName="locker_info"
+              (input)="autoCompleteLocker($event.target.value);" [matAutocomplete]="auto_locker"
+              placeholder="{{ allLockers.length > 0 ? '' : 'Escribe nombre de cliente' }}">
+  
+            <div class="spinner-border text-dark" role="status" *ngIf="loaderLockers">
+              <span class="sr-only"></span>
+            </div>
+  
+            <mat-autocomplete #auto_locker="matAutocomplete" [displayWith]="setDisplayLocker">
+              <mat-option *ngFor="let locker of allLockers" [value]="locker">
+                CA{{ locker.locker_id ? locker.locker_id : 0 }} | {{ locker.us_name }} {{ locker.us_last_name }}
+              </mat-option>
+            </mat-autocomplete>
+  
+          </div>
 
         <div class="form-group col-md-6 margin-left-10 ">
             <label for="order">Orden</label>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs-compat';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { UserService } from 'src/app/_services/users.service';
 import Swal from 'sweetalert2';
@@ -17,31 +17,35 @@ import { TransactionService } from '../_services/transactions.service';
 export class CustomersComponent implements OnInit {
 
   public breadCrumbItems: Array<{}>;
-  public submitted: boolean = false;
+
   public transactions: any = [];
   public referenceImage: any;
+  public referenceStripeLink: any;
   public orderSelected: any;
   public transactionSelected: any;
   public term: any = '';
+
   public trm: number = 0;
   public status: number;
   public count: number;
   public currentpage: number;
+
   public isLoading: boolean = false;
   public isLoadingTransaction: boolean = false;
+  public submitted: boolean = false;
 
   public users: [] = [];
 
   // FILTROS
-  filterId = new FormControl('');
-  filterUser = new FormControl('');
-  filterOrder = new FormControl('');
-  filterPaymentMethod = new FormControl('');
-  filterDate = new FormControl('');
-  filterPaymentGateway = new FormControl('');
-  filterReference = new FormControl('');
-  filterType = new FormControl('');
-  filterValue = new FormControl('');
+  public filterId = new FormControl('');
+  public filterUser = new FormControl('');
+  public filterOrder = new FormControl('');
+  public filterPaymentMethod = new FormControl('');
+  public filterDate = new FormControl('');
+  public filterPaymentGateway = new FormControl('');
+  public filterReference = new FormControl('');
+  public filterType = new FormControl('');
+  public filterValue = new FormControl('');
 
   //SUBSCRIPCIONES PARA LOS AUTOCOMPLETS 
   public filteredUsers: Observable<string[]>;
@@ -132,11 +136,11 @@ export class CustomersComponent implements OnInit {
         this.modalService.open(content, { size: 'xl', centered: true });
       });
     }
-
+    
     if (transaction.image) {
       this.referenceImage = transaction.image;
     } else {
-      window.open(transaction.response);
+      this.referenceStripeLink = transaction.response;
     }
 
   }

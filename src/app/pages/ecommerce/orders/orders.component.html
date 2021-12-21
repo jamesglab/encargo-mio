@@ -118,9 +118,8 @@
 
 </div>
 
-<!-- Modal To create New Order -->
 <ng-template #content role="document" let-modal>
-  <app-create-order [trm]="trm" [users]="users" (close_modale)="modal.close('Close click')"
+  <app-create-order [trm]="trm" [users]="users" (close_modale)="modal.close('Close click');"
     (refreshTable)="refreshTableReceive($event);"></app-create-order>
 </ng-template>
 

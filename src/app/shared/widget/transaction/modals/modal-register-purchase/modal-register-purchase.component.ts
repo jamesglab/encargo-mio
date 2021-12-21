@@ -5,7 +5,7 @@ import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { disabledItems, numberOnly } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { map, startWith } from "rxjs/operators";
-import { Observable } from "rxjs-compat";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "app-modal-register-purchase",
@@ -64,7 +64,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       sold_out: [false]
       // payment_type: [null, Validators.required],
     });
-    this.purchaseForm.controls.product.valueChanges.subscribe((product: any) => { if (product) { this.purchaseForm.get('product_price').setValue(product.product_value); } }); // Selecionar el valor del producto
+    this.purchaseForm.controls.product.valueChanges.subscribe((product: any) => { if (product) { this.putValueProduct(product); } }); // Selecionar el valor del producto
     this.filteredOptionsProducts = this.purchaseForm.controls.product.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'products'))); // Suscribirse a los cambios de valor de product
     this.filteredOptionsStores = this.purchaseForm.controls.store.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'stores'))); // Suscribirse a los cambios del valor de store 
     this.filteredOptionsConveyors = this.purchaseForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors'))) // Suscribirse a los cambios de valor de conveyor
@@ -118,9 +118,9 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   displayProperty(option: any): void {
     if (option) {
       if (option.name) {
-        return option.name
+        return option.name;
       }
-      return option.id
+      return option.id;
     }
   }
 
@@ -180,7 +180,12 @@ export class ModalRegisterPurchaseComponent implements OnInit {
         }
       }
     }
+  }
 
+  putValueProduct(product: any): void {
+    let total_value: number = 0;
+    total_value += product.product_value + product.shipping_origin_value_product + product.tax;
+    this.purchaseForm.get('product_price').setValue(total_value);
   }
 
   // ENVIAMOS LA SOLICITUD

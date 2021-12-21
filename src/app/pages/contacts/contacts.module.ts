@@ -8,16 +8,14 @@ import { WidgetModule } from '../../shared/widget/widget.module';
 import { UIModule } from '../../shared/ui/ui.module';
 import { ContactsRoutingModule } from './contacts-routing.module';
 
-import { UsergridComponent } from './usergrid/usergrid.component';
 import { UserlistComponent } from './userlist/userlist.component';
-import { ProfileComponent } from './profile/profile.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ModalUserComponent } from './components/modal-user/modal-user.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-
+import { UsersgridComponent } from './usersgrid/usersgrid.component';
 
 @NgModule({
-  declarations: [UsergridComponent, UserlistComponent, ProfileComponent, ModalUserComponent],
+  declarations: [UserlistComponent, ModalUserComponent, UsersgridComponent],
   imports: [
     CommonModule,
     ContactsRoutingModule,

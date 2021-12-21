@@ -33,7 +33,6 @@ export const insertInLocker = (data: any): any => {
 
     let locker = {
         "guide_number": (data.guide_number ? data.guide_number : null),
-        "guide_number_alph": (data.guide_number_alph ? data.guide_number_alph : null),
         "order_purchase": (data.order_purchase ? data.order_purchase : null),
         "locker": (data.locker ? data.locker : null),
         "permanent_shipping_value": (data.permanent_shipping_value ? data.permanent_shipping_value : 0),
@@ -66,6 +65,7 @@ export const updateLocker = (data: any): any => {
         "product_name": (data.name ? data.name : ''),
         "product_description": (data.product_description ? data.product_description : null),
         "permanent_shipping_value": (data.permanent_shipping_value ? data.permanent_shipping_value : 0),
+        "locker": data.locker_info.locker_id,
         "weight": (data.weight ? data.weight : 0),
         "images": (data.images ? data.images : []),
         "deleted_images": (data.deleted_images ? data.deleted_images : null)
@@ -78,20 +78,22 @@ export const updateLocker = (data: any): any => {
 export const updateShipping = (data: any): any => {
 
     let shipping = {
-        "id": data.id,
-        "address": data.address.id,
-        "conveyor": data.conveyor.id,
-        "deleted_products": data.deleted_products,
-        "delivery_date": data.delivery_date,
-        "guide_number": data.guide_number,
-        "observations": data.observations,
-        "products": data.products,
-        "shipping_type": data.shipping_type,
+        "id": data.id ? data.id : null,
+        "address": data.address ? data.address.id : null,
+        "conveyor": data.conveyor ? data.conveyor.id : null,
+        "deleted_products": data.deleted_products ? data.deleted_products : null,
+        "delivery_date": data.delivery_date ? data.delivery_date : null,
+        "guide_number": data.guide_number ? data.guide_number : null,
+        "observations": data.observations ? data.observations : null,
+        "products": data.products ? data.products : [],
+        "shipping_type": data.shipping_type ? data.shipping_type : null,
         "status": data.status,
-        "total_value": data.total_value,
-        "consolidated": data.consolidated,
+        "total_value": data.total_value ? data.total_value : 0,
+        "consolidated": data.consolidated ? data.consolidated : null,
         "trm": data.trm,
-        "user": data.user
+        "user": data.user,
+        "new_shipping": data.newShipping ? data.newShipping : [],
+        "total_weight": data.total_weight ? data.total_weight : 0
     };
 
     return shipping;

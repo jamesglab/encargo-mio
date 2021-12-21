@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { LockersService } from '../../_services/lockers.service';
@@ -25,9 +25,11 @@ export class ModalEditLockersComponent implements OnInit {
 
   public isLoading: boolean = false;
   public isLoadingQuery: boolean = false;
+  public loaderLockers: boolean = false;
   public lockerEditForm: FormGroup;
 
   public allConveyors: any = [];
+  public allLockers: any[] = [];
   public allImages: any = [];
 
   constructor(
@@ -35,7 +37,8 @@ export class ModalEditLockersComponent implements OnInit {
     public _fb: FormBuilder,
     private _orders: OrderService,
     private _notify: NotifyService,
-    private _compress: ImageCompressService
+    private _compress: ImageCompressService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -62,25 +65,21 @@ export class ModalEditLockersComponent implements OnInit {
 
   buildForm(res: any): void {
     this.lockerEditForm = this._fb.group({
-      id: [res.id ? res.id : null],
+      id: [res.id || null],
       guide_number: [res.guide_number_alph ? res.guide_number_alph : res.guide_number],
       conveyor: [null],
-      locker: [res.locker ? `CA${res.locker.id} | ${res.locker.user.name} ${res.locker.user.last_name}` : '', [Validators.required]],
-      locker_info: [res.locker ? res.locker : null],
+      locker_info: [{ locker_id: res.locker.id, us_id: res.locker.user.id, us_name: res.locker.user.name, us_last_name: res.locker.user.last_name }],
       order: [res.order_service ? `${res.order_service} | ${res.product.name}` : null],
-      name: [res.product ? res.product.name : null],
-      weight: [res.weight ? res.weight : 0, [Validators.required]],
+      name: [res.product.name || null],
+      weight: [res.weight || 0, [Validators.required]],
       date_recieved: [res.receipt_date ? { day: parseInt(moment(res.receipt_date).format("D")), month: parseInt(moment(res.receipt_date).format("M")), year: parseInt(moment(res.receipt_date).format("YYYY")) } : null],
-      permanent_shipping_value: [res.permanent_shipping_value ? res.permanent_shipping_value : 0],
-      declared_value_admin: [res.declared_value_admin ? res.declared_value_admin : 0, [Validators.required]],
-      product_description: [res.product_description ? res.product_description : null],
+      permanent_shipping_value: [res.permanent_shipping_value || 0],
+      declared_value_admin: [res.declared_value_admin || 0, [Validators.required]],
+      product_description: [res.product_description || null],
       force_commercial_shipping: [res.force_commercial_shipping],
-      images: [res.images ? res.images : []],
+      images: [res.images || []],
       deleted_images: [[]],
-      product: [res.product ? res.product : null]
-      // estimated_delivery_date: [null],
-      // national_conveyor: [null],
-      // guide_number_national: [null],
+      product: [res.product || null]
     });
     this.pushConveyorSelected(res.conveyor);
     this.pushImages();
@@ -92,6 +91,25 @@ export class ModalEditLockersComponent implements OnInit {
     }, err => {
       throw err;
     });
+  }
+
+  autoCompleteLocker(params: any) {
+    if (params.length >= 2) {
+      this.loaderLockers = true;
+      this._orders.getUsersByName(params)
+        .subscribe((res: any) => {
+          this.allLockers = res;
+          this.loaderLockers = false;
+          this.cdr.detectChanges();
+        }, err => {
+          this.loaderLockers = false;
+          throw err;
+        });
+    }
+  }
+
+  setDisplayLocker(locker_object: { [ key: string ]: any }): string {
+    return `CA${locker_object.locker_id} | ${locker_object.us_name} ${locker_object.us_last_name}`;
   }
 
   pushConveyorSelected(conveyor: number): void {
@@ -173,7 +191,7 @@ export class ModalEditLockersComponent implements OnInit {
       return;
     }
 
-    this.isLoadingQuery = true;
+    // this.isLoadingQuery = true;
     var formData = new FormData();
 
     this.allImages.map((image: any) => { formData.append('images', image.file) });

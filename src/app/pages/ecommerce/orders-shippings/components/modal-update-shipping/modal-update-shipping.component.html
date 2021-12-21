@@ -25,7 +25,8 @@
 
     <ng-container *ngIf="shippingToUpdate.status == '2'">
       <button class="btn btn-warning" (click)="goToFragment();">
-        Fraccionar Envío</button>
+        Fraccionar Envío
+      </button>
     </ng-container>
   </div>
 
@@ -33,50 +34,48 @@
 
     <form [formGroup]="updateShippingForm">
 
-      <ng-container *ngIf="shippingToUpdate.status != '0' &&  shippingToUpdate.status != '1'">
+      <div class="form-check form-switch text-truncate h5">
+        <label for="form-group">Envío Consolidado</label>
+        <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" formControlName="consolidated">
+      </div>
 
-        <div class="form-check form-switch text-truncate h5">
-          <label for="form-group">Envío Consolidado</label>
-          <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" formControlName="consolidated">
-        </div>
+      <div class="row mt-3">
 
-        <div class="row mt-3">
+        <div class="col-12 col-sm-6">
 
-          <div class="col-12 col-sm-6">
-
-            <div class="form-group">
-              <label for="guide_number">Número de Guía *</label>
-              <input type="text" class="form-control" placeholder="Ingresa tu número de guía" id="guide_number"
-                formControlName="guide_number">
-            </div>
-
+          <div class="form-group">
+            <label for="guide_number">Número de Guía *</label>
+            <input type="text" class="form-control" placeholder="Ingresa tu número de guía" id="guide_number"
+              formControlName="guide_number">
           </div>
 
-          <div class="col-12 col-sm-6">
+        </div>
 
-            <div class="form-group">
+        <div class="col-12 col-sm-6">
 
-              <label for="conveyor">Transportadora Internacional * </label>
+          <div class="form-group">
 
-              <input type="text" class="form-control" id="conveyor"
-                placeholder="Selecciona la Transportadora Internacional" formControlName="conveyor"
-                [matAutocomplete]="auto_conveyors">
+            <label for="conveyor">Transportadora Internacional * </label>
 
-              <mat-autocomplete #auto_conveyors="matAutocomplete" [displayWith]="displayFn">
-                <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
-                  {{ conveyor.name }}
-                </mat-option>
-              </mat-autocomplete>
+            <input type="text" class="form-control" id="conveyor"
+              placeholder="Selecciona la Transportadora Internacional" formControlName="conveyor"
+              [matAutocomplete]="auto_conveyors">
 
-            </div>
+            <mat-autocomplete #auto_conveyors="matAutocomplete" [displayWith]="displayFn">
+              <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
+                {{ conveyor.name }}
+              </mat-option>
+            </mat-autocomplete>
 
           </div>
 
         </div>
 
-        <div class="row mt-3">
+      </div>
 
-          <!-- <div class="col-12 col-sm-6">
+      <div class="row mt-3">
+
+        <!-- <div class="col-12 col-sm-6">
 
             <div class="form-group">
 
@@ -94,341 +93,461 @@
 
           </div> -->
 
-          <div class="col-12 col-sm-6">
+        <div class="col-12 col-sm-6">
 
-            <div class="form-group">
-              <label for="total_value">Valor Pagado Cliente</label>
-              <input type="number" class="form-control" id="total_value" formControlName="total_value">
-            </div>
-
-          </div>
-
-          <div class="col-12 col-sm-6">
-            <div class="form-group">
-              <label for="total_weight">Peso total:</label>
-              <input type="number" class="form-control" id="total_weight" formControlName="total_weight">
-            </div>
-          </div>
-        </div>
-
-        <div class="row mt-3">
-
-          <div class="col-12 col-sm-6">
-
-            <div class="form-group">
-
-              <label for="store">Tipo de Envio *</label>
-
-              <select class="form-control" id="store" formControlName="shipping_type">
-
-                <option value="null" disabled>Selecciona tipo de envío</option>
-
-                <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
-                  {{ shipping.name }}
-                </option>
-
-              </select>
-
-            </div>
-
-          </div>
-
-          <div class="col-12 col-sm-6">
-
-            <div class="form-group ">
-
-              <label for="user_id">Usuario *</label>
-
-              <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
-                placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
-
-              <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
-                <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
-                  CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
-                </mat-option>
-              </mat-autocomplete>
-
-            </div>
-
+          <div class="form-group">
+            <label for="total_value">Valor Pagado Cliente</label>
+            <input type="number" class="form-control" id="total_value" formControlName="total_value">
           </div>
 
         </div>
 
-        <div class="row mt-3">
-          <div class="col-12">
-            <div class="form-group">
-              <label for="observations">Observaciones de Compra</label>
-              <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
-            </div>
+        <div class="col-12 col-sm-6">
+          <div class="form-group">
+            <label for="total_weight">Peso total:</label>
+            <input type="number" class="form-control" id="total_weight" formControlName="total_weight">
           </div>
         </div>
-
-        <div class="row mt-3 mt-3">
-
-          <div class="col-12 col-sm-6">
-
-
-            <div class="container-shipping">
-
-              <div class="container-img-shipping">
-                <img src="/assets/images/delivery.png" alt="" draggable="false">
-              </div>
-
-              <div>
-
-                <div class="mt-3">
-
-                  <!-- <li>
-                    <strong>País: </strong>
-                    {{ form.address.value.country ? form.address.value.country : 'N/A' }}
-                  </li> -->
-
-                  <li>
-                    <strong>Ciudad: </strong>
-                    {{ form.address.value.city ? form.address.value.city.name : 'N/A' }}
-                  </li>
-
-                  <li>
-                    <strong>Departamento: </strong>
-                    {{ form.address.value.department ? form.address.value.department.name :'N/A' }}
-                  </li>
-
-                  <li> <strong>Dirección: </strong>
-                    {{ form.address.value.address ? form.address.value.address :'N/A'}}
-                  </li>
-
-                  <li title=" {{ form.address.value.description ? form.address.value.description : 'N/A' }}">
-                    <strong>Descripción:</strong>
-                    {{ form.address.value.description ? form.address.value.description : 'N/A' }}
-                  </li>
-
-                  <li><strong>Nombre de quien recibe: </strong>
-                    {{ form.address.value.address ? form.address.value.first_name : 'N/A' }}</li>
-
-                  <li>
-                    <strong>Teléfono: </strong>
-                    {{ form.address.value.phone ? form.address.value.phone :'N/A' }}
-                  </li>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </ng-container>
-
-      <div class="col-12 col-sm-12 p-3 px-4 const-warning" *ngIf="message.await_products">
-        <a style="color:red">
-          <i class="fas fa-exclamation-triangle fa-2x"></i>
-        </a>
-        <span class="mx-2"> Aún no estan todos los productos del envío en el casillero</span>
       </div>
 
       <div class="row mt-3">
 
-        <div cdkDropListGroup>
+        <div class="col-12 col-sm-6">
 
-          <div class="example-container">
+          <div class="form-group">
 
-            <h2>En Casillero</h2>
+            <label for="store">Tipo de Envio *</label>
 
-            <div cdkDropList [cdkDropListData]="inLocker" class="example-list"
-              (cdkDropListDropped)="drop($event, 'locker');">
+            <select class="form-control" id="store" formControlName="shipping_type">
 
-              <div *ngIf="inLocker && inLocker.length === 0">
-                No hay productos en el casillero
+              <option value="null" disabled>Selecciona tipo de envío</option>
+
+              <option *ngFor="let shipping of shipping_types" [ngValue]="shipping.id">
+                {{ shipping.name }}
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+
+          <div class="form-group ">
+
+            <label for="user_id">Usuario *</label>
+
+            <input type="text" id="user_id" class="form-control" autocomplete="off" formControlName="user"
+              placeholder="Selecciona el usuario" [matAutocomplete]="auto_user">
+
+            <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+              <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+              </mat-option>
+            </mat-autocomplete>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="observations">Observaciones de Compra</label>
+            <textarea class="form-control" id="observations" row mt-3s="3" formControlName="observations"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <div class="row mt-3 mt-3">
+
+      <div class="col-md-6 col-sm-12">
+
+        <div class="container-shipping">
+
+          <div class="container-img-shipping">
+            <img src="/assets/images/delivery.png" alt="" draggable="false">
+          </div>
+
+          <div>
+
+            <div class="mt-3">
+
+              <li>
+                <strong>Ciudad: </strong>
+                {{ form.address.value.city ? form.address.value.city.name : 'N/A' }}
+              </li>
+
+              <li>
+                <strong>Departamento: </strong>
+                {{ form.address.value.department ? form.address.value.department.name :'N/A' }}
+              </li>
+
+              <li> <strong>Dirección: </strong>
+                {{ form.address.value.address ? form.address.value.address :'N/A'}}
+              </li>
+
+              <li title=" {{ form.address.value.description ? form.address.value.description : 'N/A' }}">
+                <strong>Descripción:</strong>
+                {{ form.address.value.description ? form.address.value.description : 'N/A' }}
+              </li>
+
+              <li><strong>Nombre de quien recibe: </strong>
+                {{ form.address.value.address ? form.address.value.first_name : 'N/A' }}</li>
+
+              <li>
+                <strong>Teléfono: </strong>
+                {{ form.address.value.phone ? form.address.value.phone :'N/A' }}
+              </li>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-md-6 col-sm-12" *ngIf="shippingToUpdate.status == '6'">
+
+        <div class="fragmented-status">
+          <div class="row">
+
+            <div class="col-sm-12 col-md-6 col-xl-6" *ngFor="let item of fractionedShippings">
+              <div class="container-shipping">
+                <div class="container-img-shipping" style="color: black;">
+                  Fracción # {{ item.id }}
+                  <div class="btn status-box">{{ renderStatus(item.status) }}</div>
+                </div>
+              </div>
+              <br>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="col-12 col-sm-12 p-3 px-4">
+      <div class="alert alert-danger" role="alert" *ngIf="message.await_products">
+        <strong>
+          Aún no estan todos los productos del envío en el casillero.
+        </strong>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+
+      <div class="container-drags" cdkDropListGroup>
+
+        <div class="example-container">
+
+          <h2>En Casillero</h2>
+
+          <div cdkDropList [cdkDropListData]="inLocker" class="example-list"
+            (cdkDropListDropped)="drop($event, 'locker');">
+
+            <div class="padding-container-empty" *ngIf="inLocker && inLocker.length === 0">
+              No hay productos en el casillero
+            </div>
+
+            <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag
+              [cdkDragDisabled]="disabledInLocker">
+
+              <div class="example-handle" cdkDragHandle>
+                <svg width="24px" fill="currentColor" viewBox="0 0 24 24" style="cursor: move;">
+                  <path
+                    d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
+                  </path>
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                </svg>
               </div>
 
-              <div class="example-box" *ngFor="let item of inLocker; let i = index;" cdkDrag
-                [cdkDragDisabled]="disabledInLocker">
+              <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
+                </a>
+              </div>
 
-                <div class="example-handle" cdkDragHandle>
-                  <svg width="24px" fill="currentColor" viewBox="0 0 24 24" style="cursor: move;">
-                    <path
-                      d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
-                    </path>
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                  </svg>
-                </div>
+              <div class="d-flex justify-content-center" *ngIf="!item.images">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.product.image" (error)="errorImage($event);" alt="">
+                </a>
+              </div>
 
-                <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
-                  <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="">
-                  </a>
-                </div>
+              <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length === 0">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.product.image" (error)="errorImage($event);" alt="">
+                </a>
+              </div>
 
-                <div class="d-flex justify-content-center" *ngIf="!item.images">
-                  <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.product.image" (error)="errorImage($event);" alt="">
-                  </a>
-                </div>
+              <div title="{{ item.product.name ? item.product.name : '' }}">
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
+                  {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...'
+                  : item.product.name) : 'N/A' }}
+                </a>
+              </div>
 
-                <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length === 0">
-                  <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.product.image" (error)="errorImage($event);" alt="">
-                  </a>
-                </div>
+              <div>
+                <strong># Orden:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
+                  {{ item.order_service ? item.order_service : 'N/A' }}
+                </a>
+              </div>
 
-                <div title="{{ item.product.name ? item.product.name : '' }}">
-                  <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
-                    {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...'
-                    : item.product.name) : 'N/A' }}
-                  </a>
-                </div>
+              <div>
+                <strong>Peso:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                  {{item.weight ? item.weight : 0}} lb.
+                </a>
+              </div>
 
-                <div>
-                  <strong># Orden:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
-                    {{ item.order_service ? item.order_service : 'N/A' }}
-                  </a>
-                </div>
+              <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
+                <strong>Descripción:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
+                  {{ item.product.description ? item.product.description : 'N/A' }}
+                </a>
+              </div>
 
-                <div>
-                  <strong>Peso:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
-                    {{ (item.weight ? item.weight : 0 )}} lb.
-                  </a>
-                </div>
+              <div>
+                <strong>Guía Origen:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
+                  {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
+                </a>
+              </div>
 
-                <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
-                  <strong>Descripción:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
-                    {{ item.product.description ? item.product.description : 'N/A' }}
-                  </a>
-                </div>
+              <div>
+                <strong>Valor Declarado Admin.:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
+                  {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
+                </a>
+              </div>
 
-                <div>
-                  <strong>Guía Origen:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
-                    {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
-                  </a>
-                </div>
-
-                <div>
-                  <strong>Valor Declarado Admin.:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
-                    {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
-                  </a>
-                </div>
-
-                <div>
-                  <strong>Valor Declarado Cliente: </strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
-                    {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
-                  </a>
-                </div>
-
+              <div>
+                <strong>Valor Declarado Cliente: </strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
+                  {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
+                </a>
               </div>
 
             </div>
 
           </div>
 
-          <div class="example-container">
+        </div>
 
-            <h2>En este Envío</h2>
+        <div class="example-container">
 
-            <div cdkDropList [cdkDropListData]="outLocker" class="example-list"
-              (cdkDropListDropped)="drop($event, 'shipping');">
+          <h2>En este Envío</h2>
 
-              <div *ngIf="outLocker && outLocker.length === 0">
-                No hay productos en este envío
+          <div cdkDropList [cdkDropListData]="outLocker" class="example-list"
+            (cdkDropListDropped)="drop($event, 'shipping');">
+
+            <div class="padding-container-empty" *ngIf="outLocker && outLocker.length === 0">
+              No hay productos en este envío
+            </div>
+
+            <div class="example-box" *ngFor="let item of outLocker; let i = index;" cdkDrag
+              [cdkDragDisabled]="disabledInShipping">
+
+              <div class="alert alert-primary" role="alert" *ngIf="!item.arrived">
+                El producto no ha llegado a casillero.
               </div>
 
-              <div class="example-box" *ngFor="let item of outLocker; let i = index;" cdkDrag
-                [cdkDragDisabled]="disabledInShipping">
+              <div class="example-handle" cdkDragHandle>
+                <svg width="24px" fill="currentColor" viewBox="0 0 24 24" style="cursor: move;">
+                  <path
+                    d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
+                  </path>
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                </svg>
+              </div>
 
-                <div class="example-handle" cdkDragHandle>
-                  <svg width="24px" fill="currentColor" viewBox="0 0 24 24" style="cursor: move;">
-                    <path
-                      d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
-                    </path>
-                    <path d="M0 0h24v24H0z" fill="none"></path>
-                  </svg>
-                </div>
+              <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="" draggable="false">
+                </a>
+              </div>
 
-                <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
-                  <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="" draggable="false">
-                  </a>
-                </div>
+              <div class="d-flex justify-content-center" *ngIf="!item.images">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
+                </a>
+              </div>
 
-                <div class="d-flex justify-content-center" *ngIf="!item.images">
-                  <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
-                  </a>
-                </div>
+              <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length === 0">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
+                </a>
+              </div>
 
-                <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length === 0">
-                  <a [href]="item.product.link" target="_blank">
-                    <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
-                  </a>
-                </div>
+              <div *ngIf="item.arrived">
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
+                  #{{ item.product ? item.product.id : '' }}
+                </a>
+              </div>
 
-                <div *ngIf="item.arrived">
-                  <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
-                    #{{ item.product ? item.product.id : '' }}
-                  </a>
-                </div>
+              <div title="{{ item.product.name ? item.product.name : '' }}">
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
+                  {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) +
+                  '...'
+                  : item.product.name) : 'N/A' }}
+                </a>
+              </div>
 
-                <div title="{{ item.product.name ? item.product.name : '' }}">
-                  <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
-                    {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) +
-                    '...'
-                    : item.product.name) : 'N/A' }}
-                  </a>
-                </div>
+              <div>
+                <strong># Orden:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
+                  {{ item.order_service ? item.order_service : 'N/A' }}
+                </a>
+              </div>
 
-                <div>
-                  <strong># Orden:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
-                    {{ item.order_service ? item.order_service : 'N/A' }}
-                  </a>
-                </div>
+              <div>
+                <strong>Peso:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                  {{item.weight ? item.weight : 0}} lb.
+                </a>
+              </div>
 
-                <div>
-                  <strong>Peso:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
-                    {{ (item.weight ? item.weight : 0 )}} lb.
-                  </a>
-                </div>
+              <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
+                <strong>Descripción:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
+                  {{ item.product.description ? item.product.description : 'N/A' }}
+                </a>
+              </div>
 
-                <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
-                  <strong>Descripción:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
-                    {{ item.product.description ? item.product.description : 'N/A' }}
-                  </a>
-                </div>
+              <div>
+                <strong>Guía Origen:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
+                  {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
+                </a>
+              </div>
 
-                <div>
-                  <strong>Guía Origen:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
-                    {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
-                  </a>
-                </div>
+              <div>
+                <strong>Valor Declarado Admin.:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
+                  {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
+                </a>
+              </div>
 
-                <div>
-                  <strong>Valor Declarado Admin.:</strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
-                    {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
-                  </a>
-                </div>
+              <div>
+                <strong>Valor Declarado Cliente: </strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
+                  {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
+                </a>
+              </div>
 
-                <div>
-                  <strong>Valor Declarado Cliente: </strong>
-                  <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
-                    {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
-                  </a>
-                </div>
+            </div>
 
-                <div *ngIf="!item.arrived">
-                  <p class="no-arrived">EL PRODUCTO NO HA LLEGADO A CASILLERO</p>
-                </div>
+          </div>
 
+        </div>
+
+        <div class="example-contianer" *ngIf="status == 0">
+
+          <h2>Nuevo Envío</h2>
+
+          <div cdkDropList [cdkDropListData]="newShipping" class="example-list"
+            (cdkDropListDropped)="drop($event, 'new-shipping');">
+
+            <div class="padding-container-empty" *ngIf="newShipping && newShipping.length === 0">
+              No hay productos en este envío
+            </div>
+
+            <div class="example-box" *ngFor="let item of newShipping; let i = index;" cdkDrag
+              [cdkDragDisabled]="disabledInShipping">
+
+              <div class="alert alert-primary" role="alert" *ngIf="!item.arrived">
+                El producto no ha llegado a casillero.
+              </div>
+
+              <div class="example-handle" cdkDragHandle>
+                <svg width="24px" fill="currentColor" viewBox="0 0 24 24" style="cursor: move;">
+                  <path
+                    d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
+                  </path>
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                </svg>
+              </div>
+
+              <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.images[0].Location" (error)="errorImage($event);" alt="" draggable="false">
+                </a>
+              </div>
+
+              <div class="d-flex justify-content-center" *ngIf="!item.images">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
+                </a>
+              </div>
+
+              <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length === 0">
+                <a [href]="item.product.link" target="_blank">
+                  <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
+                </a>
+              </div>
+
+              <div *ngIf="item.arrived">
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
+                  #{{ item.product ? item.product.id : '' }}
+                </a>
+              </div>
+
+              <div title="{{ item.product.name ? item.product.name : '' }}">
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
+                  {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) +
+                  '...'
+                  : item.product.name) : 'N/A' }}
+                </a>
+              </div>
+
+              <div>
+                <strong># Orden:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
+                  {{ item.order_service ? item.order_service : 'N/A' }}
+                </a>
+              </div>
+
+              <div>
+                <strong>Peso:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                  {{item.weight ? item.weight : 0}} lb.
+                </a>
+              </div>
+
+              <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
+                <strong>Descripción:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
+                  {{ item.product.description ? item.product.description : 'N/A' }}
+                </a>
+              </div>
+
+              <div>
+                <strong>Guía Origen:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
+                  {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
+                </a>
+              </div>
+
+              <div>
+                <strong>Valor Declarado Admin.:</strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
+                  {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
+                </a>
+              </div>
+
+              <div>
+                <strong>Valor Declarado Cliente: </strong>
+                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
+                  {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
+                </a>
               </div>
 
             </div>
@@ -439,7 +558,7 @@
 
       </div>
 
-    </form>
+    </div>
 
   </ng-container>
 
@@ -451,7 +570,7 @@
     Cancelar
   </button>
 
-  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPacked()"
+  <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShippingPacked();"
     *ngIf="shippingToUpdate.status =='1'">
     <span class="spinner-grow  spinner-grow" role="status" aria-hidden="true" *ngIf="isLoading"></span>
     Empacado
@@ -460,6 +579,12 @@
   <ng-container
     *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'  && shippingToUpdate.status != '7'">
     <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
+      Actualizar
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="shippingToUpdate.status == '0'">
+    <button class="btn btn-primary" [disabled]="isLoading" (click)="updateConsolidate();">
       Actualizar
     </button>
   </ng-container>

@@ -5,9 +5,9 @@ import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { dataURLtoFile, numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { insertInLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
-import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
 import { LockersService } from 'src/app/pages/lockers/_services/lockers.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-modal-locker-entry',
@@ -24,16 +24,17 @@ export class ModalLockerEntryComponent implements OnInit {
   public isLoading: boolean = false;
   public getQueries: boolean = false;
   public loaderLockers: boolean = false;
+  public initLoad: boolean = false;
 
   public lockers: any = [];
-  public orders_purchase: [] = [];
-  public conveyors: [] = [];
+  public conveyors: any[] = [];
   public files: File[] = [];
   public allGuides: any[] = [];
   public allLockers: any[] = [];
   public allOrders: any[] = [];
 
   public filteredOrders: Observable<string[]>;
+  public filteredConveyors: Observable<string[]>;
 
   constructor(
     public modalService: NgbModal,
@@ -45,19 +46,20 @@ export class ModalLockerEntryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.buildForm();
-    this.getConvenyors();
+    this.initLoad = true;
+    this.getConvenyors().then(() => {
+      this.buildForm();
+    });
   }
 
   buildForm() {
 
     this.lockerForm = this.fb.group({
       guide_number: [null],
-      guide_number_alph: [null],
       guide_order: [null],
       order_purchase: [null],
       locker: [null, [Validators.required]],
-      locker_info: [null],
+      locker_info: [null, [Validators.required]],
       product: [null],
       product_description: [null],
       weight: [0, [Validators.required, Validators.min(0.1)]],
@@ -72,12 +74,12 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.disable();
 
-    this.lockerForm.controls.guide_number_alph.valueChanges.subscribe((guide: any) => {
-      if (guide && guide.guide_number) {
+    this.lockerForm.controls.guide_number.valueChanges.subscribe((guide: any) => {
+      if (guide && guide.guide_number_alph) {
+        this.pushConveyorSelected(guide.conveyor);
         this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.order_service.id + ' | ' + guide.product.name));
-        this.lockerForm.controls.guide_number.setValue(guide.guide_number);
-        this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
+        this.lockerForm.controls.guide_number.setValue(guide.guide_number_alph);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
         this.lockerForm.controls.locker.setValue(guide.locker.id);
         this.lockerForm.controls.locker_info.setValue(`${guide.user.name} ${guide.user.last_name}`);
@@ -103,11 +105,11 @@ export class ModalLockerEntryComponent implements OnInit {
 
     this.lockerForm.controls.guide_order.valueChanges.subscribe((orderPurchase: any) => {
       if (orderPurchase && orderPurchase.id) {
+        this.pushConveyorSelected(orderPurchase.conveyor);
         this.files = [];
         this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id + ' | ' + orderPurchase.product.name));
-        this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
-        if (this.lockerForm.controls.guide_number_alph.value === "" || this.lockerForm.controls.guide_number_alph.value == null) {
-          this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        if (this.lockerForm.controls.guide_number.value === "" || this.lockerForm.controls.guide_number.value == null) {
+          this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number_alph);
         }
         this.lockerForm.controls.order_purchase.setValue(orderPurchase.id);
         this.lockerForm.controls.weight.setValue((orderPurchase.weight ? orderPurchase.weight : 0));
@@ -123,16 +125,35 @@ export class ModalLockerEntryComponent implements OnInit {
       }
     });
 
-    this.filteredOrders = this.lockerForm.controls.guide_order.valueChanges.pipe(startWith(''), map(value => this._filter(value)));
+    this.filteredOrders = this.lockerForm.controls.guide_order.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'allOrders')));
+    this.filteredConveyors = this.lockerForm.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
+
+    this.initLoad = false;
 
   }
 
-  getConvenyors() { // AGREGAMOS LAS TRANSPORTADORAS
-    this._orderService.getConvenyor().subscribe((res: any) => {
-      this.conveyors = res;
-    }, err => {
-      throw err;
+  get form() {
+    return this.lockerForm.controls;
+  }
+
+  getConvenyors(): Promise<any> { // AGREGAMOS LAS TRANSPORTADORAS
+    return new Promise((resolve, reject) => {
+      this._orderService.getConvenyor()
+        .subscribe((res: any) => {
+          this.conveyors = res;
+          resolve(this.conveyors);
+        }, err => {
+          reject(err);
+          throw err;
+        });
     });
+  }
+
+  pushConveyorSelected(data: any) {
+    let filtered = this.conveyors.filter(x => x.id == data); // Buscamos el id de todas las transportadoras a través del id guardado en bd
+    if (filtered) { // Si existen datos
+      this.lockerForm.controls.conveyor.setValue(filtered[0]); //Seteamos el valor de conveyor con la respuesta del filtro.
+    }
   }
 
   onSelect(event) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
@@ -213,7 +234,6 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   cleanData() {
-    // console.log("ENTRO AL CLEAN DATA");
     this.allGuides = [];
     this.toHome = { status: false, to_home: false };
     this.lockerForm.controls.product_description.setValue(null);
@@ -222,20 +242,34 @@ export class ModalLockerEntryComponent implements OnInit {
     this.lockerForm.controls.declared_value_admin.setValue(0);
   }
 
-  private _filter(value: any): string[] {
-    if (typeof value === 'string' && value !== null) {
-      const filterValue = value.toLowerCase();
-      return this.allOrders.filter(option => option.product.name.toLowerCase().includes(filterValue));
-    } else {
-      return this.allOrders;
+  private _filter(value: any, array: any): string[] {
+
+    if (typeof value === 'string' && value !== null) { // Si el valor es un string y es diferente a nulo
+
+      const filterValue = value.toLowerCase(); // El valor filtrado se convertirá a toLowerCase
+      let filtered: any = null; // Se asgina un valor para almacenar la data a través del filtro
+
+      if (array === 'allOrders') { // Si el arreglo es allOrders filtrará por option.product.name
+        filtered = this[array].filter(option => option.product.name.toLowerCase().includes(filterValue));
+      } else if (array === 'conveyors') { // Si el arreglo es conveyors filtrará por option.name
+        filtered = this[array].filter(option => option.name.toLowerCase().includes(filterValue));
+      }
+
+      if (filtered && filtered.length > 0) { // Si después de filtrar el length es mayor a 0 retornamos la data del arreglo
+        return filtered;
+      } else { // Si es cero entonces retornarmos el arreglo completo
+        return this[array];
+      }
+
+    } else { // Donde no cumpla ninguan de las dos condiciones se retorna el arreglo completo
+      return this[array];
     }
+
   }
 
-  displayFn(option: any) {
-    if (option) {
-      return option ? option : `${option.id} | ${option.product.name}`;
-    }
-  }
+  displayFn(option: any) { if (option) { return option ? option : `${option.id} | ${option.product.name}`; } }
+
+  displayConveyors(option: any) { return option ? option.name : ''; } // Formato para mostrar simplemente el nombre en el autocomplete
 
   pushImagesResponse(image: any): void { // Pusheamos las imagenes que están guardadas en la base de datos.
     if (image) {
@@ -267,10 +301,13 @@ export class ModalLockerEntryComponent implements OnInit {
     }
 
     var formData = new FormData();
+
     if (this.files && this.files.length > 0) {
       this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
     }
+
     let payload = insertInLocker(this.lockerForm.getRawValue());
+
     formData.append("payload", JSON.stringify(payload)); // AGREGAMOS LOS CAMPOS DEL FORMULARIO A UN NUEVO OBJETO
     this.isLoading = true;
     this._orderService.insertProductLocker(formData)  // CONSUMIMOS EL SERVICIO DEL BACK PARA INGRESAR EL PRODUCTO 

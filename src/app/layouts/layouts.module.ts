@@ -11,13 +11,11 @@ import { LayoutComponent } from './layout.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TopbarComponent } from './topbar/topbar.component';
 import { FooterComponent } from './footer/footer.component';
-import { RightsidebarComponent } from './rightsidebar/rightsidebar.component';
 import { HorizontalComponent } from './horizontal/horizontal.component';
 import { VerticalComponent } from './vertical/vertical.component';
 
 @NgModule({
-  // tslint:disable-next-line: max-line-length
-  declarations: [LayoutComponent, SidebarComponent, TopbarComponent, FooterComponent, RightsidebarComponent, HorizontalComponent, VerticalComponent],
+  declarations: [LayoutComponent, SidebarComponent, TopbarComponent, FooterComponent, HorizontalComponent, VerticalComponent],
   imports: [
     CommonModule,
     RouterModule,
@@ -27,4 +25,5 @@ import { VerticalComponent } from './vertical/vertical.component';
     SimplebarAngularModule,
   ]
 })
+
 export class LayoutsModule { }

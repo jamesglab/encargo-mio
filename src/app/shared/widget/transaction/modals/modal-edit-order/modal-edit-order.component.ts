@@ -42,7 +42,6 @@ export class ModalEditOrderComponent implements OnInit {
   ngOnInit(): void { }
 
   ngOnChanges() {
-    console.log(this.status)
     if (this.orderSelected) {
       this.calculateValuesInit();
     }
@@ -176,6 +175,12 @@ export class ModalEditOrderComponent implements OnInit {
 
   setPermanentShipping(i: number): void {
     this.getFormula(i);
+  }
+
+  validateShipping(i: number): void {
+    if (!this.orderSelected.products[i].shipping_origin_value_product) {
+      this.orderSelected.products[i].shipping_origin_value_product = 0;
+    }
   }
 
   deleteProduct(i: number): void {

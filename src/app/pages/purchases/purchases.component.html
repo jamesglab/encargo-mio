@@ -8,9 +8,9 @@
 
         <app-page-title title="Compras"></app-page-title>
 
-        <app-table-purchases [purchases]="purchases" [count]="count"
-          (editPurchase)="receivePurchase($event , updateCupon, 'lg')" (filterPaginator)="getPurchases($event)"
-          (filterValues)="getPurchases(null,$event)">
+        <app-table-purchases [purchases]="purchases" [count]="count" 
+          (editPurchase)="receivePurchase($event , updateCupon, 'lg')" (filterPaginator)="getPurchases($event);"
+          (filterValues)="getPurchases(null,$event)" (refreshTable)="refreshTableReceive($event);">
         </app-table-purchases>
 
       </div>

@@ -13,7 +13,22 @@
     <p class="no-conveyor">EL ENVÍO NO POSEE UNA TRANSPORTADORA </p>
   </ng-container>
 
+
   <ng-container *ngIf="!showNoConveyor && !isLoadingData">
+    <ng-container *ngIf="shipping_order.conveyor && shipping_order.conveyor === 1 || shipping_order.conveyor === 2">
+      <div class="row">
+        <div class="col-xl-12 col-md-12 col-sm-12">
+          Seguimiento Servientrega:
+          <a href="{{getDetailUrl(shipping_order.guide_number_alph, shipping_order.conveyor)}}" target="_blank">
+            <span class="guide_number">
+              ({{shipping_order.guide_number_alph || shipping_order.guide_number}})
+            </span>
+          </a>
+          <br>
+        </div>
+      </div>
+      <br>
+    </ng-container>
     <div class="row">
 
       <div class="col-xl-12 col-md-12 col-sm-12">

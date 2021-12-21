@@ -1,24 +1,21 @@
 <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
 
-  <div class="table-responsive mb-0" style="min-height: 500px;">
+  <div class="col-sm">
 
-    <div class="col-sm-12">
+    <div class="text-sm-end">
 
-      <div class="text-sm-end">
-
-        <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
-          <i class="bx bx-trash-alt mr-1"></i>
-          Eliminar Filtros
-        </button>
-
-        <button type="button" class="btn btn-info btn-rounded mb-2 me-2" (click)="openLocker();">
-          Ingresar a Casillero
-        </button>
-
-      </div>
-
+      <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
+        <i class="bx bx-trash-alt mr-1"></i>
+        Eliminar Filtros
+      </button>
 
     </div>
+
+
+  </div>
+
+
+  <div class="table-responsive mb-0" style="min-height: 500px;">
 
     <div class="alert alert-primary" role="alert" *ngIf="purchases && purchases.length === 0">
       No hay datos disponibles...
@@ -64,7 +61,7 @@
           </th>
           <!--SEARCH STATES ON UTILS.TOOL.TS (GET_STATUS)-->
 
-          <th class="align-middle">Fecha
+          <th class="align-middle">Fecha Compra
             <div class="input-group clockpicker mt-2" style="min-width: 150px;">
               <input placeholder="yyyy-mm-dd" class="form-control" [value]="formatDate()" disabled>
 
@@ -72,6 +69,19 @@
                 (ngModelChange)="filterPurchase()" #dl="ngbDatepicker" [formControl]="filterDate"
                 style="display: none;">
               <div class="input-group-append" (click)="dl.toggle()">
+                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+              </div>
+            </div>
+          </th>
+
+          <th class="align-middle">Fecha Ingreso Casillero
+            <div class="input-group clockpicker mt-2" style="min-width: 150px;">
+              <input placeholder="yyyy-mm-dd" class="form-control" [value]="formatLockerDate()" disabled>
+
+              <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
+                (ngModelChange)="filterPurchase()" #dl2="ngbDatepicker" [formControl]="filterLockerDate"
+                style="display: none;">
+              <div class="input-group-append" (click)="dl2.toggle()">
                 <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
               </div>
             </div>
@@ -99,6 +109,16 @@
               <option value="null">Todos</option>
               <option [value]="0">Por Ingresar</option>
               <option [value]="1">En Casillero</option>
+            </select>
+          </th>
+
+          <th class="align-middle">
+            Tienda Origen
+            <select class="form-select" [formControl]="filterStore" (change)="filterPurchase();">
+              <option disabled title="Selecciona filtro...">Selecciona Tienda...</option>
+              <option value="null">Todas</option>
+              <option *ngFor="let store of stores" [value]="store.id">
+                {{ (store.name.length > 50) ? (store.name | slice:0:50 ) + '...' : store.name }}</option>
             </select>
           </th>
 
@@ -169,6 +189,10 @@
           </td>
 
           <td>
+            {{data.locker_entry_date | date }}
+          </td>
+
+          <td>
             {{ data.product_id ? data.product_id : '-' }}
           </td>
 
@@ -179,6 +203,10 @@
 
           <td>
             {{ data.locker_has_product ? 'En Casillero' : 'Por Ingresar' }}
+          </td>
+
+          <td>
+            {{ data.store_name }}
           </td>
 
           <td>
@@ -195,10 +223,17 @@
           </td>
 
           <td>
+
             <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
               (click)="selectPurchase(data);" *ngIf="!data.sold_out">
               Editar
             </button>
+
+            <button type="button" *ngIf="!data.sold_out && !data.locker_has_product" style="margin-left: 10px;"
+              class="btn btn-success btn-sm btn-rounded" (click)="openLocker(modal, data);">
+              Ingresar a Casillero
+            </button>
+
           </td>
 
         </tr>
@@ -212,4 +247,11 @@
   <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]" aria-label="Select page"
     (page)="emitPage($event)">
   </mat-paginator>
+
 </div>
+
+<ng-template #modal role="document" let-modal>
+  <app-locker-entry [users]="users" [trm]="trm" [conveyors]="conveyors" [purchaseSelected]="purchaseSelected"
+    (refreshTable)="refreshTableReceive($event);" (closeModal)="closeModalReceive(modal);">
+  </app-locker-entry>
+</ng-template>

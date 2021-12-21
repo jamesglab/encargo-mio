@@ -7,7 +7,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { WidgetModule } from 'src/app/shared/widget/widget.module';
-import { Ng5SliderModule } from 'ng5-slider';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ShippingDetailComponent } from './components/shipping-detail/shipping-detail.component';
@@ -43,14 +42,13 @@ const config: DropzoneConfigInterface = {
     ReactiveFormsModule,
     UIModule,
     WidgetModule,
-    Ng5SliderModule,
     NgSelectModule,
     NgbPaginationModule,
     MatPaginatorModule,
     NgbDatepickerModule,
     DragDropModule
   ],
-  providers:[
+  providers: [
     {
       provide: DROPZONE_CONFIG,
       useValue: config

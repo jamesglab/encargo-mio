@@ -1,29 +1,27 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { PurchasesRoutingModule } from './purchases-routing.module';
-import { PurchasesComponent } from './purchases.component';
-import { TablePurchasesComponent } from './components/table-purchases/table-purchases.component';
-import { ModalEditPurchaseComponent } from './components/modal-edit-purchase/modal-edit-purchase.component';
-
-
-
 import { NgbDatepickerModule, NgbDropdownModule, NgbModalModule, NgbNavModule, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { WidgetModule } from 'src/app/shared/widget/widget.module';
-import { Ng5SliderModule } from 'ng5-slider';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+
+import { PurchasesRoutingModule } from './purchases-routing.module';
+import { PurchasesComponent } from './purchases.component';
+import { TablePurchasesComponent } from './components/table-purchases/table-purchases.component';
+import { ModalEditPurchaseComponent } from './components/modal-edit-purchase/modal-edit-purchase.component';
+import { LockerEntryComponent } from './components/table-purchases/modals/locker-entry/locker-entry.component';
 
 @NgModule({
   declarations: [
     PurchasesComponent,
     TablePurchasesComponent,
-    ModalEditPurchaseComponent
+    ModalEditPurchaseComponent,
+    LockerEntryComponent
   ],
   imports: [
     CommonModule,
@@ -37,7 +35,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     ReactiveFormsModule,
     UIModule,
     WidgetModule,
-    Ng5SliderModule,
     NgSelectModule,
     NgbPaginationModule,
     MatPaginatorModule,
@@ -45,4 +42,5 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatAutocompleteModule
   ]
 })
+
 export class PurchasesModule { }

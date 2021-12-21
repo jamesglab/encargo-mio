@@ -7,9 +7,6 @@ Contact: themesbrand@gmail.com
 File: Main Css File
 */
 
-//Fonts
-@import "custom/fonts/fonts";
-
 //Core files
 @import "./node_modules/bootstrap/scss/functions";
 @import "./node_modules/bootstrap/scss/variables";
@@ -39,7 +36,6 @@ File: Main Css File
 
 // Plugins
 @import "custom/plugins/custom-scrollbar";
-@import "custom/plugins/calendar";
 @import "custom/plugins/dragula";
 @import "custom/plugins/range-slider";
 @import "custom/plugins/sweatalert2";
@@ -54,13 +50,11 @@ File: Main Css File
 @import "custom/plugins/bootstrap-touchspin";
 @import "custom/plugins/form-editors";
 @import "custom/plugins/form-upload";
-@import "custom/plugins/form-wizard";
 @import "custom/plugins/datatable";
 @import "custom/plugins/responsive-table";
 @import "custom/plugins/google-map";
 @import "custom/plugins/leaflet-maps";
 @import "custom/plugins/owl-carousel";
-@import "custom/plugins/lightbox";
 
 // Pages
 @import "custom/pages/authentication";
@@ -76,14 +70,3 @@ File: Main Css File
 @import "custom/pages/extras-pages";
 
 @import "./custom";
-
-// rtl
-// @import "custom/rtl/general-rtl";
-// @import "custom/rtl/bootstrap-rtl";
-// @import "custom/rtl/spacing-rtl";
-// @import "custom/rtl/float-rtl";
-// @import "custom/rtl/text-rtl";
-// @import "custom/rtl/structure-rtl";
-// @import "custom/rtl/plugins-rtl";
-// @import "custom/rtl/components-rtl";
-// @import "custom/rtl/pages-rtl";

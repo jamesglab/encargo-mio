@@ -125,6 +125,9 @@
   </table>
 </div>
 
+<mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getAllLockers($event);">
+</mat-paginator>
+
 <ng-template #modalLocker role="document" let-modal>
   <div class="modal-header">
     <h5 class="modal-title mt-0">Producto #{{ lockerSelected.product }}</h5>
@@ -137,6 +140,3 @@
     </app-modal-edit-lockers>
   </div>
 </ng-template>
-
-<mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getAllLockers($event);">
-</mat-paginator>

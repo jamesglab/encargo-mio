@@ -31,19 +31,19 @@
                 <tr>
                   <th scope="col">Email
                     <input type="search" id="form1" class="form-control mt-3" type="text" id="user_id"
-                      class="form-control" autocomplete="off" [formControl]="filterEmail" (blur)="getUsers()"
+                      class="form-control" autocomplete="off" [formControl]="filterEmail" (keyup.enter)="getUsers()"
                       placeholder="Selecciona el usuario" />
 
                   </th>
                   <th scope="col">Nombre Apellido
                     <input type="search" id="form1" class="form-control mt-3" type="text" id="user_id"
-                      class="form-control" autocomplete="off" [formControl]="filterName" (blur)="getUsers()"
+                      class="form-control" autocomplete="off" [formControl]="filterName" (keyup.enter)="getUsers()"
                       placeholder="Selecciona el usuario" />
                   </th>
 
                   <th scope="col">Casillero
                     <input type="search" id="form1" class="form-control mt-3" type="text" id="user_id"
-                      class="form-control" autocomplete="off" [formControl]="filterLocker" (blur)="getUsers()"
+                      class="form-control" autocomplete="off" [formControl]="filterLocker" (keyup.enter)="getUsers()"
                       placeholder="Selecciona el usuario" />
                   </th>
                   <th scope="col">Rol

@@ -1,13 +1,13 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { OrderService } from '../../../_services/orders.service';
 import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
-import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
 import { FileHandle } from 'src/app/_directives/file-handle';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-create-order',
@@ -267,6 +267,12 @@ export class CreateOrderComponent implements OnInit {
     this.totalValues.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
   }
 
+  validateShipping(i: number): void {
+    if (!this.products.controls[i]['controls'].shipping_origin_value_product.value) {
+      this.products.controls[i]['controls'].shipping_origin_value_product.setValue(0);
+    }
+  }
+
   filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
       this._compress.compressImage(file[0].base64).then((res: any) => {
@@ -369,4 +375,5 @@ export class CreateOrderComponent implements OnInit {
   onRemove(event) { // ELIMINAMOS LA IMAGEN
     this.files.splice(this.files.indexOf(event), 1);
   }
+
 }

@@ -2,7 +2,7 @@ import { MatSnackBarConfig } from '@angular/material/snack-bar';
 export const notificationConfig = (type: number, duration: number, message?: string): MatSnackBarConfig => {
 
     let _configType = { 1: "is-success", 2: "is-warning", 3: "is-danger" };
-    // console.log("typpee", type)
+
     return {
         panelClass: ["notification", _configType[type], "is-light", "fade", "show"],
         data: { message: (type === 3) ? (message) ? message : "Nuestro servidor presenta problemas, intentalo nuevamente" : message },
@@ -98,8 +98,6 @@ export const validateShippingstatus = (status) => {
         case '1':
             status_name = 'Por empacar'
             break
-
-
         case '2':
             status_name = 'En generación de guía'
             break
@@ -114,7 +112,7 @@ export const validateShippingstatus = (status) => {
             break
 
         case '6':
-            status_name = 'Fragmentado'
+            status_name = 'Fraccionado'
             break
         default:
             break;
@@ -122,6 +120,18 @@ export const validateShippingstatus = (status) => {
     return status_name
 
 }
+
+export const SHIPPING_STATUS = [
+    { "status": 0, "name": "Consolidación", "english": "consolidation" },
+    { "status": 1, "name": "Por empacar", "english": "for_packing" },
+    { "status": 2, "name": "En generación de guía", "english": "in_guide" },
+    { "status": 3, "name": "Enviado", "english": "sended" },
+    { "status": 7, "name": "Entregado", "english": "delivered" },
+    { "status": 4, "name": "Cancelado", "english": "cancel" },
+    { "status": 5, "name": "Pago en revisión", "english": "in_check" },
+    { "status": 6, "name": "Fraccionado", "english": "fragmented" }
+];
+
 // MEOTODO QUE RECIBE UN ARRAY Y LOS CAMPOS QUE SON REQUERIDOS EN LA SOLICITUD
 // objectsValidate : [{},{},{}]
 // validators : ['name',description,'value'...etc]

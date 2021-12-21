@@ -23,3 +23,9 @@
 .container-button-left {
   text-align: flex-end;
 }
+
+.btn-check:focus + .btn,
+.btn:focus {
+  outline: 0;
+  box-shadow: none !important;
+}

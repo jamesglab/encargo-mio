@@ -43,7 +43,7 @@
 
           <label for="products">Producto</label>
 
-          <input matInput type="text" id="products" class="form-control" placeholder="Busca el producto..."
+          <input type="text" id="products" class="form-control" placeholder="Busca el producto..."
             formControlName="product" [matAutocomplete]="auto_product">
 
           <mat-autocomplete #auto_product="matAutocomplete" [displayWith]="displayProperty">
@@ -63,7 +63,7 @@
 
           <label for="store">Tienda</label>
 
-          <input matInput type="text" id="store" class="form-control" placeholder="Busca la tienda..."
+          <input type="text" id="store" class="form-control" placeholder="Busca la tienda..."
             formControlName="store" [matAutocomplete]="auto_shop">
 
           <mat-autocomplete #auto_shop="matAutocomplete" [displayWith]="displayProperty">
@@ -106,7 +106,7 @@
 
           <label for="conveyor">Transportadora</label>
 
-          <input matInput type="text" id="conveyor" class="form-control" placeholder="Busca la transportadora..."
+          <input type="text" id="conveyor" class="form-control" placeholder="Busca la transportadora..."
             formControlName="conveyor" [matAutocomplete]="auto_conveyor">
 
           <mat-autocomplete #auto_conveyor="matAutocomplete" [displayWith]="displayProperty">

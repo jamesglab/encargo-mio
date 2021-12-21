@@ -11,11 +11,9 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { UIModule } from 'src/app/shared/ui/ui.module';
 import { WidgetModule } from 'src/app/shared/widget/widget.module';
-import { Ng5SliderModule } from 'ng5-slider';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { UpdateCuponComponent } from './components/update-cupon/update-cupon.component';
-
 
 @NgModule({
   declarations: [
@@ -36,7 +34,6 @@ import { UpdateCuponComponent } from './components/update-cupon/update-cupon.com
     ReactiveFormsModule,
     UIModule,
     WidgetModule,
-    Ng5SliderModule,
     NgSelectModule,
     NgbPaginationModule,
     MatPaginatorModule,

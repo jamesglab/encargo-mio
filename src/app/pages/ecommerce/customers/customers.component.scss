@@ -1,26 +1,27 @@
 a {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .avatar {
-  width: 10rem;
-  height: 10rem;
+    width: 10rem;
+    height: 10rem;
 }
 
 .c-gray {
-  color: #adadad !important;
+    color: #adadad !important;
 }
-.img-reference{
-  width: 36rem !important;
-  height: 36rem !important;
-  background-size: cover;
-  background-position: center;
+.img-reference {
+    width: 36rem !important;
+    height: 36rem !important;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid black;
 }
-.center{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.min-width{
-  min-width: 10rem;
+.min-width {
+    min-width: 10rem;
 }
