@@ -239,7 +239,6 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   disabledInputs(): void {
-    console.log("STATUSSSS: ", this.status);
     if (this.shippingToUpdate.status != '0' && this.shippingToUpdate.status != '1') {
       for (const field in this.updateShippingForm.controls) {
         this.updateShippingForm.controls[field].enable();

@@ -46,6 +46,26 @@
           </select>
         </th>
 
+        <th class="align-middle" *ngIf="getStatusNumber(status) > 2">
+          Tipo Envío
+          <select class="form-select" [formControl]="filterShippingType" (change)="filterOrders();">
+            <option disabled value="" title="Selecciona filtro...">Selecciona filtro...</option>
+            <option [value]="null">Todos</option>
+            <option [value]="false">Casa</option>
+            <option [value]="true">Casillero</option>
+          </select>
+        </th>
+
+        <th class="align-middle" *ngIf="getStatusNumber(status) > 2">
+          Método Pago
+          <select class="form-select" [formControl]="filterPaymentMethod" (change)="filterOrders();">
+            <option disabled value="" title="Selecciona filtro...">Selecciona filtro...</option>
+            <option [value]="null">Todos</option>
+            <option [value]="'transfer'">Transferencia</option>
+            <option [value]="'credit'">Credito</option>
+          </select>
+        </th>
+
         <th class="th-align">Productos</th>
         <th class="th-align">Total</th>
         <th class="th-align">Opciones</th>
@@ -74,6 +94,10 @@
         <td>
           {{ data.advance_purchase ? 'Sí' : 'No' }}
         </td>
+
+        <td *ngIf="getStatusNumber(status) > 2">{{ data.is_shipping_locker ? 'Casillero' : 'Casa' }}</td>
+
+        <td *ngIf="getStatusNumber(status) > 2">{{ formatPaymentMethod(data.payment_method) }}</td>
 
         <td>{{ data.total_products ? data.total_products : "" }}</td>
 

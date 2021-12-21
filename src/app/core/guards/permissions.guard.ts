@@ -16,7 +16,6 @@ export class PermissionsGuard implements CanActivate {
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-
     const permissions = this.authenticationService.getItem('permissions');
     let access_module = false;
     MENU.map(m => {
@@ -26,7 +25,8 @@ export class PermissionsGuard implements CanActivate {
         }
       });
     })
-    if (access_module) {
+
+    if (access_module || state.url.split("/")[2] == "addressess") { //ESTO ES POR QUE ADDRESSESS NO NECESITA SER RENDERIZADO EN LA SIDE BAR
       return true;
     }
     Swal.fire('Acceso Denegado', 'Contacta con el administrador', 'info').then(r => {
