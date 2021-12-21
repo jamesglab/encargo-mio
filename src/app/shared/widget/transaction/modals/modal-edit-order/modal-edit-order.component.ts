@@ -60,9 +60,9 @@ export class ModalEditOrderComponent implements OnInit {
             products.free_shipping = (products.free_shipping ? products.free_shipping : false);
             products.tax_manually = false; // Asignamos el valor del tax manual a automático.
             this.calculateTotalPrices(index);
-            this.calculateDiscount(index);
             this.calculateTotalArticles();
             this.getFormula(index);
+            this.calculateDiscount(index);
           });
         }
         this.isLoadingQuery = false;
@@ -141,8 +141,9 @@ export class ModalEditOrderComponent implements OnInit {
   calculateDiscount(position: number) {
     if (this.status == 0 || this.status == 1 || this.status == 7) {
       if (this.orderSelected.products[position].discount > 0) {
-        this.orderSelected.products[position].discount = this.orderSelected.products[position].sub_total - this.orderSelected.products[position].sub_total * (this.orderSelected.products[position].discount / 100);
-        this.orderSelected.products[position].discount = this.orderSelected.products[position].discount / 100
+        var discount: number = 0;
+        discount = this.orderSelected.products[position].sub_total * (this.orderSelected.products[position].discount / 100);
+        this.orderSelected.products[position].sub_total = this.orderSelected.products[position].sub_total - discount;
       }
     }
   }
