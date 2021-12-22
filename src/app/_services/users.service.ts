@@ -59,7 +59,7 @@ export class UserService {
   }
 
   getAddressByUser(params) {
-    return this.http.get<any>(`${environment.microservices.user}address`,
+    return this.http.get<any>(`${environment.microservices.management}users/addressess`,
       { headers: header, params }).pipe(
         map((res: any) => {
           return res;
