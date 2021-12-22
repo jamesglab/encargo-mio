@@ -1,39 +1,32 @@
-<div class="container-fluid">
-    <app-page-title title="Direcciones de {{user?.name}} {{user?.last_name}}"></app-page-title>
-    <div class="row">
-        <div class="col-xl-12 col-md-12 col-sm-12">
+<div class="container-fluid" *ngIf="user">
+  <app-page-title
+    title="Direcciones de {{ user?.name }} {{ user?.last_name }}"
+  ></app-page-title>
 
-            <div class="addressess-container">
-                <div class="address-box" *ngFor="let item of addressess">
-                    <h4>
-                        {{item.name}}
-                    </h4>
-                    <h5>
-                        {{item.address}}
-                    </h5>
-
-                    <h5>
-                        {{item.phone}}
-                    </h5>
-
-                    <h5>
-
-                        {{item.city_name}}
-                    </h5>
-
-                    <h5>
-                        {{item.description}}
-                    </h5>
-                    <div class="btn-cont">
-                        <div class="column is-half is-flex  is-justify-content-center is-align-items-center">
-                            <a class="sub">
-                              Editar
-                            </a>
-                          </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+  <div class="row flex-wrap justify-content-center">
+    <div
+      class="card card-cont p-3"
+      *ngFor="let item of addressess"
+      [ngClass]="{ 'is-main': item.is_main }"
+    >
+      <div class="address-body">
+        <h4>{{ item.name }}</h4>
+        <h5>{{ item.address }}</h5>
+        <h5>{{ item.phone }}</h5>
+        <h5>{{ item.city_name }}</h5>
+        <h5>{{ item.description }}</h5>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="modalUpdateAddress(item)"
+        >
+          Editar
+        </button>
+      </div>
     </div>
+  </div>
 </div>
+
+<div *ngIf="!user" class="cont-not-address">Usuario sin direcciones</div>
