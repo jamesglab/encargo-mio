@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'landing' },
   { path: 'landing', component: LandingInitComponent },
   { path: 'ecommerce', loadChildren: () => import('./ecommerce/ecommerce.module').then(m => m.EcommerceModule), canActivate: [PermissionsGuard] },
+  { path: 'products', loadChildren: () => import('./products/products.module').then(m => m.ProductsModule), canActivate: [PermissionsGuard]},
   { path: 'cupons', loadChildren: () => import('./cupons/cupons.module').then(m => m.CuponsModule), canActivate: [PermissionsGuard] },
   { path: 'contacts', loadChildren: () => import('./contacts/contacts.module').then(m => m.ContactsModule), canActivate: [PermissionsGuard] },
   { path: 'fragment', loadChildren: () => import('./fragment/fragment.module').then(m => m.FragmentModule) },

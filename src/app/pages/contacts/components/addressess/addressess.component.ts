@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Subscription } from "rxjs";
 import { UserService } from "src/app/_services/users.service";
-import { UpdateAddressComponent } from "../update-address/update-address.component";
+import { UpdateAddressComponent } from "./update-address/update-address.component";
 
 @Component({
   selector: "app-addressess",

@@ -1,7 +1,5 @@
 <div class="container-fluid" *ngIf="user">
-  <app-page-title
-    title="Direcciones de {{ user?.name }} {{ user?.last_name }}"
-  ></app-page-title>
+  <app-page-title title="Direcciones de {{ user?.name }} {{ user?.last_name }}"></app-page-title>
 
   <div class="row flex-wrap justify-content-center">
     <div
@@ -30,3 +28,11 @@
 </div>
 
 <div *ngIf="!user" class="cont-not-address">Usuario sin direcciones</div>
+
+<div class="container-fluid">
+  <div>
+    <button class="btn btn-danger btn-sm" routerLink="/contacts/list">
+      <i class="mdi mdi-keyboard-backspace"></i>
+    </button>
+  </div>
+</div>
