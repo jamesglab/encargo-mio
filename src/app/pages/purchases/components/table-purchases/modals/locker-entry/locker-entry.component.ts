@@ -87,8 +87,7 @@ export class LockerEntryComponent implements OnInit {
     searchConveyor = this.conveyors.filter(x => x.id === data.conveyor);
 
     this.lockerForm = this.fb.group({
-      guide_number: [data.guide_number],
-      guide_number_alph: [data.guide_number_alph],
+      guide_number: [data.guide_number_alph],
       guide_order: [data.invoice_number ? data.invoice_number : null],
       order_purchase: [data.id],
       locker: [{ id: data.locker_id }, [Validators.required]],
@@ -98,19 +97,18 @@ export class LockerEntryComponent implements OnInit {
       weight: [data.weight ? data.weight : 0, [Validators.required, Validators.min(0.1)]],
       receipt_date: [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }, [Validators.required]],
       permanent_shipping_value: [data.permanent_shipping_value ? data.permanent_shipping_value : 0],
-      declared_value_admin: [data.declared_value_admin ? data.declared_value_admin : 0, [Validators.required, Validators.min(0)]],
+      declared_value_admin: [data.product_price, [Validators.required, Validators.min(0)]],
       conveyor: [searchConveyor ? searchConveyor[0] : null, [Validators.required]],
       force_commercial_shipping: [data.force_commercial_shipping ? data.force_commercial_shipping : false],
       product_observations: [data.product_observations],
       user: [data.user_id]
     });
 
-    this.lockerForm.controls.guide_number_alph.valueChanges.subscribe((guide: any) => {
+    this.lockerForm.controls.guide_number.valueChanges.subscribe((guide: any) => {
       if (guide && guide.guide_number) {
         this.allOrders = [];
         this.lockerForm.controls.guide_order.setValue((guide.order_service.id + ' | ' + guide.product.name));
-        this.lockerForm.controls.guide_number.setValue(guide.guide_number);
-        this.lockerForm.controls.guide_number_alph.setValue(guide.guide_number_alph);
+        this.lockerForm.controls.guide_number.setValue(guide.guide_number_alph);
         this.lockerForm.controls.order_purchase.setValue(guide.id);
         this.lockerForm.controls.locker.setValue(guide.locker.id);
         this.lockerForm.controls.locker_info.setValue(`${guide.user.name} ${guide.user.last_name}`);
@@ -137,10 +135,10 @@ export class LockerEntryComponent implements OnInit {
       if (orderPurchase && orderPurchase.id) {
         this.files = [];
         this.lockerForm.controls.guide_order.setValue((orderPurchase.order_service.id + ' | ' + orderPurchase.product.name));
-        this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number);
-        if (this.lockerForm.controls.guide_number_alph.value === "" || this.lockerForm.controls.guide_number_alph.value == null) {
-          this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
-        }
+        this.lockerForm.controls.guide_number.setValue(orderPurchase.guide_number_alph);
+        // if (this.lockerForm.controls.guide_number_alph.value === "" || this.lockerForm.controls.guide_number_alph.value == null) {
+        //   this.lockerForm.controls.guide_number_alph.setValue(orderPurchase.guide_number_alph);
+        // }
         this.lockerForm.controls.order_purchase.setValue(orderPurchase.id);
         this.lockerForm.controls.weight.setValue((orderPurchase.weight ? orderPurchase.weight : 0));
         this.lockerForm.controls.declared_value_admin.setValue((orderPurchase.product_price ? orderPurchase.product_price : 0));
