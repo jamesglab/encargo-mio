@@ -108,7 +108,7 @@ export class ModalEditLockersComponent implements OnInit {
     }
   }
 
-  setDisplayLocker(locker_object: { [ key: string ]: any }): string {
+  setDisplayLocker(locker_object: { [key: string]: any }): string {
     return `CA${locker_object.locker_id} | ${locker_object.us_name} ${locker_object.us_last_name}`;
   }
 
@@ -125,6 +125,16 @@ export class ModalEditLockersComponent implements OnInit {
       backendImages.push(this.lockerEditForm.controls.images.value[index]);
     }
     this.allImages = backendImages;
+    //FOR INITIAL IMAGE (BRING FROM URL AMAZON,EBAY,WALMART)
+    let initialImage: string = this.lockerEditForm.controls.product.value.image;
+    if (initialImage && this.allImages.length === 0) {
+      this.allImages.push({
+        Key: null,
+        Location: this.lockerEditForm.controls.product.value.image,
+        file: null,
+        delete: true
+      })
+    }
   }
 
   filesDropped(file: FileHandle[]) { // Método el cual entra cuando un usuario hace el "drop"
@@ -194,7 +204,7 @@ export class ModalEditLockersComponent implements OnInit {
     // this.isLoadingQuery = true;
     var formData = new FormData();
 
-    this.allImages.map((image: any) => { formData.append('images', image.file) });
+    this.allImages.map((image: any) => { if (!image.delete) { formData.append('images', image.file) } });
 
     if (this.lockerEditForm.controls.images.value && this.lockerEditForm.controls.images.value.length > 0) {
       let newArrayImages: any = [];
