@@ -1,0 +1,22 @@
+.card-cont {
+    margin: 9px;
+    width: 300px;
+    max-width: 300px;
+    height: auto;
+}
+.card-title {
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card-body {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.img-cont {
+    width: 210px;
+    max-height: 235px;
+    height: 235px;
+    border: 1px solid red;
+}

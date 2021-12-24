@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { ProductsRoutingModule } from './products-routing.module';
 import { GeneralComponent } from './general/general.component';
 import { SearchProductComponent } from './search-product/search-product.component';
-
+import { UIModule } from 'src/app/shared/ui/ui.module';
+import { IvyCarouselModule } from 'angular-responsive-carousel';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,9 @@ import { SearchProductComponent } from './search-product/search-product.componen
   ],
   imports: [
     CommonModule,
-    ProductsRoutingModule
+    ProductsRoutingModule,
+    UIModule,
+    IvyCarouselModule
   ]
 })
 export class ProductsModule { }
