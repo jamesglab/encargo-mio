@@ -55,10 +55,11 @@ export class ModalEditOrderComponent implements OnInit {
           this.orderSelected.trm = res.trm;
           this.orderSelected.shopper_images = res.shopper_images;
           this.orderSelected.products = res.products;
-          this.orderSelected.products.map((products: any, index: number) => {
-            products.name = (products.name ? products.name.trim() : null);
-            products.free_shipping = (products.free_shipping ? products.free_shipping : false);
-            products.tax_manually = false; // Asignamos el valor del tax manual a automático.
+          this.orderSelected.products.map((product: any, index: number) => {
+            product.real_value = product.product_value;
+            product.name = (product.name ? product.name.trim() : null);
+            product.free_shipping = (product.free_shipping ? product.free_shipping : false);
+            product.tax_manually = false; // Asignamos el valor del tax manual a automático.
             this.calculateTotalPrices(index);
             this.calculateTotalArticles();
             this.getFormula(index);
@@ -142,8 +143,8 @@ export class ModalEditOrderComponent implements OnInit {
     if (this.status == 0 || this.status == 1 || this.status == 7) {
       if (this.orderSelected.products[position].discount > 0) {
         var discount: number = 0;
-        discount = this.orderSelected.products[position].sub_total * (this.orderSelected.products[position].discount / 100);
-        this.orderSelected.products[position].sub_total = this.orderSelected.products[position].sub_total - discount;
+        discount = this.orderSelected.products[position].real_value * (this.orderSelected.products[position].discount / 100);
+        this.orderSelected.products[position].product_value = (this.orderSelected.products[position].real_value - discount).toFixed(2);
       }
     }
   }
