@@ -78,6 +78,7 @@ export class UpdateAddressComponent implements OnInit {
       if (this.update_address_form.invalid) {
         throw new Error("Campos incompletos");
       }
+
       this.isLoader = true;
       this._userService
         .updateAddress({
@@ -109,9 +110,11 @@ export class UpdateAddressComponent implements OnInit {
         (res: any) => {
           //VALIDAMOS QUE EXISTAN CIUDADES
           if (res.length > 0) {
+            this.cities = [];
             //HABILITAMOS EL CONTROLADOR DE LA CIUDAD
             this.update_address_form.get("city").enable();
             //AGREGAMOS LAS CIUDADES
+
             this.cities = res;
           }
         },
@@ -186,7 +189,7 @@ export class UpdateAddressComponent implements OnInit {
 
   _filter(value: string, array: any): string[] {
     const filterValue = this._normalizeValue(value);
-    let fileterdData = this[array].filter((option) =>
+    const fileterdData = this[array].filter((option) =>
       this._normalizeValue(option).includes(filterValue)
     );
     if (fileterdData.length > 0) {
