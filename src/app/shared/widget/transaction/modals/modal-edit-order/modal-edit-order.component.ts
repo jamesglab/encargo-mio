@@ -56,15 +56,14 @@ export class ModalEditOrderComponent implements OnInit {
           this.orderSelected.shopper_images = res.shopper_images;
           this.orderSelected.products = res.products;
           this.orderSelected.products.map((product: any, index: number) => {
-            product.real_value = product.product_value;
             product.name = (product.name ? product.name.trim() : null);
             product.free_shipping = (product.free_shipping ? product.free_shipping : false);
             product.tax_manually = false; // Asignamos el valor del tax manual a automático.
             this.calculateTotalPrices(index);
             this.calculateTotalArticles();
-            this.getFormula(index);
             this.calculateDiscount(index);
           });
+          this.getFormula();
         }
         this.isLoadingQuery = false;
       }, err => {
@@ -78,15 +77,17 @@ export class ModalEditOrderComponent implements OnInit {
     }
   }
 
-  getFormula(position: number) {
+  getFormula() {
     return new Promise((resolve, reject) => {
       if (this.status == 0 || this.status == 1 || this.status == 7) {
         this.isLoadingFormula = true;
         this._orders.calculateShipping(this.orderSelected.products)
           .subscribe((res: any) => {
             this.orderSelected.shipping_value_admin = res;
-            this.calculateTotalPrices(position); // Calcular el total de precios
-            this.calculateDiscount(position); // Calculamos el descuento
+            this.orderSelected.products.map((product: any, index: number) => {
+              this.calculateDiscount(index); // Calculamos el descuento
+              this.calculateTotalPrices(index); // Calcular el total de precios
+            });
             this.calculateTotalArticles(); // Luego calculamos el total de los articulos
             resolve("ok");
             this.isLoadingFormula = false;
@@ -143,8 +144,14 @@ export class ModalEditOrderComponent implements OnInit {
     if (this.status == 0 || this.status == 1 || this.status == 7) {
       if (this.orderSelected.products[position].discount > 0) {
         var discount: number = 0;
-        discount = this.orderSelected.products[position].real_value * (this.orderSelected.products[position].discount / 100);
-        this.orderSelected.products[position].product_value = (this.orderSelected.products[position].real_value - discount).toFixed(2);
+        if((this.orderSelected.products[position].before_discount != this.orderSelected.products[position].discount) || 
+        (this.orderSelected.products[position].before_value != this.orderSelected.products[position].product_value)) {
+          discount = this.orderSelected.products[position].product_value * (this.orderSelected.products[position].discount / 100);
+          this.orderSelected.products[position].product_value = (this.orderSelected.products[position].product_value - discount).toFixed(2);
+          this.orderSelected.products[position].before_discount = this.orderSelected.products[position].discount;
+          this.orderSelected.products[position].before_value = this.orderSelected.products[position].product_value;
+          this.calculateTotalPrices(position);
+        }
       }
     }
   }
@@ -161,7 +168,7 @@ export class ModalEditOrderComponent implements OnInit {
     this.orderSelected.products[i].tax_manually = false; // Setear que el tax_manually estará automatico
     this.orderSelected.products[i].selected_tax = item;
     this.calculateTax(i);
-    this.getFormula(i); // Obtenemos la fórmula y le pasamos una posición.
+    this.getFormula(); // Obtenemos la fórmula y le pasamos una posición.
   }
 
   calculateTaxManually(i: number): void {
@@ -176,7 +183,7 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   setPermanentShipping(i: number): void {
-    this.getFormula(i);
+    this.getFormula();
   }
 
   validateShipping(i: number): void {
@@ -275,7 +282,7 @@ export class ModalEditOrderComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    await this.getFormula(0);
+    await this.getFormula();
     this._orders.updateOrder(this.orderSelected)
       .subscribe((res: any) => {
         this._notify.show("Cotización Actualizada", `Actualizaste la cotización # ${this.orderSelected.id}`, "success");
