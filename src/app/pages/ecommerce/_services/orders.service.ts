@@ -1,24 +1,20 @@
-
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { header, handleError } from 'src/app/_helpers/tools/header.tool';
-import { environment } from 'src/environments/environment';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { map, catchError } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { header, handleError } from "src/app/_helpers/tools/header.tool";
+import { environment } from "src/environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
-
 export class OrderService {
-
-  constructor(
-    private http: HttpClient,
-  ) { }
+  constructor(private http: HttpClient) {}
 
   getProductInfo(url: string): Observable<any> {
-    return this.http.post<any>(
-      `${environment.microservices.scraping}`, { url }).pipe(
+    return this.http
+      .post<any>(`${environment.microservices.scraping}`, { url })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -27,8 +23,12 @@ export class OrderService {
   }
 
   getQuotations(params) {
-    return this.http.get<any>(
-      `${environment.microservices.management}orders`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}orders`, {
+        headers: header,
+        params,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -37,8 +37,12 @@ export class OrderService {
   }
 
   detailOrder(params) {
-    return this.http.get<any>(
-      `${environment.microservices.management}orders/detail`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}orders/detail`, {
+        headers: header,
+        params,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -47,30 +51,43 @@ export class OrderService {
   }
 
   createQuotation(body: any) {
-    if (body && body.length > 0) { body.map((item: any) => { delete item.uploaded_files; }); }
-    return this.http.post<any>(
-      `${environment.microservices.management}orders`, body).pipe(
+    if (body && body.length > 0) {
+      body.map((item: any) => {
+        delete item.uploaded_files;
+      });
+    }
+    return this.http
+      .post<any>(`${environment.microservices.management}orders`, body)
+      .pipe(
         map((res: any) => {
           return res;
         }),
-        catchError(handleError));
-
+        catchError(handleError)
+      );
   }
 
   updateOrder(order) {
     const products = order.products;
-    return this.http.put<any>(
-      `${environment.microservices.management}orders`, { ...order, status: '1' },
-      { headers: header, params: { id: order.id } }).pipe(
+    return this.http
+      .put<any>(
+        `${environment.microservices.management}orders`,
+        { ...order, status: "1" },
+        { headers: header, params: { id: order.id } }
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
-        catchError(handleError));
+        catchError(handleError)
+      );
   }
 
   getTRM() {
-    return this.http.get<any>(
-      `${environment.microservices.management}trm`, { headers: header, }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}trm`, {
+        headers: header,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -79,20 +96,26 @@ export class OrderService {
   }
 
   calculateShipping(products: any) {
-    return this.http.post<any>(
-      `${environment.microservices.management}orders/calculate-shipping`, { products: products, type: 'quotation' }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .post<any>(
+        `${environment.microservices.management}orders/calculate-shipping`,
+        { products: products, type: "quotation" }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   // HACEMOS CONSULTA PARA TENER LAS TIENDAS ASOCIADAS A ENCARGOMIO
   getStores() {
-    return this.http.get<any>(
-      `${environment.microservices.management}store`, { headers: header, }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}store`, {
+        headers: header,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -101,20 +124,26 @@ export class OrderService {
   }
 
   registerPurchase(purchase: any) {
-    return this.http.post<any>(
-      `${environment.microservices.management}order-purchase`, purchase
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .post<any>(
+        `${environment.microservices.management}order-purchase`,
+        purchase
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   getLockerByUser(params) {
-
-    return this.http.get<any>(
-      `${environment.microservices.management}locker/user`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}locker/user`, {
+        headers: header,
+        params,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -123,8 +152,26 @@ export class OrderService {
   }
 
   getPurchaseByOrder(params) {
-    return this.http.get<any>(
-      `${environment.microservices.management}order-purchase/filter`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(
+        `${environment.microservices.management}order-purchase/filter`,
+        { headers: header, params }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
+  getPurchaseByOrderId(params) {
+    return this.http
+      .get<any>(`${environment.microservices.management}order-purchase/detail`, {
+        headers: header,
+        params,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -133,8 +180,11 @@ export class OrderService {
   }
 
   getConvenyor() {
-    return this.http.get<any>(
-      `${environment.microservices.management}conveyor`, { headers: header }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}conveyor`, {
+        headers: header,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -143,30 +193,34 @@ export class OrderService {
   }
 
   insertProductLocker(payload: any) {
-    return this.http.post<any>(
-      `${environment.microservices.management}locker`, payload
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .post<any>(`${environment.microservices.management}locker`, payload)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   updateProductLocker(payload: any) {
-    return this.http.put<any>(
-      `${environment.microservices.management}locker`, payload
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .put<any>(`${environment.microservices.management}locker`, payload)
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   getProductsByLocker(params) {
-    return this.http.get<any>(
-      `${environment.microservices.management}locker/products`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}locker/products`, {
+        headers: header,
+        params,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -175,8 +229,12 @@ export class OrderService {
   }
 
   getProductsByockerAndStatus(params: any): Observable<any> {
-    return this.http.get<any>(
-      `${environment.microservices.management}locker/products`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}locker/products`, {
+        headers: header,
+        params,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -185,8 +243,11 @@ export class OrderService {
   }
 
   getShippingTypes() {
-    return this.http.get<any>(
-      `${environment.microservices.management}shipping-types`, { headers: header }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}shipping-types`, {
+        headers: header,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -195,8 +256,13 @@ export class OrderService {
   }
 
   createShipping(payload) {
-    return this.http.post<any>(
-      `${environment.microservices.management}shipping-order`, payload, { headers: header }).pipe(
+    return this.http
+      .post<any>(
+        `${environment.microservices.management}shipping-order`,
+        payload,
+        { headers: header }
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -205,8 +271,12 @@ export class OrderService {
   }
 
   getAllShippings(params: any) {
-    return this.http.get<any>(
-      `${environment.microservices.management}shipping-order`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}shipping-order`, {
+        headers: header,
+        params,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -215,8 +285,12 @@ export class OrderService {
   }
 
   getShippingById(params) {
-    return this.http.get<any>(
-      `${environment.microservices.management}shipping-order/detail`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(
+        `${environment.microservices.management}shipping-order/detail`,
+        { headers: header, params }
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -225,8 +299,13 @@ export class OrderService {
   }
 
   addProductByShipping(payload, params) {
-    return this.http.post<any>(
-      `${environment.microservices.management}shipping-order/add-product`, payload, { headers: header, params }).pipe(
+    return this.http
+      .post<any>(
+        `${environment.microservices.management}shipping-order/add-product`,
+        payload,
+        { headers: header, params }
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -235,8 +314,13 @@ export class OrderService {
   }
 
   deleteProductByShipping(payload, params) {
-    return this.http.put<any>(
-      `${environment.microservices.management}shipping-order/delete-product`, payload, { headers: header, params }).pipe(
+    return this.http
+      .put<any>(
+        `${environment.microservices.management}shipping-order/delete-product`,
+        payload,
+        { headers: header, params }
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -245,8 +329,13 @@ export class OrderService {
   }
 
   updateShipping(payload: any) {
-    return this.http.put<any>(
-      `${environment.microservices.management}shipping-order/`, payload, { headers: header }).pipe(
+    return this.http
+      .put<any>(
+        `${environment.microservices.management}shipping-order/`,
+        payload,
+        { headers: header }
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -255,8 +344,12 @@ export class OrderService {
   }
 
   updateImageByProduct(payload) {
-    return this.http.post<any>(
-      `${environment.microservices.management}orders/update-image`, payload).pipe(
+    return this.http
+      .post<any>(
+        `${environment.microservices.management}orders/update-image`,
+        payload
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -265,8 +358,12 @@ export class OrderService {
   }
 
   uploadNewImage(payload: any) {
-    return this.http.post<any>(
-      `${environment.microservices.management}orders/add-image`, payload).pipe(
+    return this.http
+      .post<any>(
+        `${environment.microservices.management}orders/add-image`,
+        payload
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -275,8 +372,12 @@ export class OrderService {
   }
 
   getOrderPurchase(params) {
-    return this.http.get<any>(
-      `${environment.microservices.management}order-purchase`, { headers: header, params }).pipe(
+    return this.http
+      .get<any>(`${environment.microservices.management}order-purchase`, {
+        headers: header,
+        params,
+      })
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -285,8 +386,12 @@ export class OrderService {
   }
 
   updatePurchase(payload) {
-    return this.http.put<any>(
-      `${environment.microservices.management}order-purchase`, payload).pipe(
+    return this.http
+      .put<any>(
+        `${environment.microservices.management}order-purchase`,
+        payload
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -295,57 +400,69 @@ export class OrderService {
   }
 
   ordersForPurchase(params: any): Observable<any> {
-    return this.http.get<any>(
-      `${environment.microservices.management}order-purchase/products`,
-      { headers: header, params }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .get<any>(
+        `${environment.microservices.management}order-purchase/products`,
+        { headers: header, params }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   getDataByGuide(data: any): Observable<any> {
-    return this.http.get<any>(
-      `${environment.microservices.management}locker/guide-number`,
-      { headers: header, params: { guide_number: data } }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .get<any>(`${environment.microservices.management}locker/guide-number`, {
+        headers: header,
+        params: { guide_number: data },
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   getUsersByName(data: any): Observable<any> {
-    return this.http.get<any>(
-      `${environment.microservices.management}users/by-name`,
-      { headers: header, params: { name: data } }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .get<any>(`${environment.microservices.management}users/by-name`, {
+        headers: header,
+        params: { name: data },
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   getLockersByUser(data: any): Observable<any> {
-    return this.http.get<any>(
-      `${environment.microservices.management}locker/user-locker`,
-      { headers: header, params: { user: data } }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .get<any>(`${environment.microservices.management}locker/user-locker`, {
+        headers: header,
+        params: { user: data },
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   updateShippingPacked(payload: any) {
-    delete payload.products
-    return this.http.put<any>(
-      `${environment.microservices.management}shipping-order`, payload).pipe(
+    delete payload.products;
+    return this.http
+      .put<any>(
+        `${environment.microservices.management}shipping-order`,
+        payload
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -354,56 +471,68 @@ export class OrderService {
   }
 
   validateNotProducts(shipping_order: any) {
-    return this.http.get<any>(
-      `${environment.microservices.management}shipping-order/validate-not-products`,
-      { headers: header, params: { shipping_order: shipping_order } }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .get<any>(
+        `${environment.microservices.management}shipping-order/validate-not-products`,
+        { headers: header, params: { shipping_order: shipping_order } }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   deleteProduct(product: string): Observable<any> {
-    return this.http.delete<any>(
-      `${environment.microservices.management}orders/delete-product`,
-      { headers: header, params: { product } }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .delete<any>(
+        `${environment.microservices.management}orders/delete-product`,
+        { headers: header, params: { product } }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   countsTabs() {
-    return this.http.get<any>(
-      `${environment.microservices.management}orders/count-tabs`,
-      { headers: header }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .get<any>(`${environment.microservices.management}orders/count-tabs`, {
+        headers: header,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   countsTabsShipping() {
-    return this.http.get<any>(
-      `${environment.microservices.management}shipping-order/count-tabs`,
-      { headers: header }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    )
+    return this.http
+      .get<any>(
+        `${environment.microservices.management}shipping-order/count-tabs`,
+        { headers: header }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
   shippingOrderIsDelivered(id) {
-    return this.http.put<any>(
-      `${environment.microservices.management}shipping-order/is-delivered`, {}, { params: { id } }).pipe(
+    return this.http
+      .put<any>(
+        `${environment.microservices.management}shipping-order/is-delivered`,
+        {},
+        { params: { id } }
+      )
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -413,8 +542,9 @@ export class OrderService {
 
   //UPDATE CONVEYOR STATUS LAMBDA
   updateStatusConveyor(shipping_order): Observable<any> {
-    return this.http.post<any>(
-      `${environment.microservices.updateConveyor}`, shipping_order).pipe(
+    return this.http
+      .post<any>(`${environment.microservices.updateConveyor}`, shipping_order)
+      .pipe(
         map((res: any) => {
           return res;
         }),
@@ -423,15 +553,17 @@ export class OrderService {
   }
 
   anulateOrder(id: any): Observable<any> {
-    return this.http.put<any>(
-      `${environment.microservices.management}orders/anulate-order`, {},
-      { headers: header, params: { id } }
-    ).pipe(
-      map((res: any) => {
-        return res;
-      }),
-      catchError(handleError)
-    );
+    return this.http
+      .put<any>(
+        `${environment.microservices.management}orders/anulate-order`,
+        {},
+        { headers: header, params: { id } }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
-
 }

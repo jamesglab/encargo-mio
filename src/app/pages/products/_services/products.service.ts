@@ -1,22 +1,40 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { header, handleError } from 'src/app/_helpers/tools/header.tool';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { map, catchError } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { header, handleError } from "src/app/_helpers/tools/header.tool";
 
-import { environment } from 'src/environments/environment';
+import { environment } from "src/environments/environment";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ProductsService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getProductInformation(id: string): Observable<any> {
     return this.http
-      .get<any>(`${environment.microservices.management}products/detail`, { params: { id } })
-      .pipe(map((res: any) => {return res; }), catchError(handleError));
+      .get<any>(`${environment.microservices.management}products/detail`, {
+        params: { id },
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
   }
 
+  getAllGenralProductInformation(params): Observable<any> {
+    return this.http
+      .get<any>(`${environment.microservices.management}products`, {
+        params,
+      })
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
 }
