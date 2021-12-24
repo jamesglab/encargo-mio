@@ -126,7 +126,7 @@
 
       <hr *ngIf="i > 0">
 
-      <div class="alert alert-warning" role="alert" *ngIf="item.order_purchase && item.order_purchase.sold_out">
+      <div class="alert alert-danger" role="alert" *ngIf="(item.order_purchase && item.order_purchase.sold_out) || item.sold_out ">
         <strong>Este producto se encuentra agotado.</strong>
       </div>
 
@@ -164,27 +164,37 @@
 
               <div class="col-md-6">
 
-                <div class="mb-3">
+                <div class="form-group mb-3">
 
                   <label for="name" class="form-label">Nombre* </label>
                   <input type="text" class="form-control" placeholder="Ingresa el nombre del producto"
                     [(ngModel)]="item.name" [disabled]="disabledAllInputs">
-
+                  <div class="invalid-feedback" *ngIf="item.name == 'null' || item.name == undefined || item.name == ''">
+                      Digita nombre por favor
+                  </div>
                 </div>
 
                 <div class="mb-3">
                   <label for="observations" class="form-label">Observaciones de Cotización</label>
                   <textarea class="form-control" id="observations" cols="30" rows="5" [(ngModel)]="item.aditional_info"
-                    [disabled]="disabledAllInputs" placeholder="Ingresa las observaciones de la cotización.">
+                    [disabled]="item.sold_out || disabledAllInputs" placeholder="Ingresa las observaciones de la cotización.">
                   </textarea>
                 </div>
 
                 <div class="mb-3">
                   <label for="observations-client" class="form-label">Observaciones del Cliente</label>
                   <textarea class="form-control" id="observations-client" cols="30" rows="5"
-                    [(ngModel)]="item.description" [disabled]="disabledAllInputs"
+                    [(ngModel)]="item.description" [disabled]="item.sold_out || disabledAllInputs"
                     placeholder="Observaciones del cliente.">
                   </textarea>
+                </div>
+
+                <div class="mb-3">
+                  <div class="form-check form-switch text-truncate h6">
+                    <label for="form-group">Producto Agotado</label>
+                    <input class="form-check-input" type="checkbox" (change)="getFormula();"
+                      id="flexSwitchCheckChecked" [(ngModel)]="item.sold_out" [disabled]="disabledAllInputs">
+                  </div>
                 </div>
 
                 <div class="h6">
@@ -219,21 +229,25 @@
                     <label for="article-value" class="form-label">Valor Articulo (USD)*</label>
                     <input type="number" id="article-value" class="form-control" placeholder="Valor en USD"
                       [(ngModel)]="item.product_value" (keypress)="numberOnly($event);" (blur)="getFormula();"
-                      [disabled]="item.free_shipping || disabledAllInputs">
+                      [disabled]="disabledAllInputs">
+                    <div class="invalid-feedback"
+                      *ngIf="item.product_value == null || item.product_value == undefined || item.product_value == ''">
+                      El valor del producto es requerido
+                    </div>
                   </div>
 
                   <div class="col-sm">
                     <label for="discount" class="form-label">Descuento</label>
                     <input type="number" id="discount" class="form-control" placeholder="% descuento"
                       [(ngModel)]="item.discount" (keypress)="numberOnly($event);" (change)="calculateDiscount(i);"
-                      [disabled]="item.free_shipping || disabledAllInputs">
+                      [disabled]="item.free_shipping || item.sold_out || disabledAllInputs">
                   </div>
 
                   <div class="col-sm">
                     <label for="tax" class="form-label">Tax</label>
                     <input type="number" class="form-control" id="tax" placeholder="Tax" [(ngModel)]="item.tax"
                       (ngModelChange)="taxOnChanges(i, $event);" min="0" (keypress)="numberOnly($event);"
-                      (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || disabledAllInputs">
+                      (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || item.sold_out || disabledAllInputs">
 
                     <div class="container-calcs">
 
@@ -265,7 +279,7 @@
                       <input type="number" id="shipping-order" class="form-control" min="0" placeholder="Envio origen"
                         [(ngModel)]="item.shipping_origin_value_product" (keypress)="numberOnly($event);"
                         (blur)="validateShipping(i); getFormula();"
-                        [disabled]="item.free_shipping || disabledAllInputs">
+                        [disabled]="item.free_shipping || item.sold_out || disabledAllInputs">
                     </div>
 
                   </div>
@@ -276,14 +290,18 @@
                       <label for="weight" class="form-label">Peso(Libras)*</label>
                       <input type="number" id="weight" class="form-control" placeholder="Peso en libras"
                         [(ngModel)]="item.weight" (keypress)="numberOnly($event);" (blur)="getFormula();"
-                        [disabled]="item.free_shipping || disabledAllInputs">
+                        [disabled]="disabledAllInputs">
+                      <div class="invalid-feedback"
+                        *ngIf="item.weight == null || item.weight == undefined || item.weight == ''">
+                        Digita peso por favor
+                      </div>
                     </div>
 
                     <div class="col-sm">
                       <label for="permanent-shipping" class="form-label">Valor Envio fijo </label>
                       <input type="number" class="form-control" id="permanent-shipping" placeholder="Valor envio fijo"
                         [(ngModel)]="item.permanent_shipping_value" (keypress)="numberOnly($event);"
-                        (blur)="setPermanentShipping(i);" [disabled]="item.free_shipping || disabledAllInputs">
+                        (blur)="setPermanentShipping(i);" [disabled]="item.sold_out || item.free_shipping || disabledAllInputs">
                     </div>
 
                   </div>
@@ -301,7 +319,7 @@
                       <div class="form-check form-switch text-truncate h6">
                         <label for="form-group">Envio Gratis</label>
                         <input class="form-check-input" type="checkbox" (change)="getFormula();"
-                          id="flexSwitchCheckChecked" [(ngModel)]="item.free_shipping" [disabled]="disabledAllInputs">
+                          id="flexSwitchCheckChecked" [(ngModel)]="item.free_shipping" [disabled]="item.sold_out || disabledAllInputs">
                       </div>
 
                     </div>
