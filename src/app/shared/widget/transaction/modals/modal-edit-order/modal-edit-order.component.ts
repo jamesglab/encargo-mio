@@ -159,7 +159,11 @@ export class ModalEditOrderComponent implements OnInit {
   calculateTotalArticles() {
     var sub_total: number = 0;
     var total_weight: number = 0;
-    this.orderSelected.products.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; });
+    this.orderSelected.products.map((product: any) => {
+      if(!product.sold_out){
+        sub_total += product.sub_total; total_weight += product.weight;
+      } 
+    });
     this.orderSelected.sub_total = sub_total;
     this.orderSelected.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
   }
