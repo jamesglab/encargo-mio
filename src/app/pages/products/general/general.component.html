@@ -1,311 +1,212 @@
-<div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-body">
-        <app-page-title title="General"></app-page-title>
+<div class="container-fluid">
 
-        <!-- TABLE -->
+  <app-page-title title="General"></app-page-title>
 
-        <table class="table table-centered table-nowrap mt-3">
-          <thead class="table-light">
-            <tr>
-              <th class="align-middle">
-                Imagen
-                <div class="mt-2"></div>
-              </th>
+  <div class="row">
+    <div class="col-xl-12 col-md-12 col-sm-12">
+      <div class="card">
+        <div class="card-body">
 
-              <th class="align-middle">
-                Id del Producto
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    class="form-control"
-                    [formControl]="filterIdProduct"
-                    placeholder="Id del producto"
-                    (keyup.enter)="filterProducts()"
-                  />
-                </div>
-              </th>
+          <!--TABLE-->
+          <div class="container-table">
+            <div class="table-responsive mb-0">
 
-              <th class="align-middle">
-                Nombre del Producto
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    class="form-control"
-                    [formControl]="productName"
-                    placeholder="Ingresa el nombre del producto"
-                    (keyup.enter)="filterProducts()"
-                  />
-                </div>
-              </th>
-              <th class="align-middle">
-                Estado Producto
-                <select
-                  class="form-select mt-2"
-                  [formControl]="filterStatusProduct"
-                  (change)="filterProducts()"
-                >
-                  <option disabled title="Selecciona filtro...">
-                    Selecciona filtro...
-                  </option>
-                  <option value="null">Todos</option>
-                  <option [value]="0">Por Ingresar</option>
-                  <option [value]="1">En Casillero</option>
-                </select>
-              </th>
+              <table class="table table-centered table-nowrap mt-3">
+                <thead class="table-light">
+                  <tr>
+                    <th class="align-middle">
+                      Imagen
+                      <div class="mt-2"></div>
+                    </th>
 
-              <th class="align-middle">Precio</th>
-
-              <th class="align-middle">
-                Cotización
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    class="form-control"
-                    [formControl]="filterOrderService"
-                    placeholder="Ingresa el Id de cotización"
-                    (keyup.enter)="filterProducts()"
-                  />
-                </div>
-              </th>
-
-              <!--SEARCH STATES ON UTILS.TOOL.TS (GET_STATUS)-->
-
-              <th class="align-middle">
-                # Compra
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    class="form-control"
-                    [formControl]="filterCode"
-                    (keyup.enter)="filterProducts()"
-                    placeholder="Ingresa el Id de la compra"
-                  />
-                </div>
-              </th>
-
-              <th class="align-middle">
-                Fecha Ingreso Casillero
-                <div
-                  class="input-group clockpicker mt-2"
-                  style="min-width: 150px"
-                >
-                  <input
-                    placeholder="yyyy-mm-dd"
-                    class="form-control"
-                    [formControl]="filterCode"
-                    [value]="formatLockerDate()"
-                    disabled
-                  />
-
-                  <input
-                    ngbDatepicker
-                    class="form-control"
-                    id="dateLocker"
-                    placeholder="yyyy-mm-dd"
-                    (ngModelChange)="filterProducts()"
-                    #dl2="ngbDatepicker"
-                    [formControl]="filterDate"
-                    style="display: none"
-                  />
-                  <div class="input-group-append" (click)="dl2.toggle()">
-                    <span class="input-group-text"
-                      ><i class="mdi mdi-calendar"></i
-                    ></span>
-                  </div>
-                </div>
-              </th>
-
-              <th class="align-middle">
-                Envio
-                <input
-                  type="text"
-                  class="form-control mt-2"
-                  [formControl]="purchaseNumber"
-                  (keyup.enter)="filterProducts()"
-                  placeholder="Ingresa el Id de cotización"
-                />
-              </th>
-
-              <th class="align-middle">
-                Usuario
-                <div class="mt-2">
-                  <input
-                    type="text"
-                    id="user_id"
-                    class="form-control"
-                    autocomplete="off"
-                    [formControl]="filterUser"
-                    (keyup.enter)="filterProducts()"
-                    placeholder="Selecciona el usuario"
-                    [matAutocomplete]="auto_user"
-                  />
-                  <mat-autocomplete
-                    #auto_user="matAutocomplete"
-                    [displayWith]="displayFnUserName"
-                  >
-                    <mat-option
-                      *ngFor="let user of filteredUsers | async"
-                      [value]="user"
-                      (click)="filterProducts()"
-                    >
-                      CA{{ user.locker_id }} | {{ user.name }}
-                      {{ user.last_name }}
-                    </mat-option>
-                  </mat-autocomplete>
-                </div>
-              </th>
-
-              <th class="align-middle">Opciones</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr
-              *ngFor="let data of products"
-              [ngClass]="{ 'sold-out': data.sold_out }"
-            >
-              <td style="position: relative">
-                <div class="image-product">
-                  <a [href]="data.link" target="_blank">
-                    <carousel
-                      [arrows]="false"
-                      [width]="100"
-                      [height]="100"
-                      [cellsToShow]="1"
-                      [loop]="true"
-                      style="z-index: 0 !important"
-                    >
-                      <div class="carousel-cell">
-                        <img
-                          *ngIf="!data.images"
-                          [src]="data.image"
-                          alt=""
-                          draggable="false"
-                          (error)="onImageError($event)"
-                        />
-                        <ng-container
-                          *ngIf="data.images && data.images.length > 0"
-                        >
-                          <img
-                            *ngFor="let image of data.images"
-                            [src]="image.Location"
-                            alt=""
-                            title=""
-                            draggable="false"
-                            (error)="onImageError($event)"
-                          />
-                        </ng-container>
+                    <th class="align-middle">
+                      Id del Producto
+                      <div class="mt-2">
+                        <input type="text" class="form-control" [formControl]="filterIdProduct"
+                          placeholder="Id del producto" (keyup.enter)="filterProducts()" />
                       </div>
-                    </carousel>
-                  </a>
-                </div>
-                <a [href]="data.link" target="_blank" *ngIf="data.sold_out">
-                  <img
-                    class="img-sold-out"
-                    src="/assets/agotado.png"
-                    alt=""
-                    draggable="false"
-                  />
-                </a>
-              </td>
+                    </th>
 
-              <td>
-                <a class="text-body fw-bold">
-                  {{ data.id }}
-                </a>
-              </td>
+                    <th class="align-middle">
+                      Nombre del Producto
+                      <div class="mt-2">
+                        <input type="text" class="form-control" [formControl]="productName"
+                          placeholder="Ingresa el nombre del producto" (keyup.enter)="filterProducts()" />
+                      </div>
+                    </th>
+                    <th class="align-middle">
+                      Estado Producto
+                      <select class="form-select mt-2" [formControl]="filterStatusProduct" (change)="filterProducts()">
+                        <option disabled title="Selecciona filtro...">
+                          Selecciona filtro...
+                        </option>
+                        <option value="null">Todos</option>
+                        <option [value]="0">Por Ingresar</option>
+                        <option [value]="1">En Casillero</option>
+                      </select>
+                    </th>
 
-              <td>
-                {{
-                  (data?.name?.length > 20
-                    ? (data?.name | slice: 0:20) + "..."
-                    : data?.name) || "-"
-                }}
-              </td>
+                    <th class="align-middle">Precio</th>
 
-              <td>
-                {{ data.locker_has_product ? "En casillero" : "Por Ingresar" }}
-              </td>
+                    <th class="align-middle">
+                      Cotización
+                      <div class="mt-2">
+                        <input type="text" class="form-control" [formControl]="filterOrderService"
+                          placeholder="Ingresa el Id de cotización" (keyup.enter)="filterProducts()" />
+                      </div>
+                    </th>
 
-              <td>
-                {{ "USD " + (data.product_value || data.declared_value_admin) }}
-                /
-                {{
-                  (data.product_value || data.declared_value_admin) *
-                    (data.trm_value || 0) | currency: "COP ":"symbol":"1.0-0"
-                }}
-              </td>
+                    <!--SEARCH STATES ON UTILS.TOOL.TS (GET_STATUS)-->
 
-              <td>
-                {{ data.order_service || "-" }}
-              </td>
+                    <th class="align-middle">
+                      # Compra
+                      <div class="mt-2">
+                        <input type="text" class="form-control" [formControl]="filterCode"
+                          (keyup.enter)="filterProducts()" placeholder="Ingresa el Id de la compra" />
+                      </div>
+                    </th>
 
-              <td>
-                {{ data.order_purchase || "-" }}
-              </td>
+                    <th class="align-middle">
+                      Fecha Ingreso Casillero
+                      <div class="input-group clockpicker mt-2" style="min-width: 150px">
+                        <input placeholder="yyyy-mm-dd" class="form-control" [formControl]="filterCode"
+                          [value]="formatLockerDate()" disabled />
 
-              <td>
-                {{ data.locker_created_at | date }}
-              </td>
+                        <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
+                          (ngModelChange)="filterProducts()" #dl2="ngbDatepicker" [formControl]="filterDate"
+                          style="display: none" />
+                        <div class="input-group-append" (click)="dl2.toggle()">
+                          <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                        </div>
+                      </div>
+                    </th>
 
-              <td>
-                {{ data.shipping_order || "-" }}
-              </td>
-              <td>
-                CA{{
-                  data.locker_id + " " + data?.user_name + " " + data?.last_name
-                }}
-              </td>
+                    <th class="align-middle">
+                      Envio
+                      <input type="text" class="form-control mt-2" [formControl]="purchaseNumber"
+                        (keyup.enter)="filterProducts()" placeholder="Ingresa el Id de cotización" />
+                    </th>
 
-              <td>
-                <div class="center">
-                  <button
-                    type="button"
-                    class="btn"
-                    (click)="displayModalProduct(data)"
-                  >
-                    <span
-                      ><svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="36"
-                        height="36"
-                        viewBox="0 0 24 24"
-                        style="fill: #c2c2ca"
-                      >
-                        <path
-                          d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
-                        ></path></svg
-                    ></span>
-                  </button>
-                </div>
-              </td>
+                    <th class="align-middle">
+                      Usuario
+                      <div class="mt-2">
+                        <input type="text" id="user_id" class="form-control" autocomplete="off"
+                          [formControl]="filterUser" (keyup.enter)="filterProducts()"
+                          placeholder="Selecciona el usuario" [matAutocomplete]="auto_user" />
+                        <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
+                          <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+                            (click)="filterProducts()">
+                            CA{{ user.locker_id }} | {{ user.name }}
+                            {{ user.last_name }}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </div>
+                    </th>
 
-              <td>
-                <!-- <button type="button" class="btn btn-primary btn-sm btn-rounded" [disabled]="isLoading"
-              (click)="selectPurchase(data);" *ngIf="!data.sold_out">
-              Editar
-            </button> -->
+                    <th class="align-middle">Opciones</th>
+                  </tr>
+                </thead>
 
-                <!-- <button type="button" *ngIf="!data.sold_out && !data.locker_has_product" style="margin-left: 10px;"
-              class="btn btn-success btn-sm btn-rounded" (click)="openLocker(modal, data);">
-              Ingresar a Casillero
-            </button> -->
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <tbody>
+                  <tr *ngFor="let data of products" [ngClass]="{ 'sold-out': data.sold_out }">
+                    <td style="position: relative">
+                      <div class="image-product">
+                        <a [href]="data.link" target="_blank">
+                          <carousel [arrows]="false" [width]="100" [height]="100" [cellsToShow]="1" [loop]="true"
+                            style="z-index: 0 !important">
+                            <div class="carousel-cell">
+                              <img *ngIf="!data.images" [src]="data.image" alt="" draggable="false"
+                                (error)="onImageError($event)" />
+                              <ng-container *ngIf="data.images && data.images.length > 0">
+                                <img *ngFor="let image of data.images" [src]="image.Location" alt="" title=""
+                                  draggable="false" (error)="onImageError($event)" />
+                              </ng-container>
+                            </div>
+                          </carousel>
+                        </a>
+                      </div>
+                      <a [href]="data.link" target="_blank" *ngIf="data.sold_out">
+                        <img class="img-sold-out" src="/assets/agotado.png" alt="" draggable="false" />
+                      </a>
+                    </td>
+
+                    <td>
+                      <a class="text-body fw-bold">
+                        {{ data.id }}
+                      </a>
+                    </td>
+
+                    <td>
+                      {{
+                      (data?.name?.length > 20
+                      ? (data?.name | slice: 0:20) + "..."
+                      : data?.name) || "-"
+                      }}
+                    </td>
+
+                    <td>
+                      {{ data.locker_has_product ? "En casillero" : "Por Ingresar" }}
+                    </td>
+
+                    <td>
+                      {{ "USD " + (data.product_value || data.declared_value_admin) }}
+                      /
+                      {{
+                      (data.product_value || data.declared_value_admin) *
+                      (data.trm_value || 0) | currency: "COP ":"symbol":"1.0-0"
+                      }}
+                    </td>
+
+                    <td>
+                      {{ data.order_service || "-" }}
+                    </td>
+
+                    <td>
+                      {{ data.order_purchase || "-" }}
+                    </td>
+
+                    <td>
+                      {{ data.locker_created_at | date }}
+                    </td>
+
+                    <td>
+                      {{ data.shipping_order || "-" }}
+                    </td>
+                    <td>
+                      CA{{
+                      data.locker_id + " " + data?.user_name + " " + data?.last_name
+                      }}
+                    </td>
+
+                    <td>
+                      <div class="center">
+                        <button type="button" class="btn" (click)="displayModalProduct(data)">
+                          <span><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+                              style="fill: #c2c2ca">
+                              <path
+                                d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
+                              </path>
+                            </svg></span>
+                        </button>
+                      </div>
+                    </td>
+
+                    <td>
+
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+
+        </div>
+
+        <mat-paginator [length]="count" [pageSize]="10" (page)="filterProducts($event)" [pageSizeOptions]="[5, 10, 25]"
+          aria-label="Select page">
+        </mat-paginator>
       </div>
-
-      <mat-paginator
-        [length]="count"
-        [pageSize]="10"
-        (page)="filterProducts($event)"
-        [pageSizeOptions]="[5, 10, 25]"
-        aria-label="Select page"
-      >
-      </mat-paginator>
     </div>
   </div>
 </div>
