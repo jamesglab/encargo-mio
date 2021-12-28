@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AddressessComponent } from './components/addressess/addressess.component';
 
 import { UserlistComponent } from './userlist/userlist.component';
-import { UsergridComponent } from './usergrid/usergrid.component';
-import { ProfileComponent } from './profile/profile.component';
+import { UsersgridComponent } from './usersgrid/usersgrid.component';
 
 const routes: Routes = [
     {
@@ -12,11 +12,11 @@ const routes: Routes = [
     },
     {
         path: 'grid',
-        component: UsergridComponent
+        component: UsersgridComponent
     },
     {
-        path: 'profile',
-        component: ProfileComponent
+        path: 'addressess/:id',
+        component: AddressessComponent
     }
 ];
 
@@ -24,4 +24,5 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
+
 export class ContactsRoutingModule { }

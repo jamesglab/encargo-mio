@@ -1,400 +1,415 @@
 <div class="container-fluid">
 
-  <app-page-title title="Pagos" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+    <app-page-title title="Pagos" [breadcrumbItems]="breadCrumbItems"></app-page-title>
 
-  <ul class="nav nav-pills mb-3">
+    <ul class="nav nav-pills mb-3">
 
-    <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': status == 1 }" (click)="status = 1; getTransactions(1)">Aprobadas</a>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': status == 1 }"
+                (click)="status = 1; getTransactions(1)">Aprobadas</a>
+        </li>
 
-    <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': status == 2 }" (click)="status = 2; getTransactions(2);">Pendientes</a>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': status == 2 }"
+                (click)="status = 2; getTransactions(2);">Pendientes</a>
+        </li>
 
-    <li class="nav-item">
-      <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 2; getTransactions(3)">Rechazadas</a>
-    </li>
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="{'active': status == 3 }"
+                (click)="status = 2; getTransactions(3)">Rechazadas</a>
+        </li>
 
-  </ul>
+    </ul>
 
-  <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
-    No hay datos de pagos activos...
-  </div>
+    <div class="alert alert-primary" role="alert" *ngIf="transactions && transactions.length === 0">
+        No hay datos de pagos activos...
+    </div>
 
-  <div class="row">
+    <div class="row">
 
-    <div class="col-12">
+        <div class="col-12">
 
-      <div class="card">
+            <div class="card">
 
-        <div class="card-body">
+                <div class="card-body">
 
-          <div class="row mb-2">
+                    <div class="row mb-2">
 
-            <div class="col-sm-12">
-              <div class="text-sm-end">
-                <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
-                  <i class="bx bx-trash-alt mr-1"></i>
-                  Eliminar Filtros
-                </button  >
-              </div>
-              
-              <!-- <div class="search-box me-2 mb-2 d-inline-block">
-                <div class="position-relative">
-                  <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term"
-                    (keyup.enter)="searchFilter(status)">
-                  <i class="bx bx-search-alt search-icon"></i>
+                        <div class="col-sm-12">
+                            <div class="text-sm-end">
+                                <button type="button" class="btn btn-danger btn-rounded mb-2 me-2"
+                                    (click)="resetFilters()">
+                                    <i class="bx bx-trash-alt mr-1"></i>
+                                    Eliminar Filtros
+                                </button>
+                            </div>
+
+                            <!-- <div class="search-box me-2 mb-2 d-inline-block">
+                  <div class="position-relative">
+                    <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="term"
+                      (keyup.enter)="searchFilter(status)">
+                    <i class="bx bx-search-alt search-icon"></i>
+                  </div>
+                </div> -->
+
+
+                        </div>
+
+                        <div class="col-sm-8">
+                            <!-- <div class="text-sm-end">
+                  <button type="button" class="btn btn-success btn-rounded mb-2 mr-2" (click)="openModal(content)">
+                    <i class="mdi mdi-plus me-1"></i> New transaction
+                  </button>
+                </div> -->
+                        </div>
+
+                    </div>
+
+                    <div class="table-responsive" style="min-height: 30rem;">
+
+                        <table class="table align-middle table-nowrap">
+
+                            <thead class="table-light">
+
+                                <tr>
+                                    <th>#
+                                        <div class="mt-2">
+                                            <input type="" [formControl]="filterId" class="form-control min-width"
+                                                (keyup.enter)="getTransactions(status)" />
+                                        </div>
+                                    </th>
+                                    <th>Orden
+
+                                        <div class="mt-2">
+                                            <input type="" [formControl]="filterOrder" class="form-control min-width"
+                                                (keyup.enter)="getTransactions(status)" />
+                                        </div>
+                                    </th>
+                                    <th>Método de Pago
+                                        <div class="mt-2" style="width: 8rem;">
+                                            <select class="form-select mt-2 " aria-label="Default select example"
+                                                [formControl]="filterPaymentMethod" (change)="getTransactions(status)">
+                                                <option selected disabled value=""
+                                                    title="Selecciona un método de pago...">Seleccione un método de pago
+                                                </option>
+                                                <option value="credit">Credito</option>
+                                                <option value="transfer">Transferencia</option>
+                                            </select>
+                                        </div>
+                                    </th>
+
+                                    <th>Fecha de Pago
+
+                                        <div class="input-group clockpicker mt-2">
+                                            <input ngbDatepicker class="form-control" id="dateLocker"
+                                                placeholder="yyyy-mm-dd" (ngModelChange)="getTransactions(status)"
+                                                #dl="ngbDatepicker" [formControl]="filterDate">
+                                            <div class="input-group-append" (click)="dl.toggle()">
+                                                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                            </div>
+                                        </div>
+
+                                    </th>
+
+                                    <th>Referencia
+                                        <div class="mt-2">
+                                            <input type="" [formControl]="filterReference"
+                                                class="form-control min-width"
+                                                (keyup.enter)="getTransactions(status)" />
+                                        </div>
+                                    </th>
+                                    <th>Usuario
+                                        <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
+                                            placeholder="Selecciona el usuario" [formControl]="filterUser"
+                                            [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)" />
+                                        <mat-autocomplete #auto_user="matAutocomplete"
+                                            [displayWith]="displayFnUserName">
+                                            <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+                                                (click)="getTransactions(status)">
+                                                CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </th>
+                                    <th>Tipo
+                                        <div class="mt-2">
+                                            <select class="form-select mt-2" aria-label="Default select example "
+                                                [formControl]="filterType" (change)="getTransactions(status)">
+                                                <option selected disabled value="" title="Selecciona un tipo...">
+                                                    Selecciona un tipo...</option>
+                                                <option [value]="null">Todos</option>
+                                                <option [value]="'compra'">Compra</option>
+                                                <option [value]="'envio'">Envio</option>
+                                            </select>
+                                        </div>
+                                    </th>
+                                    <th>Valor
+                                        <div class="mt-2">
+                                            <input type="" [formControl]="filterValue" class="form-control min-width"
+                                                (keyup.enter)="getTransactions(status)" />
+                                        </div>
+                                    </th>
+                                    <th>Opciones</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr *ngFor="let transaction of transactions; let i = index">
+
+                                    <td>
+                                        {{ transaction.id }}
+                                    </td>
+
+                                    <td>
+                                        {{ transaction.order_service ? transaction.order_service :
+                                        (transaction.shipping_order ? transaction.shipping_order : '-') }}
+                                    </td>
+
+                                    <td>
+                                        <p class="mb-1">
+                                            {{ transaction.payment_method == 'credit' ? 'Credito':'Transferencia' }}
+                                        </p>
+                                    </td>
+
+                                    <td>
+                                        {{ transaction.created_at | date: 'medium' }}
+                                    </td>
+                                    <td>{{ transaction.reference ? transaction.reference : '-' }}</td>
+
+                                    <td>
+                                        {{ transaction ? (transaction.user.name + ' ' + transaction.user.last_name) : ''
+                                        }}
+                                    </td>
+
+                                    <td>
+                                        {{ transaction.type? transaction.type : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ (transaction.type =='envio') ? transaction.value + ' / ' +
+                                        ((transaction.value *
+                                        transaction.so_trm ) | currency: 'COP': 'symbol' : '1.0-0')
+                                        : transaction.value + ' / ' + ((transaction.value * transaction.or_trm ) |
+                                        currency: ' COP' :
+                                        'symbol' : '1.0-0' )
+                                        }}
+                                    </td>
+
+                                    <td>
+                                        <div class="dropdown" ngbDropdown placement="bottom-right">
+
+                                            <a href="javascript: void(0);" class="dropdown-toggle card-drop"
+                                                data-toggle="dropdown" ngbDropdownToggle aria-expanded="false">
+                                                <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                                            </a>
+
+                                            <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                                                <li>
+                                                    <a href="javascript: void(0);" class="dropdown-item"
+                                                        (click)="openModalOrderService(content, transaction)">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                                            <path
+                                                                d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                                            <path
+                                                                d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                                                        </svg>
+                                                        Detalles
+                                                    </a>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    <div class="text-center" *ngIf="isLoading">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                    </div>
+
+                    <!-- pagination -->
+                    <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions(status,$event)">
+                    </mat-paginator>
+
                 </div>
-              </div> -->
-
 
             </div>
 
-            <div class="col-sm-8">
-              <!-- <div class="text-sm-end">
-                <button type="button" class="btn btn-success btn-rounded mb-2 mr-2" (click)="openModal(content)">
-                  <i class="mdi mdi-plus me-1"></i> New transaction
+        </div>
+
+    </div>
+
+    <ng-template #content role="document" let-modal>
+
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">Detalles de la orden</h5>
+            <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+
+        <div class="modal-body">
+
+            <div class="container">
+
+                <div class="row">
+
+                    <div class="col-7">
+
+                        <div class="h4">
+                            #000{{orderSelected.id ? orderSelected.id : 0 }}
+                        </div>
+
+                        <div class="h5">
+                            Fecha de Pago: {{ orderSelected.updated_at | date :'medium' }}
+                        </div>
+
+                        <div class="h5">
+                            TRM cotización: {{ orderSelected.trm ? orderSelected.trm.value : 0 }} COP
+                        </div>
+
+                        <div class="h5">
+                            Usuario: {{ orderSelected.user ? orderSelected.user.name : '' }}
+                            {{ orderSelected.user ? orderSelected.user.last_name : '' }}
+                        </div>
+
+                    </div>
+
+                    <div class="col-5">
+
+                        <div class="row mt-2">
+
+                            <div class="col-6 h5 d-flex ">
+                                Valor Pagado:
+                            </div>
+
+                            <div class="col-6 h5 d-flex">
+                                <div>
+                                    USD {{ orderSelected.total_value ? orderSelected.total_value : 0 }}
+                                    / {{
+                                    ((orderSelected.total_value ? orderSelected.total_value : 0) *
+                                    orderSelected.trm.value) | currency:
+                                    'COP' :
+                                    'symbol' : '1.0-0'
+                                    }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="table-responsive">
+
+                <div class="container" *ngFor="let item of orderSelected.products">
+
+                    <div class="row">
+
+                        <div class="col-2 d-flex justify-content-center align-items-center"
+                            *ngIf="item.image && !item.images">
+                            <img [src]="item.image" alt class="avatar" style="object-fit: contain; "
+                                draggable="false" />
+                        </div>
+
+                        <ng-container *ngIf="item.images">
+                            <img *ngFor="let image of item.images" [src]="image.Location"
+                                style="height: 200px; object-fit: contain;" alt="" draggable="false">
+                        </ng-container>
+
+                        <div class="col-6">
+
+                            <div>
+                                <a [href]="item.link" target="blank">
+                                    <h5 class="text-truncate h5">{{ item.name }}</h5>
+                                </a>
+                            </div>
+
+                            <div>
+                                {{ item.product_description ? item.product_description: 'El artículo no tiene
+                                descripción' }}
+                            </div>
+
+                            <div class="mt-2 h5">
+                                Precio del Artículo: {{ item.declared_value_admin ? item.declared_value_admin :
+                                item.product_value }} USD
+                            </div>
+
+                            <div class="mt-2 h5">
+                                Cantidad: {{ item.quantity ? item.quantity : 0 }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <ng-container *ngIf="referenceStripeLink">
+
+                    <h5 class="modal-title mt-0">Recibo de Pago</h5>
+
+                    <a [href]="referenceStripeLink" target="_blank" type="button" class="btn btn-info">Ver Recibo de
+                        Pago
+                    </a>
+
+                </ng-container>
+
+                <hr>
+
+                <h5 class="modal-title mt-0">Comprobante de Pago</h5>
+
+                <br>
+
+                <div class="alert alert-primary" role="alert" *ngIf="!referenceImage">
+                    Esta orden no tiene comprobante de pagos asociados
+                </div>
+
+                <carousel [cellWidth]="700" [height]="700" [arrowsTheme]="'dark'" *ngIf="referenceImage">
+
+                    <div class="carousel-cell" *ngFor="let image of referenceImage">
+                        <a>
+                            <img [src]="image.Location" alt="" style="object-fit: contain;" class="img-reference">
+                        </a>
+                    </div>
+
+                </carousel>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary" (click)="modal.close('Close click'); transactionSelected = null">
+                Cerrar
+            </button>
+
+            <ng-container *ngIf="transactionSelected.payment_gateway != 'stripe'">
+
+                <button type="button" class="btn btn-danger" (click)="updateTransaction(3);" *ngIf="status == 2">
+                    Rechazar Pago
                 </button>
-              </div> -->
-            </div>
 
-          </div>
+                <button class="btn btn-primary" (click)="updateTransaction(1);" *ngIf="status == 2">
+                    Aprobar Pago
+                </button>
 
-          <div class="table-responsive" style="min-height: 30rem;">
-
-            <table class="table align-middle table-nowrap">
-
-              <thead class="table-light">
-                <tr>
-                  <th>#
-                    <div class="mt-2">
-                      <input type="" [formControl]="filterId" class="form-control min-width"
-                        (keyup.enter)="getTransactions(status)" />
-                    </div>
-                  </th>
-                  <th>Orden
-
-                    <div class="mt-2">
-                      <input type="" [formControl]="filterOrder" class="form-control min-width"
-                        (keyup.enter)="getTransactions(status)" />
-                    </div>
-                  </th>
-                  <th>Método de Pago
-                    <div class="mt-2" style="width: 8rem;">
-                      <select class="form-select mt-2 " aria-label="Default select example"
-                        [formControl]="filterPaymentMethod" (change)="getTransactions(status)">
-                        <option selected disabled>Seleccione un metodo de pago</option>
-                        <option value="credit">Credito</option>
-                        <option value="transfer">Transferencia</option>
-                      </select>
-                    </div>
-                  </th>
-                  <th>Fecha de Pago
-
-                    <div class="input-group clockpicker mt-2">
-                      <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
-                        (ngModelChange)="getTransactions(status)" #dl="ngbDatepicker" [formControl]="filterDate">
-                      <div class="input-group-append" (click)="dl.toggle()">
-                        <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                      </div>
-                    </div>
-
-                  </th>
-
-                  <th>Referencia
-                    <div class="mt-2">
-                      <input type="" [formControl]="filterReference" class="form-control min-width"
-                        (keyup.enter)="getTransactions(status)" />
-                    </div>
-                  </th>
-                  <th>Usuario
-                    <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
-                      placeholder="Selecciona el usuario" [formControl]="filterUser" [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)"/>
-                    <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
-                      <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
-                        (click)="getTransactions(status)">
-                        CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </th>
-                  <th>Tipo
-                    <div class="mt-2">
-                      <select class="form-select mt-2" aria-label="Default select example " [formControl]="filterType"
-                        (change)="getTransactions(status)">
-                        <option  [value]="null">Todos</option>
-                        <option [value]="'compra'">Compra</option>
-                        <option [value]="'envio'">Envio</option>
-                      </select>
-                    </div>
-                  </th>
-                  <th>Valor
-                    <div class="mt-2">
-                      <input type="" [formControl]="filterValue" class="form-control min-width"
-                        (keyup.enter)="getTransactions(status)" />
-                    </div>
-                  </th>
-                  <th>Opciones</th>
-                </tr>
-              </thead>
-
-              <tbody>
-
-                <tr *ngFor="let transaction of transactions; let i = index">
-
-                  <td>
-                    {{ transaction.id }}
-                  </td>
-
-                  <td>
-                    {{ transaction.order_service ? transaction.order_service :
-                    (transaction.shipping_order ? transaction.shipping_order : '-') }}
-                  </td>
-
-                  <td>
-                    <p class="mb-1">
-                      {{ transaction.payment_method == 'credit' ? 'Credito':'Transferencia' }}
-                    </p>
-                  </td>
-
-                  <td>
-                    {{ transaction.created_at | date: 'medium' }}
-                  </td>
-                  <td>{{ transaction.reference ? transaction.reference : '-' }}</td>
-
-                  <td>
-                    {{ transaction ? (transaction.user.name + ' ' + transaction.user.last_name) : '' }}
-                  </td>
-
-                  <td>
-                    {{ transaction.type? transaction.type : '-' }}
-                  </td>
-
-                  <td>
-                    {{ (transaction.type =='envio') ? transaction.value + ' / ' +  ((transaction.value  * transaction.so_trm ) | currency: 'COP': 'symbol' : '1.0-0')
-                    : transaction.value + ' / ' + ((transaction.value  * transaction.or_trm ) | currency: ' COP' : 'symbol' : '1.0-0' )
-                      }}
-                  </td>
-
-                  <td>
-                    <div class="dropdown" ngbDropdown placement="bottom-right">
-
-                      <a href="javascript: void(0);" class="dropdown-toggle card-drop" data-toggle="dropdown"
-                        ngbDropdownToggle aria-expanded="false">
-                        <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                      </a>
-
-                      <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
-                        <li>
-                          <a href="javascript: void(0);" class="dropdown-item"
-                            (click)="openModalReference(reference, transaction)"><i
-                              class="far fa-clipboard me-1"></i>Comprobante</a>
-                        </li>
-                        <li>
-                          <a href="javascript: void(0);" class="dropdown-item"
-                            (click)="openModalOrderService(content, transaction)">
-                            <i class="fas fa-eye me-1"> </i>
-                            Detalles
-                          </a>
-                        </li>
-                      </ul>
-
-                    </div>
-
-                  </td>
-
-                </tr>
-
-              </tbody>
-
-            </table>
-
-          </div>
-
-          <div class="text-center" *ngIf="isLoading">
-            <div class="spinner-border" role="status">
-              <span class="sr-only">Cargando...</span>
-            </div>
-          </div>
-
-          <!-- pagination -->
-          <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions(status,$event)">
-          </mat-paginator>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- Modal Detalles de la orden  -->
-  <ng-template #content role="document" let-modal>
-
-    <div class="modal-header">
-      <h5 class="modal-title mt-0">Detalles de la orden</h5>
-      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-
-    <div class="modal-body">
-
-      <div class="container">
-
-        <div class="row">
-
-          <div class="col-7">
-
-            <div class="h4">
-              #000{{orderSelected.id ? orderSelected.id : 0 }}
-            </div>
-
-            <div class="h5">
-              Fecha de Pago: {{ orderSelected.updated_at | date :'medium' }}
-            </div>
-
-            <div class="h5">
-              TRM cotización: {{ orderSelected.trm ? orderSelected.trm.value : 0 }} COP
-            </div>
-
-            <div class="h5">
-              Usuario: {{ orderSelected.user ? orderSelected.user.name : '' }}
-              {{ orderSelected.user ? orderSelected.user.last_name : '' }}
-            </div>
-
-          </div>
-
-          <div class="col-5">
-
-            <div class="row mt-2">
-
-              <div class="col-6 h5 d-flex ">
-                Valor Pagado:
-              </div>
-
-              <div class="col-6 h5 d-flex">
-                <div>
-                  USD {{ orderSelected.total_value ? orderSelected.total_value : 0 }}
-                  / {{
-                  ((orderSelected.total_value ? orderSelected.total_value : 0) * orderSelected.trm.value) | currency:
-                  'COP' :
-                  'symbol' : '1.0-0'
-                  }}
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <hr>
-
-      <div class="table-responsive">
-
-        <div class="container" *ngFor="let item of orderSelected.products">
-
-          <div class="row">
-
-            <div class="col-2 d-flex justify-content-center align-items-center" *ngIf="item.image && !item.images">
-              <img [src]="item.image" alt class="avatar" style="object-fit: contain; " draggable="false" />
-            </div>
-
-            <ng-container *ngIf="item.images">
-              <img *ngFor="let image of item.images" [src]="image.Location" style="height: 200px; object-fit: contain;"
-                alt="" draggable="false">
             </ng-container>
 
-            <div class="col-6">
-
-              <div>
-                <a [href]="item.link" target="blank">
-                  <h5 class="text-truncate h5">{{ item.name }}</h5>
-                </a>
-              </div>
-
-              <div>
-                {{ item.product_description ? item.product_description: 'El artículo no tiene descripción' }}
-              </div>
-
-              <div class="mt-2 h5">
-                Precio del Artículo: {{ item.product_value ? item.declared_value_admin : 0 }} USD
-              </div>
-
-              <div class="mt-2 h5">
-                Cantidad: {{ item.quantity ? item.quantity : 0 }}
-              </div>
-
-            </div>
-
-          </div>
-
-          <hr>
-
         </div>
 
-      </div>
-
-    </div>
-
-    <div class="modal-footer">
-
-      <button class="btn btn-secondary" (click)="modal.close('Close click'); transactionSelected = null">
-        Cerrar
-      </button>
-
-      <ng-container *ngIf="transactionSelected.payment_gateway != 'stripe'">
-
-        <button type="button" class="btn btn-danger" (click)="updateTransaction(3);" *ngIf="status == 2">
-          Rechazar Pago
-        </button>
-
-        <button class="btn btn-primary" (click)="updateTransaction(1);" *ngIf="status == 2">
-          Aprobar Pago
-        </button>
-
-      </ng-container>
-
-    </div>
-
-  </ng-template>
-
-  <!-- Modal Pago caso efectivo -->
-  <ng-template #reference role="document" let-modal>
-
-    <div class="modal-header">
-      <h5 class="modal-title mt-0">Comprobante de Pago</h5>
-      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-    </div>
-
-    <div class="modal-body">
-      <div class="center">
-        <carousel [cellWidth]="700" [height]="700">
-          <div class="carousel-cell" *ngFor="let image of referenceImage ">
-            <a [href]="image.Location" target="blank">
-              <img [src]="image.Location" alt="" style="object-fit: contain;" class="img-reference">
-
-            </a>
-          </div>
-        </carousel>
-        <div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-footer" *ngIf="status == 2">
-
-      <button class="btn btn-danger" (click)="updateTransaction(3);" [disabled]="isLoadingTransaction">
-        Rechazar Pago
-      </button>
-
-      <button class="btn btn-success" (click)="updateTransaction(1);" [disabled]="isLoadingTransaction">
-        Aprobar Pago
-      </button>
-
-    </div>
-
-  </ng-template>
+    </ng-template>

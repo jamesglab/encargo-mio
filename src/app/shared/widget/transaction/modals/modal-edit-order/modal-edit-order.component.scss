@@ -1,4 +1,4 @@
-a {
+.fas {
   cursor: pointer;
 }
 
@@ -11,46 +11,50 @@ a {
   color: #adadad !important;
 }
 
-.container-tax {
-  display: flex;
-  justify-content: space-evenly;
+.container-calculator {
+  font-size: 15px;
 }
 
 .container-calcs {
   font-size: 20px;
   display: flex;
+  justify-content: space-around;
+  padding: 10px;
   cursor: pointer;
+}
+
+.container-tax {
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .selected-tax {
   color: #ef8921;
 }
 
-.edit-image {
-  position: absolute;
-  right: 0;
-  color: #ef8921;
-  font-size: 20px;
-}
-
-.tooltip-encargomio {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip-encargomio .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: #ef8921;
-  color: #fff;
+.dropzone-in-create {
   text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: fixed;
-  z-index: 1051;
-  font-size: 13px;
+  border-style: dashed;
+  background: white !important;
+  border-radius: 16px;
+  justify-content: center;
 }
 
-.tooltip-encargomio:hover .tooltiptext {
-  visibility: visible;
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.container-img-dropzone {
+  img {
+    height: 170px;
+    width: 100%;
+    object-fit: contain;
+  }
+}
+
+.invalid-feedback {
+  display: block !important;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #f46a6a;
 }

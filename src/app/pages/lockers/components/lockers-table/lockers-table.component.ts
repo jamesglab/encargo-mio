@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
 import { UserService } from 'src/app/_services/users.service';
 import { LockersService } from '../../_services/lockers.service';
 import Swal from "sweetalert2";
 import * as moment from 'moment';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-lockers-table',
@@ -29,6 +29,7 @@ export class LockersTableComponent implements OnInit {
   //CREAMOS LOS CONTROLES PARA LOS INPUTS
   public filterUserLocker = new FormControl('');
   public filterGuide = new FormControl('');
+  public filterOrderService = new FormControl('');
   public filterProduct = new FormControl('');
   public filterStatus = new FormControl('');
   public filterIdProduct = new FormControl('');
@@ -74,6 +75,9 @@ export class LockersTableComponent implements OnInit {
     const options = {};
     if (this.filterGuide.value != null && this.filterGuide.value != '') {
       options['guide_number'] = this.filterGuide.value
+    }
+    if (this.filterOrderService.value != null && this.filterOrderService.value.trim() != '') {
+      options['order_service'] = this.filterOrderService.value;
     }
     if (this.filterProduct.value != null && this.filterProduct.value != '') {
       options['name'] = this.filterProduct.value
@@ -164,6 +168,16 @@ export class LockersTableComponent implements OnInit {
       // RETORNAMOS EL VALOR FORMATEADO PARA FILTRAR CUANDO NO VAMOS A CONSULTAR UN OBJETO
       return value.toLowerCase().replace(/\s/g, '');
     }
+  }
+
+  getStatusLocker(status: number): string {
+    let statuses = {
+      "0": "EN BODEGA",
+      "1": "EN CONSOLIDACIÓN",
+      "2": "ENVIADO",
+      "3": "ENTREGADO"
+    };
+    return statuses[status] || statuses[0];
   }
 
   deleteProduct(product: any): void {

@@ -1,0 +1,30 @@
+.btn-cont {
+  padding: 30px;
+}
+.card-cont {
+  width: 15rem;
+  margin: 9px;
+  width: 15rem;
+  margin: 9px;
+  max-height: 235px;
+  height: 235px;
+}
+.cont-not-address {
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  color: gray;
+  text-transform: uppercase;
+}
+
+.address-body {
+  height: 10.5rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.is-main{
+  background: #e0eefb;
+
+}

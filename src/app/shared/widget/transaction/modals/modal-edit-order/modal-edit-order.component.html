@@ -22,10 +22,29 @@
         </div>
         <div class="h5">
           TRM cotización:
-          {{ (orderSelected ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
+          {{ (orderSelected.trm ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
         </div>
 
         <br>
+
+        <div *ngIf="orderSelected.shopper_images && orderSelected.shopper_images.length > 0">
+
+          <div class="h5">
+            Imagenes de Facturación
+          </div>
+
+          <carousel>
+            <div class="carousel-cell" *ngFor="let item of orderSelected.shopper_images">
+              <a [href]="item.Location" target="_blank">
+                <img [src]="item.Location" draggable="false" (error)="onImageError($event);">
+              </a>
+            </div>
+          </carousel>
+
+        </div>
+
+        <br>
+
         <ng-container *ngIf="orderSelected">
           <div class="form-check form-switch text-truncate h5">
             <label for="form-group">Compra anticipada</label>
@@ -48,7 +67,7 @@
 
             <div>
               <strong>Valor artículos:</strong>
-              {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }} USD
+              {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }}
             </div>
 
             <div>
@@ -59,14 +78,13 @@
             <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
               <div>
                 <strong>Valor del envío ({{formula.name}}): </strong>
-                {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} USD
+                {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} US$
               </div>
               <div>
                 <strong>Envio a casa ({{formula.name}})</strong>
-                {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) +
-                (formula.value ? formula.value : 0) |
+                {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (formula.value ? formula.value : 0)) |
                 number : '1.2-2' }}
-                USD
+                US$
               </div>
             </ng-container>
 
@@ -96,182 +114,220 @@
     </div>
   </div>
 
+  <h4 class="h4">Productos</h4>
+
+  <div class="alert alert-primary" role="alert" *ngIf="orderSelected.products && orderSelected.products.length === 0">
+    <strong>La orden no tiene productos asociados.</strong>
+  </div>
+
   <div class="table-responsive">
 
-    <div class="container" *ngFor="let item of orderSelected.products; let i = index;">
+    <ng-container *ngFor="let item of orderSelected.products; let i = index;">
 
-      <div class="row">
+      <hr *ngIf="i > 0">
 
-        <div class="col-3 d-flex justify-content-center">
+      <div class="alert alert-danger" role="alert" *ngIf="(item.order_purchase && item.order_purchase.sold_out) || item.sold_out ">
+        <strong>Este producto se encuentra agotado.</strong>
+      </div>
 
-          <div class="edit-image" *ngIf="status == 0 || status == 1 || status == 2">
-            <a (click)="openModal(item,createImage,'md ')">
-              <i class="far fa-edit"></i>
-            </a>
-          </div>
+      <div class="container">
 
-          <div>
-            <a [href]="item.link" target="_blank">
-              <img [src]="item.image" (error)="$event.target.src = 'assets/images/default.jpg'" class="avatar"
-                style="object-fit: contain;" />
-            </a>
-          </div>
+        <div class="row">
 
-        </div>
+          <div class="col-sm-3 d-flex align-items-center dropzone-in-create" appImageDrag
+            (files)="filesDropped($event, i);">
 
-        <div class="col-4">
+            <div class="container-img-dropzone">
 
-          <div>
-            <div class="form-group">
-              <label for="exampleInputEmail1" class="text-truncate h5">Nombre * </label>
-              <input type="text" class="form-control" placeholder="escribe el nombre del producto"
-                [(ngModel)]="item.name" [disabled]="disabledAllInputs">
-            </div>
-          </div>
-
-          <div class="mt-2">
-            {{ item.aditional_info }}
-          </div>
-
-          <div class="form-group mt-2 h5">
-            <label for="exampleFormControlTextarea1">Observaciones de Cotización</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
-              [(ngModel)]="item.aditional_info" [disabled]="disabledAllInputs"
-              placeholder="Escribenos la información adicional de producto como talla, color, etc.">
-            </textarea>
-          </div>
-
-          <div class="form-group mt-2 h5">
-            <label for="exampleFormControlTextarea1">Observaciones del cliente</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" cols="30" rows="5"
-              [(ngModel)]="item.description" [disabled]="disabledAllInputs"
-              placeholder="Escribenos la información adicional de producto como talla, color, etc.">
-            </textarea>
-          </div>
-
-          <div class="mt-2 h5 d-flex">
-
-            <ng-container *ngIf="status === 0 || status === 1">
-              <div class="mx-2" *ngIf="orderSelected.products.length > 1">
-                <a (click)="deleteProduct(i);">
-                  <i class="fas fa-trash"></i>
-                </a>
-              </div>
-            </ng-container>
-
-            <ng-container *ngIf="status == 0 || status == 1">
-              <div class="mx-2" *ngIf="item.quantity > 1">
-                <a (click)="calculateWeightSubstract(i); getFormula(i)">
-                  <i class="fas fa-minus"></i>
-                </a>
-              </div>
-            </ng-container>
-
-            <div class="item-quantity">
-              Cantidad: {{ item.quantity }}
-            </div>
-
-            <div class="mx-2" *ngIf="status == 0 || status == 1">
-              <a (click)="calculateWeightAdd(i); getFormula(i)">
-                <i class="fas fa-plus"></i>
+              <a [href]="item.link" target="_blank">
+                <img src="{{item.image ? item.image : ''}}" (error)="onImageError($event);" draggable="false" />
               </a>
+
+              <h5 *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
+                Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
+                  (click)="uploadImage(i);">aquí.</a>
+              </h5>
+
+              <ng-container *ngIf="isLoadingUpload">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+              </ng-container>
+
             </div>
 
           </div>
 
-        </div>
+          <div class="col-sm-9">
 
-        <div class="col-5">
+            <div class="row g-3">
 
-          <div class="row">
+              <div class="col-md-6">
 
-            <div class="col-6">
-              <div class="form-group">
-                <label for="exampleInputEmail1" class="text-truncate h5">Valor Articulo (USD) *</label>
-                <input type="number" class="form-control" placeholder="Valor en USD" [(ngModel)]="item.product_value"
-                  (keypress)="numberOnly($event);" (blur)="getFormula(i);"
-                  [disabled]="item.free_shipping || disabledAllInputs">
+                <div class="form-group mb-3">
+
+                  <label for="name" class="form-label">Nombre* </label>
+                  <input type="text" class="form-control" placeholder="Ingresa el nombre del producto"
+                    [(ngModel)]="item.name" [disabled]="disabledAllInputs">
+                  <div class="invalid-feedback" *ngIf="item.name == 'null' || item.name == undefined || item.name == ''">
+                      Digita nombre por favor
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="observations" class="form-label">Observaciones de Cotización</label>
+                  <textarea class="form-control" id="observations" cols="30" rows="5" [(ngModel)]="item.aditional_info"
+                    [disabled]="item.sold_out || disabledAllInputs" placeholder="Ingresa las observaciones de la cotización.">
+                  </textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label for="observations-client" class="form-label">Observaciones del Cliente</label>
+                  <textarea class="form-control" id="observations-client" cols="30" rows="5"
+                    [(ngModel)]="item.description" [disabled]="item.sold_out || disabledAllInputs"
+                    placeholder="Observaciones del cliente.">
+                  </textarea>
+                </div>
+
+                <div class="mb-3">
+                  <div class="form-check form-switch text-truncate h6">
+                    <label for="form-group">Producto Agotado</label>
+                    <input class="form-check-input" type="checkbox" (change)="getFormula();"
+                      id="flexSwitchCheckChecked" [(ngModel)]="item.sold_out" [disabled]="disabledAllInputs">
+                  </div>
+                </div>
+
+                <div class="h6">
+
+                  <ng-container *ngIf="status === 0 || status === 1">
+                    <a (click)="deleteProduct(i);" *ngIf="orderSelected.products.length > 1">
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </ng-container>
+
+                  <ng-container *ngIf="status == 0 || status == 1">
+                    <a (click)="calculateWeightSubstract(i); getFormula();" *ngIf="item.quantity > 1">
+                      <i class="mdi mdi-minus"></i>
+                    </a>
+                  </ng-container>
+
+                  Cantidad: {{ item.quantity }}
+
+                  <a (click)="calculateWeightAdd(i); getFormula();" *ngIf="status == 0 || status == 1">
+                    <i class="mdi mdi-plus"></i>
+                  </a>
+
+                </div>
+
               </div>
-            </div>
 
-            <div class="col-3">
-              <div class="form-group">
-                <label for="exampleInputEmail1" class="text-truncate h5">Desc. (%)</label>
-                <input type="number" class="form-control" placeholder="% descuento" [(ngModel)]="item.discount"
-                  (keypress)="numberOnly($event);" (change)="calculateDiscount(i);"
-                  [disabled]="item.free_shipping || disabledAllInputs">
-              </div>
-            </div>
+              <div class="col-md-6">
 
-            <div class="col-3">
+                <div class="row g-3 mb-3">
 
-              <div class="form-group">
-                <label for="exampleInputEmail1" class="text-truncate h5">Tax</label>
-                <div>
-                  <input type="number" class="form-control" placeholder="Tax" [(ngModel)]="item.tax"
-                    (ngModelChange)="item.tax = $event" min="0" (keypress)="numberOnly($event);"
-                    (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || disabledAllInputs">
-                  <br>
+                  <div class="col-sm-7">
+                    <label for="article-value" class="form-label">Valor Articulo (USD)*</label>
+                    <input type="number" id="article-value" class="form-control" placeholder="Valor en USD"
+                      [(ngModel)]="item.product_value" (keypress)="numberOnly($event);" (blur)="getFormula();"
+                      [disabled]="disabledAllInputs">
+                    <div class="invalid-feedback"
+                      *ngIf="item.product_value == null || item.product_value == undefined || item.product_value == ''">
+                      El valor del producto es requerido
+                    </div>
+                  </div>
 
-                  <div class="container-calcs">
+                  <div class="col-sm">
+                    <label for="discount" class="form-label">Descuento</label>
+                    <input type="number" id="discount" class="form-control" placeholder="% descuento"
+                      [(ngModel)]="item.discount" (keypress)="numberOnly($event);" (change)="calculateDiscount(i);"
+                      [disabled]="item.free_shipping || item.sold_out || disabledAllInputs">
+                  </div>
 
-                    <i class="fas fa-calculator" [ngClass]="{ 'selected-tax': item.selected_tax === '1' }"
-                      (click)="changeCalculator('1', i);" title="Sin envío Origen">
-                    </i>
+                  <div class="col-sm">
+                    <label for="tax" class="form-label">Tax</label>
+                    <input type="number" class="form-control" id="tax" placeholder="Tax" [(ngModel)]="item.tax"
+                      (ngModelChange)="taxOnChanges(i, $event);" min="0" (keypress)="numberOnly($event);"
+                      (change)="calculateTaxManually(i);" [disabled]="item.free_shipping || item.sold_out || disabledAllInputs">
 
-                    <i class="fas fa-calculator" style="margin-left: 10px;"
-                      [ngClass]="{ 'selected-tax': item.selected_tax === '2' }" (click)="changeCalculator('2', i);"
-                      title="Con envío Origen">
-                    </i>
+                    <div class="container-calcs">
+
+                      <i [ngClass]="{ 'selected-tax': item.selected_tax === '1' }" (click)="changeCalculator('1', i);"
+                        title="Sin envío Origen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                          class="bi bi-calculator-fill" viewBox="0 0 16 16">
+                          <path
+                            d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5zm0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5h-1z" />
+                        </svg>
+                      </i>
+
+                      <i [ngClass]="{ 'selected-tax': item.selected_tax === '2' }" (click)="changeCalculator('2', i);"
+                        title="Con envío Origen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                          class="bi bi-calculator-fill" viewBox="0 0 16 16">
+                          <path
+                            d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2 .5v2a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0-.5.5zm0 4v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM4.5 9a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM4 12.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zM7.5 6a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM7 9.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1zM10 6.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5zm.5 2.5a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-.5-.5h-1z" />
+                        </svg>
+                      </i>
+
+                    </div>
+
+                  </div>
+
+                  <div class="row g-3 mb-3">
+                    <div class="col-sm">
+                      <label for="shipping-order" class="form-label">Envio Origen</label>
+                      <input type="number" id="shipping-order" class="form-control" min="0" placeholder="Envio origen"
+                        [(ngModel)]="item.shipping_origin_value_product" (keypress)="numberOnly($event);"
+                        (blur)="validateShipping(i); getFormula();"
+                        [disabled]="item.free_shipping || item.sold_out || disabledAllInputs">
+                    </div>
+
+                  </div>
+
+                  <div class="row g-3 mb-3">
+
+                    <div class="col-sm">
+                      <label for="weight" class="form-label">Peso(Libras)*</label>
+                      <input type="number" id="weight" class="form-control" placeholder="Peso en libras"
+                        [(ngModel)]="item.weight" (keypress)="numberOnly($event);" (blur)="getFormula();"
+                        [disabled]="disabledAllInputs">
+                      <div class="invalid-feedback"
+                        *ngIf="item.weight == null || item.weight == undefined || item.weight == ''">
+                        Digita peso por favor
+                      </div>
+                    </div>
+
+                    <div class="col-sm">
+                      <label for="permanent-shipping" class="form-label">Valor Envio fijo </label>
+                      <input type="number" class="form-control" id="permanent-shipping" placeholder="Valor envio fijo"
+                        [(ngModel)]="item.permanent_shipping_value" (keypress)="numberOnly($event);"
+                        (blur)="setPermanentShipping(i);" [disabled]="item.sold_out || item.free_shipping || disabledAllInputs">
+                    </div>
+
+                  </div>
+
+                  <div class="row g-3">
+
+                    <div class="col-sm">
+                      <div class="h6">
+                        Sub Total: {{ (item.sub_total ? item.sub_total : 0) | currency: 'USD' }}
+                      </div>
+                    </div>
+
+                    <div class="col-sm">
+
+                      <div class="form-check form-switch text-truncate h6">
+                        <label for="form-group">Envio Gratis</label>
+                        <input class="form-check-input" type="checkbox" (change)="getFormula();"
+                          id="flexSwitchCheckChecked" [(ngModel)]="item.free_shipping" [disabled]="item.sold_out || disabledAllInputs">
+                      </div>
+
+                    </div>
 
                   </div>
 
                 </div>
 
-              </div>
-            </div>
-          </div>
-
-          <div class="row mt-4">
-            <div class="form-group col-12">
-              <label for="exampleInputEmail1" class="text-truncate h5">Envio Origen</label>
-              <input type="number" class="form-control" placeholder="Envio origen"
-                [(ngModel)]="item.shipping_origin_value_product" (keypress)="numberOnly($event);"
-                (blur)="getFormula(i);" [disabled]="item.free_shipping || disabledAllInputs">
-            </div>
-          </div>
-
-          <div class="row mt-4">
-
-            <div class="col-6">
-              <label for="form-group exampleInputEmail1" class="text-truncate h5">Peso(Libras) *</label>
-              <input type="number" class="form-control" placeholder="Peso en libras" [(ngModel)]="item.weight"
-                (keypress)="numberOnly($event);" (blur)="getFormula(i);"
-                [disabled]="item.free_shipping || disabledAllInputs">
-            </div>
-
-            <div class="col-6">
-              <label for="form-group exampleInputEmail1" class="text-truncate h5">Valor Envio fijo </label>
-              <input type="number" class="form-control" placeholder="Valor envio fijo"
-                [(ngModel)]="item.permanent_shipping_value" (keypress)="numberOnly($event);"
-                (blur)="setPermanentShipping(i);" [disabled]="item.free_shipping || disabledAllInputs">
-            </div>
-
-          </div>
-
-          <div class="row mt-4">
-
-            <div class="col-6 text-truncate h5">
-              Sub Total: {{ (item.sub_total ? item.sub_total : 0) | currency: 'USD' }}
-            </div>
-
-            <div class="col-6">
-
-              <div class="form-check form-switch text-truncate h5">
-                <label for="form-group">Envio Gratis</label>
-
-                <input class="form-check-input" type="checkbox" (change)="getFormula(i);" id="flexSwitchCheckChecked"
-                  [(ngModel)]="item.free_shipping" [disabled]="disabledAllInputs">
               </div>
 
             </div>
@@ -282,9 +338,7 @@
 
       </div>
 
-      <hr>
-
-    </div>
+    </ng-container>
 
   </div>
 
@@ -293,7 +347,7 @@
 <div class="modal-footer">
 
   <button class="btn btn-secondary" [disabled]="isLoading || isLoadingQuery" (click)="modalService.dismissAll()">
-    Cancelar
+    Cerrar
   </button>
 
   <ng-container *ngIf="status == 0 || status == 1">
@@ -329,11 +383,3 @@
   </ng-container>
 
 </div>
-
-<ng-template #createImage role="document" let-modal>
-  <!--[product]  ANEXAMOS PRODUCTO SELECCIONADO -->
-  <!-- (close) CERRAMOS EL MODALE CUANDO LO QUEIRAN CERRAR -->
-  <!--  (imageUpdated) SELECCIONAMOS EL METODO DE ACTUALIZAR IMAGEN DEL PRODUCTO SELECCIONADO-->
-  <app-create-image [product]="productSelected" (close)="modal.close()"
-    (imageUpdated)="upadteImageByProduct($event); modal.close()"></app-create-image>
-</ng-template>

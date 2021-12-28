@@ -1,11 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { LockersService } from '../../_services/lockers.service';
-import { dataURLtoFile, numberOnly } from '../../../../_helpers/tools/utils.tool'
+import { numberOnly } from '../../../../_helpers/tools/utils.tool'
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import { updateLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
+import { FileHandle } from 'src/app/_directives/file-handle';
+import { ImageCompressService } from 'src/app/_services/image-compress.service';
 
 @Component({
   selector: 'app-modal-edit-lockers',
@@ -17,19 +20,25 @@ export class ModalEditLockersComponent implements OnInit {
 
   @Output() public closeModalEditLockers: EventEmitter<boolean> = new EventEmitter();
   @Output() public cancelModalStatus: EventEmitter<boolean> = new EventEmitter();
+
   @Input() public lockerSelected: any = {};
 
   public isLoading: boolean = false;
   public isLoadingQuery: boolean = false;
+  public loaderLockers: boolean = false;
   public lockerEditForm: FormGroup;
-  public files: File[] = [];
+
   public allConveyors: any = [];
+  public allLockers: any[] = [];
+  public allImages: any = [];
 
   constructor(
     private _lockers: LockersService,
     public _fb: FormBuilder,
     private _orders: OrderService,
-    private _notify: NotifyService
+    private _notify: NotifyService,
+    private _compress: ImageCompressService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -56,66 +65,24 @@ export class ModalEditLockersComponent implements OnInit {
 
   buildForm(res: any): void {
     this.lockerEditForm = this._fb.group({
-      id: [res.id ? res.id : null],
+      id: [res.id || null],
       guide_number: [res.guide_number_alph ? res.guide_number_alph : res.guide_number],
       conveyor: [null],
-      locker: [res.locker ? `CA${res.locker.id} | ${res.locker.user.name} ${res.locker.user.last_name}` : '', [Validators.required]],
-      locker_info: [res.locker ? res.locker : null],
+      locker_info: [{ locker_id: res.locker.id, us_id: res.locker.user.id, us_name: res.locker.user.name, us_last_name: res.locker.user.last_name }],
       order: [res.order_service ? `${res.order_service} | ${res.product.name}` : null],
-      name: [res.product ? res.product.name : null],
-      weight: [res.weight ? res.weight : 0, [Validators.required]],
+      name: [res.product.name || null],
+      weight: [res.weight || 0, [Validators.required]],
       date_recieved: [res.receipt_date ? { day: parseInt(moment(res.receipt_date).format("D")), month: parseInt(moment(res.receipt_date).format("M")), year: parseInt(moment(res.receipt_date).format("YYYY")) } : null],
-      permanent_shipping_value: [res.permanent_shipping_value ? res.permanent_shipping_value : 0],
-      declared_value_admin: [res.declared_value_admin ? res.declared_value_admin : 0, [Validators.required]],
-      product_description: [res.product_description ? res.product_description : null],
+      permanent_shipping_value: [res.permanent_shipping_value || 0],
+      declared_value_admin: [res.declared_value_admin || 0, [Validators.required]],
+      product_description: [res.product_description || null],
       force_commercial_shipping: [res.force_commercial_shipping],
-      images: [res.images ? res.images : []],
-      product: [res.product ? res.product : null]
-      // estimated_delivery_date: [null],
-      // national_conveyor: [null],
-      // guide_number_national: [null],
+      images: [res.images || []],
+      deleted_images: [[]],
+      product: [res.product || null]
     });
     this.pushConveyorSelected(res.conveyor);
-    this.pushImagesResponse(res.images);
-  }
-
-  pushConveyorSelected(conveyor: number): void {
-    let filtered = this.allConveyors.filter(x => x.id == conveyor); // Buscamos el id de todas las transportadoras a través del id guardado en bd
-    if (filtered) { // Si existen datos
-      this.form.conveyor.setValue(filtered[0]); //Seteamos el valor de conveyor con la respuesta del filtro.
-    }
-  }
-
-  pushImagesResponse(images: any): void { // Pusheamos las imagenes que están guardadas en la base de datos.
-    for (let index = 0; index < images.length; index++) {
-      const toDataURL = url => fetch(url)
-        .then(response => response.blob())
-        .then(blob => new Promise((resolve, reject) => {
-          const reader = new FileReader()
-          reader.onloadend = () => resolve(reader.result)
-          reader.onerror = reject
-          reader.readAsDataURL(blob)
-        }))
-      toDataURL(images[index].Location)
-        .then(dataUrl => {
-          var fileData = dataURLtoFile(dataUrl, "imagen.jpg");
-          this.files.push(fileData);
-        });
-    }
-  }
-
-  displayWith(option: any) { // Formato para mostrar simplemente el nombre en el autocomplete
-    return option ? option.name : '';
-  }
-
-  numberOnly(event): boolean { return numberOnly(event); } // Función para que sólo se permitan números en un input
-
-  onSelectImage(event: any) { // AGREGAMOS LAS IMAGENES AL ARRAY DE FILES
-    this.files.push(...event.addedFiles);
-  }
-
-  onRemoveImage(event: any) { // ELIMINAMOS LA IMAGEN
-    this.files.splice(this.files.indexOf(event), 1);
+    this.pushImages();
   }
 
   getConveyors(): void {
@@ -126,9 +93,106 @@ export class ModalEditLockersComponent implements OnInit {
     });
   }
 
-  cancelModal(): void {
-    this.cancelModalStatus.emit(true);
+  autoCompleteLocker(params: any) {
+    if (params.length >= 2) {
+      this.loaderLockers = true;
+      this._orders.getUsersByName(params)
+        .subscribe((res: any) => {
+          this.allLockers = res;
+          this.loaderLockers = false;
+          this.cdr.detectChanges();
+        }, err => {
+          this.loaderLockers = false;
+          throw err;
+        });
+    }
   }
+
+  setDisplayLocker(locker_object: { [key: string]: any }): string {
+    return `CA${locker_object.locker_id} | ${locker_object.us_name} ${locker_object.us_last_name}`;
+  }
+
+  pushConveyorSelected(conveyor: number): void {
+    let filtered = this.allConveyors.filter(x => x.id == conveyor); // Buscamos el id de todas las transportadoras a través del id guardado en bd
+    if (filtered) { // Si existen datos
+      this.form.conveyor.setValue(filtered[0]); //Seteamos el valor de conveyor con la respuesta del filtro.
+    }
+  }
+
+  pushImages(): void {
+    let backendImages: any = [];
+    for (let index = 0; index < this.lockerEditForm.controls.images.value.length; index++) {
+      backendImages.push(this.lockerEditForm.controls.images.value[index]);
+    }
+    this.allImages = backendImages;
+    //FOR INITIAL IMAGE (BRING FROM URL AMAZON,EBAY,WALMART)
+    let initialImage: string = this.lockerEditForm.controls.product.value.image;
+    if (initialImage && this.allImages.length === 0) {
+      this.allImages.push({
+        Key: null,
+        Location: this.lockerEditForm.controls.product.value.image,
+        file: null,
+        delete: true
+      })
+    }
+  }
+
+  filesDropped(file: FileHandle[]) { // Método el cual entra cuando un usuario hace el "drop"
+    if (file[0].file.type && file[0].file.type.includes('image')) {
+      this.isLoadingQuery = true;
+      this._compress.compressImage(file[0].base64).then((res: any) => {
+        this.allImages.push({ Key: null, Location: res.url, file: res.file });
+        this.isLoadingQuery = false;
+      }, err => {
+        this.isLoadingQuery = false;
+        this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
+    } else {
+      this.isLoadingQuery = false;
+      this._notify.show('', 'El archivo que seleccionaste no es una imagen.', 'info');
+    }
+  }
+
+  uploadImage(): void {
+    this.isLoadingQuery = true;
+    this._compress.uploadImage().then((res: any) => {
+      this.allImages.push({ Key: null, Location: res.url, file: res.file });
+      this.isLoadingQuery = false;
+    }, err => {
+      this.isLoadingQuery = false;
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  displayWith(option: any) { return option ? option.name : ''; }  // Formato para mostrar simplemente el nombre en el autocomplete
+
+  numberOnly(event): boolean { return numberOnly(event); } // Función para que sólo se permitan números en un input
+
+  onImageError(event) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
+
+  onRemoveImage(position: number) {
+    Swal.fire({
+      text: "¿Estás seguro de borrar la imagen?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, quiero borrarla',
+      cancelButtonText: ' Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let temporalyDeletedImg: any = this.lockerEditForm.controls.deleted_images.value;
+        temporalyDeletedImg.push(this.allImages[position]);
+        this.lockerEditForm.controls.deleted_images.setValue(temporalyDeletedImg);
+        this.allImages.splice(position, 1);
+        this.lockerEditForm.controls.images.setValue(this.allImages);
+      }
+    });
+  }
+
+  cancelModal(): void { this.cancelModalStatus.emit(true); }
 
   onSubmit(): void {
 
@@ -137,10 +201,23 @@ export class ModalEditLockersComponent implements OnInit {
       return;
     }
 
-    this.isLoadingQuery = true;
+    // this.isLoadingQuery = true;
     var formData = new FormData();
-    this.files.forEach((file) => { formData.append('images', file) });  // AGREGAMOS AL CAMPO FILE LAS IMAGENES QUE EXISTAN ESTO CREARA VARIOS ARCHIVOS EN EL FORMDATA PERO EL BACKEND LOS LEE COMO UN ARRAY
+
+    this.allImages.map((image: any) => { if (!image.delete) { formData.append('images', image.file) } });
+
+    if (this.lockerEditForm.controls.images.value && this.lockerEditForm.controls.images.value.length > 0) {
+      let newArrayImages: any = [];
+      this.lockerEditForm.controls.images.value.map((item: any) => {
+        if (item.Key) {
+          newArrayImages.push(item);
+        }
+      });
+      this.lockerEditForm.controls.images.setValue(newArrayImages);
+    }
+
     let payload = updateLocker(this.lockerEditForm.getRawValue());
+
     formData.append("payload", JSON.stringify(payload));
 
     this._orders.updateProductLocker(formData).subscribe((res: any) => {
@@ -154,7 +231,6 @@ export class ModalEditLockersComponent implements OnInit {
       this.isLoadingQuery = false;
       throw err;
     });
-
   }
 
   closeModal(): void {

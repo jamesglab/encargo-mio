@@ -8,14 +8,15 @@ import { TransactionComponent } from './transaction/transaction.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalEditOrderComponent } from './transaction/modals/modal-edit-order/modal-edit-order.component';
 import { ModalRegisterPurchaseComponent } from './transaction/modals/modal-register-purchase/modal-register-purchase.component';
-import { CreateImageComponent } from './transaction/modals/create-image/create-image.component';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ImageDragDirective } from 'src/app/_directives/image-drag.directive';
+import { IvyCarouselModule } from 'angular-responsive-carousel';
 
 @NgModule({
   declarations: [StatComponent, TransactionComponent,
     ModalEditOrderComponent, ModalRegisterPurchaseComponent,
-    CreateImageComponent],
+    ImageDragDirective, ImageDragDirective],
   imports: [
     CommonModule,
     NgbModalModule,
@@ -23,9 +24,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     FormsModule,
     ReactiveFormsModule,
     NgxDropzoneModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    IvyCarouselModule
   ],
-  exports: [StatComponent, TransactionComponent],
+  exports: [StatComponent, TransactionComponent, ImageDragDirective],
   providers: [NgxImageCompressService]
 })
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs-compat';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { UserService } from 'src/app/_services/users.service';
 import Swal from 'sweetalert2';
@@ -17,32 +17,35 @@ import { TransactionService } from '../_services/transactions.service';
 export class CustomersComponent implements OnInit {
 
   public breadCrumbItems: Array<{}>;
-  public submitted: boolean = false;
+
   public transactions: any = [];
   public referenceImage: any;
+  public referenceStripeLink: any;
   public orderSelected: any;
   public transactionSelected: any;
   public term: any = '';
+
   public trm: number = 0;
   public status: number;
   public count: number;
   public currentpage: number;
+
   public isLoading: boolean = false;
   public isLoadingTransaction: boolean = false;
+  public submitted: boolean = false;
 
   public users: [] = [];
 
   // FILTROS
-  filterId = new FormControl('');
-  filterUser = new FormControl('');
-  filterOrder = new FormControl('');
-  filterPaymentMethod = new FormControl('');
-  filterDate = new FormControl('');
-  filterPaymentGateway = new FormControl('');
-  filterReference = new FormControl('');
-  filterType = new FormControl('');
-  filterValue = new FormControl('');
-
+  public filterId = new FormControl('');
+  public filterUser = new FormControl('');
+  public filterOrder = new FormControl('');
+  public filterPaymentMethod = new FormControl('');
+  public filterDate = new FormControl('');
+  public filterPaymentGateway = new FormControl('');
+  public filterReference = new FormControl('');
+  public filterType = new FormControl('');
+  public filterValue = new FormControl('');
 
   //SUBSCRIPCIONES PARA LOS AUTOCOMPLETS 
   public filteredUsers: Observable<string[]>;
@@ -60,12 +63,9 @@ export class CustomersComponent implements OnInit {
     this.currentpage = 1;
     this.getTransactions(1);
     this.getUsers();
-
   }
 
   getTransactions(status?, pagination?) {
-    // console.log('filtramos')
-    // if (this.term != '') {
     this.isLoading = true;
     this.status = status;
     this._transactionService.getTransactionsFilterI({
@@ -81,13 +81,9 @@ export class CustomersComponent implements OnInit {
     }, err => {
       throw err;
     });
-    // } else {
-    //   this.searchFilter(status, pagination);
-    // }
   }
 
   filterOptions() {
-    // console.log('estamos filtrando')
     const options = {}
     if (this.filterId.value != null && this.filterId.value != '') {
       options['id'] = this.filterId.value
@@ -107,14 +103,12 @@ export class CustomersComponent implements OnInit {
       options['type'] = this.filterType.value
     } if (this.filterValue.value != null && this.filterValue.value != '') {
       options['value'] = this.filterValue.value
-
     }
     return options;
   }
 
 
   resetFilters() {
-
     this.filterId.reset();
     this.filterUser.reset();
     this.filterOrder.reset();
@@ -125,10 +119,12 @@ export class CustomersComponent implements OnInit {
     this.filterType.reset();
     this.filterValue.reset();
     this.getTransactions(this.status);
-
   }
+
   openModalOrderService(content: any, transaction: any) {
+
     this.transactionSelected = transaction;
+
     if (transaction.order_service) {
       this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
         this.orderSelected = res;
@@ -140,21 +136,16 @@ export class CustomersComponent implements OnInit {
         this.modalService.open(content, { size: 'xl', centered: true });
       });
     }
-
-  }
-
-  openModalReference(modale: any, transaction: any) {
-    this.transactionSelected = transaction;
+    
     if (transaction.image) {
       this.referenceImage = transaction.image;
-      this.modalService.open(modale, { size: 'lg', centered: true })
     } else {
-      window.open(transaction.response);
+      this.referenceStripeLink = transaction.response;
     }
+
   }
 
   updateTransaction(status: any) {
-    // console.log(this.transactionSelected);
     this.isLoadingTransaction = true;
     this._transactionService.updateTransaction(this.transactionSelected, status)
       .subscribe(res => {
@@ -198,7 +189,7 @@ export class CustomersComponent implements OnInit {
       this.isLoading = false;
     }, err => {
       this.isLoading = false;
-      throw err; 
+      throw err;
     });
   }
 
@@ -210,7 +201,6 @@ export class CustomersComponent implements OnInit {
       this.initialFilterdsSubscriptions();
     });
   }
-
 
   initialFilterdsSubscriptions() {
     //HACEMOS UN FILTER CUANDO DETECTE CAMBIOS EL CONTROL DE "filterUserLocker" EVENTO QUE MANTIENE ESCUCHANDO CAMBIOS
@@ -244,7 +234,4 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-
 }
-
-

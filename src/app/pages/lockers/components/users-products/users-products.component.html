@@ -1,56 +1,108 @@
 <div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-body">
-        <app-page-title title="Productos de Usuario"></app-page-title>
 
+  <div class="col-12">
+
+    <div class="card">
+
+      <div class="card-body">
+
+        <app-page-title title="Productos de Usuario En Casillero"></app-page-title>
 
         <div class="form-group h5">
-          <label for="exampleInputEmail1">Usuario </label>
+
           <div class="input-group">
-            <div class="form-outline" style="width: 20%;">
+
+            <div class="form-outline">
               <input type="search" id="form1" class="form-control" type="text" id="user_id" class="form-control"
-                autocomplete="off" [formControl]="filterUser" placeholder="Selecciona el usuario"
-                [matAutocomplete]="auto_user" />
+                autocomplete="off" [formControl]="filterUser" placeholder="Busca y selecciona el usuario..."
+                [matAutocomplete]="auto_user" style="width: 290px;" />
             </div>
-            <button type="button" class="btn btn-primary" (click)="filterProductsByUser()">
-              <i class="fas fa-search"></i>
+
+            <button type="button" class="btn btn-primary" (click)="filterProductsByUser();" [disabled]="isLoading">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+                viewBox="0 0 16 16">
+                <path
+                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+              </svg>
             </button>
+
           </div>
+
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
-            <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+            <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+              title="CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}">
               CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
             </mat-option>
           </mat-autocomplete>
+
         </div>
+
       </div>
 
-      <div class="row cont-products mt-5">
+      <div class="row cont-products">
+
         <div class="col-12">
+
+          <div class="container-information">
+
+            <div class="alert alert-primary" role="alert" *ngIf="isEmpty">
+              <strong>{{ filterUser.value.full_name }} no tiene productos asociados.</strong>
+            </div>
+
+            <div class="d-flex justify-content-center" *ngIf="isLoading">
+              <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+
+          </div>
+
           <div class="d-flex flex-wrap">
 
             <div class="card cont-card" *ngFor="let item of products">
+
               <img class="card-img-top" [src]="item?.images[0]?.Location" (error)="onImageError($event)"
                 alt="Card image cap">
+
               <div class="card-body">
+
                 <strong>
                   <p class="card-text h4">#000{{item.product}}</p>
                 </strong>
+
                 <p class="card-text h5">{{item.name}}</p>
-                <p class="card-text h5">Peso :{{item.weight}}</p>
-                <p class="card-text h5">Guia :{{item.guide_number_alph}}</p>
-                <p class="card-text h5">{{ item.receipt_date ? (item.receipt_date | date : 'MMMM d') : '' }}</p>
+
+                <p class="card-text h5">Peso: {{item.weight ? item.weight : 0}} lb.</p>
+
+                <p class="card-text h5">Guia:
+                  {{ item.guide_number_alph ? item.guide_number_alph : (item.guide_number ? item.guide_number : 'N/A')
+                  }}
+                </p>
+
+                <p class="card-text h5">
+                  {{ item.receipt_date ? (item.receipt_date | date : 'MMM d, y, h:mm:ss a') : ''}}
+                </p>
+
               </div>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
     <div class="paginator">
+
       <mat-paginator [length]="count" [pageSize]="10" [pageSizeOptions]="[5, 10, 25]"
         (page)="filterProductsByUser($event)" aria-label="Select page">
       </mat-paginator>
 
     </div>
+
   </div>
+
 </div>

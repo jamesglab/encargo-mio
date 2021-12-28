@@ -17,6 +17,13 @@
             (keyup.enter)="sendFilter();">
         </th>
 
+        <th class="align-middle">
+          Cotización
+          <input type="text" class="form-control mt-2" formControlName="order_service"
+          placeholder="Filtra por el número de Cotización..." title="Filtra por el número de Cotización..."
+          (keyup.enter)="sendFilter();">
+        </th>
+
         <th class="th-align">
           Guía
           <input type="text" class="form-control mt-2" formControlName="guide_number"
@@ -91,6 +98,10 @@
             </ng-container>
           </a>
         </td>
+        
+        <td>
+          {{ data.order_service || '-' }}
+        </td>
 
         <td>{{ data.guide_number_alph ? data.guide_number_alph : data.guide_number }}</td>
         <td>{{ data.created_at ? ( data.created_at | date: 'medium' ) : '' }}</td>
@@ -110,7 +121,14 @@
               </button>
             </div>
 
-            <div class="delivery" *ngIf="data.status == 3" (click)="sendShippingTracking(data);">
+            <div class="center">
+              <button type="button" class="btn" (click)="changeStatusModal(data);">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: #c2c2ca">
+                  <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg></span>
+              </button>
+            </div>
+
+            <div class="delivery" *ngIf="data.status == 3 || data.status == 7" (click)="sendShippingTracking(data);">
               <img src="assets/images/delivery.png" alt="" draggable="false">
             </div>
 

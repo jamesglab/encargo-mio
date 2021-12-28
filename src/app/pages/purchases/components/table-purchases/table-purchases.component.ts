@@ -1,50 +1,97 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import * as moment from 'moment';
-import { Observable } from 'rxjs-compat';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { map, startWith } from 'rxjs/operators';
+import { GET_STATUS } from 'src/app/_helpers/tools/utils.tool';
 import { UserService } from "src/app/_services/users.service";
+import * as moment from 'moment';
+import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-table-purchases',
   templateUrl: './table-purchases.component.html',
   styleUrls: ['./table-purchases.component.scss']
 })
+
 export class TablePurchasesComponent implements OnInit {
 
   @Input() public purchases: [] = [];
   @Input() public count: number = 0;
+
   @Output() public editPurchase: EventEmitter<any> = new EventEmitter<any>();
   @Output() public filterPaginator: EventEmitter<any> = new EventEmitter<any>();
   @Output() public filterValues: EventEmitter<any> = new EventEmitter<any>();
-
+  @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isLoading: boolean = false;
+
   public users: [] = [];
+  public stores: any[] = [];
+  public conveyors: any = [];
+  public trm: any
+
   public filterCode = new FormControl('');
+  public filterOrderService = new FormControl('');
+  public filterOrderServiceStatus = new FormControl(null);
   public filterDate = new FormControl('');
+  public filterLockerDate = new FormControl('');
   public productName = new FormControl('');
+  public filterStore = new FormControl(null);
   public purchaseNumber = new FormControl('');
   public filterUser = new FormControl('');
   public total_value = new FormControl('');
+  public filterStatusProduct = new FormControl(null);
+  public filterIdProduct = new FormControl('');
 
   public filteredUsers: Observable<string[]>;
 
+  public purchaseSelected: any = {};
 
-  constructor(private _userService: UserService) { }
+  constructor(private _userService: UserService, private modalService: NgbModal, private _orderService: OrderService) { }
 
   ngOnInit(): void {
     this.getUsersAdmin();
+    this.getTrm();
+    this.getStores();
+    this.getConveyors();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
-
   }
 
-  getUsersAdmin() {
-    this._userService.getUsersAdmin().subscribe(users => {
-      this.users = users;
-    }, err => {
-      throw err;
-    });
+  getUsersAdmin(): void {
+    this._userService.getUsersAdmin()
+      .subscribe((users: any) => {
+        this.users = users;
+      }, err => {
+        throw err;
+      });
+  }
+
+  getStores() {
+    this._orderService.getStores()
+      .subscribe((res: any) => {
+        this.stores = res;
+      }, err => {
+        throw err;
+      });
+  }
+
+  getTrm(): void {
+    this._orderService.getTRM()
+      .subscribe((res: any) => {
+        this.trm = res;
+      }, err => {
+        throw err;
+      });
+  }
+
+  getConveyors(): void {
+    this._orderService.getConvenyor()
+      .subscribe((res: any) => {
+        this.conveyors = res;
+      }, err => {
+        throw err;
+      });
   }
 
   selectPurchase(purchase) {
@@ -55,37 +102,70 @@ export class TablePurchasesComponent implements OnInit {
     if (this.filterDate.value?.year) {
       return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD')
     } else {
-      return ''
+      return '';
     }
   }
 
+  formatLockerDate() {
+    if (this.filterLockerDate.value?.year) {
+      return moment(new Date(this.filterLockerDate.value.year, this.filterLockerDate.value.month - 1, this.filterLockerDate.value.day))
+      .format('YYYY/MM/DD')
+    } else {
+      return '';
+    }
+  }
 
   resetFilters() {
     this.filterCode.reset();
+    this.filterOrderService.reset();
+    this.filterOrderServiceStatus.reset();
     this.filterUser.reset();
     this.filterDate.reset();
-    // console.log('fiormat date',this.filterDate)
+    this.filterLockerDate.reset();
+    this.filterStore.reset();
     this.productName.reset();
     this.purchaseNumber.reset();
+    this.filterStatusProduct.reset();
+    this.filterIdProduct.reset();
     this.filterPurchase();
   }
 
-
   filterPurchase() {
-    const filterValues = {}
-    if (this.filterCode.value && this.filterCode.value != '') {
-      filterValues['id'] = this.filterCode.value
-    } if (this.filterDate.value && this.filterDate.value.year != '') {
+    const filterValues = {};
+    if (this.filterCode.value && this.filterCode.value.trim() != '') {
+      filterValues['id'] = this.filterCode.value;
+    }
+    if (this.filterIdProduct.value && this.filterIdProduct.value.trim() != '') {
+      filterValues['product_id'] = this.filterIdProduct.value;
+    }
+    if (this.filterOrderService.value && this.filterOrderService.value.trim() != '') {
+      filterValues['order_service'] = this.filterOrderService.value;
+    }
+    if (this.filterOrderServiceStatus.value != null && this.filterOrderServiceStatus.value != 'null') {
+      filterValues['order_service_status'] = this.filterOrderServiceStatus.value;
+    }
+    if (this.filterDate.value && this.filterDate.value.year != '') {
       filterValues['purchase_date'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
-    } if (this.filterUser.value != null && this.filterUser.value != '') {
+    }
+    if (this.filterLockerDate.value && this.filterLockerDate.value.year != '') {
+      filterValues['locker_entry_date'] = new Date(this.filterLockerDate.value.year, this.filterLockerDate.value.month - 1, this.filterLockerDate.value.day)
+    }
+    if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
-    } if (this.productName.value != null && this.productName.value != '') {
+    }
+    if (this.productName.value != null && this.productName.value.trim() != '') {
       filterValues['product_name'] = this.productName.value;
-    } if (this.purchaseNumber.value != null && this.purchaseNumber.value != '') {
+    }
+    if(this.filterStore.value != null && this.filterStore.value != 'null') {
+      filterValues['store'] = this.filterStore.value;
+    }
+    if (this.purchaseNumber.value != null && this.purchaseNumber.value.trim() != '') {
       filterValues['invoice_number'] = this.purchaseNumber.value;
     }
+    if (this.filterStatusProduct.value != null && this.filterStatusProduct.value != '') {
+      filterValues['locker_has_product'] = this.filterStatusProduct.value;
+    }
     this.filterValues.emit(filterValues);
-
   }
 
   displayFnUserName(name: any) {
@@ -106,6 +186,10 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
+  getStatus(status: string): string {
+    return GET_STATUS(status);
+  }
+
   private _normalizeValue(value: any, array: any): string {
     if (typeof value === 'object') {
       if (array === 'conveyors') {
@@ -120,7 +204,18 @@ export class TablePurchasesComponent implements OnInit {
     }
   }
 
+  openLocker(content: any, data: any): void {
+    this.modalService.open(content, { size: 'xl', centered: true });
+    this.purchaseSelected = data;
+  }
 
+  closeModalReceive(event: any) {
+    event.close();
+  }
+
+  refreshTableReceive(event: boolean) {
+    this.refreshTable.emit(event);
+  }
 
 }
 

@@ -1,0 +1,186 @@
+<form [formGroup]="update_address_form" (ngSubmit)="updateAddress()">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Actualizar Dirección</h5>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="closeModal()"
+      ></button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="name">Nombre de quién recibe </label>
+            <input
+              type="text"
+              formControlName="name"
+              class="form-control"
+              id="name"
+              placeholder="Nombre de quién recibe"
+            />
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group">
+            <label for="address">Dirección</label>
+            <input
+              type="text"
+              formControlName="address"
+              class="form-control"
+              id="address"
+              placeholder="Dirección"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-12 col-sm-4">
+          <div class="form-group">
+            <label for="country">País</label>
+            <select id="country" class="form-control">
+              <option>Colombia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-4">
+          <div class="form-group">
+            <label for="department">Departamento</label>
+
+            <input
+              type="text"
+              id="user_id"
+              class="form-control"
+              autocomplete="off"
+              formControlName="department"
+              placeholder="Selecciona el usuario"
+              [matAutocomplete]="auto_departament"
+              (keyup)="update_address_form.get('city').reset()"
+            />
+            <mat-autocomplete
+              #auto_departament="matAutocomplete"
+              [displayWith]="display_departament"
+            >
+              <mat-option
+                *ngFor="let item of filtered_department | async"
+                [value]="item"
+                (click)="update_address_form.get('city').reset()"
+              >
+                {{ item.name }}
+              </mat-option>
+            </mat-autocomplete>
+          </div>
+        </div>
+
+        <div class="col-12 col-sm-4">
+          <div class="form-group">
+            <label for="city">Ciudad</label>
+
+            <input
+              type="text"
+              id="user_id"
+              class="form-control"
+              autocomplete="off"
+              formControlName="city"
+              placeholder="Selecciona el usuario"
+              [matAutocomplete]="auto_city"
+              
+            />
+            <mat-autocomplete
+              #auto_city="matAutocomplete"
+              [displayWith]="display_city"
+            >
+              <mat-option
+                *ngFor="let item of filtered_citys | async"
+                [value]="item"
+              >
+                {{ item.name }}
+              </mat-option>
+            </mat-autocomplete>
+            <!-- <input
+              type="text"
+              id="user_id"
+              class="form-control"
+              autocomplete="off"
+              formControlName="city"
+              placeholder="Selecciona el usuario"
+              [matAutocomplete]="auto_city"
+            />
+            <mat-autocomplete
+              #auto_city="matAutocomplete"
+              [displayWith]="display_city"
+            >
+              <mat-option
+                *ngFor="let item of filtered_citys | async"
+                [value]="item"
+              >
+                {{ item.name }}
+              </mat-option>
+            </mat-autocomplete> -->
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col-12 col-md-7">
+          <label for="description">Notas Adicionales </label>
+          <textarea
+            class="form-control"
+            formControlName="description"
+            id="description"
+            rows="3"
+          ></textarea>
+        </div>
+        <div class="col-12 col-md-5">
+          <div class="form-group">
+            <label for="phone">Telefono</label>
+            <input
+              type="text"
+              formControlName="phone"
+              class="form-control"
+              id="phone"
+              placeholder="Telefono"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row m-1 mt-3">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="is_main"
+            formControlName="is_main"
+          />
+          <label class="form-check-label" for="is_main"
+            >Marcar como dirección principal</label
+          >
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-dismiss="modal"
+        (click)="closeModal()"
+      >
+        <div class="spinner-border" role="status" *ngIf="isLoader">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div *ngIf="!isLoader">Cancelar</div>
+      </button>
+      <button type="submit" class="btn btn-primary">
+        <div class="spinner-border" role="status" *ngIf="isLoader">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <div *ngIf="!isLoader">Actualizar</div>
+      </button>
+    </div>
+  </div>
+</form>

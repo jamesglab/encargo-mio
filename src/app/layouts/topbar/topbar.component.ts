@@ -1,11 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
-
-import { environment } from '../../../environments/environment';
-import { CookieService } from 'ngx-cookie-service';
-import { LanguageService } from '../../core/services/language.service';
-import { TranslateService } from '@ngx-translate/core';
 import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
@@ -28,9 +23,6 @@ export class TopbarComponent implements OnInit {
 
   constructor(
     @Inject(DOCUMENT) private document: any, private router: Router,
-    public languageService: LanguageService,
-    public translate: TranslateService,
-    public _cookiesService: CookieService,
     private _storage: StorageService
   ) {
   }
@@ -42,11 +34,8 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit() {
     this.user = this._storage.getItem("currentUser");
-    // console.log(this.user);
     this.openMobileMenu = false;
     this.element = document.documentElement;
-
-    this.cookieValue = this._cookiesService.get('lang');
 
   }
 
@@ -54,7 +43,6 @@ export class TopbarComponent implements OnInit {
     this.countryName = text;
     this.flagvalue = flag;
     this.cookieValue = lang;
-    this.languageService.setLanguage(lang);
   }
 
   /**

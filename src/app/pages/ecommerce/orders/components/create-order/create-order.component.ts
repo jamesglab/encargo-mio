@@ -1,11 +1,13 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { OrderService } from '../../../_services/orders.service';
 import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
-import { Observable } from 'rxjs-compat';
 import { map, startWith } from 'rxjs/operators';
+import { FileHandle } from 'src/app/_directives/file-handle';
+import { ImageCompressService } from 'src/app/_services/image-compress.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-create-order',
@@ -17,6 +19,7 @@ export class CreateOrderComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
   @Output() public close_modale = new EventEmitter<any>();
+
   @Input() public trm: any;
   @Input() public users: any = [];
 
@@ -25,8 +28,10 @@ export class CreateOrderComponent implements OnInit {
   public typeTax: number = 0.07;
   public createProductForm: FormGroup;
   public products: FormArray;
+
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
+
   public totalFormulas: any = [];
   public totalValues: any = [];
   public files: any = [];
@@ -34,7 +39,9 @@ export class CreateOrderComponent implements OnInit {
   constructor(
     private _formBuilder: FormBuilder,
     private quotationService: OrderService,
-    private _notify: NotifyService
+    private _notify: NotifyService,
+    private _compress: ImageCompressService,
+    private _orders: OrderService
   ) { }
 
   ngOnInit(): void {
@@ -55,7 +62,6 @@ export class CreateOrderComponent implements OnInit {
       advance_purchase: [false],
       price: [0]
     });
-
     this.filteredUsers = this.createProductForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
@@ -69,10 +75,10 @@ export class CreateOrderComponent implements OnInit {
 
     let createProduct = this._formBuilder.group({
       link: [this.createProductForm.value.link],
-      name: [this.createProductForm.value.name],
+      name: [this.createProductForm.value.name ? this.createProductForm.value.name.trim() : null],
       aditional_info: [this.createProductForm.value.aditional_info],
       description: [this.createProductForm.value.description],
-      image: [this.createProductForm.value.image,],
+      image: [this.createProductForm.value.image],
       quantity: [this.createProductForm.value.quantity],
       product_value: [this.createProductForm.value.price ? this.createProductForm.value.price : 0],
       tax: [0],
@@ -84,9 +90,10 @@ export class CreateOrderComponent implements OnInit {
       tax_manually: [false],
       sub_total: [0],
       selected_tax: [null],
-      initial_weight: [0]
+      initial_weight: [0],
+      uploadedFiles: [this.createProductForm.value.image ? { file: null, type: 'image', url: this.createProductForm.value.image } : ""],
+      key_aws_bucket: [null]
     });
-
     return createProduct;
 
   }
@@ -169,7 +176,6 @@ export class CreateOrderComponent implements OnInit {
   }
 
   cleanForm(): void { //RESET CREATE PRODUCT FORM
-
     for (const field in this.createProductForm.controls) {
       if (this.isRequired(field)) {
         this.createProductForm.controls[field].reset();
@@ -178,21 +184,18 @@ export class CreateOrderComponent implements OnInit {
     this.createProductForm.controls.quantity.setValue(1);
   }
 
-  onImageError(event) {
-    event.target.src = "assets/images/default.jpg";
-  }
+  onImageError(event) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 
   isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
 
   numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
 
-  resetProductValue(i: number) {
-    this.getFormula(i);
-  }
+  resetProductValue(i: number) { this.getFormula(i); }
 
   calculateTaxManually(i: number): void {
     this.products.controls[i]['controls'].tax_manually.setValue(true); // Setear que el tax_muanlly está manual
     this.calculateTotalPrices(i); // Calcular el total de precios
+    this.calculateDiscount(i);
     this.calculateTotalArticles(); // Llamamos la función para obtener los valores totales
   }
 
@@ -210,8 +213,18 @@ export class CreateOrderComponent implements OnInit {
     }
   }
 
-  calculateTotalPrices(i: number) { // Calculamos el valor total aplicando la fórmula
-    this.products.controls[i]['controls'].sub_total.setValue(this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value + this.products.controls[i]['controls'].tax.value); // Calculamos el sub_total de un producto (product_value * quantity + tax)
+  calculateTotalPrices(i: number) { // Calculamos el valor total aplicando la fórmula+
+    var sub_total: number = 0;
+    sub_total = (((this.products.controls[i]['controls'].product_value.value * this.products.controls[i]['controls'].quantity.value) + this.products.controls[i]['controls'].tax.value) + this.products.controls[i]['controls'].shipping_origin_value_product.value);
+    this.products.controls[i]['controls'].sub_total.setValue(sub_total);
+  }
+
+  calculateDiscount(i: number) {
+    if (this.products.controls[i]['controls'].discount.value > 0) {
+      var discount: number = 0;
+      discount = this.products.controls[i]['controls'].sub_total.value * (this.products.controls[i]['controls'].discount.value / 100);
+      this.products.controls[i]['controls'].sub_total.setValue(this.products.controls[i]['controls'].sub_total.value - discount);
+    }
   }
 
   changeCalculator(item: string, i: number) {
@@ -222,24 +235,21 @@ export class CreateOrderComponent implements OnInit {
   }
 
   getFormula(i: number) {
-    this.isLoadingFormula = true;
-    this.quotationService.calculateShipping(this.products.value).subscribe((res: any) => { // Llamamos al método para calcular los valores de envío
-      this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
-      if (res[0].name === 'No aplica') {
-        this.products.value.map((product: any, i: number) => {
-          this.products.controls[i]['controls'].tax.setValue(0);
-          this.calculateTotalPrices(i); // Calcular el total de precios
-          this.calculateTotalArticles(); // Calcular el valor de todos los artículos
-        });
-      } else {
+    return new Promise((resolve, reject) => {
+      this.isLoadingFormula = true;
+      this.quotationService.calculateShipping(this.products.value).subscribe((res: any) => { // Llamamos al método para calcular los valores de envío
+        this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
         this.calculateTax(i); // Calculamos el tax
         this.calculateTotalPrices(i); // Calcular el total de precios
+        this.calculateDiscount(i);
         this.calculateTotalArticles(); // Calcular el valor de todos los artículos
-      }
-      this.isLoadingFormula = false;
-    }, err => {
-      this.isLoadingFormula = false;
-      throw err;
+        this.isLoadingFormula = false;
+        resolve("ok");
+      }, err => {
+        this.isLoadingFormula = false;
+        reject(err);
+        throw err;
+      });
     });
   }
 
@@ -264,11 +274,66 @@ export class CreateOrderComponent implements OnInit {
     var total_weight: number = 0;
     this.products.value.map((product: any) => { sub_total += product.sub_total; total_weight += product.weight; }); // Hacemos la sumatoria del sub_total y weight
     this.totalValues.total_value = sub_total;
-    this.totalValues.total_weight = total_weight;
+    this.totalValues.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
   }
 
-  // Consumimos el endPoint de creación de orden por parte del administrador 
-  createOrder() {
+  validateShipping(i: number): void {
+    if (!this.products.controls[i]['controls'].shipping_origin_value_product.value) {
+      this.products.controls[i]['controls'].shipping_origin_value_product.setValue(0);
+    }
+  }
+
+  filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
+    if (file[0].file.type && file[0].file.type.includes('image')) {
+      this._compress.compressImage(file[0].base64).then((res: any) => {
+        this.products.controls[position]['controls'].uploadedFiles.setValue(res);
+        this.createFormData(res, position);
+      }, err => {
+        this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
+    } else {
+      this._notify.show('', 'El archivo que seleccionaste no es una imagen.', 'info');
+    }
+  }
+
+  createFormData(res: any, position: number) {
+    const formData = new FormData();
+    formData.append("image", res.file);
+    formData.append("payload", this.products.controls[position].value.key_aws_bucket);
+    this.isLoading = true;
+    this._orders.uploadNewImage(formData).subscribe((res: any) => {
+      this.products.controls[position]['controls'].image.setValue(res.Location);
+      this.products.controls[position]['controls'].key_aws_bucket.setValue(res.Key);
+      this.isLoading = false;
+    }, err => {
+      this.isLoading = false;
+      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  uploadImage(position: number) {
+    this._compress.uploadImage().then((res) => {
+      this.products.controls[position]['controls'].uploadedFiles.setValue(res);
+      this.createFormData(res, position);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  removeProduct(position: number): void {
+    this._notify.show('', 'Has eliminado el producto correctamente.', 'info');
+    this.products.controls.splice(position, 1);
+    if (this.products.controls.length > 0) {
+      this.calculateTax(this.products.controls.length - 1); // Calculamos el tax
+      this.calculateTotalPrices(this.products.controls.length - 1); // Calcular el total de precios
+      this.calculateTotalArticles(); // Calcular el valor de todos los artículos
+    }
+  }
+
+  async createOrder() {
 
     if (!this.createProductForm.value.user) { // Si no hay un usuario asignado a través del selector no se deja pasar.
       this._notify.show("Atención", "Selecciona un usuario al cual asignar el producto.", "info");
@@ -283,6 +348,8 @@ export class CreateOrderComponent implements OnInit {
     }
 
     if (this.createProductForm.valid) {
+
+      await this.getFormula(0);
 
       this.isLoading = true;
       var formData = new FormData();
@@ -318,4 +385,5 @@ export class CreateOrderComponent implements OnInit {
   onRemove(event) { // ELIMINAMOS LA IMAGEN
     this.files.splice(this.files.indexOf(event), 1);
   }
+
 }

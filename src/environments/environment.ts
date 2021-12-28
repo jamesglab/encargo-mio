@@ -11,17 +11,8 @@ export const environment = {
     user: "https://dev-api.encargomio.com/api/v1/user/",
     management: "https://dev-api.encargomio.com/api/v1/management/",
     orders: "https://dev-api.encargomio.com/api/v1/orders/",
-    scraping: 'https://t8cjnb3q08.execute-api.us-east-1.amazonaws.com/prod/web-scrapping-page'
-  },
-  firebaseConfig: {
-    apiKey: '',
-    authDomain: '',
-    databaseURL: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
-    measurementId: ''
+    scraping: 'https://t8cjnb3q08.execute-api.us-east-1.amazonaws.com/prod/web-scrapping-page',
+    updateConveyor: 'https://t8cjnb3q08.execute-api.us-east-1.amazonaws.com/prod/update-status-conveyor'
   }
 };
 

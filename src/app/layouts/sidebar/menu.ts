@@ -2,106 +2,123 @@ import { MenuItem } from './menu.model';
 
 export const MENU: MenuItem[] = [
     {
-        id: 12,
-        label: 'MENUITEMS.ECOMMERCE.TEXT',
+        id: 1,
+        label: 'General',
         showItem : false,
         icon: 'bx-store',
         subItems: [
             {
-                id: 15,
-                label: 'MENUITEMS.ECOMMERCE.LIST.ORDERS',
+                id: 11,
+                label: 'Cotizaciones',
                 link: '/ecommerce/orders',
-                parentId: 12,
+                parentId: 1,
                 code : 'CO000',
                 showItem: false
             },
-
-            // {
-            //     id: 155,
-            //     label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-BUY',
-            //     link: '/ecommerce/orders-buy',
-            //     parentId: 12
-            // },
             {
-                id: 153,
-                label: 'MENUITEMS.ECOMMERCE.LIST.ORDER-SHIPPING',
+                id: 12,
+                label: 'Envios',
                 link: '/ecommerce/orders-shippings',
-                parentId: 12,
+                parentId: 1,
                 code : 'ENV000',
                 showItem: false
             },
             {
-                id: 154,
-                label: 'MENUITEMS.ECOMMERCE.LIST.PURCHASE',
+                id: 13,
+                label: 'Compras',
                 link: '/purchases',
-                parentId: 12,
+                parentId: 1,
                 code : 'COM000',
                 showItem: false
             },
             {
-                id: 16,
-                label: 'MENUITEMS.ECOMMERCE.LIST.CUSTOMERS',
+                id: 14,
+                label: 'Pagos',
                 link: '/ecommerce/customers',
-                parentId: 12,
+                parentId: 1,
                 code : 'PAG000',
                 showItem: false
             },
             {
-                id: 17,
-                label: 'MENUITEMS.ECOMMERCE.LIST.CUPONS',
+                id: 15,
+                label: 'Cupones',
                 link: '/cupons',
-                parentId: 12,
+                parentId: 1,
                 code : 'CUP000',
                 showItem: false
             }
         ]
     },
     {
-        id: 48,
-        label: 'MENUITEMS.CONTACTS.TEXT',
+        id: 2,
+        label: 'Productos',
+        showItem : false,
+        icon: 'bxl-dropbox',
+        subItems: [
+            {
+                id: 21,
+                label: 'General',
+                link: '/products/all',
+                parentId: 2,
+                code : 'CO000',
+                showItem: false
+            },
+            {
+                id: 22,
+                label: 'Producto',
+                link: '/products/search',
+                parentId: 2,
+                code : 'ENV000',
+                showItem: false
+            }
+        ]
+    },
+    {
+        id: 3,
+        label: 'Usuarios',
         icon: 'bxs-user-detail',
         showItem : false,
         subItems: [
             {
-                id: 49,
-                label: 'MENUITEMS.CONTACTS.LIST.USERGRID',
+                id: 31,
+                label: 'Roles y Permisos',
                 link: '/contacts/grid',
-                parentId: 48,
+                parentId: 3,
                 code : 'ROL000',
                 showItem: false
             },
             {
-                id: 50,
-                label: 'MENUITEMS.CONTACTS.LIST.USERLIST',
+                id: 32,
+                label: 'Lista de Usuarios',
                 link: '/contacts/list',
-                parentId: 48,
+                parentId: 3,
                 code : 'US000',
                 showItem: false
             }
         ]
     },
     {
-        id: 1,
+        id: 4,
         label: 'Casillero',
         icon: 'bxs-box',
         showItem : false,
         subItems: [
             {
-                id: 2,
+                id: 41,
                 label: 'Casilleros',
-                parentId: 1,
+                parentId: 4,
                 link: '/lockers/locker',
                 code : 'CAS000',
                 showItem: false
             },
             {
-                id: 3,
+                id: 42,
                 label: 'Productos de usuario',
-                parentId: 1,
+                parentId: 4,
                 link: '/lockers/user-products',
-                code : 'CAS000',
+                code : 'CAS100',
                 showItem: false
-            },
+            }
         ]
     }
 ];

@@ -1,0 +1,33 @@
+<form style="width: 100%;" [formGroup]="shippingForm" (submit)="onSubmit()">
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Actualizar Estado</h5>
+        <button type="button" class="btn-close" (click)="close()" aria-hidden="true"></button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group" style="width: 100%;">
+                    <label>Estado de Envío</label>
+                    <select class="form-control" formControlName="status">
+                        <option [value]="null" disabled>Selecciona estado</option>
+                        <option *ngFor="let item of SHIPPING_STATUS" [ngValue]="item.status">
+                            {{item.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close()">
+            Cerrar
+        </button>
+
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            Actualizar
+        </button>
+    </div>
+</form>

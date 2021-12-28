@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/_services/users.service';
 import { OrderService } from '../_services/orders.service';
+import { SHIPPING_STATUS } from 'src/app/_helpers/tools/utils.tool';
 
 @Component({
   selector: 'app-orders-shippings',
@@ -15,6 +16,8 @@ export class OrdersShippingsComponent implements OnInit {
   public shippings: any;
   public shippingToUpdate: any;
   public shippingTracking: any;
+  public shipping_status: { [key: string]: any } = null;//ITS A SHIPPING OBJECT { ... }
+  public SHIPPING_STATUS: { [key: string]: any }[] = SHIPPING_STATUS;
   public trm: any;
 
   public itemPerPage: number = 5;
@@ -105,6 +108,12 @@ export class OrdersShippingsComponent implements OnInit {
 
   defaultResetValuesReceive(event: boolean) {
     this.resetAllFilters = event;
+  }
+
+  /**@param $event equals to one shipping_order*/
+  showChangeStatusModal($event: { [key: string]: any }, template: any): void {
+    this.shipping_status = $event;
+    this.modalService.open(template, { size: 'sm', centered: true });
   }
 
   openModal(modal: any, sizeModale: string) {

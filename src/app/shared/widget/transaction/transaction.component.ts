@@ -2,11 +2,12 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
-import { Observable } from "rxjs-compat";
-import { map, startWith } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { filter, map, startWith } from "rxjs/operators";
+import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
-
+import Swal from 'sweetalert2';
 
 @Component({
   selector: "app-transaction",
@@ -28,18 +29,26 @@ export class TransactionComponent implements OnInit {
     updated_at?: string;
     is_shipping_locker?: boolean;
   }>;
+
   public filterUser = new FormControl('');
   public filterId = new FormControl('');
   public filterDate = new FormControl({ value: '' });
+  public filterAdvancePurchase = new FormControl(null);
+  public filterShippingType = new FormControl(null);
+  public filterPaymentMethod = new FormControl(null);
+
   public filteredUsers: Observable<string[]>;
   public orderSelected: any = {};
-  public isLoading: boolean = false;
+
   public users: [] = [];
+
+  public isLoading: boolean = false;
 
   constructor(
     private modalService: NgbModal,
     public _notify: NotifyService,
-    private _userService: UserService
+    private _userService: UserService,
+    private _orders: OrderService
   ) { }
 
   ngOnInit() {
@@ -47,18 +56,22 @@ export class TransactionComponent implements OnInit {
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
-  ngOnChanges() {
-    // this.statusTab = this.status;
-  }
+  ngOnChanges() { }
 
   filterOrders() {
-    const filterValues = {}
+    const filterValues = {};
     if (this.filterId.value && this.filterId.value != '') {
       filterValues['id'] = this.filterId.value
     } if (this.filterDate?.value && this.filterDate.value.year) {
       filterValues['created_at'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
     } if (this.filterUser.value != null && this.filterUser.value != '') {
       filterValues['user'] = this.filterUser.value.id;
+    } if (this.filterAdvancePurchase.value != null && this.filterAdvancePurchase.value != 'null') {
+      filterValues['advance_purchase'] = this.filterAdvancePurchase.value;
+    } if (this.filterShippingType.value != null && this.filterShippingType.value != 'null') {
+      filterValues['is_shipping_locker'] = this.filterShippingType.value;
+    } if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != 'null') {
+      filterValues['payment_method'] = this.filterPaymentMethod.value;
     }
     this.filterValues.emit(filterValues);
   }
@@ -70,6 +83,7 @@ export class TransactionComponent implements OnInit {
       throw err;
     });
   }
+
   openModal(order: any, modal: any, sizeModale: string) {
     this.modalService.open(modal, { size: sizeModale, centered: true });
     this.orderSelected = order
@@ -90,13 +104,24 @@ export class TransactionComponent implements OnInit {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
 
-
   formatDate() {
     if (this.filterDate.value.year) {
       return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD')
     } else {
       return ''
     }
+  }
+
+  getStatusNumber(status: string): number {
+    return parseInt(status || '0');
+  }
+
+  formatPaymentMethod(payment_method: string): string {
+    if(payment_method){
+      return (payment_method == 'transfer') ? 'Transferencia' : 'Credito';
+    }
+    return '';
+    
   }
 
   private _normalizeValue(value: any, array: any): string {
@@ -111,6 +136,28 @@ export class TransactionComponent implements OnInit {
     } else {
       return value.toLowerCase().replace(/\s/g, '');
     }
+  }
+
+  delete(data: any): void {
+    Swal.fire({
+      title: '¿Estás seguro de eliminar esta orden?',
+      text: 'Está acción no será reversible.',
+      icon: 'warning',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Sí',
+      denyButtonText: `Cancelar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this._orders.anulateOrder(data.id)
+          .subscribe((res: any) => {
+            Swal.fire('', 'Has eliminado la orden correctamente.', 'success');
+            this.refreshTable.emit(true);
+          }, err => {
+            throw err;
+          });
+      }
+    });
   }
 
 }

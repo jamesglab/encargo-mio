@@ -1,26 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { EcommerceRoutingModule } from './ecommerce-routing.module';
 import { UIModule } from '../../shared/ui/ui.module';
 import { WidgetModule } from '../../shared/widget/widget.module';
-
-import { Ng5SliderModule } from 'ng5-slider';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgbNavModule, NgbDropdownModule, NgbPaginationModule, NgbModalModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
-import { NgSelectModule } from '@ng-select/ng-select';
-
-import { ProductsComponent } from './products/products.component';
-import { ProductdetailComponent } from './productdetail/productdetail.component';
-import { ShopsComponent } from './shops/shops.component';
-import { CheckoutComponent } from './checkout/checkout.component';
-import { CartComponent } from './cart/cart.component';
-import { AddproductComponent } from './addproduct/addproduct.component';
-import { CustomersComponent } from './customers/customers.component';
+import { EcommerceRoutingModule } from './ecommerce-routing.module';
 import { OrdersComponent } from './orders/orders.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { CreateOrderComponent } from './orders/components/create-order/create-order.component';
@@ -36,24 +25,20 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import {IvyCarouselModule} from 'angular-responsive-carousel';
 import { ShipmentTrackingComponent } from './orders-shippings/components/shipment-tracking/shipment-tracking.component';
-
-
-const config: DropzoneConfigInterface = {
-  // Change this to your upload POST address:
-  url: 'https://httpbin.org/post',
-  maxFilesize: 100,
-};
+import { OrderByPipe } from './orders-shippings/pipes/sort.pipe';
+import { NgxImageCompressService } from 'ngx-image-compress';
+import { ImageDragDirective } from 'src/app/_directives/image-drag.directive';
+import { EditShippingStatusComponent } from './orders-shippings/components/edit-status/edit-shipping-status.component';
+import { CustomersComponent } from './customers/customers.component';
 
 @NgModule({
-  // tslint:disable-next-line: max-line-length
-  declarations: [ProductsComponent,
-    ProductdetailComponent, ShopsComponent,
-    CheckoutComponent, CartComponent, AddproductComponent,
-    CustomersComponent, OrdersComponent, CreateOrderComponent,
+  declarations: [
+    OrdersComponent, CreateOrderComponent,
     OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent,
-    ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent, ShipmentTrackingComponent],
+    ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent, ShipmentTrackingComponent,
+    OrderByPipe, EditShippingStatusComponent, CustomersComponent
+  ],
   imports: [
     CommonModule,
     EcommerceRoutingModule,
@@ -66,7 +51,6 @@ const config: DropzoneConfigInterface = {
     ReactiveFormsModule,
     UIModule,
     WidgetModule,
-    Ng5SliderModule,
     NgSelectModule,
     NgbPaginationModule,
     MatPaginatorModule,
@@ -76,19 +60,16 @@ const config: DropzoneConfigInterface = {
     MatInputModule,
     MatAutocompleteModule,
     SharedModule,
-    DragDropModule,
-    IvyCarouselModule
+    DragDropModule
   ],
   exports: [
     MatSelectModule,
     MatAutocompleteModule,
-    ModalLockerEntryComponent
+    ModalLockerEntryComponent,
+    ImageDragDirective
   ],
   providers: [
-    {
-      provide: DROPZONE_CONFIG,
-      useValue: config
-    }
+    NgxImageCompressService
   ]
 })
 

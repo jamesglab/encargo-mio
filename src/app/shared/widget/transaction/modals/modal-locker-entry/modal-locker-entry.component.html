@@ -3,7 +3,7 @@
   <button type="button" class="btn-close" aria-hidden="true" (click)="closeModal()"></button>
 </div>
 
-<div class="container p-4">
+<div class="container p-4" *ngIf="!initLoad">
 
   <div class="alert alert-primary" role="alert" *ngIf="toHome.status">
     <strong>Nota:</strong>
@@ -21,13 +21,14 @@
         <div class="form-group">
 
           <label for="guia">Número Guia Origen</label>
-          <input matInput type="text" id="guia" class="form-control" placeholder="Busca el número de guía"
-            formControlName="guide_number_alph" [matAutocomplete]="auto" (input)="autoCompleteGuide($event.target.value);"
-            title="{{ lockerForm.controls.guide_number_alph.value ? lockerForm.controls.guide_number_alph.value : '' }}">
+          <input class="form-control" type="text" id="guia" placeholder="Busca el número de guía"
+            formControlName="guide_number" [matAutocomplete]="auto"
+            (input)="autoCompleteGuide($event.target.value);"
+            title="{{ lockerForm.controls.guide_number.value ? lockerForm.controls.guide_number.value : '' }}">
 
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let guide of allGuides" [value]="guide">
-              {{ guide.guide_number_alph ? guide.guide_number_alph : guide.guide_number }}
+              {{ guide.guide_number ? guide.guide_number : guide.guide_number }}
             </mat-option>
           </mat-autocomplete>
 
@@ -40,15 +41,15 @@
         <div class="form-group">
 
           <label for="orders">Orden de Compra</label>
-          <!-----(input)="autoCompleteGuide($event.target.value);"-->
-          <input matInput type="text" id="orders" class="form-control"
+          <input class="form-control" type="text" id="orders"
             placeholder="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : 'Busca la orden...' }}"
             formControlName="guide_order" [matAutocomplete]="auto_order"
             title="{{ lockerForm.controls.guide_order.value ?  lockerForm.controls.guide_order.value : '' }}">
 
           <mat-autocomplete #auto_order="matAutocomplete" [displayWith]="displayFn">
             <mat-option *ngFor="let order of filteredOrders | async" [value]="order">
-              {{ order.order_service?.id ? order.order_service?.id : '' }} | {{ order.product.name ? order.product.name : '' }}
+              {{ order.order_service?.id ? order.order_service?.id : '' }} | {{ order.product.name ? order.product.name
+              : '' }}
             </mat-option>
           </mat-autocomplete>
 
@@ -88,12 +89,14 @@
 
           <label for="lockers">Casillero</label>
 
-          <input matInput class="form-control" id="lockers" formControlName="locker_info"
+          <input class="form-control" id="lockers" formControlName="locker_info"
             (input)="autoCompleteLocker($event.target.value);" [matAutocomplete]="auto_locker"
-            placeholder="Búsqueda de casillero...">
+            placeholder="Búsqueda de casillero..." [ngClass]="{ 'is-invalid' : form.locker_info.errors }">
 
-          <div class="spinner-border text-dark" role="status" *ngIf="loaderLockers">
-            <span class="sr-only"></span>
+          <div class="invalid-feedback" *ngIf="form.locker_info.errors">
+            <ng-container *ngIf="form.locker_info.errors.required">
+              Debes seleccionar un casillero
+            </ng-container>
           </div>
 
           <mat-autocomplete #auto_locker="matAutocomplete">
@@ -111,9 +114,6 @@
         <div class="form-group">
           <label for="description-product">Nombre del Producto </label>
           <input type="text" class="form-control" id="description-product" formControlName="product_description">
-          <!-- <textarea class="form-control" id="description-product" formControlName="product_description"
-            style="height: 37px; min-height: 37px !important; max-height: 300px !important;">
-          </textarea> -->
         </div>
 
       </div>
@@ -127,7 +127,17 @@
         <div class="form-group">
           <label for="weight">Peso (libras)</label>
           <input type="number" class="form-control" id="weight" (keypress)="numberOnly($event);" min="0"
-            formControlName="weight">
+            formControlName="weight" [ngClass]="{ 'is-invalid' : form.weight.errors }">
+
+          <div class="invalid-feedback" *ngIf="form.weight.errors">
+            <ng-container *ngIf="form.weight.errors.required">
+              El valor del peso debe ser requerido.
+            </ng-container>
+            <ng-container *ngIf="form.weight.errors.min">
+              El valor mínimo requerido es 0.1 el actual es {{ form.weight.errors.min.actual }}
+            </ng-container>
+          </div>
+
         </div>
 
       </div>
@@ -138,9 +148,14 @@
           <label for="dateLocker">Fecha de Recibido</label>
           <div class="input-group clockpicker">
             <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd" #dl="ngbDatepicker"
-              formControlName="receipt_date">
+              formControlName="receipt_date" [ngClass]="{ 'is-invalid' : form.receipt_date.errors }">
             <div class="input-group-append" (click)="dl.toggle()">
               <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+            </div>
+            <div class="invalid-feedback" *ngIf="form.receipt_date.errors">
+              <ng-container *ngIf="form.receipt_date.errors.required">
+                Debes ingresar una fecha de recibido
+              </ng-container>
             </div>
           </div>
         </div>
@@ -166,7 +181,12 @@
         <div class="form-group">
           <label for="vA">Valor Declarado(Administrador)</label>
           <input type="number" class="form-control" id="vA" (keypress)="numberOnly($event);" min="0"
-            formControlName="declared_value_admin">
+            formControlName="declared_value_admin" [ngClass]="{ 'is-invalid' : form.declared_value_admin.errors }">
+          <div class="invalid-feedback" *ngIf="form.declared_value_admin.errors">
+            <ng-container *ngIf="form.declared_value_admin.errors.required">
+              Debes ingresar un valor declarado por el administrador.
+            </ng-container>
+          </div>
         </div>
 
       </div>
@@ -180,12 +200,21 @@
         <div class="form-group">
 
           <label for="conveyor">Transportadora Origen</label>
-          <select class="form-control" id="conveyor" formControlName="conveyor">
-            <option [value]="null" disabled>Selecciona una transportadora</option>
-            <option *ngFor="let conveyor of conveyors" [ngValue]="conveyor.id">
-              {{ (conveyor.name.length > 50) ? (conveyor.name | slice:0:50 ) + '...' : conveyor.name }}
-            </option>
-          </select>
+
+          <input class="form-control" id="conveyor" formControlName="conveyor" [matAutocomplete]="auto_conveyor"
+            placeholder="Búsqueda de transportadora..." [ngClass]="{ 'is-invalid' : form.conveyor.errors }">
+
+          <div class="invalid-feedback" *ngIf="form.conveyor.errors">
+            <ng-container *ngIf="form.conveyor.errors.required">
+              Debes seleccionar una transportadora de origen.
+            </ng-container>
+          </div>
+
+          <mat-autocomplete #auto_conveyor="matAutocomplete" [displayWith]="displayConveyors">
+            <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
+              {{conveyor.name}}
+            </mat-option>
+          </mat-autocomplete>
 
         </div>
 
@@ -219,6 +248,10 @@
   <br>
 
 </div>
+
+<ng-container *ngIf="initLoad">
+  Cargando.
+</ng-container>
 
 <div class="modal-footer">
 
