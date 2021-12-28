@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { MENU } from 'src/app/layouts/sidebar/menu';
-import Swal from 'sweetalert2';
 import { StorageService } from '../../_services/storage.service';
 
 @Injectable({ providedIn: 'root' })

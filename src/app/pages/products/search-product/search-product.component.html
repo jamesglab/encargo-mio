@@ -1,0 +1,78 @@
+<div class="container-fluid">
+    <app-page-title title="Información de producto"></app-page-title>
+
+    <div class="row">
+        <div class="col-xl-4 col-md-4 col-sm-12">
+            <div class="search-box me-2 mb-2 d-inline-block" style="width:100%">
+                <div class="position-relative">
+                    <input type="text" class="form-control" placeholder="Busca por # de producto"
+                        (keyup.enter)="onSearch($event)">
+                    <i class="bx bx-search-alt search-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-container *ngIf="product_info">
+        <div class="row flex-wrap justify-content-left">
+
+            <div class="card card-cont p-3">
+                <div class="card-body">
+                    <div class="card-title" title="{{ product_info.name || 'Encargomio'}}">
+                        {{ product_info.name }}
+                    </div>
+
+                    <carousel [arrows]="false" [width]="180" [height]="180" [cellsToShow]="1" [loop]="true"
+                        style="z-index: 0 !important;">
+
+                        <div class="carousel-cell">
+
+                            <img *ngIf="!product_info.images" [src]="product_info.image" alt="" draggable="false"
+                                (error)="onImageError($event);">
+
+                            <ng-container *ngIf="product_info.images && product_info.images.length > 0">
+                                <img *ngFor="let image of product_info.images" [src]="image.Location" alt="" title=""
+                                    draggable="false" (error)="onImageError($event);">
+                            </ng-container>
+
+                        </div>
+
+                    </carousel>
+                </div>
+            </div>
+
+            <div class="card card-cont p-3" *ngIf="product_info?.order_service">
+                <div class="card-body">
+                    <h5>Cotización # {{ product_info.order_service }}</h5>
+                    <div>{{ quotationStatus(product_info.order_service_status) }}</div>
+                    <button class="btn btn-primary btn-sm" routerLink="/ecommerce/orders">
+                        <i class="mdi mdi-arrow-right"></i>
+                      </button>
+                </div>
+            </div>
+            <div class="card card-cont p-3" *ngIf="product_info?.order_purchase">
+                <div class="card-body">
+                    <h5>Compra # {{ product_info.order_purchase }}</h5>
+                    <div>{{ product_info.store_name || 'Sin tienda' }}</div>
+                    <div>{{ product_info.purchase_date | date }}</div>
+                </div>
+            </div>
+            <div class="card card-cont p-3" *ngIf="product_info?.locker_has_product">
+                <div class="card-body">
+                    <h5>Casillero # {{ product_info.locker_id }}</h5>
+                    <div>{{ product_info.user_name }} {{ product_info.last_name }}</div>
+                </div>
+            </div>
+            <div class="card card-cont p-3" *ngIf="product_info?.shipping_order">
+                <div class="card-body">
+                    <h5>Envío # {{ product_info.shipping_order }}</h5>
+                    <div>{{ shippingStatus(product_info.shipping_order_status) }}</div>
+                    <button class="btn btn-primary btn-sm" routerLink="/ecommerce/orders-shippings">
+                        <i class="mdi mdi-arrow-right"></i>
+                      </button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+</div>

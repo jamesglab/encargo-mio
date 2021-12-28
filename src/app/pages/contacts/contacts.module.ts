@@ -13,9 +13,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { ModalUserComponent } from './components/modal-user/modal-user.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { UsersgridComponent } from './usersgrid/usersgrid.component';
+import { AddressessComponent } from './components/addressess/addressess.component';
+import { UpdateAddressComponent } from './components/addressess/update-address/update-address.component';
+
 
 @NgModule({
-  declarations: [UserlistComponent, ModalUserComponent, UsersgridComponent],
+  declarations: [UserlistComponent, ModalUserComponent, UsersgridComponent, AddressessComponent, UpdateAddressComponent],
   imports: [
     CommonModule,
     ContactsRoutingModule,

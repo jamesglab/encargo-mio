@@ -249,10 +249,10 @@
                     </div>
 
                     <div class="col-sm">
-                      <label for="discount" class="form-label">Descuento</label>
+                      <label for="discount" class="form-label">Descuento (%)</label>
                       <input type="number" id="discount" class="form-control" placeholder="Descuento"
                         title="Descuento del producto" formControlName="discount" (keypress)="numberOnly($event);"
-                        (blur)="getFormula(i);" min="0">
+                        (blur)="calculateDiscount(i);" min="0">
                     </div>
 
                     <div class="col-sm">

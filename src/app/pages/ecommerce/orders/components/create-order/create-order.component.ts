@@ -195,6 +195,7 @@ export class CreateOrderComponent implements OnInit {
   calculateTaxManually(i: number): void {
     this.products.controls[i]['controls'].tax_manually.setValue(true); // Setear que el tax_muanlly está manual
     this.calculateTotalPrices(i); // Calcular el total de precios
+    this.calculateDiscount(i);
     this.calculateTotalArticles(); // Llamamos la función para obtener los valores totales
   }
 
@@ -218,6 +219,14 @@ export class CreateOrderComponent implements OnInit {
     this.products.controls[i]['controls'].sub_total.setValue(sub_total);
   }
 
+  calculateDiscount(i: number) {
+    if (this.products.controls[i]['controls'].discount.value > 0) {
+      var discount: number = 0;
+      discount = this.products.controls[i]['controls'].sub_total.value * (this.products.controls[i]['controls'].discount.value / 100);
+      this.products.controls[i]['controls'].sub_total.setValue(this.products.controls[i]['controls'].sub_total.value - discount);
+    }
+  }
+
   changeCalculator(item: string, i: number) {
     this.products.controls[i]['controls'].tax_manually.setValue(false);
     this.products.controls[i]['controls'].selected_tax.setValue(item);
@@ -232,6 +241,7 @@ export class CreateOrderComponent implements OnInit {
         this.totalFormulas = res; // Asignamos el valor que retorna el backend de formulas
         this.calculateTax(i); // Calculamos el tax
         this.calculateTotalPrices(i); // Calcular el total de precios
+        this.calculateDiscount(i);
         this.calculateTotalArticles(); // Calcular el valor de todos los artículos
         this.isLoadingFormula = false;
         resolve("ok");

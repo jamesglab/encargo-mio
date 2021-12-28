@@ -74,7 +74,7 @@ export class ModalCreateShippingComponent implements OnInit {
     this.createShippingForm.controls.products.setValue(null);
     await this._userService.getAddressByUser({ id: this.createShippingForm.get('user').value.id })
       .subscribe((res: any) => {
-        this.address = res;
+        this.address = res.addressess;
         this.createShippingForm.controls.address.enable();
       }, err => {
         this.createShippingForm.controls.address.enable();
@@ -138,6 +138,7 @@ export class ModalCreateShippingComponent implements OnInit {
   }
 
   _filter(value: string, array: any): string[] {
+    console.log(this[array]);
     const filterValue = this._normalizeValue(value, array);
     let fileterdData = this[array].filter(option => this._normalizeValue(option, array).includes(filterValue));
     if (fileterdData.length > 0) {
