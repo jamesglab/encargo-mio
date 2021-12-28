@@ -266,7 +266,8 @@ export class LockerEntryComponent implements OnInit {
 
   uploadImage(): void { // Creamos este método para que al dar clic en subir archivo pase primero por el serivicio de comprimirla
     this._compress.uploadImage().then((res: any) => {
-      this.files.push(res.file);
+      console.log("RESSS", res)
+      this.files.push(res);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
       throw err;
