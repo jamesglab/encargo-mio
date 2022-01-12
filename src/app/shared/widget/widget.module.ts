@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { NgbDatepickerModule, NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxDropzoneModule } from 'ngx-dropzone';
-import { StatComponent } from './stat/stat.component';
 import { TransactionComponent } from './transaction/transaction.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalEditOrderComponent } from './transaction/modals/modal-edit-order/modal-edit-order.component';
@@ -14,9 +13,11 @@ import { ImageDragDirective } from 'src/app/_directives/image-drag.directive';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 
 @NgModule({
-  declarations: [StatComponent, TransactionComponent,
+  declarations: [
+    TransactionComponent,
     ModalEditOrderComponent, ModalRegisterPurchaseComponent,
-    ImageDragDirective, ImageDragDirective],
+    ImageDragDirective, ImageDragDirective
+  ],
   imports: [
     CommonModule,
     NgbModalModule,
@@ -27,7 +28,7 @@ import { IvyCarouselModule } from 'angular-responsive-carousel';
     MatAutocompleteModule,
     IvyCarouselModule
   ],
-  exports: [StatComponent, TransactionComponent, ImageDragDirective],
+  exports: [TransactionComponent, ImageDragDirective],
   providers: [NgxImageCompressService]
 })
 
