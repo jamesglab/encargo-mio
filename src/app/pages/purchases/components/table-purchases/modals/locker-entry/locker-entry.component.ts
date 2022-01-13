@@ -57,7 +57,6 @@ export class LockerEntryComponent implements OnInit {
   ngOnInit(): void { }
 
   ngOnChanges() {
-    console.log(this.purchaseSelected)
     if (this.purchaseSelected && !this.purchaseSelected.locker_has_product) {
       this.getTypeShipping(this.purchaseSelected);
       this.buildForm(this.purchaseSelected);
@@ -266,7 +265,6 @@ export class LockerEntryComponent implements OnInit {
 
   uploadImage(): void { // Creamos este método para que al dar clic en subir archivo pase primero por el serivicio de comprimirla
     this._compress.uploadImage().then((res: any) => {
-      console.log("RESSS", res)
       this.files.push(res);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
