@@ -41,7 +41,7 @@ export class CustomersComponent implements OnInit {
   public filterId = new FormControl('');
   public filterUser = new FormControl('');
   public filterOrder = new FormControl('');
-  public filterPaymentMethod = new FormControl('');
+  public filterPaymentMethod = new FormControl('null');
   public filterDate = new FormControl('');
   public filterPaymentGateway = new FormControl('');
   public filterReference = new FormControl('');
@@ -113,7 +113,7 @@ export class CustomersComponent implements OnInit {
       options['user'] = this.filterUser.value.id
     } if (this.filterOrder.value != null && this.filterOrder.value != '') {
       options['order'] = this.filterOrder.value
-    } if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != '') {
+    } if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != '' && this.filterPaymentMethod.value != 'null') {
       options['payment_method'] = this.filterPaymentMethod.value
     } if (this.filterDate.value?.year && this.filterDate.value != '') {
       options['created_at'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
@@ -192,6 +192,7 @@ export class CustomersComponent implements OnInit {
     }
     return isType;
   }
+
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
@@ -252,6 +253,19 @@ export class CustomersComponent implements OnInit {
     } else {
       // RETORNAMOS EL VALOR FORMATEADO PARA FILTRAR CUANDO NO VAMOS A CONSULTAR UN OBJETO
       return value.toLowerCase().replace(/\s/g, '');
+    }
+  }
+
+  paymentMethod(type: string) {
+    switch (type) {
+      case "credit":
+        return "Crédito";
+      case "transfer":
+        return "Transferencia";
+      case "wompi":
+        return "Wompi";
+      default:
+        return "";
     }
   }
 

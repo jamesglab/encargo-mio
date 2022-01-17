@@ -91,11 +91,13 @@
                                         <div class="mt-2" style="width: 8rem;">
                                             <select class="form-select mt-2 " aria-label="Default select example"
                                                 [formControl]="filterPaymentMethod" (change)="getTransactions(status)">
-                                                <option selected disabled value=""
-                                                    title="Selecciona un método de pago...">Seleccione un método de pago
+                                                <option disabled value="" title="Selecciona un método de pago...">
+                                                    Seleccione un método de pago
                                                 </option>
+                                                <option selected value="null">Todos</option>
                                                 <option value="credit">Credito</option>
                                                 <option value="transfer">Transferencia</option>
+                                                <option value="wompi">Wompi</option>
                                             </select>
                                         </div>
                                     </th>
@@ -170,7 +172,7 @@
 
                                     <td>
                                         <p class="mb-1">
-                                            {{ transaction.payment_method == 'credit' ? 'Credito':'Transferencia' }}
+                                            {{ paymentMethod(transaction.payment_method) }}
                                         </p>
                                     </td>
 
