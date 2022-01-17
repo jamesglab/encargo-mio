@@ -28,6 +28,7 @@ export class ShippingsTableComponent implements OnInit {
   @Output() public defaultResetValues = new EventEmitter<any>();
 
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
 
   public typesShippings: any = [];
   public filteredUsers: Observable<string[]>;
@@ -41,6 +42,7 @@ export class ShippingsTableComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.checkOperativeSystem();
     this.getTypes();
     this.shippingsFilters = this._fb.group({
       shipping: [null],
@@ -53,6 +55,16 @@ export class ShippingsTableComponent implements OnInit {
     });
     this.filteredUsers = this.shippingsFilters.controls.user.valueChanges.
       pipe(startWith(''), map(value => this._filter(value, 'users')));
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   ngOnChanges() {
@@ -115,8 +127,8 @@ export class ShippingsTableComponent implements OnInit {
     this.shippingTracking.emit(data);
   }
 
-  changeStatusModal(shipping_order: { [ key: string ]: any }): void {
-   this.showChangeStatusModal.emit(shipping_order);
+  changeStatusModal(shipping_order: { [key: string]: any }): void {
+    this.showChangeStatusModal.emit(shipping_order);
   }
 
   numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
@@ -142,25 +154,35 @@ export class ShippingsTableComponent implements OnInit {
     if (this.form.shipping.value && this.form.shipping.value.trim() != '') {
       filterValues['shipping'] = this.form.shipping.value;
     }
-    if(this.form.order_service.value && this.form.order_service.value.trim() != ''){
+    if (this.form.order_service.value && this.form.order_service.value.trim() != '') {
       filterValues['order_service'] = this.form.order_service.value;
     }
     if (this.form.created_at.value && this.form.created_at.value.year) {
       filterValues['created_at'] = this.formatDate();
-    } 
+    }
     if (this.form.user.value) {
       filterValues['user'] = this.form.user.value.id;
-    } 
+    }
     if (this.form.guide_number.value && this.form.guide_number.value.trim() != '') {
       filterValues['guide_number'] = this.form.guide_number.value;
-    } 
+    }
     if (this.form.shipping_type.value && this.form.shipping_type.value != 'null' && this.form.shipping_type.value != null) {
       filterValues['shipping_type'] = this.form.shipping_type.value;
-    } 
+    }
     if (this.form.shipping_value.value > 0) {
       filterValues['shipping_value'] = this.form.shipping_value.value;
     }
     return filterValues;
+  }
+
+  keyDownFunction(event: any) {
+    if (!this.isAndroid) {
+      if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
+        this.sendFilter();
+      }
+    } else {
+      return;
+    }
   }
 
 }

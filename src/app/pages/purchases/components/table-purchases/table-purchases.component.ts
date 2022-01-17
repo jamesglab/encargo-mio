@@ -25,6 +25,7 @@ export class TablePurchasesComponent implements OnInit {
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
 
   public users: [] = [];
   public stores: any[] = [];
@@ -51,11 +52,22 @@ export class TablePurchasesComponent implements OnInit {
   constructor(private _userService: UserService, private modalService: NgbModal, private _orderService: OrderService) { }
 
   ngOnInit(): void {
+    this.checkOperativeSystem();
     this.getUsersAdmin();
     this.getTrm();
     this.getStores();
     this.getConveyors();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   getUsersAdmin(): void {
@@ -109,7 +121,7 @@ export class TablePurchasesComponent implements OnInit {
   formatLockerDate() {
     if (this.filterLockerDate.value?.year) {
       return moment(new Date(this.filterLockerDate.value.year, this.filterLockerDate.value.month - 1, this.filterLockerDate.value.day))
-      .format('YYYY/MM/DD')
+        .format('YYYY/MM/DD')
     } else {
       return '';
     }
@@ -128,6 +140,16 @@ export class TablePurchasesComponent implements OnInit {
     this.filterStatusProduct.reset();
     this.filterIdProduct.reset();
     this.filterPurchase();
+  }
+
+  keyDownFunction(event: any) {
+    if (!this.isAndroid) {
+      if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
+        this.filterPurchase();
+      }
+    } else {
+      return;
+    }
   }
 
   filterPurchase() {
@@ -156,7 +178,7 @@ export class TablePurchasesComponent implements OnInit {
     if (this.productName.value != null && this.productName.value.trim() != '') {
       filterValues['product_name'] = this.productName.value;
     }
-    if(this.filterStore.value != null && this.filterStore.value != 'null') {
+    if (this.filterStore.value != null && this.filterStore.value != 'null') {
       filterValues['store'] = this.filterStore.value;
     }
     if (this.purchaseNumber.value != null && this.purchaseNumber.value.trim() != '') {

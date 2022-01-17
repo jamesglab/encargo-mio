@@ -33,6 +33,7 @@ export class CustomersComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingTransaction: boolean = false;
   public submitted: boolean = false;
+  public isAndroid: boolean = false;
 
   public users: [] = [];
 
@@ -59,10 +60,21 @@ export class CustomersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.checkOperativeSystem();
     this.breadCrumbItems = [{ label: 'Ecommerce' }, { label: 'Customers', active: true }];
     this.currentpage = 1;
     this.getTransactions(1);
     this.getUsers();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   getTransactions(status?, pagination?) {
@@ -83,8 +95,18 @@ export class CustomersComponent implements OnInit {
     });
   }
 
+  keyDownFunction(event: any) {
+    if (!this.isAndroid) {
+      if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
+        this.getTransactions();
+      }
+    } else {
+      return;
+    }
+  }
+
   filterOptions() {
-    const options = {}
+    const options = {};
     if (this.filterId.value != null && this.filterId.value != '') {
       options['id'] = this.filterId.value
     } if (this.filterUser.value != null && this.filterUser.value != '') {
@@ -106,7 +128,6 @@ export class CustomersComponent implements OnInit {
     }
     return options;
   }
-
 
   resetFilters() {
     this.filterId.reset();
@@ -136,7 +157,7 @@ export class CustomersComponent implements OnInit {
         this.modalService.open(content, { size: 'xl', centered: true });
       });
     }
-    
+
     if (transaction.image) {
       this.referenceImage = transaction.image;
     } else {
