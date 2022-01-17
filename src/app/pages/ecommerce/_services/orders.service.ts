@@ -9,7 +9,7 @@ import { environment } from "src/environments/environment";
   providedIn: "root",
 })
 export class OrderService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getProductInfo(url: string): Observable<any> {
     return this.http
@@ -36,11 +36,10 @@ export class OrderService {
       );
   }
 
-  detailOrder(params) {
+  detailOrder(params: any): Observable<any> {
     return this.http
       .get<any>(`${environment.microservices.management}orders/detail`, {
-        headers: header,
-        params,
+        headers: header, params
       })
       .pipe(
         map((res: any) => {

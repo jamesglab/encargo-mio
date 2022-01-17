@@ -1,0 +1,144 @@
+<div class="modal-header">
+    <h5 class="modal-title mt-0">Detalles de la Compra #{{purchaseSelected.id}}</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modalService.dismissAll()"></button>
+</div>
+
+<div class="modal-body">
+
+    <div class="container" *ngIf="!isLoading">
+
+        <div class="row">
+
+            <div class="col">
+
+                <h4>Orden #{{purchase ? purchase.id : 0}}</h4>
+
+                <h5>
+                    {{ purchaseSelected.user_name ? purchaseSelected.user_name : '' }}
+                    {{ purchaseSelected.last_name ? purchaseSelected.last_name : '' }}
+                </h5>
+
+                <h5>
+                    {{ purchaseSelected.created_at ? (purchaseSelected.created_at | date) : '' }}
+                </h5>
+
+                <h5>
+                    TRM Cotización
+                    {{ purchase?.trm ? purchase.trm.value : 0 }} COP
+                </h5>
+
+            </div>
+
+            <div class="col">
+
+                <h5>
+                    Valor Total:
+                    {{ purchase ? (purchase.total_value | currency: 'USD') : 0 }}
+                </h5>
+
+                <h5>
+                    Total de Libras:
+                    {{ purchase ? purchase.total_weight : 0 }} lb.
+                </h5>
+
+                <ng-container *ngFor="let formula of purchase.shipping_value_admin">
+                    <h5>
+                        Envío a casa ({{formula.name}}): {{ formula.value ? (formula.value | currency: 'USD') : 0 }}
+                    </h5>
+                </ng-container>
+
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col">
+
+                <div *ngFor="let product of purchase.products; let i = index;">
+
+                    <div style="display: flex; align-items: center; flex-wrap: wrap;">
+
+                        <a [href]="product.link" target="_blank">
+                            <img [src]="product.image" alt="" draggable="false"
+                                style="height: 150px; width: 150px; object-fit: contain;">
+                        </a>
+
+                        <div style="margin-left: 10px;">
+
+                            <div title="{{product.name ? product.name : ''}}">
+                                {{ product.name ? ((product.name.length > 80) ? (product.name | slice:0:80 ) + '...' : product.name) : '' }}
+                            </div>
+
+                            <div>
+                                Valor del Producto:<br>
+                                {{ product.product_value ? (product.product_value | currency: 'USD') : 0 }}
+                            </div>
+
+                            <div>
+                                Cantidad: <br>
+                                {{ product.quantity ? product.quantity : 0}}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <div class="row">
+
+            <div class="col">
+
+                <h4>Comprobante de Pago</h4>
+
+                <ng-container *ngIf="purchase.transaction ">
+
+                    <div *ngIf="purchase.transaction.payment_method === 'transfer'">
+
+                        <carousel [cellWidth]="700" [height]="700" [arrowsTheme]="'dark'">
+
+                            <div class="carousel-cell" *ngFor="let image of purchase.transaction.image">
+                                <a [href]="image.Link" target="_blank">
+                                    <img [src]="image.Location" alt="" style="object-fit: contain;" draggable="false"
+                                        (error)="onImageError($event);">
+                                </a>
+                            </div>
+
+                        </carousel>
+
+                    </div>
+
+                    <ng-container *ngIf="purchase.transaction.payment_method != 'transfer'">
+                        <a [href]="purchase.transaction.response" target="_blank" type="button" class="btn btn-info">
+                            Ver Recibo de Pago
+                        </a>
+                    </ng-container>
+
+                </ng-container>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="spinner-border" role="status" *ngIf="isLoading">
+        <span class="sr-only">Loading...</span>
+    </div>
+
+</div>
+
+<div class="modal-footer">
+
+    <button class="btn btn-secondary" [disabled]="isLoading" (click)="modalService.dismissAll()">
+        Cerrar
+    </button>
+
+</div>

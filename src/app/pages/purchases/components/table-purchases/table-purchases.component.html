@@ -11,9 +11,7 @@
 
     </div>
 
-
   </div>
-
 
   <div class="table-responsive mb-0" style="min-height: 500px;">
 
@@ -236,6 +234,11 @@
               Ingresar a Casillero
             </button>
 
+            <button type="button" class="btn btn-info btn-sm btn-rounded" style="margin-left: 10px;"
+              (click)="openLocker(modaldetail, data);">
+              Ver Detalle
+            </button>
+
           </td>
 
         </tr>
@@ -256,4 +259,8 @@
   <app-locker-entry [users]="users" [trm]="trm" [conveyors]="conveyors" [purchaseSelected]="purchaseSelected"
     (refreshTable)="refreshTableReceive($event);" (closeModal)="closeModalReceive(modal);">
   </app-locker-entry>
+</ng-template>
+
+<ng-template #modaldetail role="document" let-modal>
+  <app-detail-purchases [purchaseSelected]="purchaseSelected"></app-detail-purchases>
 </ng-template>

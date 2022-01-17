@@ -227,7 +227,7 @@ export class TablePurchasesComponent implements OnInit {
   }
 
   openLocker(content: any, data: any): void {
-    this.modalService.open(content, { size: 'xl', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true });
     this.purchaseSelected = data;
   }
 
@@ -240,4 +240,3 @@ export class TablePurchasesComponent implements OnInit {
   }
 
 }
-
