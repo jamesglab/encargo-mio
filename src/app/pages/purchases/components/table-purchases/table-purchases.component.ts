@@ -7,6 +7,8 @@ import { UserService } from "src/app/_services/users.service";
 import * as moment from 'moment';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-table-purchases',
@@ -237,6 +239,28 @@ export class TablePurchasesComponent implements OnInit {
 
   refreshTableReceive(event: boolean) {
     this.refreshTable.emit(event);
+  }
+
+  delete(data: any): void {
+    Swal.fire({
+      title: '¿Estás seguro de eliminar esta compra?',
+      text: 'Está acción no será reversible.',
+      icon: 'warning',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Sí',
+      denyButtonText: `Cancelar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // this._orders.anulateOrder(data.id)
+        //   .subscribe((res: any) => {
+        //     Swal.fire('', 'Has eliminado la orden correctamente.', 'success');
+        //     this.refreshTable.emit(true);
+        //   }, err => {
+        //     throw err;
+        //   });
+      }
+    });
   }
 
 }
