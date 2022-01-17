@@ -69,7 +69,7 @@
         </th>
 
         <th class="th-align">Productos</th>
-        <th class="th-align">Fecha de pago</th>
+        <th class="th-align" *ngIf="status != '0' && status != '1'">Fecha de pago</th>
         <th class="th-align">Total</th>
         <th class="th-align">Opciones</th>
       </tr>
@@ -104,7 +104,7 @@
 
         <td>{{ data.total_products ? data.total_products : "" }}</td>
 
-        <td>{{ data.payment_date ? (data.payment_date | date: 'MMM d, y, h:mm:ss a') : "" }}</td>
+        <td *ngIf="getStatusNumber(status) > 1">{{ data.payment_date ? (data.payment_date | date: 'MMM d, y, h:mm:ss a') : "" }}</td>
 
         <td>{{ data.total_value ? data.total_value : "" }}</td>
 
