@@ -75,14 +75,16 @@
                                     <th>#
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterId" class="form-control min-width"
-                                                (keyup.enter)="getTransactions(status)" />
+                                                (keyup.enter)="getTransactions(status)"
+                                                (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
                                     <th>Orden
 
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterOrder" class="form-control min-width"
-                                                (keyup.enter)="getTransactions(status)" />
+                                                (keyup.enter)="getTransactions(status)"
+                                                (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
                                     <th>Método de Pago
@@ -114,8 +116,8 @@
                                     <th>Referencia
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterReference"
-                                                class="form-control min-width"
-                                                (keyup.enter)="getTransactions(status)" />
+                                                class="form-control min-width" (keyup.enter)="getTransactions(status)"
+                                                (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
                                     <th>Usuario
@@ -145,7 +147,8 @@
                                     <th>Valor
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterValue" class="form-control min-width"
-                                                (keyup.enter)="getTransactions(status)" />
+                                                (keyup.enter)="getTransactions(status)"
+                                                (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
                                     <th>Opciones</th>
