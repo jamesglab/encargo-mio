@@ -255,7 +255,6 @@ export class TablePurchasesComponent implements OnInit {
       denyButtonText: `Cancelar`,
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log("DATA", data);
         this.purchasesService.deletePurchase({ id: data.id })
         .subscribe((res: any) => {
           Swal.fire('', 'La compra ha sido eliminada correctamente.', 'success');
