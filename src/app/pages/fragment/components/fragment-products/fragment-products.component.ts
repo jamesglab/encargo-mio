@@ -235,6 +235,7 @@ export class FragmentProductsComponent implements OnInit {
     }
 
     const { fragments } = this.fragmentsForm.getRawValue(); //DESCTRUCTING FRAGMENTS, AND SEND REQUEST
+
     const insertFragmentsSubscr = this.fragmentService.insert({ fragments, shipping: this.shipping })
       .subscribe((res) => {
         this._notifyService.show('¡Hecho!', 'El envío ha sido fragmentado con exito.', 'success');
@@ -246,7 +247,7 @@ export class FragmentProductsComponent implements OnInit {
   }
 
   errorImage(event: any): void {
-    event.target.src = 'assets/images/default.jpg';
+    event.target.src = 'https://i.imgur.com/riKFnErh.jpg';
   }
 
   ngOnDestroy() {

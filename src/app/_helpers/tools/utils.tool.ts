@@ -93,27 +93,29 @@ export const validateShippingstatus = (status) => {
     let status_name;
     switch (status) {
         case '0':
-            status_name = 'Consolidación'
-            break
+            status_name = 'Consolidación';
+            break;
         case '1':
-            status_name = 'Por empacar'
-            break
+            status_name = 'Por empacar';
+            break;
         case '2':
-            status_name = 'En generación de guía'
-            break
+            status_name = 'En generación de guía';
+            break;
         case '3':
-            status_name = 'Enviado'
-            break
+            status_name = 'Enviado';
+            break;
         case '4':
-            status_name = 'Cancelado'
-            break
+            status_name = 'Cancelado';
+            break;
         case '5':
             status_name = 'Pago en revisión'
-            break
-
+            break;
         case '6':
-            status_name = 'Fraccionado'
-            break
+            status_name = 'Fraccionado';
+            break;
+        case '7':
+            status_name = 'Entregado'
+            break;
         default:
             break;
     }
