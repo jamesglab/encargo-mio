@@ -177,8 +177,8 @@
                     </td>
                     <td>
                       CA{{
-                        (data.locker_id) ? data.locker_id + " " + data?.user_name + " " + data?.last_name 
-                        : ''
+                      (data.locker_id) ? data.locker_id + " " + data?.user_name + " " + data?.last_name
+                      : ''
                       }}
                     </td>
 
@@ -207,8 +207,8 @@
 
         </div>
 
-        <mat-paginator [length]="count" [pageSize]="10" (page)="filterProducts($event)" [pageSizeOptions]="[5, 10, 25]"
-          aria-label="Select page">
+        <mat-paginator [length]="count" [pageSize]="10" (page)="filterProducts($event)" [showFirstLastButtons]="true"
+          [pageSizeOptions]="[10, 15, 20]">
         </mat-paginator>
       </div>
     </div>
