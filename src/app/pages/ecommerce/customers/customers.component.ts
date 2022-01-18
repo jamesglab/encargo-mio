@@ -26,7 +26,7 @@ export class CustomersComponent implements OnInit {
   public term: any = '';
 
   public trm: number = 0;
-  public status: number;
+  public status: number = 1;
   public count: number;
   public currentpage: number;
 
@@ -56,7 +56,6 @@ export class CustomersComponent implements OnInit {
     private _transactionService: TransactionService,
     private _orderService: OrderService,
     private usersService: UserService
-
   ) { }
 
   ngOnInit() {
@@ -77,9 +76,9 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-  getTransactions(status?, pagination?) {
+  getTransactions(status?: any, pagination?: any) {
     this.isLoading = true;
-    this.status = status;
+    this.status = (status ? status : 1);
     this._transactionService.getTransactionsFilterI({
       ...this.filterOptions(),
       status: status ? status : 1,
@@ -247,8 +246,10 @@ export class CustomersComponent implements OnInit {
     if (typeof value === 'object') {
       //VALIDAMOS EL ARRAY SI ES DE USUARIOS
       if (array === 'users') {
-        //FILTRAMOS POR EL LOCKER Y POR EL NOMBRE COMPLETO DEL USUARIO
-        return 'CA' + value.locker_id + value.full_name.toLowerCase().replace(/\s/g, '');
+        if (value) {
+          //FILTRAMOS POR EL LOCKER Y POR EL NOMBRE COMPLETO DEL USUARIO
+          return 'CA' + value.locker_id + value.full_name.toLowerCase().replace(/\s/g, '');
+        }
       }
     } else {
       // RETORNAMOS EL VALOR FORMATEADO PARA FILTRAR CUANDO NO VAMOS A CONSULTAR UN OBJETO

@@ -5,18 +5,15 @@
     <ul class="nav nav-pills mb-3">
 
         <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': status == 1 }"
-                (click)="status = 1; getTransactions(1)">Aprobadas</a>
+            <a class="nav-link" [ngClass]="{'active': status == 1 }" (click)="getTransactions(1);">Aprobadas</a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': status == 2 }"
-                (click)="status = 2; getTransactions(2);">Pendientes</a>
+            <a class="nav-link" [ngClass]="{'active': status == 2 }" (click)="getTransactions(2);">Pendientes</a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': status == 3 }"
-                (click)="status = 2; getTransactions(3)">Rechazadas</a>
+            <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="getTransactions(3);">Rechazadas</a>
         </li>
 
     </ul>
@@ -122,14 +119,18 @@
                                                 (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
-                                    <th>Usuario
+                                    <th>
+                                        Usuario
                                         <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
                                             placeholder="Selecciona el usuario" [formControl]="filterUser"
-                                            [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)" />
+                                            [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)"
+                                            style="width: 200px;" />
                                         <mat-autocomplete #auto_user="matAutocomplete"
                                             [displayWith]="displayFnUserName">
                                             <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
-                                                (click)="getTransactions(status)">
+                                                (click)="getTransactions(status)" title="
+                                                CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                                                ">
                                                 CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
                                             </mat-option>
                                         </mat-autocomplete>
@@ -179,6 +180,7 @@
                                     <td>
                                         {{ transaction.created_at | date: 'medium' }}
                                     </td>
+
                                     <td>{{ transaction.reference ? transaction.reference : '-' }}</td>
 
                                     <td>
@@ -243,7 +245,8 @@
                     </div>
 
                     <!-- pagination -->
-                    <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions(status,$event)">
+                    <mat-paginator [length]="count" [showFirstLastButtons]="true" [pageSizeOptions]="[10, 15, 20]"
+                        (page)="getTransactions(status,$event)">
                     </mat-paginator>
 
                 </div>
