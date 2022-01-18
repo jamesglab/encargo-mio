@@ -189,7 +189,6 @@ export class ExportExcelService {
     }
 
     obtainWidth(x) {
-        console.log("X", x)
         return {
             header: x,
             key: x,
