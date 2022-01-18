@@ -20,3 +20,23 @@
     height: 235px;
     border: 1px solid red;
 }
+
+.badge-danger,
+.badge-success,
+.badge-danger {
+    padding: 8px;
+    font-size: 12px;
+    border-radius: 20px;
+}
+
+.badge-success {
+    background-color: #28a745;
+}
+
+.badge-primary {
+    background-color: #007bff;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+}

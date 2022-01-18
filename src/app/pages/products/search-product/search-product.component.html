@@ -1,4 +1,5 @@
 <div class="container-fluid">
+
     <app-page-title title="Información de producto"></app-page-title>
 
     <div class="row">
@@ -13,7 +14,12 @@
         </div>
     </div>
 
+    <div class="spinner-border" role="status" *ngIf="isLoading">
+        <span class="sr-only">Loading...</span>
+    </div>
+
     <ng-container *ngIf="product_info">
+
         <div class="row flex-wrap justify-content-left">
 
             <div class="card card-cont p-3">
@@ -47,9 +53,10 @@
                     <div>{{ quotationStatus(product_info.order_service_status) }}</div>
                     <button class="btn btn-primary btn-sm" routerLink="/ecommerce/orders">
                         <i class="mdi mdi-arrow-right"></i>
-                      </button>
+                    </button>
                 </div>
             </div>
+
             <div class="card card-cont p-3" *ngIf="product_info?.order_purchase">
                 <div class="card-body">
                     <h5>Compra # {{ product_info.order_purchase }}</h5>
@@ -57,22 +64,40 @@
                     <div>{{ product_info.purchase_date | date }}</div>
                 </div>
             </div>
+
             <div class="card card-cont p-3" *ngIf="product_info?.locker_has_product">
                 <div class="card-body">
                     <h5>Casillero # {{ product_info.locker_id }}</h5>
                     <div>{{ product_info.user_name }} {{ product_info.last_name }}</div>
                 </div>
             </div>
-            <div class="card card-cont p-3" *ngIf="product_info?.shipping_order">
-                <div class="card-body">
-                    <h5>Envío # {{ product_info.shipping_order }}</h5>
-                    <div>{{ shippingStatus(product_info.shipping_order_status) }}</div>
-                    <button class="btn btn-primary btn-sm" routerLink="/ecommerce/orders-shippings">
-                        <i class="mdi mdi-arrow-right"></i>
-                      </button>
+
+            <ng-container *ngIf="product_info?.shippings">
+
+                <div class="card card-cont p-3">
+                    <div class="card-body" style="overflow: auto; height: 200px;">
+                        <ng-container *ngFor="let shipping of product_info.shippings; let i = index;">
+                            <br *ngIf="i > 0">
+                            <h5>
+                                Envío #
+                                <a [routerLink]="['/ecommerce/orders-shippings']">
+                                    {{ shipping.shipping_order }}
+                                </a>
+                            </h5>
+                            <div>
+                                <span class="badge"
+                                    [ngClass]="{ 'badge-danger' : shipping.status === '4', 'badge-primary' : shipping.status != '4' && shipping.status != '7', 'badge-success' : shipping.status === '7' }">
+                                    {{ shippingStatus(shipping.status) }}
+                                </span>
+                            </div>
+                        </ng-container>
+                    </div>
                 </div>
-            </div>
+
+            </ng-container>
+
         </div>
+
     </ng-container>
 
 </div>
