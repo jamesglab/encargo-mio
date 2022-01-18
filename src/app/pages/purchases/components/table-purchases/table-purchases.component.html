@@ -11,9 +11,7 @@
 
     </div>
 
-
   </div>
-
 
   <div class="table-responsive mb-0" style="min-height: 500px;">
 
@@ -36,7 +34,7 @@
             # Compra
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="filterCode" (keyup.enter)="filterPurchase()"
-                placeholder="Ingresa el Id de la compra" />
+                placeholder="Ingresa el Id de la compra" (keydown)="keyDownFunction($event);" />
             </div>
           </th>
 
@@ -44,7 +42,8 @@
             Cotización
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="filterOrderService"
-                placeholder="Ingresa el Id de cotización" (keyup.enter)="filterPurchase()" />
+                placeholder="Ingresa el Id de cotización" (keyup.enter)="filterPurchase()"
+                (keydown)="keyDownFunction($event);" />
             </div>
           </th>
 
@@ -91,14 +90,15 @@
             Id del Producto
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="filterIdProduct" placeholder="Id del producto"
-                (keyup.enter)="filterPurchase()" />
+                (keyup.enter)="filterPurchase()" (keydown)="keyDownFunction($event);" />
             </div>
           </th>
 
           <th class="align-middle">Nombre del Producto
             <div class="mt-2">
               <input type="text" class="form-control" [formControl]="productName"
-                placeholder="Ingresa el nombre del producto" (keyup.enter)="filterPurchase()" />
+                placeholder="Ingresa el nombre del producto" (keyup.enter)="filterPurchase()"
+                (keydown)="keyDownFunction($event);" />
             </div>
           </th>
 
@@ -125,7 +125,7 @@
           <th class="align-middle">Numero de Compra
             <div class="mt-2">
               <input type="text" class="form-control" placeholder="Ingresa el número de compra"
-                [formControl]="purchaseNumber" (keyup.enter)="filterPurchase()" />
+                [formControl]="purchaseNumber" (keyup.enter)="filterPurchase()" (keydown)="keyDownFunction($event);" />
             </div>
           </th>
 
@@ -234,6 +234,16 @@
               Ingresar a Casillero
             </button>
 
+            <button type="button" class="btn btn-info btn-sm btn-rounded" style="margin-left: 10px;"
+              (click)="openLocker(modaldetail, data);">
+              Ver Detalle
+            </button>
+
+            <button type="button" style="margin-left: 10px;" class="btn btn-danger btn-rounded btn-sm"
+              (click)="delete(data);">
+              <i class="bx bx-trash-alt mr-1"></i>
+            </button>
+
           </td>
 
         </tr>
@@ -254,4 +264,8 @@
   <app-locker-entry [users]="users" [trm]="trm" [conveyors]="conveyors" [purchaseSelected]="purchaseSelected"
     (refreshTable)="refreshTableReceive($event);" (closeModal)="closeModalReceive(modal);">
   </app-locker-entry>
+</ng-template>
+
+<ng-template #modaldetail role="document" let-modal>
+  <app-detail-purchases [purchaseSelected]="purchaseSelected"></app-detail-purchases>
 </ng-template>

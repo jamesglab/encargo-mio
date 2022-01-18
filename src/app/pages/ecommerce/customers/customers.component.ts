@@ -33,6 +33,7 @@ export class CustomersComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingTransaction: boolean = false;
   public submitted: boolean = false;
+  public isAndroid: boolean = false;
 
   public users: [] = [];
 
@@ -40,7 +41,7 @@ export class CustomersComponent implements OnInit {
   public filterId = new FormControl('');
   public filterUser = new FormControl('');
   public filterOrder = new FormControl('');
-  public filterPaymentMethod = new FormControl('');
+  public filterPaymentMethod = new FormControl('null');
   public filterDate = new FormControl('');
   public filterPaymentGateway = new FormControl('');
   public filterReference = new FormControl('');
@@ -59,10 +60,21 @@ export class CustomersComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.checkOperativeSystem();
     this.breadCrumbItems = [{ label: 'Ecommerce' }, { label: 'Customers', active: true }];
     this.currentpage = 1;
     this.getTransactions(1);
     this.getUsers();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   getTransactions(status?, pagination?) {
@@ -83,15 +95,25 @@ export class CustomersComponent implements OnInit {
     });
   }
 
+  keyDownFunction(event: any) {
+    if (!this.isAndroid) {
+      if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
+        this.getTransactions();
+      }
+    } else {
+      return;
+    }
+  }
+
   filterOptions() {
-    const options = {}
+    const options = {};
     if (this.filterId.value != null && this.filterId.value != '') {
       options['id'] = this.filterId.value
     } if (this.filterUser.value != null && this.filterUser.value != '') {
       options['user'] = this.filterUser.value.id
     } if (this.filterOrder.value != null && this.filterOrder.value != '') {
       options['order'] = this.filterOrder.value
-    } if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != '') {
+    } if (this.filterPaymentMethod.value != null && this.filterPaymentMethod.value != '' && this.filterPaymentMethod.value != 'null') {
       options['payment_method'] = this.filterPaymentMethod.value
     } if (this.filterDate.value?.year && this.filterDate.value != '') {
       options['created_at'] = new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)
@@ -106,7 +128,6 @@ export class CustomersComponent implements OnInit {
     }
     return options;
   }
-
 
   resetFilters() {
     this.filterId.reset();
@@ -136,7 +157,7 @@ export class CustomersComponent implements OnInit {
         this.modalService.open(content, { size: 'xl', centered: true });
       });
     }
-    
+
     if (transaction.image) {
       this.referenceImage = transaction.image;
     } else {
@@ -171,6 +192,7 @@ export class CustomersComponent implements OnInit {
     }
     return isType;
   }
+
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
   }
@@ -231,6 +253,19 @@ export class CustomersComponent implements OnInit {
     } else {
       // RETORNAMOS EL VALOR FORMATEADO PARA FILTRAR CUANDO NO VAMOS A CONSULTAR UN OBJETO
       return value.toLowerCase().replace(/\s/g, '');
+    }
+  }
+
+  paymentMethod(type: string) {
+    switch (type) {
+      case "credit":
+        return "Crédito";
+      case "transfer":
+        return "Transferencia";
+      case "wompi":
+        return "Wompi";
+      default:
+        return "";
     }
   }
 
