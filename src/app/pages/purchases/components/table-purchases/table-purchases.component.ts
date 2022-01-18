@@ -6,6 +6,8 @@ import { GET_STATUS } from 'src/app/_helpers/tools/utils.tool';
 import { UserService } from "src/app/_services/users.service";
 import * as moment from 'moment';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
+import { PurchasesService } from '../../_services/purchases.service';
+
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
 
@@ -51,7 +53,8 @@ export class TablePurchasesComponent implements OnInit {
 
   public purchaseSelected: any = {};
 
-  constructor(private _userService: UserService, private modalService: NgbModal, private _orderService: OrderService) { }
+  constructor(private _userService: UserService, private modalService: NgbModal, 
+    private _orderService: OrderService, private readonly purchasesService: PurchasesService) { }
 
   ngOnInit(): void {
     this.checkOperativeSystem();
@@ -252,13 +255,13 @@ export class TablePurchasesComponent implements OnInit {
       denyButtonText: `Cancelar`,
     }).then((result) => {
       if (result.isConfirmed) {
-        // this._orders.anulateOrder(data.id)
-        //   .subscribe((res: any) => {
-        //     Swal.fire('', 'Has eliminado la orden correctamente.', 'success');
-        //     this.refreshTable.emit(true);
-        //   }, err => {
-        //     throw err;
-        //   });
+        this.purchasesService.deletePurchase({ id: data.id })
+        .subscribe((res: any) => {
+          Swal.fire('', 'La compra ha sido eliminada correctamente.', 'success');
+          this.refreshTable.emit(true);
+        }, (err) => {
+          throw err;
+        })
       }
     });
   }
