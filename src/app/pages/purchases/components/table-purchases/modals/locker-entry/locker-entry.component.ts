@@ -96,7 +96,7 @@ export class LockerEntryComponent implements OnInit {
       weight: [data.weight ? data.weight : 0, [Validators.required, Validators.min(0.1)]],
       receipt_date: [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }, [Validators.required]],
       permanent_shipping_value: [data.permanent_shipping_value ? data.permanent_shipping_value : 0],
-      declared_value_admin: [data.product_price, [Validators.required, Validators.min(0)]],
+      declared_value_admin: [data.product_price, [Validators.required, Validators.min(0.1)]],
       conveyor: [searchConveyor ? searchConveyor[0] : null, [Validators.required]],
       force_commercial_shipping: [data.force_commercial_shipping ? data.force_commercial_shipping : false],
       product_observations: [data.product_observations],
