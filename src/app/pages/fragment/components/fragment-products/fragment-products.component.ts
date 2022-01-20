@@ -34,10 +34,6 @@ export class FragmentProductsComponent implements OnInit {
     this.buildForm();
   }
 
-  ngOnChanges(){
-    console.log(this.products);
-  }
-
   // CREAMOS EL FORM ARRAY PARA LOS FRAGMENTOS
   buildForm() {
     this.fragmentsForm = this.fb.group({
