@@ -80,7 +80,7 @@
               <div>
                 <strong>Valor del envío ({{formula.name}}): </strong>
                 {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} US$ /
-                {{ orderSelected.trm ? ((orderSelected.sub_total * orderSelected.trm.value | currency: 'COP')) : 0 }}
+                {{ orderSelected.trm ? ((formula.value * orderSelected.trm.value | currency: 'COP')) : 0 }}
               </div>
               <div>
                 <strong>Envio a casa ({{formula.name}})</strong>
