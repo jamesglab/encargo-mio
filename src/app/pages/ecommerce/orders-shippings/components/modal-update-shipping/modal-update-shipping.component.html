@@ -96,10 +96,18 @@
         <div class="col-12 col-sm-6">
 
           <div class="form-group">
-            <label for="total_value">Valor Pagado Cliente</label>
-            <input type="number" class="form-control" id="total_value" formControlName="total_value">
+            <label for="payment_client">Valor Pagado Cliente</label>
+            <input type="number" class="form-control" id="payment_client" formControlName="payment_client">
           </div>
 
+          <li>
+            <strong>Valor envío: </strong>
+            {{ form.total_value.value ? (form.payment_client.value + form.secure_cost.value) : '0' }}
+          </li>
+
+          <li> <strong>Costo seguro: </strong>
+            {{ form.secure_cost.value ? form.secure_cost.value : '0' }}
+          </li>
         </div>
 
         <div class="col-12 col-sm-6">
@@ -164,7 +172,7 @@
 
     </form>
 
-    <div class="row mt-3 mt-3">
+    <div class="row mt-3">
 
       <div class="col-md-6 col-sm-12">
 

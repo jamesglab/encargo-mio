@@ -104,6 +104,7 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   buildForm(shipping: any): void {
+    console.log("SHIPPING", shipping)
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
     shipping.address.first_name = shipping.address.name;
     delete shipping.address.name;
@@ -116,6 +117,8 @@ export class ModalUpdateShippingComponent implements OnInit {
       conveyor: [shipping.conveyor ? shipping.conveyor : null, [Validators.required]],
       // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
       total_value: [shipping.total_value, Validators.required],
+      payment_client: [shipping.total_value - shipping.secure_cost],
+      secure_cost: [shipping.secure_cost],
       shipping_type: [shipping.shipping_type ? shipping.shipping_type.id : null, [Validators.required]],
       user: [shipping.user, Validators.required,],
       address: [shipping.address ? shipping.address : null, [Validators.required]],
