@@ -144,8 +144,8 @@ export class ModalEditOrderComponent implements OnInit {
     if (this.status == 0 || this.status == 1 || this.status == 7) {
       if (this.orderSelected.products[position].discount > 0) {
         var discount: number = 0;
-        if((this.orderSelected.products[position].before_discount != this.orderSelected.products[position].discount) || 
-        (this.orderSelected.products[position].before_value != this.orderSelected.products[position].product_value)) {
+        if ((this.orderSelected.products[position].before_discount != this.orderSelected.products[position].discount) ||
+          (this.orderSelected.products[position].before_value != this.orderSelected.products[position].product_value)) {
           discount = this.orderSelected.products[position].product_value * (this.orderSelected.products[position].discount / 100);
           this.orderSelected.products[position].product_value = (this.orderSelected.products[position].product_value - discount).toFixed(2);
           this.orderSelected.products[position].before_discount = this.orderSelected.products[position].discount;
@@ -160,9 +160,9 @@ export class ModalEditOrderComponent implements OnInit {
     var sub_total: number = 0;
     var total_weight: number = 0;
     this.orderSelected.products.map((product: any) => {
-      if(!product.sold_out){
+      if (!product.sold_out) {
         sub_total += product.sub_total; total_weight += product.weight;
-      } 
+      }
     });
     this.orderSelected.sub_total = sub_total;
     this.orderSelected.total_weight = total_weight ? parseFloat(total_weight.toFixed(2)) : 0;
@@ -281,10 +281,19 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   async sendQuotation() {
-    if (validateErrors(this.orderSelected.products, ['name', 'weight', 'product_value'])) {
-      Swal.fire('Error', 'Campos requeridos incompletos', 'warning');
-      return;
+
+    if (this.orderSelected.products) {
+      for (let index = 0; index < this.orderSelected.products.length; index++) {
+        if (this.orderSelected.products[index].sold_out) {
+          if (!this.orderSelected.products[index].product_value) {
+            this.orderSelected.products[index].product_value = 0;
+          } else if (!this.orderSelected.products[index].weight) {
+            this.orderSelected.products[index].weight = 0;
+          }
+        }
+      }
     }
+
     this.isLoading = true;
     await this.getFormula();
     this._orders.updateOrder(this.orderSelected)

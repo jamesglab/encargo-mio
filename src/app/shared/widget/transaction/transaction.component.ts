@@ -43,6 +43,7 @@ export class TransactionComponent implements OnInit {
   public users: [] = [];
 
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -54,6 +55,17 @@ export class TransactionComponent implements OnInit {
   ngOnInit() {
     this.getUsersAdmin();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
+    this.checkOperativeSystem();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   ngOnChanges() { }
@@ -74,6 +86,16 @@ export class TransactionComponent implements OnInit {
       filterValues['payment_method'] = this.filterPaymentMethod.value;
     }
     this.filterValues.emit(filterValues);
+  }
+
+  keyDownFunction(event: any) {
+    if (!this.isAndroid) {
+      if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
+        this.filterOrders();
+      }
+    } else {
+      return;
+    }
   }
 
   getUsersAdmin() {
@@ -117,11 +139,11 @@ export class TransactionComponent implements OnInit {
   }
 
   formatPaymentMethod(payment_method: string): string {
-    if(payment_method){
+    if (payment_method) {
       return (payment_method == 'transfer') ? 'Transferencia' : 'Credito';
     }
     return '';
-    
+
   }
 
   private _normalizeValue(value: any, array: any): string {

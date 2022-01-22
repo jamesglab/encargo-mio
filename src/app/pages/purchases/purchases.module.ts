@@ -15,13 +15,16 @@ import { PurchasesComponent } from './purchases.component';
 import { TablePurchasesComponent } from './components/table-purchases/table-purchases.component';
 import { ModalEditPurchaseComponent } from './components/modal-edit-purchase/modal-edit-purchase.component';
 import { LockerEntryComponent } from './components/table-purchases/modals/locker-entry/locker-entry.component';
+import { DetailPurchasesComponent } from './components/table-purchases/modals/detail-purchases/detail-purchases.component';
+import { IvyCarouselModule } from 'angular-responsive-carousel';
 
 @NgModule({
   declarations: [
     PurchasesComponent,
     TablePurchasesComponent,
     ModalEditPurchaseComponent,
-    LockerEntryComponent
+    LockerEntryComponent,
+    DetailPurchasesComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +42,8 @@ import { LockerEntryComponent } from './components/table-purchases/modals/locker
     NgbPaginationModule,
     MatPaginatorModule,
     NgbDatepickerModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    IvyCarouselModule
   ]
 })
 

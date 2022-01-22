@@ -13,6 +13,13 @@ export class OrderShippingService {
 
   constructor(private httpClient: HttpClient) { }
 
+  getTotallyShippings(): Observable<{ shipping_orders: any[] }> {
+    return this.httpClient.get<any>(
+      `${environment.microservices.management}shipping-order/totally`, 
+      { headers: header })
+      .pipe(map((res: any) => { return res; }), catchError(handleError));
+  }
+
   getFractionedChildren(parent_id: number): Observable<{ fractioned_shippings: any[] }> {
     return this.httpClient.get<any>(
       `${environment.microservices.management}shipping-order/fractioned-children`, 

@@ -287,6 +287,12 @@
                 </a>
               </div>
 
+              <div *ngIf="item.arrived">
+                <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
+                  #{{ item.product ? item.product.id : '' }}
+                </a>
+              </div>
+
               <div title="{{ item.product.name ? item.product.name : '' }}">
                 <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
                   {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...'

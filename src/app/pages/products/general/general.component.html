@@ -41,8 +41,11 @@
                           Selecciona filtro...
                         </option>
                         <option value="null">Todos</option>
-                        <option [value]="0">Por Ingresar</option>
-                        <option [value]="1">En Casillero</option>
+                        <option [value]="4">En Cotización</option>
+                        <option [value]="0">En Bodega</option>
+                        <option [value]="1">En Consolidación</option>
+                        <option [value]="2">Enviado</option>
+                        <option [value]="3">Entregado</option>
                       </select>
                     </th>
 
@@ -145,7 +148,7 @@
                     </td>
 
                     <td>
-                      {{ data.locker_has_product ? "En casillero" : "Por Ingresar" }}
+                      {{ getProductStatus(data) }}
                     </td>
 
                     <td>
@@ -174,7 +177,8 @@
                     </td>
                     <td>
                       CA{{
-                      data.locker_id + " " + data?.user_name + " " + data?.last_name
+                        (data.locker_id) ? data.locker_id + " " + data?.user_name + " " + data?.last_name 
+                        : ''
                       }}
                     </td>
 

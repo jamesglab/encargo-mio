@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { MatPaginator } from "@angular/material/paginator";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -47,8 +47,9 @@ export class GeneralComponent implements OnInit {
     private _productService: ProductsService,
     private _userService: UserService,
     private _orderService: OrderService,
-    private _modal: NgbModal
-  ) {}
+    private _modal: NgbModal,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.filterProducts();
@@ -134,7 +135,7 @@ export class GeneralComponent implements OnInit {
       filtereds["product_name"] = this.productName.value;
     }
 
-    if (this.filterStatusProduct.value) {
+    if (this.filterStatusProduct.value && this.filterStatusProduct.value != 'null') {
       filtereds["product_status"] = this.filterStatusProduct.value;
     }
     if (this.filterOrderService.value) {
@@ -162,9 +163,6 @@ export class GeneralComponent implements OnInit {
     return filtereds;
   }
 
-  getStatus(status: string): string {
-    return GET_STATUS(status);
-  }
   onImageError(event) {
     event.target.src = "https://i.imgur.com/riKFnErh.jpg";
   }
@@ -235,5 +233,22 @@ export class GeneralComponent implements OnInit {
     } else {
       return value.toLowerCase().replace(/\s/g, "");
     }
+  }
+
+  getProductStatus(product: { [key: string]: any }): string {
+    if (product.locker_has_product) {
+      let statuses = {
+        "0": "EN BODEGA",
+        "1": "EN CONSOLIDACIÓN",
+        "2": "ENVIADO",
+        "3": "ENTREGADO"
+      };
+      return statuses[product.locker_has_product_status.toString()];
+    } else {
+      if (product.order_service) {
+        return "EN COTIZACIÓN";
+      }
+    }
+
   }
 }

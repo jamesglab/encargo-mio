@@ -1,8 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/_services/users.service';
 import { OrderService } from '../_services/orders.service';
 import { SHIPPING_STATUS } from 'src/app/_helpers/tools/utils.tool';
+import { ExportExcelService } from '../_services/export-excel.service';
+import { OrderShippingService } from './_services/order-shipping.service';
 
 @Component({
   selector: 'app-orders-shippings',
@@ -18,6 +21,7 @@ export class OrdersShippingsComponent implements OnInit {
   public shippingTracking: any;
   public shipping_status: { [key: string]: any } = null;//ITS A SHIPPING OBJECT { ... }
   public SHIPPING_STATUS: { [key: string]: any }[] = SHIPPING_STATUS;
+  private unsuscribe: Subscription[] = [];
   public trm: any;
 
   public itemPerPage: number = 5;
@@ -26,6 +30,7 @@ export class OrdersShippingsComponent implements OnInit {
   public page: number = 1;
 
   public isLoading: boolean = false;
+  public exportLoading: boolean = false;
   public resetAllFilters: boolean = false;
 
   public filteredData: any = {};
@@ -37,6 +42,8 @@ export class OrdersShippingsComponent implements OnInit {
     private readonly _orderService: OrderService,
     private _userService: UserService,
     private modalService: NgbModal,
+    private exportExcelService: ExportExcelService,
+    private shippingOrderService: OrderShippingService,
     public _cdr: ChangeDetectorRef
   ) { }
 
@@ -101,6 +108,18 @@ export class OrdersShippingsComponent implements OnInit {
     this.getTransactions();
   }
 
+  export() {
+    //JUST DO IT
+    this.exportLoading = true;
+    const totallySubscr = this.shippingOrderService.getTotallyShippings()
+    .subscribe((res) => {
+      this.exportLoading = false;
+      this.exportExcelService.exportConsolidateWithStyles({ ENVIOS: res.shipping_orders }, "Envios Encargomio")
+    }, err => { this.exportLoading = false; throw err; });
+    this.unsuscribe.push(totallySubscr);
+    // this.exportExcelService.exportConsolidateWithStyles({ ENVIOS: [{ No: "1", id: "LKA4", guia: "ABC4556" }, { No: "2", id: "KIOA6", guia: "ABC4556" }] },"Archivo cualquiera");
+  }
+
   resetFilters() {
     this.resetAllFilters = true;
     this._cdr.detectChanges();
@@ -121,5 +140,9 @@ export class OrdersShippingsComponent implements OnInit {
   }
 
   updateShipping() { }
+
+  ngOnDestroy() {
+    this.unsuscribe.forEach((sb) => sb.unsubscribe());
+  }
 
 }
