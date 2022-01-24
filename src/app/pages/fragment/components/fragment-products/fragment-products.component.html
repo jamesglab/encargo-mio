@@ -197,7 +197,7 @@
                       <div class="form-group">
                         <label for="address"> Direccion</label>
                         <select class="form-control" id="address" formControlName="address">
-                          <option [value]="null" disabled selected>Seleccióna Direccion</option>
+                          <option [value]="null" disabled selected>Selecciona dirección...</option>
                           <option *ngFor="let address of addresses" [ngValue]="address">
                             {{address.address}}
                           </option>

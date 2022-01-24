@@ -104,7 +104,6 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   buildForm(shipping: any): void {
-    console.log("SHIPPING", shipping)
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
     shipping.address.first_name = shipping.address.name;
     delete shipping.address.name;
