@@ -96,14 +96,14 @@
         <div class="col-12 col-sm-6">
 
           <div class="form-group">
-            <label for="payment_client">Valor Pagado Cliente</label>
-            <input type="number" class="form-control" id="payment_client" formControlName="payment_client">
+            <label for="total_value">Valor Pagado Cliente</label>
+            <input type="number" class="form-control" id="total_value" formControlName="total_value">
           </div>
 
           <div style="margin-top: 10px;">
             <li>
               <strong>Valor envío: </strong>
-              {{ form.total_value.value ? (form.payment_client.value + form.secure_cost.value) : '0' }}
+              {{ form.shipping_value.value ? form.shipping_value.value : '0' }}
             </li>
 
             <li> <strong>Costo seguro: </strong>
