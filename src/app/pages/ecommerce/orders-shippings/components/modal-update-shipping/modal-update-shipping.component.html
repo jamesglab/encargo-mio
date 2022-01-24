@@ -100,14 +100,16 @@
             <input type="number" class="form-control" id="payment_client" formControlName="payment_client">
           </div>
 
-          <li>
-            <strong>Valor envío: </strong>
-            {{ form.total_value.value ? (form.payment_client.value + form.secure_cost.value) : '0' }}
-          </li>
+          <div style="margin-top: 10px;">
+            <li>
+              <strong>Valor envío: </strong>
+              {{ form.total_value.value ? (form.payment_client.value + form.secure_cost.value) : '0' }}
+            </li>
 
-          <li> <strong>Costo seguro: </strong>
-            {{ form.secure_cost.value ? form.secure_cost.value : '0' }}
-          </li>
+            <li> <strong>Costo seguro: </strong>
+              {{ form.secure_cost.value ? form.secure_cost.value : '0' }}
+            </li>
+          </div>
         </div>
 
         <div class="col-12 col-sm-6">
