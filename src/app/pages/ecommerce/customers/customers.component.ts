@@ -161,6 +161,9 @@ export class CustomersComponent implements OnInit {
       this.referenceImage = transaction.image;
     } else {
       this.referenceStripeLink = transaction.response;
+      if (!transaction.image) {
+        this.referenceImage = null;
+      }
     }
 
   }
