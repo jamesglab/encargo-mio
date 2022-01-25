@@ -14,21 +14,21 @@
           # de Envío
           <input type="text" class="form-control mt-2" formControlName="shipping"
             placeholder="Filtra por el número de envío..." title="Filtra por el número de envío..."
-            (keyup.enter)="sendFilter();">
+            (keyup.enter)="sendFilter();" (keydown)="keyDownFunction($event);">
         </th>
 
         <th class="align-middle">
           Cotización
           <input type="text" class="form-control mt-2" formControlName="order_service"
-          placeholder="Filtra por el número de Cotización..." title="Filtra por el número de Cotización..."
-          (keyup.enter)="sendFilter();">
+            placeholder="Filtra por el número de Cotización..." title="Filtra por el número de Cotización..."
+            (keyup.enter)="sendFilter();" (keydown)="keyDownFunction($event);">
         </th>
 
         <th class="th-align">
           Guía
           <input type="text" class="form-control mt-2" formControlName="guide_number"
             placeholder="Filtra por número de guía..." title="Filtra por el número de guía..."
-            (keyup.enter)="sendFilter();">
+            (keyup.enter)="sendFilter();" (keydown)="keyDownFunction($event);">
         </th>
 
         <th class="align-middle">
@@ -49,7 +49,7 @@
 
           <input type="text" class="form-control mt-2" formControlName="user" placeholder="Filtrar por cliente..."
             title="Filtrar por cliente..." autocomplete="off" [matAutocomplete]="auto_user"
-            (keyup.enter)="sendFilter();">
+            (keyup.enter)="sendFilter();" (keydown)="keyDownFunction($event);">
 
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
             <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
@@ -77,7 +77,7 @@
           Valor de Envío
           <input type="text" class="form-control mt-2" formControlName="shipping_value"
             placeholder="Filtrar por valor..." title="Filtrar por valor..." (keyup.enter)="sendFilter();"
-            (keypress)="numberOnly($event);">
+            (keydown)="keyDownFunction($event);" (keypress)="numberOnly($event);">
         </th>
 
         <th class="th-align">Opciones</th>
@@ -98,7 +98,7 @@
             </ng-container>
           </a>
         </td>
-        
+
         <td>
           {{ data.order_service || '-' }}
         </td>
@@ -123,8 +123,12 @@
 
             <div class="center">
               <button type="button" class="btn" (click)="changeStatusModal(data);">
-                <span><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" style="fill: #c2c2ca">
-                  <path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg></span>
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+                    style="fill: #c2c2ca">
+                    <path
+                      d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
+                    </path>
+                  </svg></span>
               </button>
             </div>
 

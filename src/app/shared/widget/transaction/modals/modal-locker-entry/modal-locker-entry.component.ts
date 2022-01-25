@@ -65,7 +65,7 @@ export class ModalLockerEntryComponent implements OnInit {
       weight: [0, [Validators.required, Validators.min(0.1)]],
       receipt_date: [{ year: new Date().getFullYear(), month: new Date().getMonth() + 1, day: new Date().getDate() }, [Validators.required]],
       permanent_shipping_value: [0],
-      declared_value_admin: [0, [Validators.required]],
+      declared_value_admin: [0, [Validators.required, Validators.min(0.1)]],
       conveyor: [null, [Validators.required]],
       force_commercial_shipping: [false],
       product_observations: [null],

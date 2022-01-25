@@ -100,10 +100,12 @@
           <div class="container-table" [ngClass]="{ 'hide-table' : isLoading }">
 
             <app-transaction class="mt-1" [transactions]="transactions | filter:term" [status]="status"
-              (refreshTable)="refreshTableReceive($event);" (filterValues)="getTransactions(null, $event)" *ngIf="showData">
+              (refreshTable)="refreshTableReceive($event);" (filterValues)="getTransactions(null, $event)"
+              *ngIf="showData">
             </app-transaction>
 
-            <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="getTransactions($event)">
+            <mat-paginator [length]="counts" [showFirstLastButtons]="true" [pageSizeOptions]="[10, 15, 20]"
+              (page)="getTransactions($event)">
             </mat-paginator>
 
           </div>

@@ -72,7 +72,6 @@ export class CreateOrderComponent implements OnInit {
 
   // Creación de productos con formularios reactivos y dinamicos multinivel
   createProduct(): FormGroup {
-
     let createProduct = this._formBuilder.group({
       link: [this.createProductForm.value.link],
       name: [this.createProductForm.value.name ? this.createProductForm.value.name.trim() : null],
@@ -95,7 +94,6 @@ export class CreateOrderComponent implements OnInit {
       key_aws_bucket: [null]
     });
     return createProduct;
-
   }
 
   displayFnUserName(name: any) {
@@ -104,7 +102,6 @@ export class CreateOrderComponent implements OnInit {
 
   //creamos un producto nuevo que sera pusheado en los formArray
   addProduct(): void {
-
     if (!this.createProductForm.invalid) {
 
       this.products = this.createProductForm.get('products') as FormArray;
@@ -114,8 +111,9 @@ export class CreateOrderComponent implements OnInit {
 
         let newUrl: any;
         newUrl = "https" + this.form.link.value.split("https")[1];
+        this.form.link.setValue(newUrl);
         this.quotationService.getProductInfo(newUrl)
-          .subscribe((res) => {
+          .subscribe((res: any) => {
             this.addItem(res);
             this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
             this.isLoading = false;

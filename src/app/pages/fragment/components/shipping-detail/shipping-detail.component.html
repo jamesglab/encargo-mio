@@ -70,7 +70,8 @@
             <p class="font-weight-bold">Dirección</p>
           </div>
           <div class="col-sm-6 col-6">
-            <p>{{shipping?.address?.address ?(shipping?.address?.address + shipping?.address?.description) : ''}}</p>
+            <p>{{shipping?.address?.address ? (shipping?.address?.address + (shipping?.address?.description ?
+              shipping?.address?.description : '')) : ''}}</p>
           </div>
         </div>
         <div class="row mt-2">

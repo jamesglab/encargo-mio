@@ -6,7 +6,11 @@ import { GET_STATUS } from 'src/app/_helpers/tools/utils.tool';
 import { UserService } from "src/app/_services/users.service";
 import * as moment from 'moment';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
+import { PurchasesService } from '../../_services/purchases.service';
+
 import { Observable } from 'rxjs';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-table-purchases',
@@ -25,6 +29,7 @@ export class TablePurchasesComponent implements OnInit {
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
 
   public users: [] = [];
   public stores: any[] = [];
@@ -48,14 +53,26 @@ export class TablePurchasesComponent implements OnInit {
 
   public purchaseSelected: any = {};
 
-  constructor(private _userService: UserService, private modalService: NgbModal, private _orderService: OrderService) { }
+  constructor(private _userService: UserService, private modalService: NgbModal, 
+    private _orderService: OrderService, private readonly purchasesService: PurchasesService) { }
 
   ngOnInit(): void {
+    this.checkOperativeSystem();
     this.getUsersAdmin();
     this.getTrm();
     this.getStores();
     this.getConveyors();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   getUsersAdmin(): void {
@@ -109,7 +126,7 @@ export class TablePurchasesComponent implements OnInit {
   formatLockerDate() {
     if (this.filterLockerDate.value?.year) {
       return moment(new Date(this.filterLockerDate.value.year, this.filterLockerDate.value.month - 1, this.filterLockerDate.value.day))
-      .format('YYYY/MM/DD')
+        .format('YYYY/MM/DD')
     } else {
       return '';
     }
@@ -128,6 +145,16 @@ export class TablePurchasesComponent implements OnInit {
     this.filterStatusProduct.reset();
     this.filterIdProduct.reset();
     this.filterPurchase();
+  }
+
+  keyDownFunction(event: any) {
+    if (!this.isAndroid) {
+      if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
+        this.filterPurchase();
+      }
+    } else {
+      return;
+    }
   }
 
   filterPurchase() {
@@ -156,7 +183,7 @@ export class TablePurchasesComponent implements OnInit {
     if (this.productName.value != null && this.productName.value.trim() != '') {
       filterValues['product_name'] = this.productName.value;
     }
-    if(this.filterStore.value != null && this.filterStore.value != 'null') {
+    if (this.filterStore.value != null && this.filterStore.value != 'null') {
       filterValues['store'] = this.filterStore.value;
     }
     if (this.purchaseNumber.value != null && this.purchaseNumber.value.trim() != '') {
@@ -205,7 +232,7 @@ export class TablePurchasesComponent implements OnInit {
   }
 
   openLocker(content: any, data: any): void {
-    this.modalService.open(content, { size: 'xl', centered: true });
+    this.modalService.open(content, { size: 'lg', centered: true });
     this.purchaseSelected = data;
   }
 
@@ -215,6 +242,28 @@ export class TablePurchasesComponent implements OnInit {
 
   refreshTableReceive(event: boolean) {
     this.refreshTable.emit(event);
+  }
+
+  delete(data: any): void {
+    Swal.fire({
+      title: '¿Estás seguro de eliminar esta compra?',
+      text: 'Está acción no será reversible.',
+      icon: 'warning',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Sí',
+      denyButtonText: `Cancelar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.purchasesService.deletePurchase({ id: data.id })
+        .subscribe((res: any) => {
+          Swal.fire('', 'La compra ha sido eliminada correctamente.', 'success');
+          this.refreshTable.emit(true);
+        }, (err) => {
+          throw err;
+        })
+      }
+    });
   }
 
 }

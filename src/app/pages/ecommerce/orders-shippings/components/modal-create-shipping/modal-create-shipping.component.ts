@@ -138,7 +138,6 @@ export class ModalCreateShippingComponent implements OnInit {
   }
 
   _filter(value: string, array: any): string[] {
-    console.log(this[array]);
     const filterValue = this._normalizeValue(value, array);
     let fileterdData = this[array].filter(option => this._normalizeValue(option, array).includes(filterValue));
     if (fileterdData.length > 0) {

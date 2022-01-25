@@ -5,18 +5,15 @@
     <ul class="nav nav-pills mb-3">
 
         <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': status == 1 }"
-                (click)="status = 1; getTransactions(1)">Aprobadas</a>
+            <a class="nav-link" [ngClass]="{'active': status == 1 }" (click)="getTransactions(1);">Aprobadas</a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': status == 2 }"
-                (click)="status = 2; getTransactions(2);">Pendientes</a>
+            <a class="nav-link" [ngClass]="{'active': status == 2 }" (click)="getTransactions(2);">Pendientes</a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': status == 3 }"
-                (click)="status = 2; getTransactions(3)">Rechazadas</a>
+            <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="getTransactions(3);">Rechazadas</a>
         </li>
 
     </ul>
@@ -75,25 +72,29 @@
                                     <th>#
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterId" class="form-control min-width"
-                                                (keyup.enter)="getTransactions(status)" />
+                                                (keyup.enter)="getTransactions(status)"
+                                                (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
                                     <th>Orden
 
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterOrder" class="form-control min-width"
-                                                (keyup.enter)="getTransactions(status)" />
+                                                (keyup.enter)="getTransactions(status)"
+                                                (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
                                     <th>Método de Pago
                                         <div class="mt-2" style="width: 8rem;">
                                             <select class="form-select mt-2 " aria-label="Default select example"
                                                 [formControl]="filterPaymentMethod" (change)="getTransactions(status)">
-                                                <option selected disabled value=""
-                                                    title="Selecciona un método de pago...">Seleccione un método de pago
+                                                <option disabled value="" title="Selecciona un método de pago...">
+                                                    Seleccione un método de pago
                                                 </option>
+                                                <option selected value="null">Todos</option>
                                                 <option value="credit">Credito</option>
                                                 <option value="transfer">Transferencia</option>
+                                                <option value="wompi">Wompi</option>
                                             </select>
                                         </div>
                                     </th>
@@ -114,18 +115,22 @@
                                     <th>Referencia
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterReference"
-                                                class="form-control min-width"
-                                                (keyup.enter)="getTransactions(status)" />
+                                                class="form-control min-width" (keyup.enter)="getTransactions(status)"
+                                                (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
-                                    <th>Usuario
+                                    <th>
+                                        Usuario
                                         <input type="text" id="user_id" class="form-control mt-2" autocomplete="off"
                                             placeholder="Selecciona el usuario" [formControl]="filterUser"
-                                            [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)" />
+                                            [matAutocomplete]="auto_user" (keyup.enter)="getTransactions(status)"
+                                            style="width: 200px;" />
                                         <mat-autocomplete #auto_user="matAutocomplete"
                                             [displayWith]="displayFnUserName">
                                             <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
-                                                (click)="getTransactions(status)">
+                                                (click)="getTransactions(status)" title="
+                                                CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                                                ">
                                                 CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
                                             </mat-option>
                                         </mat-autocomplete>
@@ -145,7 +150,8 @@
                                     <th>Valor
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterValue" class="form-control min-width"
-                                                (keyup.enter)="getTransactions(status)" />
+                                                (keyup.enter)="getTransactions(status)"
+                                                (keydown)="keyDownFunction($event);" />
                                         </div>
                                     </th>
                                     <th>Opciones</th>
@@ -167,13 +173,14 @@
 
                                     <td>
                                         <p class="mb-1">
-                                            {{ transaction.payment_method == 'credit' ? 'Credito':'Transferencia' }}
+                                            {{ paymentMethod(transaction.payment_method) }}
                                         </p>
                                     </td>
 
                                     <td>
                                         {{ transaction.created_at | date: 'medium' }}
                                     </td>
+
                                     <td>{{ transaction.reference ? transaction.reference : '-' }}</td>
 
                                     <td>
@@ -238,7 +245,8 @@
                     </div>
 
                     <!-- pagination -->
-                    <mat-paginator [length]="count" [pageSizeOptions]="[10]" (page)="getTransactions(status,$event)">
+                    <mat-paginator [length]="count" [showFirstLastButtons]="true" [pageSizeOptions]="[10, 15, 20]"
+                        (page)="getTransactions(status,$event)">
                     </mat-paginator>
 
                 </div>
@@ -269,7 +277,7 @@
                         </div>
 
                         <div class="h5">
-                            Fecha de Pago: {{ orderSelected.updated_at | date :'medium' }}
+                            Fecha de Pago: {{ transactionSelected.created_at | date :'medium' }}
                         </div>
 
                         <div class="h5">

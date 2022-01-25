@@ -49,7 +49,7 @@ export class GeneralComponent implements OnInit {
     private _orderService: OrderService,
     private _modal: NgbModal,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.filterProducts();
@@ -235,10 +235,8 @@ export class GeneralComponent implements OnInit {
     }
   }
 
-  getProductStatus(product: { [ key:string ]: any }): string {
-    if(product.locker_has_product){
-      console.log("(1)")
-      console.log("QUE CARAJOS", product.locker_has_product_status)
+  getProductStatus(product: { [key: string]: any }): string {
+    if (product.locker_has_product) {
       let statuses = {
         "0": "EN BODEGA",
         "1": "EN CONSOLIDACIÓN",
@@ -247,8 +245,7 @@ export class GeneralComponent implements OnInit {
       };
       return statuses[product.locker_has_product_status.toString()];
     } else {
-      if(product.order_service){
-        console.log("(2)")
+      if (product.order_service) {
         return "EN COTIZACIÓN";
       }
     }
