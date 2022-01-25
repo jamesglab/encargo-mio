@@ -191,12 +191,15 @@
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
-          <label for="vA">Valor Declarado(Administrador)</label>
+          <label for="vA">Valor Declarado(Administrador)aa</label>
           <input type="number" class="form-control" id="vA" (keypress)="numberOnly($event);" min="0"
             formControlName="declared_value_admin" [ngClass]="{ 'is-invalid' : form.declared_value_admin.errors }">
           <div class="invalid-feedback" *ngIf="form.declared_value_admin.errors">
             <ng-container *ngIf="form.declared_value_admin.errors.required">
               Debes ingresar un valor declarado por el administrador.
+            </ng-container>
+            <ng-container *ngIf="form.declared_value_admin.errors.min">
+              El valor mínimo requerido es 0.1 el actual es {{ form.declared_value_admin.errors.min.actual }}
             </ng-container>
           </div>
         </div>

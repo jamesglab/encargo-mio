@@ -22,7 +22,7 @@
         </div>
         <div class="h5">
           TRM cotización:
-          {{ (orderSelected.trm ? orderSelected.trm.value : 0) | currency: 'COP' : 'symbol' : '1.0-0' }}
+          {{ (orderSelected.trm ? orderSelected.trm.value : 0) | currency: 'COP' }}
         </div>
 
         <br>
@@ -67,7 +67,8 @@
 
             <div>
               <strong>Valor artículos:</strong>
-              {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }}
+              {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }} /
+              {{ (orderSelected.trm ? ((orderSelected.sub_total * orderSelected.trm.value) | currency : 'COP' ) : 0 ) }}
             </div>
 
             <div>
@@ -78,13 +79,15 @@
             <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
               <div>
                 <strong>Valor del envío ({{formula.name}}): </strong>
-                {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} US$
+                {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} US$ /
+                {{ orderSelected.trm ? ((formula.value * orderSelected.trm.value | currency: 'COP')) : 0 }}
               </div>
               <div>
                 <strong>Envio a casa ({{formula.name}})</strong>
                 {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (formula.value ? formula.value : 0)) |
-                number : '1.2-2' }}
-                US$
+                number : '1.2-2' }} US$ /
+                {{ orderSelected.trm ? ((((orderSelected.sub_total ? orderSelected.sub_total : 0) + (formula.value ?
+                formula.value : 0)) * orderSelected.trm.value ) | currency : 'COP') : 0 }}
               </div>
             </ng-container>
 

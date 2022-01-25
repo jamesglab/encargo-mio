@@ -25,9 +25,7 @@
           <!-- Table data -->
           <hr>
           <app-table-cupons class="mt-1" [cupons]="cupons"
-            (selectCuponEmit)="cuponSelected=$event;openModal(updateCupon,'md') "></app-table-cupons>
-          <!-- <mat-paginator [length]="counts" [pageSizeOptions]="[10]" (page)="$event">
-          </mat-paginator> -->
+            (selectCuponEmit)="cuponSelected=$event; openModal(updateCupon,'md')"></app-table-cupons>
         </div>
       </div>
     </div>

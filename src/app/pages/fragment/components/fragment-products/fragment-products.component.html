@@ -14,7 +14,9 @@
 
               <div class="example-handle" cdkDragHandle>
                 <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+                  <path
+                    d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
+                  </path>
                   <path d="M0 0h24v24H0z" fill="none"></path>
                 </svg>
               </div>
@@ -24,15 +26,17 @@
                 <img *ngIf="item.images && item.images.length > 0" [src]="item.images[0].Location"
                   (error)="errorImage($event);" class="img-cont" title="{{item.name}}">
 
-                <img *ngIf="!item.images" class="img-cont" [src]="item.product.image" (error)="errorImage($event);"
-                  alt="">
+                <img *ngIf="!item.images" class="img-cont" [src]="item.image" (error)="errorImage($event);" alt="">
 
-                <img *ngIf="item.images && item.images.length === 0" class="img-cont" [src]="item.product.image"
+                <img *ngIf="item.images && item.images.length === 0" class="img-cont" [src]="item.image"
                   (error)="errorImage($event);" alt="">
 
               </div>
 
               <div class="col-8 pt-3">
+                <div>
+                  #{{item.id}}
+                </div>
                 <div>
                   {{item.name}}
                 </div>
@@ -61,7 +65,7 @@
 
             <button *ngIf="fragmentsForm.get('fragments').value.length > 0" type="button"
               class="btn btn-success btn-rounded mb-2 me-2" (click)="onSubmit();" [disabled]="isLoading">
-              <i class="fas fa-save mr-1"></i>
+              <i class="mdi mdi-content-save"></i>
               Guardar
             </button>
 
@@ -119,14 +123,15 @@
                           </ng-container>
 
                           <ng-container *ngIf="!item.isLoadingImages">
-                            <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'" (change)="addImage($event, i, productIndex)">
-                            
+                            <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'"
+                              (change)="addImage($event, i, productIndex)">
+
                               <ngx-dropzone-label>Agrega imagenes del envío</ngx-dropzone-label>
                               <ngx-dropzone-image-preview ngProjectAs="ngx-dropzone-preview"
                                 *ngFor="let image of item.files" [file]="image" [removable]="true"
                                 (removed)="removeImage(image, i, productIndex)">
                               </ngx-dropzone-image-preview>
-    
+
                             </div>
                           </ng-container>
 
@@ -192,7 +197,7 @@
                       <div class="form-group">
                         <label for="address"> Direccion</label>
                         <select class="form-control" id="address" formControlName="address">
-                          <option [value]="null" disabled selected>Seleccióna Direccion</option>
+                          <option [value]="null" disabled selected>Selecciona dirección...</option>
                           <option *ngFor="let address of addresses" [ngValue]="address">
                             {{address.address}}
                           </option>

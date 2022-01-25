@@ -104,7 +104,7 @@
               *ngIf="showData">
             </app-transaction>
 
-            <mat-paginator [length]="counts" [pageSizeOptions]="[10, 20, 30]" [showFirstLastButtons]="true"
+            <mat-paginator [length]="counts" [showFirstLastButtons]="true" [pageSizeOptions]="[10, 15, 20]"
               (page)="getTransactions($event)">
             </mat-paginator>
 

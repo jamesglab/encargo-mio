@@ -116,6 +116,8 @@ export class ModalUpdateShippingComponent implements OnInit {
       conveyor: [shipping.conveyor ? shipping.conveyor : null, [Validators.required]],
       // delivery_date: [{ day: parseInt(moment(shipping.delivery_date).format("D")), month: parseInt(moment(shipping.delivery_date).format("M")), year: parseInt(moment(shipping.delivery_date).format("YYYY")) }],
       total_value: [shipping.total_value, Validators.required],
+      shipping_value: [shipping.total_value - shipping.secure_cost],
+      secure_cost: [shipping.secure_cost],
       shipping_type: [shipping.shipping_type ? shipping.shipping_type.id : null, [Validators.required]],
       user: [shipping.user, Validators.required,],
       address: [shipping.address ? shipping.address : null, [Validators.required]],

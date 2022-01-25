@@ -27,11 +27,25 @@ export class FragmentProductsComponent implements OnInit {
 
   private unsuscribe: Subscription[] = [];
 
+  public defaultAddress: any = {};
+
   constructor(private fb: FormBuilder,
     private _notifyService: NotifyService, private fragmentService: FragmentService, private router: Router) { }
 
   ngOnInit(): void {
     this.buildForm();
+  }
+
+  ngOnChanges() {
+    if (this.addresses && this.shipping) {
+      for (let index = 0; index < this.addresses.length; index++) {
+        if (this.shipping.address) {
+          if (this.shipping.address.id === this.addresses[index].id) {
+            this.defaultAddress = this.addresses[index];
+          }
+        }
+      }
+    }
   }
 
   // CREAMOS EL FORM ARRAY PARA LOS FRAGMENTOS
@@ -61,7 +75,7 @@ export class FragmentProductsComponent implements OnInit {
       conveyor: [],
       shipping_value: [0, [Validators.required, Validators.min(0.1)]],
       weight: [0, [Validators.required, Validators.min(0.1)]],
-      address: [null, [Validators.required]]
+      address: [this.defaultAddress ? this.defaultAddress : null, [Validators.required]]
     });
     return createFragment;
   }
@@ -148,7 +162,7 @@ export class FragmentProductsComponent implements OnInit {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
-        this.setImages(event.container.data[event.currentIndex]);
+      this.setImages(event.container.data[event.currentIndex]);
     }
 
     this.setWeightAfterDrop();//VALIDATE ALL WEIGHT ACCORD WEIGHT OF PRODUCTS DROPPED
@@ -235,6 +249,7 @@ export class FragmentProductsComponent implements OnInit {
     }
 
     const { fragments } = this.fragmentsForm.getRawValue(); //DESCTRUCTING FRAGMENTS, AND SEND REQUEST
+
     const insertFragmentsSubscr = this.fragmentService.insert({ fragments, shipping: this.shipping })
       .subscribe((res) => {
         this._notifyService.show('¡Hecho!', 'El envío ha sido fragmentado con exito.', 'success');
@@ -246,7 +261,7 @@ export class FragmentProductsComponent implements OnInit {
   }
 
   errorImage(event: any): void {
-    event.target.src = 'assets/images/default.jpg';
+    event.target.src = 'https://i.imgur.com/riKFnErh.jpg';
   }
 
   ngOnDestroy() {
