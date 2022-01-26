@@ -18,6 +18,8 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { NgxImageCompressService } from 'ngx-image-compress';
+import { ImageDragDirective } from 'src/app/_directives/image-drag.directive';
 
 const config: DropzoneConfigInterface = {
   maxFilesize: 100,
@@ -48,11 +50,15 @@ const config: DropzoneConfigInterface = {
     NgbDatepickerModule,
     DragDropModule
   ],
+  exports : [
+    ImageDragDirective
+  ],
   providers: [
     {
       provide: DROPZONE_CONFIG,
       useValue: config
-    }
+    },
+    NgxImageCompressService
   ]
 })
 export class FragmentModule { }

@@ -7,8 +7,6 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { NgbNavModule, NgbDropdownModule, NgbPaginationModule, NgbModalModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
-import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { EcommerceRoutingModule } from './ecommerce-routing.module';
 import { OrdersComponent } from './orders/orders.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
