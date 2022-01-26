@@ -15,10 +15,11 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { UsersgridComponent } from './usersgrid/usersgrid.component';
 import { AddressessComponent } from './components/addressess/addressess.component';
 import { UpdateAddressComponent } from './components/addressess/update-address/update-address.component';
+import { AddUserComponent } from './components/add-user/add-user.component';
 
 
 @NgModule({
-  declarations: [UserlistComponent, ModalUserComponent, UsersgridComponent, AddressessComponent, UpdateAddressComponent],
+  declarations: [UserlistComponent, ModalUserComponent, UsersgridComponent, AddressessComponent, UpdateAddressComponent, AddUserComponent],
   imports: [
     CommonModule,
     ContactsRoutingModule,
