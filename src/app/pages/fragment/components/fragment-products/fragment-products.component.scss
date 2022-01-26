@@ -107,3 +107,16 @@
     margin: 5px;
   }
 }
+
+.remove-item-content {
+  left: 5px;
+  top: 5px;
+  cursor: pointer;
+}
+.remove-item {
+  border: none;
+  background-color: #0000005e;
+  color: white;
+  border-radius: 20px;
+  font-size: 13px;
+}

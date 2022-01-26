@@ -9,15 +9,15 @@ export class StorageService {
   private storage = localStorage;
   private encryptTools: EncryptTools = new EncryptTools();
 
-  constructor() {}
+  constructor() { }
 
-  getItem(key: string){
+  getItem(key: string) {
     const itemEncripted = this.storage.getItem(key);
-    if(!itemEncripted){ return null; }
+    if (!itemEncripted) { return null; }
     return this.encryptTools.desencrypt(itemEncripted);
   }
 
-  getItemNoEncrypt(key: string): any{
+  getItemNoEncrypt(key: string): any {
     return this.storage.getItem(key);
   }
 
@@ -25,16 +25,21 @@ export class StorageService {
     this.storage.setItem(key, this.encryptTools.encrypt(value));
   }
 
-  setItemNoEncrypt(key: string, value: any){
+  setItemNoEncrypt(key: string, value: any) {
     this.storage.setItem(key, value);
   }
 
-  removeItem(key: string){
+  removeItem(key: string) {
     this.storage.removeItem(key);
   }
 
-  clear(){
+  clear() {
     this.storage.clear();
+  }
+
+  version(): any {
+    let config = require("../../assets/version.json");
+    return config;
   }
 
 }

@@ -128,14 +128,27 @@
 
                             <div class="container-img-dropzone">
 
-                              <div *ngFor="let image of item.images;" style="display: flex; overflow: auto; ">
-                                <a target="_blank">
-                                  <img [src]="image.Location" draggable="false" (error)="onImageError($event);" />
-                                </a>
+                              <div style="display: flex; overflow: auto;">
+
+                                <ng-container *ngFor="let image of item.images; let indeximage = index;">
+                                  
+                                  <div class="remove-item-content" >
+                                    <button type="button" class="close remove-item" aria-label="Close"
+                                      (click)="removeImage(image, indeximage, productIndex)">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+
+                                  <a target="_blank">
+                                    <img [src]="image.Location" draggable="false" (error)="onImageError($event);" />
+                                  </a>
+
+                                </ng-container>
+
                               </div>
 
                               <h5>Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
-                                  (click)="uploadImage(i);">aquí.</a>
+                                  (click)="uploadImage(i, productIndex);">aquí.</a>
                               </h5>
 
                             </div>
