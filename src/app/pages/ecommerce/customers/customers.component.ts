@@ -142,9 +142,11 @@ export class CustomersComponent implements OnInit {
   }
 
   openModalOrderService(content: any, transaction: any) {
-
+    this.transactionSelected = null;
+    this.orderSelected = null;
+    this.referenceStripeLink = null;
     this.transactionSelected = transaction;
-
+    
     if (transaction.order_service) {
       this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
         this.orderSelected = res;

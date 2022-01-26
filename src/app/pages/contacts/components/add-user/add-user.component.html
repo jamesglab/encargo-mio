@@ -1,0 +1,99 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Nuevo usuario</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="close_modale.emit(true)"></button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row">
+            <div class="col-xl-6 col-md-6 col-sm-12">
+
+                <label for="name" class="col-form-label">Nombre</label>
+                <input class="form-control" (keypress)="validateName($event)" placeholder="Digita nombre" type="text"
+                    id="name" formControlName="name" [ngClass]="{ 'is-invalid' : (form.name.errors && submitted) }">
+                <div class="invalid-feedback" *ngIf="(form.name.errors && submitted)">
+                    Digita un nombre
+                </div>
+
+            </div>
+            <div class="col-xl-6 col-md-6 col-sm-12">
+                <label for="last_name" class="col-md-2 col-form-label">Apellido</label>
+                <input class="form-control" type="text" id="last_name" placeholder="Digita apellido"
+                    formControlName="last_name" [ngClass]="{ 'is-invalid' : (form.last_name.errors && submitted) }">
+                <div class="invalid-feedback" *ngIf="(form.last_name.errors && submitted)">
+                    Digita un apellido
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-6 col-md-6 col-sm-12">
+                <label for="email" class="col-form-label">Email</label>
+                <input class="form-control" type="email" id="email" formControlName="email" placeholder="Digita email"
+                    [ngClass]="{ 'is-invalid' : (form.email.errors && submitted) }">
+                <div class="invalid-feedback" *ngIf="(form.email.errors && submitted)">
+                    <ng-container *ngIf="form.email.errors.required">
+                        Digita un email
+                    </ng-container>
+                    <ng-container *ngIf="form.email.errors.email">
+                        El email ingresado es incorrecto
+                    </ng-container>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6 col-sm-12">
+                <label for="password" class="col-form-label" style="width: 100%;">
+                    <div class="container-eye-input">
+
+                        <div>Password</div>
+
+                        <div>
+                            <a class="eye-color" (click)="showPassword = !showPassword">
+                                <span *ngIf="!showPassword">
+                                    <i class="mdi mdi-eye-off"></i>
+                                </span>
+                                <span *ngIf="showPassword">
+                                    <i class="mdi mdi-eye"></i>
+                                </span>
+                            </a>
+                        </div>
+
+                    </div>
+                </label>
+                <input class="form-control" type="{{ (!showPassword) ? 'password': 'text'}}"
+                    (ngModelChange)="validatePassword();" id="phone" formControlName="password" placeholder="*******"
+                    [ngClass]="{ 'is-invalid' : (form.password.errors && submitted) }">
+                <div class="invalid-feedback" *ngIf="(form.password.errors && submitted)">
+                    <ng-container *ngIf="form.password.errors.required">
+                       Digita una password
+                    </ng-container>
+                    <ng-container *ngIf="form.password.errors.minlength">
+                        La password es muy corta
+                    </ng-container>
+                    <ng-container *ngIf="form.password.errors.pattern">
+                        Recuerda que debe contener mayúscula, números y caracteres especiales.
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" (click)="close_modale.emit()">
+            Cancelar
+        </button>
+
+        <ng-container *ngIf="!isLoading">
+            <button class="btn btn-primary" type="submit">Agregar</button>
+        </ng-container>
+
+        <ng-container *ngIf="isLoading">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </ng-container>
+
+    </div>
+
+</form>

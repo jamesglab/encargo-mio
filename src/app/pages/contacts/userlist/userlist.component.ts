@@ -70,6 +70,10 @@ export class UserlistComponent implements OnInit {
       });
   }
 
+  addUser(template: any) {
+    this.modalService.open(template, { size: 'md', centered: true });
+  }
+
   openModal(content: any, user: any) {
     this.userSelected = user;
     this._userService.getUserById(user.id)
