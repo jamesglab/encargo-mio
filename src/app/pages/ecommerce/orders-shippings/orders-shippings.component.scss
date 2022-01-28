@@ -1,0 +1,18 @@
+.is-activated {
+    background-color: #e76302;
+    border: transparent;
+    color: white;
+}
+
+.center-items {
+    text-align: center;
+    align-items: center;
+    display: flex;
+    .item-button {
+        min-width: 150px;
+        border: 1px solid #cdcdcd8e;
+        padding: 10px;
+        font-size: 11px;
+        cursor: pointer;
+    }
+}

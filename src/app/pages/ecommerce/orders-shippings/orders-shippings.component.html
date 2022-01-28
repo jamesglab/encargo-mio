@@ -25,7 +25,7 @@
 
             <div class="col-sm-8">
 
-              <div class="text-sm-end">
+              <div class="text-sm-end" style="display: flex; overflow: auto; justify-content: flex-end;">
 
                 <button *ngIf="!exportLoading" type="button" class="btn btn-primary btn-rounded mb-2 me-2"
                   (click)="export();">
@@ -67,16 +67,19 @@
           4 Cancelado (La orden ha sido cancelada)
           5 Pago en revisión (El Pago esta pendiente)
           6 Fragmentado -->
-          <ul class="nav nav-pills d-flex justify-content-center">
 
-            <li *ngFor="let item of SHIPPING_STATUS" class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == item.status }"
+
+          <div style="display: flex; overflow: auto; justify-content: space-between;">
+
+            <div class="center-items" *ngFor="let item of SHIPPING_STATUS">
+              <div class="item-button" [ngClass]="{'is-activated': status == item.status }"
                 (click)="status = item.status; getTransactions()">
                 {{ item.name }} {{ counts[item.english] ? counts[item.english] : 0 }}
-              </a>
-            </li>
+              </div>
+            </div>
 
-          </ul>
+          </div>
+
           <!-- Table data -->
 
           <div class="d-flex justify-content-center mt-3" *ngIf="isLoading">
@@ -87,7 +90,7 @@
 
           <hr>
 
-          <app-shippings-table class="mt-1" [shippings]="shippings |  filter:term" [users]="users" [status]="status"
+          <app-shippings-table class="mt-1" [shippings]="shippings |  filter: term" [users]="users" [status]="status"
             (shippingSelected)="shippingToUpdate = $event; openModal(updateShipping,'xl')"
             (shippingTracking)="shippingTracking = $event; openModal(shipment_tracking,'xl')"
             (showChangeStatusModal)="showChangeStatusModal($event, update_status_modal);"

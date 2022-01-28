@@ -36,11 +36,11 @@
       </form> -->
 
       <div class="dropdown dropdown-mega d-none d-lg-block me-2" ngbDropdown>
-
+        <!-- 
         <button type="button" class="btn header-item" ngbDropdownToggle>
           Menú
           <i class="mdi mdi-chevron-down"></i>
-        </button>
+        </button> -->
 
         <div class="dropdown-menu dropdown-megamenu" ngbDropdownMenu>
 
@@ -240,13 +240,20 @@
 
 </header>
 
-<div class="topnav" *ngIf="isResponsive">
+<div class="topnav">
+
   <div class="container-fluid">
+
     <nav class="navbar navbar-light navbar-expand-lg topnav-menu active">
+
       <div class="collapse navbar-collapse active" id="topnav-menu-content">
+
         <ul class="navbar-nav">
+
           <ng-container *ngFor="let item of menuItems">
+
             <li class="nav-item dropdown">
+
               <a class="nav-link dropdown-toggle arrow-none" *ngIf="!item.subItems" href="javascript: void(0);"
                 id="topnav-components" [routerLink]="item.link" role="button">
                 <i class="bx {{item.icon}} me-2"></i>{{ item.label }} <div class="arrow-down" *ngIf="hasItems(item)">
@@ -261,16 +268,21 @@
               </a>
 
               <div class="dropdown-menu" aria-labelledby="topnav-dashboard" *ngIf="hasItems(item)">
+
                 <ng-template ngFor let-i="index" let-subitem [ngForOf]="item.subItems">
+
                   <a class="col dropdown-item side-nav-link-ref" *ngIf="!hasItems(subitem)" href="javascript: void(0);"
                     [routerLink]="subitem.link" routerLinkActive="active">{{subitem.label }}</a>
 
                   <div class="dropdown" *ngIf="hasItems(subitem)">
+
                     <a class="dropdown-item dropdown-toggle" href="javascript: void(0);"
                       (click)="onMenuClick($event)">{{ subitem.label }}
                       <div class="arrow-down"></div>
                     </a>
+
                     <div class="dropdown-menu">
+
                       <ng-template ngFor let-subSubitem [ngForOf]="subitem.subItems">
                         <a class="dropdown-item side-nav-link-ref" *ngIf="!hasItems(subSubitem)"
                           href="javascript: void(0);" [routerLink]="subSubitem.link" routerLinkActive="active">{{
@@ -290,14 +302,25 @@
                           </div>
                         </div>
                       </ng-template>
+
                     </div>
+
                   </div>
+
                 </ng-template>
+
               </div>
+
             </li>
+
           </ng-container>
+
         </ul>
+
       </div>
+
     </nav>
+
   </div>
+
 </div>

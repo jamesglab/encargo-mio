@@ -18,7 +18,7 @@
 
             <div class="col-sm-8">
 
-              <div class="text-sm-end">
+              <div class="text-sm-end" style="display: flex; overflow: auto; justify-content: flex-end;">
 
                 <button type="button" class="btn btn-danger btn-rounded mb-2 me-2" (click)="resetFilters()">
                   <i class="bx bx-trash-alt mr-1"></i>
@@ -42,53 +42,60 @@
 
           </div>
 
-          <ul class="nav nav-pills d-flex justify-content-center">
+          <div style="display: flex; overflow: auto; justify-content: space-between;">
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 0 }" (click)="status = 0;  getTransactions()">
+            <div class="center-items" (click)="status = 0;  getTransactions()">
+              <div class="item-button" [ngClass]="{'is-activated ': status == 0 }">
                 Por Aprobar {{counts_tabs?.for_approve}}
-              </a>
-            </li>
+              </div>
+            </div>
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 1}"
-                (click)="status = 1 ;  getTransactions()">Cotizadas {{counts_tabs?.quoted}}</a>
-            </li>
+            <div class="center-items" (click)="status = 1 ;  getTransactions()">
+              <div class="item-button" [ngClass]="{'is-activated ': status == 1}">
+                Cotizadas {{counts_tabs?.quoted}}
+              </div>
+            </div>
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active':status == 2}" (click)="status = 2;  getTransactions()">
+            <div class="center-items" (click)="status = 2;  getTransactions()">
+              <div class="item-button" [ngClass]="{'is-activated ':status == 2}">
                 En proceso de pago {{counts_tabs?.in_payment}}
-              </a>
-            </li>
+              </div>
+            </div>
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 3 }" (click)="status = 3;  getTransactions()">
-                Registrar Compra {{counts_tabs?.register_purchase}} </a>
-            </li>
+            <div class="center-items" (click)="status = 3;  getTransactions()">
+              <div class="item-button" [ngClass]="{'is-activated ': status == 3 }">
+                Registrar Compra {{counts_tabs?.register_purchase}}
+              </div>
+            </div>
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 4}" (click)="status = 4;  getTransactions()">
+            <div class="center-items" (click)="status = 4;  getTransactions()">
+              <div class="item-button" [ngClass]="{'is-activated ': status == 4}">
                 Ingresar Producto {{counts_tabs?.enter_product}}
-              </a>
-            </li>
+              </div>
+            </div>
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{ 'active': status == 5 }"
-                (click)="status = 5;  getTransactions()">Finalizada {{counts_tabs?.finished}}</a>
-            </li>
+            <div class="center-items" (click)="status = 5;  getTransactions()">
+              <div class="item-button" [ngClass]="{ 'is-activated ': status == 5 }">
+                Finalizada {{counts_tabs?.finished}}
+              </div>
+            </div>
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 6}"
-                (click)="status = 6;  getTransactions()">Canceladas {{counts_tabs?.canceled}}</a>
-            </li>
+            <div class="center-items" (click)="status = 6;  getTransactions()"
+              [ngClass]="{'is-activated ': status == 6}">
+              <div class="item-button">
+                Canceladas {{counts_tabs?.canceled}}
+              </div>
+            </div>
 
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="{'active': status == 7}" (click)="status = 7;  getTransactions()">Vencidas
-                {{counts_tabs?.expired}}</a>
-            </li>
+            <div class="center-items" (click)="status = 7;  getTransactions()"
+              [ngClass]="{'is-activated ': status == 7}">
+              <div class="item-button">
+                Vencidas {{counts_tabs?.expired}}
+              </div>
+            </div>
 
-          </ul>
-          <!-- Table data -->
+          </div>
+
           <hr>
 
           <div class="text-center" *ngIf="isLoading">
