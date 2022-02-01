@@ -1,5 +1,4 @@
 <div class="card" cdkDropListGroup>
-
   <div class="card-body">
     <!-- CONTENEDOR DE LOS PRODUCTOS -->
     <div class="row px-3">
@@ -35,35 +34,28 @@
               </div>
 
               <div class="col-8 pt-3">
-
                 <div>
                   #{{item.id}}
                 </div>
-
                 <div>
                   {{item.name}}
                 </div>
-
                 <div>
                   {{item.weight}} /Libras
                 </div>
-
               </div>
-
             </div>
 
           </div>
-
         </div>
 
       </div>
 
-      <div class="col-sm-12 col-md-9 col-xl-9" style="margin-top: 10px;">
-
+      <div class="col-sm-12 col-md-9 col-xl-9">
         <h5 class="h5 font-weight-bold">Fragmentos de Envío ({{fragmentsArray.length}})</h5>
 
-        <div class="row">
 
+        <div class="row">
           <div class="col-12" style="text-align: end;">
 
             <button type="button" class="btn btn-success btn-rounded mb-2 me-2" (click)="addFragment()">
@@ -78,8 +70,8 @@
             </button>
 
           </div>
-
         </div>
+
 
         <!-- CREAMOS FROMULARIO PARA ACCEDER AL FORMBUILDER ARRAY  -->
         <form [formGroup]="fragmentsForm" class="mt-2">
@@ -124,47 +116,13 @@
                             <h5>{{ item.product }} - {{ item.name }}</h5>
                           </div>
 
-                          <!-- <ng-container *ngIf="item.isLoadingImages">
+                          <ng-container *ngIf="item.isLoadingImages">
                             <div class="spinner-border text-secondary" role="status">
                               <span class="sr-only">Loading...</span>
                             </div>
-                          </ng-container> -->
+                          </ng-container>
 
-                          <div class="d-flex align-items-center dropzone-in-create" appImageDrag
-                            (files)="filesDropped($event, i, productIndex);">
-
-                            <div class="container-img-dropzone">
-
-                              <div style="display: flex; overflow: auto;">
-
-                                <ng-container *ngFor="let image of item.images; let indeximage = index;">
-
-                                  <div class="remove-item-content">
-                                    <button type="button" class="close remove-item" aria-label="Close"
-                                      (click)="removeImage(image, i, productIndex, indeximage)">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
-                                  </div>
-
-                                  <a target="_blank">
-                                    <img [src]="image.Location" draggable="false" (error)="onImageError($event);" />
-                                  </a>
-
-                                </ng-container>
-
-                              </div>
-
-                              <h5>Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
-                                  (click)="uploadImage(i, productIndex);">aquí.</a>
-                              </h5>
-
-                            </div>
-
-                          </div>
-
-                          <!-- 
                           <ng-container *ngIf="!item.isLoadingImages">
-
                             <div class="custom-dropzone" ngx-dropzone [accept]="'image/*'"
                               (change)="addImage($event, i, productIndex)">
 
@@ -175,8 +133,7 @@
                               </ngx-dropzone-image-preview>
 
                             </div>
-
-                          </ng-container> -->
+                          </ng-container>
 
                         </div>
 
@@ -263,7 +220,5 @@
         </form>
 
       </div>
-
     </div>
-
   </div>

@@ -1,5 +1,4 @@
 // ESTILOS DEL COMPONENTE
-
 .img-cont {
   height: 100%;
   width: 100%;
@@ -84,39 +83,4 @@
 
 .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.dropzone-in-create {
-  text-align: center;
-  border-style: dashed;
-  background: white !important;
-  border-radius: 16px;
-  padding: 10px;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.container-img-dropzone {
-  overflow: auto;
-  img {
-    height: 170px;
-    width: 200px;
-    object-fit: contain;
-    margin: 5px;
-  }
-}
-
-.remove-item-content {
-  left: 5px;
-  top: 5px;
-  cursor: pointer;
-}
-.remove-item {
-  border: none;
-  background-color: #0000005e;
-  color: white;
-  border-radius: 20px;
-  font-size: 13px;
 }

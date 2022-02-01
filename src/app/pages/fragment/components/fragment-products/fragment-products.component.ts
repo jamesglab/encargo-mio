@@ -1,20 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { dataURLtoFile } from 'src/app/_helpers/tools/utils.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { FragmentService } from '../../services/fragment.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { FileHandle } from 'src/app/_directives/file-handle';
-import { ImageCompressService } from 'src/app/_services/image-compress.service';
-import { dataURLtoFile } from 'src/app/_helpers/tools/utils.tool';
 
 @Component({
   selector: 'app-fragment-products',
   templateUrl: './fragment-products.component.html',
   styleUrls: ['./fragment-products.component.scss']
 })
-
 export class FragmentProductsComponent implements OnInit {
 
   @Input() public products: any = [];// ARRAY DE PRODUCTOS 
@@ -32,26 +29,14 @@ export class FragmentProductsComponent implements OnInit {
 
   public defaultAddress: any = {};
 
-  public oldImages: any = [];
-
-  constructor(private fb: FormBuilder, private _notifyService: NotifyService,
-    private fragmentService: FragmentService, private router: Router, public _compress: ImageCompressService, private _fragment: FragmentService
-  ) { }
+  constructor(private fb: FormBuilder,
+    private _notifyService: NotifyService, private fragmentService: FragmentService, private router: Router) { }
 
   ngOnInit(): void {
     this.buildForm();
   }
 
   ngOnChanges() {
-
-    if (this.products && this.products.length > 0) {
-      this.products.map((item: any) => {
-        if (!item.files) {
-          item.files = [];
-        }
-      });
-    }
-
     if (this.addresses && this.shipping) {
       for (let index = 0; index < this.addresses.length; index++) {
         if (this.shipping.address) {
@@ -61,7 +46,6 @@ export class FragmentProductsComponent implements OnInit {
         }
       }
     }
-
   }
 
   // CREAMOS EL FORM ARRAY PARA LOS FRAGMENTOS
@@ -113,98 +97,79 @@ export class FragmentProductsComponent implements OnInit {
 
   }
 
+  setImages(product) { //FOR SET IMAGES THAT ARE IN DB
+
+    product.files = [];
+    product.isLoadingImages = true;
+    Promise.all(
+      product.images.map(async (image) => {//ITERATE PRODUCT IMAGES
+        await new Promise((resolve, reject) => { //NEW PROMISE
+
+          this.fragmentService.getImage(image).subscribe(async (blob) => {//HTTP OBSERVABLE
+            const dataUrl = await new Promise((resolve, reject) => {// NEW PROMISE TO READER FILE
+              const reader = new FileReader()
+              reader.onloadend = () => resolve(reader.result)
+              reader.onerror = reject
+              reader.readAsDataURL(blob)
+            })
+
+            product.files.push(dataURLtoFile(dataUrl, "imagen.jpg")); // PUSH IMAGES INTO PRODUCT.FILES ARRAY
+            resolve("ok")
+
+          }, err => { product.isLoadingImages = false; reject(err); throw err; });
+
+        })
+      })
+    ).then(async () => {
+
+      product.isLoadingImages = false;
+
+      const toDataURL = url => fetch(url)
+        .then(response => response.blob())
+        .then(blob => new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.onerror = reject
+          reader.readAsDataURL(blob)
+        }))
+
+      toDataURL(product.image)
+        .then(dataUrl => {
+          var fileData = dataURLtoFile(dataUrl, "imageName.jpg");
+          product.files.push(fileData);
+        });
+
+    });
+
+  }
+
   addImage($event: any, fragmentIndex: number, productIndex: number) { //ADD IMAGE TO ONE PRODUCT OF FRAGMENT
     const products = this.getProductsOfFragment(fragmentIndex); //GET PRODUCTS
     products[productIndex].files.unshift(...$event.addedFiles); // ADD NEW IMAGE
     this.setImagesProductFragment(products[productIndex]);
   }
 
-  removeImage(file, fragmentIndex: number, productIndex: number, indeximage: number) {// DELETE IMAFE FROM ONE PRODUCT OF FRAGMENT
+  removeImage(file, fragmentIndex: number, productIndex: number) {// DELETE IMAFE FROM ONE PRODUCT OF FRAGMENT
     const products = this.getProductsOfFragment(fragmentIndex); //GET PRODUCTS
-    products[productIndex].images.splice(indeximage, 1);
-    products[productIndex].files.splice(products[productIndex].files.indexOf(file), 1); //DELETE IMAGE
+    products[productIndex].files
+      .splice(products[productIndex].files.indexOf(file), 1); //DELETE IMAGE
     this.setImagesProductFragment(products[productIndex]);
   }
 
-
-  filesDropped(file: FileHandle[], fragmentIndex: number, productIndex: number) { // Método el cual entra cuando un usuario hace el "drop"
-    if (file[0].file.type && file[0].file.type.includes('image')) {
-      this._compress.compressImage(file[0].base64).then((res: any) => {
-        const products = this.getProductsOfFragment(fragmentIndex); //GET PRODUCTS
-        products[productIndex].files.unshift(res); // ADD NEW IMAGE
-        this.setImagesProductFragment(products[productIndex]);
-      }, err => {
-        this._notifyService.show('Error', `Ocurrió un error al intentar cargar la imagen, intenta de nuevo,`, 'error');
-        throw err;
-      });
-    } else {
-      this._notifyService.show('', `El archivo que seleccionaste no es una imagen.`, 'warning');
-    }
-  }
-
-  uploadImage(fragmentIndex: number, productIndex: number) {
-    this._compress.uploadImage().then((res) => {
-      const products = this.getProductsOfFragment(fragmentIndex); //GET PRODUCTS
-      products[productIndex].files.unshift(res); // ADD NEW IMAGE
-      this.setImagesProductFragment(products[productIndex]);
-    }, err => {
-      this._notifyService.show('Error', `Ocurrió un error al intentar cargar la imagen, intenta de nuevo,`, 'error');
-      throw err;
-    });
-  }
-
-  onImageError(event: any) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
-
   setImagesProductFragment(product: { [key: string]: any }): void {
-
-    var formData = new FormData();
-    var objFormData: any = [];
-
     product.isLoadingImages = true;
 
-    this.convertUrlImage(product).then(() => {
+    var formData = new FormData();
+    //ITERATE PRODUCT AND ADD TO "FILES" FIELD OF FORMDATA
+    product.files.forEach((file) => { formData.append('files', file) });
+    const { images } = product;//DESTRUCT IMAGES
+    formData.append("payload", JSON.stringify({ images, product })); // ADD PRODUCT AND IMAGE
 
-      product.files.forEach((file) => { delete file.url; objFormData.push(new File([file.file], "image.png", { type: 'image/png' })); });    //ITERATE PRODUCT AND ADD TO "FILES" FIELD OF FORMDATA
-      this.oldImages.map((images) => { objFormData.push(images); })
-      objFormData.map((item: any) => { formData.append('files', item); });
-      const { images } = product; //DESTRUCT IMAGES
-      formData.append("payload", JSON.stringify({ images, product })); // ADD PRODUCT AND IMAGE
-
-      this.fragmentService.setImageProductFragment(formData)
-        .subscribe((res: any) => {
-          this.oldImages = [];
-          product.images = res.new_images; //SET NEW ARRAY OF IMAGES [{Location, Key}]
-          product.isLoadingImages = false;
-        }, err => {
-          product.isLoadingImages = false;
-          throw err;
-        });
-
-    });
-  }
-
-  convertUrlImage(products: any): Promise<any> {
-
-    return new Promise((resolve, reject) => {
-      products.images.forEach((image) => {
-        this._fragment.getImage(image).subscribe(async (blob) => { //HTTP OBSERVABLE
-          const dataUrl = await new Promise((resolve, reject) => {// NEW PROMISE TO READER FILE
-            const reader = new FileReader()
-            reader.onloadend = () => resolve(reader.result)
-            reader.onerror = reject
-            reader.readAsDataURL(blob)
-          });
-          this.oldImages.push(dataURLtoFile(dataUrl, "imagen.jpg")); // PUSH IMAGES INTO PRODUCT.FILES ARRAY
-
-          resolve(this.oldImages);
-          return this.oldImages;
-        }, err => {
-          reject(err);
-          throw err;
-        });
-      });
-    });
-
+    this.fragmentService.setImageProductFragment(formData)
+      .subscribe((res) => {
+        product.images = res.new_images; //SET NEW ARRAY OF IMAGES [{Location, Key}]
+        product.isLoadingImages = false;
+      }, err => { product.isLoadingImages = false; throw err; });
   }
 
   // DROP DE PRODUCTOS ENTRE LOS DIFERENTES SELECTORES
@@ -216,6 +181,7 @@ export class FragmentProductsComponent implements OnInit {
         event.container.data,
         event.previousIndex,
         event.currentIndex);
+      this.setImages(event.container.data[event.currentIndex]);
     }
 
     this.setWeightAfterDrop();//VALIDATE ALL WEIGHT ACCORD WEIGHT OF PRODUCTS DROPPED
