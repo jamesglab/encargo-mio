@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FileHandle } from 'src/app/_directives/file-handle';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
+import { dataURLtoFile } from 'src/app/_helpers/tools/utils.tool';
 
 @Component({
   selector: 'app-fragment-products',
@@ -31,8 +32,10 @@ export class FragmentProductsComponent implements OnInit {
 
   public defaultAddress: any = {};
 
+  public oldImages: any = [];
+
   constructor(private fb: FormBuilder, private _notifyService: NotifyService,
-    private fragmentService: FragmentService, private router: Router, public _compress: ImageCompressService
+    private fragmentService: FragmentService, private router: Router, public _compress: ImageCompressService, private _fragment: FragmentService
   ) { }
 
   ngOnInit(): void {
@@ -116,8 +119,9 @@ export class FragmentProductsComponent implements OnInit {
     this.setImagesProductFragment(products[productIndex]);
   }
 
-  removeImage(file, fragmentIndex: number, productIndex: number) {// DELETE IMAFE FROM ONE PRODUCT OF FRAGMENT
+  removeImage(file, fragmentIndex: number, productIndex: number, indeximage: number) {// DELETE IMAFE FROM ONE PRODUCT OF FRAGMENT
     const products = this.getProductsOfFragment(fragmentIndex); //GET PRODUCTS
+    products[productIndex].images.splice(indeximage, 1);
     products[productIndex].files.splice(products[productIndex].files.indexOf(file), 1); //DELETE IMAGE
     this.setImagesProductFragment(products[productIndex]);
   }
@@ -152,17 +156,55 @@ export class FragmentProductsComponent implements OnInit {
   onImageError(event: any) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 
   setImagesProductFragment(product: { [key: string]: any }): void {
-    product.isLoadingImages = true;
+
     var formData = new FormData();
-    //ITERATE PRODUCT AND ADD TO "FILES" FIELD OF FORMDATA
-    product.files.forEach((file) => { formData.append('files', file.file); });
-    const { images } = product;//DESTRUCT IMAGES
-    formData.append("payload", JSON.stringify({ images, product })); // ADD PRODUCT AND IMAGE
-    this.fragmentService.setImageProductFragment(formData)
-      .subscribe((res: any) => {
-        product.images = res.new_images; //SET NEW ARRAY OF IMAGES [{Location, Key}]
-        product.isLoadingImages = false;
-      }, err => { product.isLoadingImages = false; throw err; });
+    var objFormData: any = [];
+
+    product.isLoadingImages = true;
+
+    this.convertUrlImage(product).then(() => {
+
+      product.files.forEach((file) => { delete file.url; objFormData.push(new File([file.file], "image.png", { type: 'image/png' })); });    //ITERATE PRODUCT AND ADD TO "FILES" FIELD OF FORMDATA
+      this.oldImages.map((images) => { objFormData.push(images); })
+      objFormData.map((item: any) => { formData.append('files', item); });
+      const { images } = product; //DESTRUCT IMAGES
+      formData.append("payload", JSON.stringify({ images, product })); // ADD PRODUCT AND IMAGE
+
+      this.fragmentService.setImageProductFragment(formData)
+        .subscribe((res: any) => {
+          this.oldImages = [];
+          product.images = res.new_images; //SET NEW ARRAY OF IMAGES [{Location, Key}]
+          product.isLoadingImages = false;
+        }, err => {
+          product.isLoadingImages = false;
+          throw err;
+        });
+
+    });
+  }
+
+  convertUrlImage(products: any): Promise<any> {
+
+    return new Promise((resolve, reject) => {
+      products.images.forEach((image) => {
+        this._fragment.getImage(image).subscribe(async (blob) => { //HTTP OBSERVABLE
+          const dataUrl = await new Promise((resolve, reject) => {// NEW PROMISE TO READER FILE
+            const reader = new FileReader()
+            reader.onloadend = () => resolve(reader.result)
+            reader.onerror = reject
+            reader.readAsDataURL(blob)
+          });
+          this.oldImages.push(dataURLtoFile(dataUrl, "imagen.jpg")); // PUSH IMAGES INTO PRODUCT.FILES ARRAY
+
+          resolve(this.oldImages);
+          return this.oldImages;
+        }, err => {
+          reject(err);
+          throw err;
+        });
+      });
+    });
+
   }
 
   // DROP DE PRODUCTOS ENTRE LOS DIFERENTES SELECTORES
