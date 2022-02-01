@@ -87,7 +87,7 @@
                     <th class="align-middle">
                       Envio
                       <input type="text" class="form-control mt-2" [formControl]="purchaseNumber"
-                        (keyup.enter)="filterProducts()" placeholder="Ingresa el Id de cotización" />
+                        (keyup.enter)="filterProducts()" placeholder="Ingresa el Id de cotización" style="width: 120px;" />
                     </th>
 
                     <th class="align-middle">
@@ -152,12 +152,9 @@
                     </td>
 
                     <td>
-                      {{ "USD " + (data.product_value || data.declared_value_admin) }}
+                      {{ (data.product_value || data.declared_value_admin) | currency: 'USD' }}
                       /
-                      {{
-                      (data.product_value || data.declared_value_admin) *
-                      (data.trm_value || 0) | currency: "COP ":"symbol":"1.0-0"
-                      }}
+                      {{ (data.product_value || data.declared_value_admin) * (data.trm_value || '0') | currency: 'COP' }}
                     </td>
 
                     <td>
@@ -182,9 +179,9 @@
                       }}
                     </td>
 
-                    <td>
+                    <td *ngIf="data.option">
                       <div class="center">
-                        <button type="button" class="btn" (click)="displayModalProduct(data)">
+                        <button type="button" class="btn" (click)="displayModalProduct(data);">
                           <span><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
                               style="fill: #c2c2ca">
                               <path

@@ -20,6 +20,7 @@ import { ModalShippingComponent } from "./modal-components/modal-update-shipping
   styleUrls: ["./general.component.scss"],
 })
 export class GeneralComponent implements OnInit {
+
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   // INPUTS CONTROLLER
   public filterCode = new FormControl();
@@ -33,15 +34,14 @@ export class GeneralComponent implements OnInit {
   public purchaseNumber = new FormControl();
   public filterUser = new FormControl();
   public filterDate = new FormControl();
-  //ARRAYS
 
+  //ARRAYS
   public products = [];
   public stores = [];
   public users = [];
   public filteredUsers: Observable<any>;
 
   // integers
-
   public count = 0;
   constructor(
     private _productService: ProductsService,
@@ -71,7 +71,7 @@ export class GeneralComponent implements OnInit {
     );
   }
 
-  filterProducts(paginator?) {
+  filterProducts(paginator?: any) {
     try {
       if (!paginator) {
         this.paginator.pageIndex = 0;
@@ -82,17 +82,31 @@ export class GeneralComponent implements OnInit {
           page: paginator?.pageIndex + 1 || 1,
           ...this.filterValues(),
         })
-        .subscribe(
-          (res) => {
-            this.count = parseInt(res.count);
-            this.products = res.products;
-          },
-          (err) => {
-            throw err;
-          }
-        );
+        .subscribe((res: any) => {
+          this.count = parseInt(res.count);
+          this.products = res.products;
+          this.validationOptions();
+        }, err => {
+          throw err;
+        });
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  validationOptions(): void {
+    if (this.products && this.products.length > 0) {
+      this.products.map((product: any) => {
+        if (this.purchaseNumber.value && !this.filterOrderService.value) {
+          product.option = true;
+        } else if (this.filterCode.value && !this.filterOrderService.value) {
+          product.option = true;
+        } else if (product.order_service) {
+          product.option = true;
+        } else {
+          product.option = false;
+        }
+      });
     }
   }
 
@@ -125,7 +139,7 @@ export class GeneralComponent implements OnInit {
   }
 
   filterValues() {
-    const filtereds = {};
+    const filtereds: any = {};
 
     if (this.filterIdProduct.value) {
       filtereds["product_id"] = this.filterIdProduct.value;
@@ -167,14 +181,14 @@ export class GeneralComponent implements OnInit {
     event.target.src = "https://i.imgur.com/riKFnErh.jpg";
   }
 
-  displayModalProduct(product) {
+  displayModalProduct(product: any) {
     if (this.purchaseNumber.value && !this.filterOrderService.value) {
       this._orderService
         .getShippingById({ id: product.shipping_order })
         .subscribe((res) => {
           const modal = this._modal.open(ModalShippingComponent, {
             size: "xl",
-            centered: true,
+            centered: true
           });
           modal.componentInstance.shippingToUpdate = res;
           modal.componentInstance.user = this.users;
@@ -185,7 +199,7 @@ export class GeneralComponent implements OnInit {
         .subscribe((res) => {
           const modal = this._modal.open(ModalPurchaseComponent, {
             size: "xl",
-            centered: true,
+            centered: true
           });
           modal.componentInstance.purchaseSelected = res;
         });
@@ -195,14 +209,13 @@ export class GeneralComponent implements OnInit {
         .subscribe((res) => {
           const modal = this._modal.open(ModalOrderComponent, {
             size: "xl",
-            centered: true,
+            centered: true
           });
           modal.componentInstance.orderSelected = res;
         });
-    } else {
-      Swal.fire("Intenta Filtrar la informacion", "", "info");
     }
   }
+
   displayFnUserName(name: any) {
     return name
       ? `CA${name.locker_id} | ${name.name + " " + name.last_name}`
@@ -249,6 +262,6 @@ export class GeneralComponent implements OnInit {
         return "EN COTIZACIÓN";
       }
     }
-
   }
+
 }

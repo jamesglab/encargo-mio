@@ -1,4 +1,4 @@
-<div class="modal-header ">
+<div class="modal-header">
   <h5 class="modal-title mt-0">Detalles de la Orden</h5>
   <button type="button" class="btn-close" aria-hidden="true" (click)="modalService.dismissAll()"></button>
 </div>
@@ -9,25 +9,28 @@
 
     <div class="row">
 
-      <div class="col-7">
+      <div class="col">
 
         <div class="h4">
           #000{{orderSelected?.id}}
         </div>
+
         <div class="h5">
           {{ (orderSelected?.user.name + ' ' + orderSelected?.user.last_name) || 'Encargomio' }}
         </div>
+
         <div class="h5">
           {{orderSelected?.created_at | date }}
         </div>
+
         <div class="h5">
           TRM cotización:
           {{ (orderSelected.trm ? orderSelected.trm.value : 0) | currency: 'COP' }}
         </div>
 
-        <br>
+        <ng-container *ngIf="orderSelected.shopper_images && orderSelected.shopper_images.length > 0">
 
-        <div *ngIf="orderSelected.shopper_images && orderSelected.shopper_images.length > 0">
+          <br>
 
           <div class="h5">
             Imagenes de Facturación
@@ -41,66 +44,62 @@
             </div>
           </carousel>
 
-        </div>
-
-        <br>
+        </ng-container>
 
         <ng-container *ngIf="orderSelected">
+
           <div class="form-check form-switch text-truncate h5">
             <label for="form-group">Compra anticipada</label>
             <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" disabled
               [checked]="orderSelected.advance_purchase">
           </div>
+
         </ng-container>
 
       </div>
 
-      <div class="col-5 d-flex justify-content-center align-items-center">
+      <div class="col">
 
-        <div class="row mt-2">
+        <div class="container-calculator" *ngIf="!isLoadingFormula">
 
-          <div class="container-calculator" *ngIf="!isLoadingFormula">
-
-            <div class="h4">
-              Calculadora de Totales
-            </div>
-
-            <div>
-              <strong>Valor artículos:</strong>
-              {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }} /
-              {{ (orderSelected.trm ? ((orderSelected.sub_total * orderSelected.trm.value) | currency : 'COP' ) : 0 ) }}
-            </div>
-
-            <div>
-              <strong>Total de Libras:</strong>
-              {{ orderSelected.total_weight ? orderSelected.total_weight: 0 }} lb.
-            </div>
-
-            <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
-              <div>
-                <strong>Valor del envío ({{formula.name}}): </strong>
-                {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} US$ /
-                {{ orderSelected.trm ? ((formula.value * orderSelected.trm.value | currency: 'COP')) : 0 }}
-              </div>
-              <div>
-                <strong>Envio a casa ({{formula.name}})</strong>
-                {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (formula.value ? formula.value : 0)) |
-                number : '1.2-2' }} US$ /
-                {{ orderSelected.trm ? ((((orderSelected.sub_total ? orderSelected.sub_total : 0) + (formula.value ?
-                formula.value : 0)) * orderSelected.trm.value ) | currency : 'COP') : 0 }}
-              </div>
-            </ng-container>
-
+          <div class="h4">
+            Calculadora de Totales
           </div>
 
-          <div class="loading-calulator" *ngIf="isLoadingFormula">
-
-            <div class="spinner-border" role="status">
-              <span class="sr-only"></span>
-            </div>
-            Estamos calculando el valor de envío...
+          <div>
+            <strong>Valor artículos:</strong>
+            {{ (orderSelected.sub_total ? orderSelected.sub_total : 0) | currency: 'USD' }} /
+            {{ (orderSelected.trm ? ((orderSelected.sub_total * orderSelected.trm.value) | currency : 'COP' ) : 0 ) }}
           </div>
 
+          <div>
+            <strong>Total de Libras:</strong>
+            {{ orderSelected.total_weight ? orderSelected.total_weight: 0 }} lb.
+          </div>
+
+          <ng-container *ngFor="let formula of orderSelected.shipping_value_admin">
+            <div>
+              <strong>Valor del envío ({{formula.name}}): </strong>
+              {{ (formula.value ? formula.value : 0) | number : '1.2-2' }} US$ /
+              {{ orderSelected.trm ? ((formula.value * orderSelected.trm.value | currency: 'COP')) : 0 }}
+            </div>
+            <div>
+              <strong>Envio a casa ({{formula.name}})</strong>
+              {{ ((orderSelected.sub_total ? orderSelected.sub_total : 0) + (formula.value ? formula.value : 0)) |
+              number : '1.2-2' }} US$ /
+              {{ orderSelected.trm ? ((((orderSelected.sub_total ? orderSelected.sub_total : 0) + (formula.value ?
+              formula.value : 0)) * orderSelected.trm.value ) | currency : 'COP') : 0 }}
+            </div>
+          </ng-container>
+
+        </div>
+
+        <div class="loading-calulator" *ngIf="isLoadingFormula">
+
+          <div class="spinner-border" role="status">
+            <span class="sr-only"></span>
+          </div>
+          Estamos calculando el valor de envío...
         </div>
 
       </div>

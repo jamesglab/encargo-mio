@@ -264,13 +264,14 @@
             <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
         </div>
 
+
         <div class="modal-body">
 
             <div class="container">
 
                 <div class="row">
 
-                    <div class="col-7">
+                    <div class="col">
 
                         <div class="h4">
                             #000{{orderSelected.id ? orderSelected.id : 0 }}
@@ -291,15 +292,14 @@
 
                     </div>
 
-                    <div class="col-5">
+                    <div class="col">
 
                         <div class="row mt-2">
 
-                            <div class="col-6 h5 d-flex ">
-                                Valor Pagado:
-                            </div>
-
                             <div class="col-6 h5 d-flex">
+                                
+                                Valor Pagado:
+
                                 <div>
                                     USD {{ orderSelected.total_value ? orderSelected.total_value : 0 }}
                                     / {{
@@ -327,7 +327,7 @@
 
                     <div class="row">
 
-                        <div class="col-2 d-flex justify-content-center align-items-center"
+                        <div class="col-4"
                             *ngIf="item.image && !item.images">
                             <img [src]="item.image" alt class="avatar" style="object-fit: contain; "
                                 draggable="false" />
@@ -338,7 +338,7 @@
                                 style="height: 200px; object-fit: contain;" alt="" draggable="false">
                         </ng-container>
 
-                        <div class="col-6">
+                        <div class="col">
 
                             <div>
                                 <a [href]="item.link" target="blank">
@@ -366,12 +366,14 @@
 
                 </div>
 
+                <br>
+
                 <ng-container *ngIf="referenceStripeLink">
 
                     <h5 class="modal-title mt-0">Recibo de Pago</h5>
 
-                    <a [href]="referenceStripeLink" target="_blank" type="button" class="btn btn-info">Ver Recibo de
-                        Pago
+                    <a [href]="referenceStripeLink" target="_blank" type="button" class="btn btn-info">
+                        Ver Recibo
                     </a>
 
                 </ng-container>

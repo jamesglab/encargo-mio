@@ -163,22 +163,29 @@ export class TransactionComponent implements OnInit {
   delete(data: any): void {
     Swal.fire({
       title: '¿Estás seguro de eliminar esta orden?',
-      text: 'Está acción no será reversible.',
-      icon: 'warning',
-      showDenyButton: true,
-      showCancelButton: false,
+      text: 'Por favor escribe el motivo de la cancelación, reucuerda que esta acción será ireversible.',
+      input: 'text',
+      inputAttributes: { autocapitalize: 'off', placeholder: "Ingresa el motivo de la cancelación." },
+      showCancelButton: true,
       confirmButtonText: 'Sí',
-      denyButtonText: `Cancelar`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this._orders.anulateOrder(data.id)
-          .subscribe((res: any) => {
-            Swal.fire('', 'Has eliminado la orden correctamente.', 'success');
-            this.refreshTable.emit(true);
-          }, err => {
-            throw err;
-          });
-      }
+      showLoaderOnConfirm: true,
+      cancelButtonText: "Cancelar",
+      preConfirm: (reason: string) => {
+        if (reason) {
+          this._orders.cancelOrderWithReason(data.id, reason)
+            .subscribe((res: any) => {
+              Swal.fire('', 'Has eliminado la orden correctamente.', 'success');
+              this.refreshTable.emit(true);
+              return res;
+            }, err => {
+              Swal.showValidationMessage(`Ha ocurrido un error al intentar eliminar la orden.`);
+              throw err;
+            });
+        } else {
+          Swal.showValidationMessage(`Debes ingresar un motivo de cancelación.`);
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading()
     });
   }
 

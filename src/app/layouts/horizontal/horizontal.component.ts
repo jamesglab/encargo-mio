@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { TOPBAR } from "../layouts.model";
 import { EventService } from '../../core/services/event.service';
+import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
   selector: 'app-horizontal',
@@ -13,12 +14,15 @@ import { EventService } from '../../core/services/event.service';
  */
 export class HorizontalComponent implements OnInit, AfterViewInit {
 
-  topbar: string;
+  public topbar: string;
 
-  constructor(private eventService: EventService) { }
+  public year: number = new Date().getFullYear();
+  public version: any = {};
+
+  constructor(private eventService: EventService, public _storage: StorageService) { }
 
   ngOnInit() {
-
+    this.version = this._storage.version();
     this.topbar = TOPBAR;
 
     this.eventService.subscribe('changeTopbar', (topbar) => {
@@ -30,7 +34,7 @@ export class HorizontalComponent implements OnInit, AfterViewInit {
     document.body.removeAttribute('data-sidebar');
     document.body.removeAttribute('data-layout-size');
     document.body.removeAttribute('data-keep-enlarged');
-    document.body.removeAttribute('data-sidebar-small');    
+    document.body.removeAttribute('data-sidebar-small');
 
     this.changeTopbar(this.topbar);
   }

@@ -10,12 +10,12 @@ import { UIModule } from '../shared/ui/ui.module';
 import { LayoutComponent } from './layout.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TopbarComponent } from './topbar/topbar.component';
-import { FooterComponent } from './footer/footer.component';
 import { HorizontalComponent } from './horizontal/horizontal.component';
 import { VerticalComponent } from './vertical/vertical.component';
+import { HorizontaltopbarComponent } from './horizontaltopbar/horizontaltopbar.component';
 
 @NgModule({
-  declarations: [LayoutComponent, SidebarComponent, TopbarComponent, FooterComponent, HorizontalComponent, VerticalComponent],
+  declarations: [LayoutComponent, HorizontaltopbarComponent, SidebarComponent, TopbarComponent, HorizontalComponent, VerticalComponent],
   imports: [
     CommonModule,
     RouterModule,

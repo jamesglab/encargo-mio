@@ -565,4 +565,20 @@ export class OrderService {
         catchError(handleError)
       );
   }
+
+
+  cancelOrderWithReason(id: any, cancel_reason: string): Observable<any> {
+    return this.http
+      .put<any>(
+        `${environment.microservices.management}orders/cancel-order`,
+        {},{ headers: header, params: { id, cancel_reason } }
+      )
+      .pipe(
+        map((res: any) => {
+          return res;
+        }),
+        catchError(handleError)
+      );
+  }
+
 }

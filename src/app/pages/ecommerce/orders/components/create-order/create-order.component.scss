@@ -49,3 +49,9 @@
     object-fit: contain;
   }
 }
+
+.centered-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

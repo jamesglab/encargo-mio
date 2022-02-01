@@ -8,7 +8,7 @@
 <div class="modal-body">
 
   <ng-container *ngIf="isLoadingData">
-    Estámos obteniendo la información del envío...
+    Estamos obteniendo la información del envío...
   </ng-container>
 
   <h2>Envío # {{shippingToUpdate.id}}</h2>
@@ -28,13 +28,16 @@
         Fraccionar Envío
       </button>
     </ng-container>
+
   </div>
+
+  <br>
 
   <ng-container *ngIf="!isLoadingData">
 
     <form [formGroup]="updateShippingForm">
 
-      <div class="form-check form-switch text-truncate h5">
+      <div class="form-check form-switch text-truncate">
         <label for="form-group">Envío Consolidado</label>
         <input id="flexSwitchCheckChecked" class="form-check-input" type="checkbox" formControlName="consolidated">
       </div>

@@ -120,7 +120,26 @@ export class FragmentProductsComponent implements OnInit {
 
         })
       })
-    ).then(() => product.isLoadingImages = false) // END LOADING
+    ).then(async () => {
+
+      product.isLoadingImages = false;
+
+      const toDataURL = url => fetch(url)
+        .then(response => response.blob())
+        .then(blob => new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.onerror = reject
+          reader.readAsDataURL(blob)
+        }))
+
+      toDataURL(product.image)
+        .then(dataUrl => {
+          var fileData = dataURLtoFile(dataUrl, "imageName.jpg");
+          product.files.push(fileData);
+        });
+
+    });
 
   }
 

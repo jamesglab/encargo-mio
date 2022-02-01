@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h5 class="modal-title mt-0">Ingreso a Casillero a</h5>
+  <h5 class="modal-title mt-0">Ingreso a Casillero</h5>
   <button type="button" class="btn-close" aria-hidden="true" (click)="closeModal()"></button>
 </div>
 
@@ -179,7 +179,7 @@
       <div class="col-12 col-sm-6">
 
         <div class="form-group">
-          <label for="vA">Valor Declarado(Administrador)aa</label>
+          <label for="vA">Valor Declarado(Administrador)</label>
           <input type="number" class="form-control" id="vA" (keypress)="numberOnly($event);" min="0"
             formControlName="declared_value_admin" [ngClass]="{ 'is-invalid' : form.declared_value_admin.errors }">
           <div class="invalid-feedback" *ngIf="form.declared_value_admin.errors">
