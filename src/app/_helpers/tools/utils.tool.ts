@@ -58,15 +58,19 @@ export const disabledItems = (item: string) => {
 
 }
 
-export const numberOnly = (event): boolean => {
-    const charCode = (event.which) ? event.which : event.keyCode;
-    console.log("CHARCODE: ", charCode);
-    if (charCode > 31 && (charCode < 46 || charCode > 57)) {
-        console.log("1");
-        return false;
+export const numberOnly = (event, android?: any): boolean => {
+    if (android) {
+        if (event.keyCode >= 48 && event.keyCode <= 57) {
+            return false;
+        }
+        return true;
+    } else {
+        const charCode = (event.which) ? event.which : event.keyCode;
+        if (charCode > 31 && (charCode < 46 || charCode > 57)) {
+            return false;
+        }
+        return true;
     }
-    console.log("2");
-    return true;
 }
 
 export const GET_STATUS = (state: string) => {

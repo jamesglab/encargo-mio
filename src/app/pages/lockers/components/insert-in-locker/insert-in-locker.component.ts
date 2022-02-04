@@ -16,6 +16,7 @@ export class InsertInLockerComponent implements OnInit {
   public formInsertLocker: FormGroup;
 
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
 
   constructor(
     public _fb: FormBuilder,
@@ -24,6 +25,7 @@ export class InsertInLockerComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.checkOperativeSystem();
     this.formInsertLocker = this._fb.group({
       guide_number: [null, [Validators.required]],
       locker: [null, [Validators.required]],
@@ -32,6 +34,16 @@ export class InsertInLockerComponent implements OnInit {
       reason: [null, [Validators.required]],
       products: this._fb.array([]),
     });
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   get form() {
@@ -92,7 +104,7 @@ export class InsertInLockerComponent implements OnInit {
   }
 
 
-  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isAndroid); } // Función para que sólo se permitan números en un input
 
   onSubmit(): void {
     this.addItem();

@@ -16,11 +16,7 @@ import { LockersService } from "src/app/pages/lockers/_services/lockers.service"
 import { updateShipping } from "src/app/_helpers/tools/create-order-parse.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
-
-import {
-  numberOnly,
-  validateShippingstatus,
-} from "src/app/_helpers/tools/utils.tool";
+import { numberOnly, validateShippingstatus, } from "src/app/_helpers/tools/utils.tool";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { DragdropService } from "src/app/pages/ecommerce/orders-shippings/_services/dragdrop.service";
 import { OrderShippingService } from "src/app/pages/ecommerce/orders-shippings/_services/order-shipping.service";
@@ -31,20 +27,23 @@ import { ExportPdfService } from "src/app/pages/ecommerce/_services/export-pdf.s
   templateUrl: "./modal-shipping.component.html",
   styleUrls: ["./modal-shipping.component.scss"],
 })
+
 export class ModalShippingComponent implements OnInit {
+
   @Input() public users: any = [];
   @Input() public trm: any;
-  public shippingToUpdate: any;
   @Input() public status: number;
 
   @Output() public getTransactions = new EventEmitter<any>();
 
+  public shippingToUpdate: any;
+
   public isLoading: boolean = false;
   public isLoadingLabel: boolean = false;
   public isLoadingData: boolean = false;
-
   public disabledInLocker: boolean = false;
   public disabledInShipping: boolean = false;
+  public isAndroid: boolean = false;
 
   public conveyors: any = [];
   public address: any = [];
@@ -80,11 +79,22 @@ export class ModalShippingComponent implements OnInit {
     public _router: Router,
     private clipboard: Clipboard,
     private _dragdrop: DragdropService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getConveyorsAndShippings();
     this.buildForm(this.shippingToUpdate);
+    this.checkOperativeSystem();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   getConveyorsAndShippings() {
@@ -438,7 +448,7 @@ export class ModalShippingComponent implements OnInit {
   }
 
   numberOnly($event): boolean {
-    return numberOnly($event);
+    return numberOnly($event, this.isAndroid);
   } // Función para que sólo se permitan números en un input
 
   closeModale(): void {

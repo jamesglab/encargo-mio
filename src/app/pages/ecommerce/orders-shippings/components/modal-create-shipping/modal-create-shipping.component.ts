@@ -21,6 +21,8 @@ export class ModalCreateShippingComponent implements OnInit {
   @Output() getTransactions = new EventEmitter<any>();
 
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
+
   public conveyors: [] = [];
   public address: [] = [];
   public products: [] = [];
@@ -42,6 +44,17 @@ export class ModalCreateShippingComponent implements OnInit {
     this.buildForm();
     this.getConvenyor();
     this.getShippingTypes();
+    this.checkOperativeSystem();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   buildForm() {
@@ -184,7 +197,7 @@ export class ModalCreateShippingComponent implements OnInit {
     return '-';
   }
 
-  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isAndroid); } // Función para que sólo se permitan números en un input
 
   closeModale() {
     this.modalService.dismissAll();

@@ -1,11 +1,10 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import Swal from 'sweetalert2';
 import * as moment from "moment";
 import { OrderService } from '../../../_services/orders.service';
 import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { Observable } from 'rxjs';
-import { filter, map, startWith } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shippings-table',
@@ -131,7 +130,7 @@ export class ShippingsTableComponent implements OnInit {
     this.showChangeStatusModal.emit(shipping_order);
   }
 
-  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isAndroid); } // Función para que sólo se permitan números en un input
 
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';

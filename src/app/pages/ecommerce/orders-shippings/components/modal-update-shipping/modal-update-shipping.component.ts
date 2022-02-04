@@ -40,6 +40,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   public disabledInLocker: boolean = false;
   public disabledInShipping: boolean = false;
+  public isAndroid: boolean = false;
 
   public conveyors: any = [];
   public address: any = [];
@@ -77,7 +78,17 @@ export class ModalUpdateShippingComponent implements OnInit {
     private _dragdrop: DragdropService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { this.checkOperativeSystem(); }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
+  }
 
   getConveyorsAndShippings() {
     this._orderService.getConvenyor().subscribe((res: any) => {
@@ -322,7 +333,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     event.target.src = 'assets/images/default.jpg';
   }
 
-  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isAndroid); } // Función para que sólo se permitan números en un input
 
   closeModale(): void {
     this.modalService.dismissAll();
