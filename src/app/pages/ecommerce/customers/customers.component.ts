@@ -33,7 +33,7 @@ export class CustomersComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingTransaction: boolean = false;
   public submitted: boolean = false;
-  public isAndroid: boolean = false;
+  public isIphone: boolean = false;
 
   public users: [] = [];
 
@@ -69,9 +69,9 @@ export class CustomersComponent implements OnInit {
   checkOperativeSystem() {
     if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
       if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+        this.isIphone = true;
       } else {
-        this.isAndroid = true;
+        this.isIphone = false;
       }
     }
   }
@@ -95,7 +95,7 @@ export class CustomersComponent implements OnInit {
   }
 
   keyDownFunction(event: any) {
-    if (!this.isAndroid) {
+    if (this.isIphone) {
       if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
         this.getTransactions();
       }
@@ -146,7 +146,7 @@ export class CustomersComponent implements OnInit {
     this.orderSelected = null;
     this.referenceStripeLink = null;
     this.transactionSelected = transaction;
-    
+
     if (transaction.order_service) {
       this._orderService.detailOrder({ id: transaction.order_service }).subscribe(res => {
         this.orderSelected = res;
@@ -225,6 +225,8 @@ export class CustomersComponent implements OnInit {
       this.users = res;
       //INICIALIZAMOS LA SUBSCRIPCION DE LOS FILTROS
       this.initialFilterdsSubscriptions();
+    }, err => {
+      throw err;
     });
   }
 

@@ -3,7 +3,7 @@ import { FormControl } from "@angular/forms";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
 import { Observable } from "rxjs";
-import { filter, map, startWith } from "rxjs/operators";
+import { map, startWith } from "rxjs/operators";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
@@ -43,7 +43,7 @@ export class TransactionComponent implements OnInit {
   public users: [] = [];
 
   public isLoading: boolean = false;
-  public isAndroid: boolean = false;
+  public isIphone: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -61,9 +61,9 @@ export class TransactionComponent implements OnInit {
   checkOperativeSystem() {
     if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
       if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+        this.isIphone = true;
       } else {
-        this.isAndroid = true;
+        this.isIphone = false;
       }
     }
   }
@@ -89,7 +89,7 @@ export class TransactionComponent implements OnInit {
   }
 
   keyDownFunction(event: any) {
-    if (!this.isAndroid) {
+    if (this.isIphone) {
       if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
         this.filterOrders();
       }

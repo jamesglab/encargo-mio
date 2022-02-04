@@ -25,7 +25,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   public conveyors: any[] = [];
 
   public isLoading: boolean = false;
-  public isAndroid: boolean = false;
+  public isSafari: boolean = false;
 
   public purchaseForm: FormGroup;
 
@@ -40,17 +40,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
     public modalService: NgbModal,
   ) { }
 
-  ngOnInit(): void { this.checkOperativeSystem(); }
-
-  checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
-      } else {
-        this.isAndroid = true;
-      }
-    }
-  }
+  ngOnInit(): void { this.checkIfSafari(); }
 
   ngOnChanges() {
     if (this.orderSelected) {
@@ -58,6 +48,17 @@ export class ModalRegisterPurchaseComponent implements OnInit {
       this.getConvenyors();
       this.buildForm();
       this.getProductsForPurchase();
+    }
+  }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
+      }
     }
   }
 
@@ -176,7 +177,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
-    return numberOnly(event, this.isAndroid);
+    return numberOnly(event, this.isSafari);
   }
 
   disabledItems(item: any) {

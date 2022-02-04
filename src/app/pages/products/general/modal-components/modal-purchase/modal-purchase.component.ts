@@ -21,7 +21,7 @@ export class ModalPurchaseComponent implements OnInit {
   public purchaseForm: FormGroup;
 
   public isLoading: boolean = false;
-  public isAndroid: boolean = false;
+  public isSafari: boolean = false;
 
   public stores: [] = [];
   public conveyors: [] = [];
@@ -37,14 +37,16 @@ export class ModalPurchaseComponent implements OnInit {
     this.getStores();
     this.buildForm();
     this.getConvenyors();
+    this.checkIfSafari();
   }
 
-  checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
       } else {
-        this.isAndroid = true;
+        this.isSafari = true;
       }
     }
   }
@@ -101,25 +103,21 @@ export class ModalPurchaseComponent implements OnInit {
 
   // CONSUMIMOS END-POINT DE LAS TIENDAS ASOCIADAS A ENCARGOMIO
   getStores() {
-    this._orderService.getStores().subscribe(
-      (res: any) => {
+    this._orderService.getStores()
+      .subscribe((res: any) => {
         this.stores = res;
-      },
-      (err) => {
+      }, err => {
         throw err;
-      }
-    );
+      });
   }
   // AGREGAMOS LAS TRANSPORTADORAS
   getConvenyors() {
-    this._orderService.getConvenyor().subscribe(
-      (res: any) => {
+    this._orderService.getConvenyor()
+      .subscribe((res: any) => {
         this.conveyors = res;
-      },
-      (err) => {
+      }, err => {
         throw err;
-      }
-    );
+      });
   }
 
   closeModale() {
@@ -135,26 +133,22 @@ export class ModalPurchaseComponent implements OnInit {
           ...this.purchaseForm.getRawValue(),
           purchase_date,
           locker_entry_date,
-        })
-        .subscribe(
-          (res: any) => {
-            this.successUpload.emit(true);
-            this._notify.show(
-              "Compra Actualizada",
-              "La orden ha sido actualizada con éxito.",
-              "success"
-            );
-          },
-          (err) => {
-            this.isLoading = false;
-            this._notify.show(
-              "Error",
-              "No se pudo actualizar la compra, intenta de nuevo",
-              "error"
-            );
-            throw err;
-          }
-        );
+        }).subscribe((res: any) => {
+          this.successUpload.emit(true);
+          this._notify.show(
+            "Compra Actualizada",
+            "La orden ha sido actualizada con éxito.",
+            "success"
+          );
+        }, err => {
+          this.isLoading = false;
+          this._notify.show(
+            "Error",
+            "No se pudo actualizar la compra, intenta de nuevo",
+            "error"
+          );
+          throw err;
+        });
     } else {
       this._notify.show("Error", "Campos incompletos", "warning");
     }
@@ -177,6 +171,6 @@ export class ModalPurchaseComponent implements OnInit {
 
   numberOnly(event): boolean {
     // Función para que sólo se permitan números en un input
-    return numberOnly(event, this.isAndroid);
+    return numberOnly(event, this.isSafari);
   }
 }

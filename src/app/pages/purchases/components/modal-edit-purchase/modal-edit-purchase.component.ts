@@ -21,7 +21,7 @@ export class ModalEditPurchaseComponent implements OnInit {
   public purchaseForm: FormGroup;
 
   public isLoading: boolean = false;
-  public isAndroid: boolean = false;
+  public isSafari: boolean = false;
 
   public stores: [] = [];
   public conveyors: [] = [];
@@ -37,15 +37,16 @@ export class ModalEditPurchaseComponent implements OnInit {
     this.getStores();
     this.buildForm();
     this.getConvenyors();
-    this.checkOperativeSystem();
+    this.checkIfSafari();
   }
 
-  checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
       } else {
-        this.isAndroid = true;
+        this.isSafari = true;
       }
     }
   }
@@ -132,7 +133,7 @@ export class ModalEditPurchaseComponent implements OnInit {
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
-    return numberOnly(event, this.isAndroid);
+    return numberOnly(event, this.isSafari);
   }
 
 }

@@ -40,7 +40,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   public disabledInLocker: boolean = false;
   public disabledInShipping: boolean = false;
-  public isAndroid: boolean = false;
+  public isSafari: boolean = false;
 
   public conveyors: any = [];
   public address: any = [];
@@ -78,14 +78,15 @@ export class ModalUpdateShippingComponent implements OnInit {
     private _dragdrop: DragdropService
   ) { }
 
-  ngOnInit(): void { this.checkOperativeSystem(); }
+  ngOnInit(): void { this.checkIfSafari(); }
 
-  checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
       } else {
-        this.isAndroid = true;
+        this.isSafari = true;
       }
     }
   }
@@ -333,7 +334,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     event.target.src = 'assets/images/default.jpg';
   }
 
-  numberOnly($event): boolean { return numberOnly($event, this.isAndroid); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isSafari); } // Función para que sólo se permitan números en un input
 
   closeModale(): void {
     this.modalService.dismissAll();

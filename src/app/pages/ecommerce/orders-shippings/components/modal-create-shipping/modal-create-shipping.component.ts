@@ -18,10 +18,11 @@ export class ModalCreateShippingComponent implements OnInit {
 
   @Input() public users: any = [];
   @Input() public trm: any;
+
   @Output() getTransactions = new EventEmitter<any>();
 
   public isLoading: boolean = false;
-  public isAndroid: boolean = false;
+  public isSafari: boolean = false;
 
   public conveyors: [] = [];
   public address: [] = [];
@@ -44,15 +45,16 @@ export class ModalCreateShippingComponent implements OnInit {
     this.buildForm();
     this.getConvenyor();
     this.getShippingTypes();
-    this.checkOperativeSystem();
+    this.checkIfSafari();
   }
 
-  checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
       } else {
-        this.isAndroid = true;
+        this.isSafari = true;
       }
     }
   }
@@ -182,13 +184,13 @@ export class ModalCreateShippingComponent implements OnInit {
     return address ? address.address : "";
   }
 
-  renderName(locker_product: { [ key: string ]: any }): string {
-    if(locker_product.product) {
+  renderName(locker_product: { [key: string]: any }): string {
+    if (locker_product.product) {
       let product = locker_product.product;
-      if(product.name) {
+      if (product.name) {
         let name = product.name;
-        if(product.name.length > 40){
-         name = product.name.slice(0, 40);
+        if (product.name.length > 40) {
+          name = product.name.slice(0, 40);
         }
         return `${product.id} | ${name}`;
       }
@@ -197,7 +199,7 @@ export class ModalCreateShippingComponent implements OnInit {
     return '-';
   }
 
-  numberOnly($event): boolean { return numberOnly($event, this.isAndroid); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isSafari); } // Función para que sólo se permitan números en un input
 
   closeModale() {
     this.modalService.dismissAll();

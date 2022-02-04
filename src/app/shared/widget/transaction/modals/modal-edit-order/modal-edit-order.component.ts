@@ -29,7 +29,7 @@ export class ModalEditOrderComponent implements OnInit {
   public disabledAllInputs: boolean = false;
   public isLoadingQuery: boolean = false;
   public isLoadingUpload: boolean = false;
-  public isAndroid: boolean = false;
+  public isSafari: boolean = false;
 
   public productSelected: any;
 
@@ -40,22 +40,22 @@ export class ModalEditOrderComponent implements OnInit {
     private _compress: ImageCompressService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { this.checkIfSafari(); }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
+      }
+    }
+  }
 
   ngOnChanges() {
     if (this.orderSelected) {
       this.calculateValuesInit();
-    }
-    this.checkOperativeSystem();
-  }
-
-  checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
-      } else {
-        this.isAndroid = true;
-      }
     }
   }
 
@@ -276,7 +276,7 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   numberOnly(event): boolean {// Función para que sólo se permitan números en un input
-    return numberOnly(event, this.isAndroid);
+    return numberOnly(event, this.isSafari);
   }
 
   onImageError(event) { event.target.src = "assets/images/default.jpg"; }

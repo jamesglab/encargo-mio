@@ -58,9 +58,9 @@ export const disabledItems = (item: string) => {
 
 }
 
-export const numberOnly = (event, android): boolean => {
-    console.log("TYPE: ", android);
-    if (android) {
+export const numberOnly = (event, safari): boolean => {
+    console.log("TYPE: ", safari);
+    if (safari) {
         console.log("1");
         if (event.keyCode >= 48 && event.keyCode <= 57) {
             return false;

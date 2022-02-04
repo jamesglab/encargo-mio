@@ -21,11 +21,12 @@ export class ModalLockerEntryComponent implements OnInit {
 
   public lockerForm: FormGroup;
   public toHome = { status: false, to_home: false };
+
   public isLoading: boolean = false;
   public getQueries: boolean = false;
   public loaderLockers: boolean = false;
   public initLoad: boolean = false;
-  public isAndroid: boolean = false;
+  public isSafari: boolean = false;
 
   public lockers: any = [];
   public conveyors: any[] = [];
@@ -51,15 +52,16 @@ export class ModalLockerEntryComponent implements OnInit {
     this.getConvenyors().then(() => {
       this.buildForm();
     });
-    this.checkOperativeSystem();
+    this.checkIfSafari();
   }
 
-  checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
       } else {
-        this.isAndroid = true;
+        this.isSafari = true;
       }
     }
   }
@@ -181,7 +183,7 @@ export class ModalLockerEntryComponent implements OnInit {
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
-    return numberOnly(event, this.isAndroid);
+    return numberOnly(event, this.isSafari);
   }
 
   autoCompleteGuide(params: any) {

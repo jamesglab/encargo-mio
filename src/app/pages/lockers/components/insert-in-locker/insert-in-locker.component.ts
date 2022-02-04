@@ -37,11 +37,12 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isAndroid = true; // Chrome
       } else {
-        this.isAndroid = true;
+        this.isAndroid = false; // Safari
       }
     }
   }

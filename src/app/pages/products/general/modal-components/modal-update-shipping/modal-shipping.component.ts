@@ -1,8 +1,4 @@
-import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-} from "@angular/cdk/drag-drop";
+import { CdkDragDrop, moveItemInArray, transferArrayItem, } from "@angular/cdk/drag-drop";
 import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Clipboard } from "@angular/cdk/clipboard";
@@ -16,7 +12,8 @@ import { LockersService } from "src/app/pages/lockers/_services/lockers.service"
 import { updateShipping } from "src/app/_helpers/tools/create-order-parse.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
-import { numberOnly, validateShippingstatus, } from "src/app/_helpers/tools/utils.tool";
+
+import { numberOnly, validateShippingstatus } from "src/app/_helpers/tools/utils.tool";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { DragdropService } from "src/app/pages/ecommerce/orders-shippings/_services/dragdrop.service";
 import { OrderShippingService } from "src/app/pages/ecommerce/orders-shippings/_services/order-shipping.service";
@@ -43,7 +40,7 @@ export class ModalShippingComponent implements OnInit {
   public isLoadingData: boolean = false;
   public disabledInLocker: boolean = false;
   public disabledInShipping: boolean = false;
-  public isAndroid: boolean = false;
+  public isSafari: boolean = false;
 
   public conveyors: any = [];
   public address: any = [];
@@ -84,39 +81,32 @@ export class ModalShippingComponent implements OnInit {
   ngOnInit(): void {
     this.getConveyorsAndShippings();
     this.buildForm(this.shippingToUpdate);
-    this.checkOperativeSystem();
+    this.checkIfSafari();
   }
 
-  checkOperativeSystem() {
-    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
-      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
       } else {
-        this.isAndroid = true;
+        this.isSafari = true;
       }
     }
   }
 
   getConveyorsAndShippings() {
-    this._orderService.getConvenyor().subscribe(
-      (res: any) => {
-        this.conveyors = res;
-      },
-      (err) => {
-        throw err;
-      }
-    );
-    this._orderService.getShippingTypes().subscribe(
-      (res: any) => {
-        this.shipping_types = res;
-      },
-      (err) => {
-        throw err;
-      }
-    );
+    this._orderService.getConvenyor().subscribe((res: any) => {
+      this.conveyors = res;
+    }, err => {
+      throw err;
+    });
+    this._orderService.getShippingTypes().subscribe((res: any) => {
+      this.shipping_types = res;
+    }, err => {
+      throw err;
+    });
   }
-
-
 
   buildForm(shipping: any): void {
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
@@ -448,7 +438,7 @@ export class ModalShippingComponent implements OnInit {
   }
 
   numberOnly($event): boolean {
-    return numberOnly($event, this.isAndroid);
+    return numberOnly($event, this.isSafari);
   } // Función para que sólo se permitan números en un input
 
   closeModale(): void {
