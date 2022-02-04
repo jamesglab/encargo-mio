@@ -11,14 +11,17 @@ import { NotifyService } from "src/app/_services/notify.service";
   templateUrl: "./modal-purchase.component.html",
   styleUrls: ["./modal-purchase.component.scss"],
 })
+
 export class ModalPurchaseComponent implements OnInit {
-  public purchaseSelected: any;
 
   @Output() successUpload = new EventEmitter<any>();
+
+  public purchaseSelected: any;
 
   public purchaseForm: FormGroup;
 
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
 
   public stores: [] = [];
   public conveyors: [] = [];
@@ -28,12 +31,22 @@ export class ModalPurchaseComponent implements OnInit {
     private fb: FormBuilder,
     public _notify: NotifyService,
     public modalService: NgbModal
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getStores();
     this.buildForm();
     this.getConvenyors();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   // CREACION DE FORMULARIO Y ENVIO DE DATOS NO EDITABLES
@@ -62,7 +75,7 @@ export class ModalPurchaseComponent implements OnInit {
       ],
       guide_number: [
         this.purchaseSelected.guide_number_alph ||
-          this.purchaseSelected.guide_number,
+        this.purchaseSelected.guide_number,
       ],
       invoice_number: [
         this.purchaseSelected.invoice_number,
@@ -164,6 +177,6 @@ export class ModalPurchaseComponent implements OnInit {
 
   numberOnly(event): boolean {
     // Función para que sólo se permitan números en un input
-    return numberOnly(event);
+    return numberOnly(event, this.isAndroid);
   }
 }

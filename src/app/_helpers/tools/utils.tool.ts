@@ -58,7 +58,7 @@ export const disabledItems = (item: string) => {
 
 }
 
-export const numberOnly = (event, android: any): boolean => {
+export const numberOnly = (event, android): boolean => {
     console.log("TYPE: ", android);
     if (android) {
         console.log("1");

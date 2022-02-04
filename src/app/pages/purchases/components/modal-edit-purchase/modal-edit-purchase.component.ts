@@ -21,6 +21,7 @@ export class ModalEditPurchaseComponent implements OnInit {
   public purchaseForm: FormGroup;
 
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
 
   public stores: [] = [];
   public conveyors: [] = [];
@@ -36,6 +37,17 @@ export class ModalEditPurchaseComponent implements OnInit {
     this.getStores();
     this.buildForm();
     this.getConvenyors();
+    this.checkOperativeSystem();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   // CREACION DE FORMULARIO Y ENVIO DE DATOS NO EDITABLES
@@ -120,7 +132,7 @@ export class ModalEditPurchaseComponent implements OnInit {
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
-    return numberOnly(event);
+    return numberOnly(event, this.isAndroid);
   }
 
 }

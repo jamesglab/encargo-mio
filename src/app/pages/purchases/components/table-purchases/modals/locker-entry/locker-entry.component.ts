@@ -32,6 +32,7 @@ export class LockerEntryComponent implements OnInit {
   public getQueries: boolean = false;
   public loaderLockers: boolean = false;
   public isLoadingUpload: boolean = false;
+  public isAndroid: boolean = false;
 
   public lockerForm: FormGroup;
 
@@ -54,7 +55,17 @@ export class LockerEntryComponent implements OnInit {
     private _orders: OrderService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { this.checkOperativeSystem(); }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
+  }
 
   ngOnChanges() {
     if (this.purchaseSelected && !this.purchaseSelected.locker_has_product) {
@@ -221,7 +232,7 @@ export class LockerEntryComponent implements OnInit {
 
   displayConveyors(option: any) { return option ? option.name : ''; } // Formato para mostrar simplemente el nombre en el autocomplete
 
-  numberOnly(event): boolean { return numberOnly(event); } // Función para que sólo se permitan números en un input
+  numberOnly(event): boolean { return numberOnly(event, this.isAndroid); } // Función para que sólo se permitan números en un input
 
   onImageError(event: any): void { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; } // Image failure method
 

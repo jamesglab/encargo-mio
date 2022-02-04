@@ -23,7 +23,10 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   public stores: any[] = [];
   public products: any[] = [];
   public conveyors: any[] = [];
+
   public isLoading: boolean = false;
+  public isAndroid: boolean = false;
+
   public purchaseForm: FormGroup;
 
   public filteredOptionsProducts: Observable<string[]>;
@@ -37,7 +40,17 @@ export class ModalRegisterPurchaseComponent implements OnInit {
     public modalService: NgbModal,
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { this.checkOperativeSystem(); }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
+  }
 
   ngOnChanges() {
     if (this.orderSelected) {
@@ -163,7 +176,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
-    return numberOnly(event);
+    return numberOnly(event, this.isAndroid);
   }
 
   disabledItems(item: any) {

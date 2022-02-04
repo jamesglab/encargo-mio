@@ -26,6 +26,8 @@ export class ModalEditLockersComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingQuery: boolean = false;
   public loaderLockers: boolean = false;
+  public isAndroid: boolean = false;
+
   public lockerEditForm: FormGroup;
 
   public allConveyors: any = [];
@@ -43,6 +45,17 @@ export class ModalEditLockersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getConveyors();
+    this.checkOperativeSystem();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   ngOnChanges() {
@@ -168,7 +181,7 @@ export class ModalEditLockersComponent implements OnInit {
 
   displayWith(option: any) { return option ? option.name : ''; }  // Formato para mostrar simplemente el nombre en el autocomplete
 
-  numberOnly(event): boolean { return numberOnly(event); } // Función para que sólo se permitan números en un input
+  numberOnly(event): boolean { return numberOnly(event, this.isAndroid); } // Función para que sólo se permitan números en un input
 
   onImageError(event) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 

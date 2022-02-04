@@ -12,11 +12,13 @@ import Swal from "sweetalert2";
   templateUrl: "./modal-order.component.html",
   styleUrls: ["./modal-order.component.scss"],
 })
+
 export class ModalOrderComponent implements OnInit {
-  public orderSelected: any = null;
-  public status: any;
 
   @Output() public refreshTable = new EventEmitter<any>();
+
+  public orderSelected: any = null;
+  public status: any;
 
   public subTotalPrice: number = 0;
   public totalPrice: number = 0;
@@ -27,6 +29,7 @@ export class ModalOrderComponent implements OnInit {
   public disabledAllInputs: boolean = true;
   public isLoadingQuery: boolean = false;
   public isLoadingUpload: boolean = false;
+  public isAndroid: boolean = false;
 
   public productSelected: any;
 
@@ -35,7 +38,7 @@ export class ModalOrderComponent implements OnInit {
     public _notify: NotifyService,
     public modalService: NgbModal,
     private _compress: ImageCompressService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.orderSelected.status = 5;
@@ -44,6 +47,17 @@ export class ModalOrderComponent implements OnInit {
   ngOnChanges() {
     if (this.orderSelected) {
       this.calculateValuesInit();
+    }
+    this.checkOperativeSystem();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
     }
   }
 
@@ -169,7 +183,7 @@ export class ModalOrderComponent implements OnInit {
       var sub_total: number = 0;
       sub_total =
         this.orderSelected.products[position].product_value *
-          this.orderSelected.products[position].quantity +
+        this.orderSelected.products[position].quantity +
         this.orderSelected.products[position].tax +
         this.orderSelected.products[position].shipping_origin_value_product;
       this.orderSelected.products[position].sub_total = sub_total;
@@ -346,7 +360,7 @@ export class ModalOrderComponent implements OnInit {
 
   numberOnly(event): boolean {
     // Función para que sólo se permitan números en un input
-    return numberOnly(event);
+    return numberOnly(event, this.isAndroid);
   }
 
   onImageError(event) {
