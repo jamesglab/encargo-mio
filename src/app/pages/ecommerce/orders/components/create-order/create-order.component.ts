@@ -31,6 +31,7 @@ export class CreateOrderComponent implements OnInit {
 
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
+  public isAndroid: boolean = false;
 
   public totalFormulas: any = [];
   public totalValues: any = [];
@@ -46,6 +47,17 @@ export class CreateOrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.buildForm();
+    this.checkOperativeSystem();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isAndroid = false;
+      } else {
+        this.isAndroid = true;
+      }
+    }
   }
 
   // Creación del formulario principal
@@ -186,7 +198,7 @@ export class CreateOrderComponent implements OnInit {
 
   isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
 
-  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isAndroid); } // Función para que sólo se permitan números en un input
 
   resetProductValue(i: number) { this.getFormula(i); }
 
