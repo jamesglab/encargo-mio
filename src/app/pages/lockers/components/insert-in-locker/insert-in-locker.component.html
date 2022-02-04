@@ -1,0 +1,137 @@
+<h3>
+    <strong>
+        Ingreso a Casillero
+    </strong>
+</h3>
+
+<br>
+
+<div class="container-fluid">
+
+    <form [formGroup]="formInsertLocker" (ngSubmit)="onSubmit();">
+
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="guia">Guia Origen</label>
+                        <input type="text" class="form-control" id="guia" formControlName="guide_number"
+                            placeholder="Escanea o digita la guía origen"
+                            [ngClass]="{ 'is-invalid' : form.guide_number.errors }">
+                        <div class="invalid-feedback" *ngIf="form.guide_number.errors">
+
+                            <ng-container *ngIf="form.guide_number.errors.required">
+                                Debes ingresar una guia de origen.
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="name">Nombre o Casillero de Cliente</label>
+                        <input type="text" class="form-control" id="name"
+                            placeholder="Ingresa el nombre o casillero del cliente" formControlName="locker"
+                            [ngClass]="{ 'is-invalid' : form.locker.errors }">
+                        <div class="invalid-feedback" *ngIf="form.locker.errors">
+                            <ng-container *ngIf="form.locker.errors.required">
+                                Debes seleccionar un casillero.
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="conveyor">Transportadora</label>
+                        <input type="email" class="form-control" id="conveyor" placeholder="name@example.com"
+                            formControlName="conveyor" [ngClass]="{ 'is-invalid' : form.conveyor.errors }">
+                        <div class="invalid-feedback" *ngIf="form.conveyor.errors">
+                            <ng-container *ngIf="form.conveyor.errors.required">
+                                Debes seleccionar la transportadora.
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="dateLocker">Fecha de Ingreso</label>
+                        <div class="input-group clockpicker">
+                            <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
+                                #dl="ngbDatepicker" formControlName="receipt_date"
+                                [ngClass]="{ 'is-invalid' : form.receipt_date.errors }">
+                            <div class="input-group-append" (click)="dl.toggle()">
+                                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                            </div>
+                            <div class="invalid-feedback" *ngIf="form.receipt_date.errors">
+                                <ng-container *ngIf="form.receipt_date.errors.required">
+                                    Debes ingresar una fecha de recibido.
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="reason">Plantilla de fraccion</label>
+                        <input type="text" class="form-control" id="reason" placeholder="name@example.com"
+                            formControlName="reason" [ngClass]="{ 'is-invalid' : form.reason.errors }">
+                        <div class="invalid-feedback" *ngIf="form.reason.errors">
+                            <ng-container *ngIf="form.reason.errors.required">
+                                Debes seleccionar la transportadora.
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="col-sm">
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Motivo de Fracción</label>
+                        <input type="email" class="form-control" id="exampleFormControlInput1"
+                            placeholder="name@example.com" formControlName="">
+                    </div>
+                </div> -->
+
+            </div>
+
+            <button class="btn btn-primary" type="submit">Iniciar Ingreso</button>
+
+        </div>
+
+        <hr>
+
+        <div formArrayName="items">
+
+            <div class="row" *ngFor="let control of items().controls; let i = index;" [formGroupName]="i">
+
+                <div class="col-sm-3">
+
+                    <ng-container>
+                        <input type="text" formControlName="item">
+                    </ng-container>
+
+                </div>
+
+                <div class="col-sm-3">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, explicabo?
+                </div>
+
+                <div class="col-sm-3">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, explicabo?
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
