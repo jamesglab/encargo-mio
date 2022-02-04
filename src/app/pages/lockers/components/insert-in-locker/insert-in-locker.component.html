@@ -106,26 +106,140 @@
 
         </div>
 
-        <hr>
+        <div class="container-insert" formArrayName="products">
 
-        <div formArrayName="items">
+            <div class="row" *ngFor="let item of product().controls; let i = index;" [formGroupName]="i">
 
-            <div class="row" *ngFor="let control of items().controls; let i = index;" [formGroupName]="i">
+                <hr *ngIf="i > 0">
+
+                <h4>
+                    <strong>
+                        Ingreso {{i+1}}
+                    </strong>
+                </h4>
 
                 <div class="col-sm-3">
 
-                    <ng-container>
-                        <input type="text" formControlName="item">
-                    </ng-container>
+                    <!-- <div class="col-sm-3 d-flex align-items-center dropzone-in-create" appImageDrag
+                        (files)="filesDropped($event, i);">
+
+                        <div class="container-img-dropzone">
+
+                            <a href="{{ createProductForm.get('products')['controls'][i].controls.link.value }}"
+                                target="_blank">
+                                <img src="{{ createProductForm.get('products')['controls'][i].controls.uploadedFiles.value.url }}"
+                                    draggable="false" (error)="onImageError($event);" />
+                            </a>
+
+                            <h5>Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
+                                    (click)="uploadImage(i);">aquí.</a>
+                            </h5>
+
+                        </div>
+
+                    </div> -->
+
+                    <div>
+                        asdasd
+                    </div>
+
+
 
                 </div>
 
-                <div class="col-sm-3">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, explicabo?
+                <div class="col">
+
+                    <div class="form-group">
+                        <label for="product_name">Nombre de producto</label>
+                        <input type="text" class="form-control" id="product_name"
+                            placeholder="Ingresa el nombre del producto." formControlName="name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="observations">Observaciones del producto</label>
+                        <textarea class="form-control" id="observations" rows="3" formControlName="observations"
+                            placeholder="Ingresa alguna observación que tengas sobre el producto."></textarea>
+                    </div>
+
                 </div>
 
-                <div class="col-sm-3">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, explicabo?
+                <div class="col">
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Valor del Producto</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="inputPassword"
+                                placeholder="Ingresa el valor del producto." min="0" (keypress)="numberOnly($event);">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Cantidad</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="inputPassword"
+                                placeholder="Ingresa la cantidad del producto." min="0"
+                                (keypress)="numberOnly($event);">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Peso (Libras)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="inputPassword"
+                                placeholder="Ingresa el peso del producto." min="0" (keypress)="numberOnly($event);">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Categoría</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Color</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Capacidad</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Talla</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" for="force_commercial_shipping" type="checkbox"
+                            id="flexSwitchCheckDefault" formControlName="novelty_article">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">
+                            Novedad en artículo
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" for="force_commercial_shipping" type="checkbox"
+                            id="flexSwitchCheckDefault" formControlName="free_shipping">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Envío Gratis</label>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" for="force_commercial_shipping" type="checkbox"
+                            id="flexSwitchCheckDefault" formControlName="force_commercial_shipping">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">
+                            Envío Comercial
+                        </label>
+                    </div>
+
                 </div>
 
             </div>
