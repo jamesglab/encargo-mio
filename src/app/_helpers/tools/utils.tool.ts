@@ -60,9 +60,12 @@ export const disabledItems = (item: string) => {
 
 export const numberOnly = (event): boolean => {
     const charCode = (event.which) ? event.which : event.keyCode;
+    console.log("CHARCODE: ", charCode);
     if (charCode > 31 && (charCode < 46 || charCode > 57)) {
+        console.log("1");
         return false;
     }
+    console.log("2");
     return true;
 }
 
