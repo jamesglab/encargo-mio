@@ -4,7 +4,7 @@ export const MENU: MenuItem[] = [
     {
         id: 1,
         label: 'General',
-        showItem : false,
+        showItem: false,
         icon: 'bx-store',
         subItems: [
             {
@@ -12,7 +12,7 @@ export const MENU: MenuItem[] = [
                 label: 'Cotizaciones',
                 link: '/ecommerce/orders',
                 parentId: 1,
-                code : 'CO000',
+                code: 'CO000',
                 showItem: false
             },
             {
@@ -20,7 +20,7 @@ export const MENU: MenuItem[] = [
                 label: 'Envios',
                 link: '/ecommerce/orders-shippings',
                 parentId: 1,
-                code : 'ENV000',
+                code: 'ENV000',
                 showItem: false
             },
             {
@@ -28,7 +28,7 @@ export const MENU: MenuItem[] = [
                 label: 'Compras',
                 link: '/purchases',
                 parentId: 1,
-                code : 'COM000',
+                code: 'COM000',
                 showItem: false
             },
             {
@@ -36,7 +36,7 @@ export const MENU: MenuItem[] = [
                 label: 'Pagos',
                 link: '/ecommerce/customers',
                 parentId: 1,
-                code : 'PAG000',
+                code: 'PAG000',
                 showItem: false
             },
             {
@@ -44,7 +44,7 @@ export const MENU: MenuItem[] = [
                 label: 'Cupones',
                 link: '/cupons',
                 parentId: 1,
-                code : 'CUP000',
+                code: 'CUP000',
                 showItem: false
             }
         ]
@@ -52,7 +52,7 @@ export const MENU: MenuItem[] = [
     {
         id: 2,
         label: 'Productos',
-        showItem : false,
+        showItem: false,
         icon: 'bxl-dropbox',
         subItems: [
             {
@@ -60,7 +60,7 @@ export const MENU: MenuItem[] = [
                 label: 'General',
                 link: '/products/all',
                 parentId: 2,
-                code : 'CO000',
+                code: 'CO000',
                 showItem: false
             },
             {
@@ -68,7 +68,7 @@ export const MENU: MenuItem[] = [
                 label: 'Producto',
                 link: '/products/search',
                 parentId: 2,
-                code : 'ENV000',
+                code: 'ENV000',
                 showItem: false
             }
         ]
@@ -77,14 +77,14 @@ export const MENU: MenuItem[] = [
         id: 3,
         label: 'Usuarios',
         icon: 'bxs-user-detail',
-        showItem : false,
+        showItem: false,
         subItems: [
             {
                 id: 31,
                 label: 'Roles y Permisos',
                 link: '/contacts/grid',
                 parentId: 3,
-                code : 'ROL000',
+                code: 'ROL000',
                 showItem: false
             },
             {
@@ -92,7 +92,7 @@ export const MENU: MenuItem[] = [
                 label: 'Lista de Usuarios',
                 link: '/contacts/list',
                 parentId: 3,
-                code : 'US000',
+                code: 'US000',
                 showItem: false
             }
         ]
@@ -101,14 +101,14 @@ export const MENU: MenuItem[] = [
         id: 4,
         label: 'Casillero',
         icon: 'bxs-box',
-        showItem : false,
+        showItem: false,
         subItems: [
             {
                 id: 41,
                 label: 'Casilleros',
                 parentId: 4,
                 link: '/lockers/locker',
-                code : 'CAS000',
+                code: 'CAS000',
                 showItem: false
             },
             {
@@ -116,7 +116,15 @@ export const MENU: MenuItem[] = [
                 label: 'Productos de usuario',
                 parentId: 4,
                 link: '/lockers/user-products',
-                code : 'CAS100',
+                code: 'CAS100',
+                showItem: false
+            },
+            {
+                id: 43,
+                label: 'Ingreso a Casillero',
+                parentId: 4,
+                link: '/lockers/insert-in-locker',
+                code: 'CAS100',
                 showItem: false
             }
         ]

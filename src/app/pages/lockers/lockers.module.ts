@@ -14,13 +14,15 @@ import { MatInputModule } from '@angular/material/input';
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
 import { EcommerceModule } from '../ecommerce/ecommerce.module';
 import { UsersProductsComponent } from './components/users-products/users-products.component';
+import { InsertInLockerComponent } from './components/insert-in-locker/insert-in-locker.component';
 
 @NgModule({
   declarations: [
     LockerComponent,
     LockersTableComponent,
     ModalEditLockersComponent,
-    UsersProductsComponent
+    UsersProductsComponent,
+    InsertInLockerComponent
   ],
   imports: [
     CommonModule,

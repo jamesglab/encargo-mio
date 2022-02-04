@@ -22,7 +22,7 @@ import { HorizontaltopbarComponent } from './horizontaltopbar/horizontaltopbar.c
     NgbDropdownModule,
     ClickOutsideModule,
     UIModule,
-    SimplebarAngularModule,
+    SimplebarAngularModule
   ]
 })
 

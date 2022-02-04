@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { InsertInLockerComponent } from './components/insert-in-locker/insert-in-locker.component';
 import { LockerComponent } from './components/locker/locker.component';
 import { UsersProductsComponent } from './components/users-products/users-products.component';
 
@@ -11,6 +12,10 @@ const routes: Routes = [
   {
     path: 'user-products',
     component: UsersProductsComponent
+  },
+  {
+    path: 'insert-in-locker',
+    component: InsertInLockerComponent
   }
 ];
 
