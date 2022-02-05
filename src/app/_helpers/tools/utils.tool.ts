@@ -59,12 +59,19 @@ export const disabledItems = (item: string) => {
 }
 
 export const numberOnly = (event, safari): boolean => {
-    console.log("TYPE: ", safari);
+    const charCode = (event.which) ? event.which : event.keyCode;
     if (safari) {
-        return (((event.which > 47) && (event.which < 58)) || (event.which == 13));
+        if (charCode > 31 && (charCode < 46 || charCode > 57)) {
+            if (charCode == 118) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } else {
+            return true;
+        }
     } else {
-        console.log("2");
-        const charCode = (event.which) ? event.which : event.keyCode;
         if (charCode > 31 && (charCode < 46 || charCode > 57)) {
             return false;
         }
