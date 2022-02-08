@@ -571,7 +571,7 @@ export class OrderService {
     return this.http
       .put<any>(
         `${environment.microservices.management}orders/cancel-order`,
-        {},{ headers: header, params: { id, cancel_reason } }
+        {}, { headers: header, params: { id, cancel_reason } }
       )
       .pipe(
         map((res: any) => {
