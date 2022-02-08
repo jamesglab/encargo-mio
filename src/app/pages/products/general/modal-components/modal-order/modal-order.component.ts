@@ -13,10 +13,11 @@ import Swal from "sweetalert2";
   styleUrls: ["./modal-order.component.scss"],
 })
 export class ModalOrderComponent implements OnInit {
-  public orderSelected: any = null;
-  public status: any;
 
   @Output() public refreshTable = new EventEmitter<any>();
+
+  public orderSelected: any = null;
+  public status: any;
 
   public subTotalPrice: number = 0;
   public totalPrice: number = 0;
@@ -27,6 +28,7 @@ export class ModalOrderComponent implements OnInit {
   public disabledAllInputs: boolean = true;
   public isLoadingQuery: boolean = false;
   public isLoadingUpload: boolean = false;
+  public isSafari: boolean = false;
 
   public productSelected: any;
 
@@ -35,10 +37,22 @@ export class ModalOrderComponent implements OnInit {
     public _notify: NotifyService,
     public modalService: NgbModal,
     private _compress: ImageCompressService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.orderSelected.status = 5;
+    this.checkIfSafari();
+  }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
+      }
+    }
   }
 
   ngOnChanges() {
@@ -169,7 +183,7 @@ export class ModalOrderComponent implements OnInit {
       var sub_total: number = 0;
       sub_total =
         this.orderSelected.products[position].product_value *
-          this.orderSelected.products[position].quantity +
+        this.orderSelected.products[position].quantity +
         this.orderSelected.products[position].tax +
         this.orderSelected.products[position].shipping_origin_value_product;
       this.orderSelected.products[position].sub_total = sub_total;
@@ -346,7 +360,7 @@ export class ModalOrderComponent implements OnInit {
 
   numberOnly(event): boolean {
     // Función para que sólo se permitan números en un input
-    return numberOnly(event);
+    return numberOnly(event, this.isSafari);
   }
 
   onImageError(event) {

@@ -58,12 +58,25 @@ export const disabledItems = (item: string) => {
 
 }
 
-export const numberOnly = (event): boolean => {
+export const numberOnly = (event, safari): boolean => {
     const charCode = (event.which) ? event.which : event.keyCode;
-    if (charCode > 31 && (charCode < 46 || charCode > 57)) {
-        return false;
+    if (safari) {
+        if (charCode > 31 && (charCode < 46 || charCode > 57)) {
+            if (charCode == 118) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } else {
+            return true;
+        }
+    } else {
+        if (charCode > 31 && (charCode < 46 || charCode > 57)) {
+            return false;
+        }
+        return true;
     }
-    return true;
 }
 
 export const GET_STATUS = (state: string) => {

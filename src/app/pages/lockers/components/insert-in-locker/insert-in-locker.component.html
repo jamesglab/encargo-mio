@@ -1,0 +1,402 @@
+<h3>
+    <strong>
+        Ingreso a Casillero
+    </strong>
+</h3>
+
+<br>
+
+<div class="container-fluid">
+
+    <form [formGroup]="formInsertLocker" (ngSubmit)="validatePushItems('insert');">
+
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="guia">Guia Origen</label>
+                        <input type="text" class="form-control" id="guia" formControlName="guide_number"
+                            placeholder="Escanea o digita la guía origen"
+                            [ngClass]="{ 'is-invalid' : form.guide_number.errors }">
+                        <div class="invalid-feedback" *ngIf="form.guide_number.errors">
+                            <ng-container *ngIf="form.guide_number.errors.required">
+                                Debes ingresar una guia de origen.
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="name">Nombre o Casillero de Cliente</label>
+                        <input type="text" class="form-control" id="name"
+                            placeholder="Ingresa el nombre o casillero del cliente" formControlName="user"
+                            [ngClass]="{ 'is-invalid' : form.user.errors }" [matAutocomplete]="auto_user">
+                        <div class="invalid-feedback" *ngIf="form.user.errors">
+                            <ng-container *ngIf="form.user.errors.required">
+                                Debes seleccionar un casillero.
+                            </ng-container>
+                        </div>
+                        <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayLocker">
+                            <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
+                                title="CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}">
+                                CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="conveyor">Transportadora</label>
+                        <input type="email" class="form-control" id="conveyor"
+                            placeholder="Selecciona una transportadora." formControlName="conveyor"
+                            [ngClass]="{ 'is-invalid' : form.conveyor.errors }" [matAutocomplete]="auto_conveyors">
+                        <div class="invalid-feedback" *ngIf="form.conveyor.errors">
+                            <ng-container *ngIf="form.conveyor.errors.required">
+                                Debes seleccionar la transportadora.
+                            </ng-container>
+                        </div>
+                        <mat-autocomplete #auto_conveyors="matAutocomplete" [displayWith]="displayFn">
+                            <mat-option *ngFor="let conveyor of filteredConveyors | async" [value]="conveyor">
+                                {{ conveyor.name }}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="dateLocker">Fecha de Ingreso</label>
+                        <div class="input-group clockpicker">
+                            <input ngbDatepicker class="form-control" id="dateLocker" placeholder="yyyy-mm-dd"
+                                #dl="ngbDatepicker" formControlName="receipt_date"
+                                [ngClass]="{ 'is-invalid' : form.receipt_date.errors }">
+                            <div class="input-group-append" (click)="dl.toggle()">
+                                <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                            </div>
+                            <div class="invalid-feedback" *ngIf="form.receipt_date.errors">
+                                <ng-container *ngIf="form.receipt_date.errors.required">
+                                    Debes ingresar una fecha de recibido.
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- <div class="row">
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="reason">Plantilla de fraccion</label>
+                        <input type="text" class="form-control" id="reason" placeholder="name@example.com"
+                            formControlName="reason" [ngClass]="{ 'is-invalid' : form.reason.errors }">
+                        <div class="invalid-feedback" *ngIf="form.reason.errors">
+                            <ng-container *ngIf="form.reason.errors.required">
+                                Debes seleccionar la transportadora.
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+                        <label for="exampleFormControlInput1">Motivo de Fracción</label>
+                        <input type="email" class="form-control" id="exampleFormControlInput1"
+                            placeholder="name@example.com" formControlName="">
+                    </div>
+                </div>
+
+            </div> -->
+
+            <br>
+
+            <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
+                *ngIf="!products || products.value.length === 0">
+                Iniciar Ingreso
+            </button>
+
+        </div>
+
+        <div class="container-insert" formArrayName="products">
+
+            <div class="row"
+                *ngFor="let item of formInsertLocker.get('products')['controls']; let i = index; let last = last;"
+                [formGroupName]="i">
+
+                <hr *ngIf="i > 0">
+
+                <h4 class="container-drops">
+                    <strong>
+                        Ingreso {{i+1}}
+                    </strong>
+                </h4>
+
+                <div class="col-sm-3">
+
+                    <h5 class="container-drops">Imagen del Producto</h5>
+
+                    <div class="align-items-center dropzone-in-create" appImageDrag
+                        (files)="filesDropped($event, i, 'images');">
+
+                        <div class="container-img-dropzone d-flex">
+
+                            <ng-container
+                                *ngFor="let image of formInsertLocker.get('products')['controls'][i].controls.images.value; let i_image = index;">
+
+                                <div class="content-img-dropzone">
+
+                                    <div class="remove-item-content">
+                                        <button type="button" class="close remove-item" aria-label="Close"
+                                            (click)="onRemoveImage(i, i_image, 'images');" title="Borrar Imagen">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <img src="{{ image.url ? image.url : image.Location }}" draggable="false"
+                                        (error)="onImageError($event);" />
+
+                                </div>
+
+                            </ng-container>
+
+                        </div>
+
+                        <div>
+                            <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
+                                *ngIf="formInsertLocker.get('products')['controls'][i].controls.images.value.length === 0"></span>
+                            <h5>
+                                Arrastra tu imagen o haz clic
+                                <a class="font-weight-bold cursor-pointer" (click)="uploadImage(i, 'images');">
+                                    aquí.
+                                </a>
+                            </h5>
+                        </div>
+
+                        <div class="is-dangered"
+                            *ngIf="formInsertLocker.get('products')['controls'][i].controls.images.value.length === 0">
+                            <span class="mdi mdi-information-outline"></span>
+                            Debes ingresar al menos una imagen del producto.
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <h5 class="container-drops">Imagen de Factura</h5>
+
+                    <div class="align-items-center dropzone-in-create" appImageDrag
+                        (files)="filesDropped($event, i, 'invoice_images');">
+
+                        <div class="container-img-dropzone d-flex">
+
+                            <ng-container
+                                *ngFor="let image of formInsertLocker.get('products')['controls'][i].controls.invoice_images.value; let i_invoice = index;">
+
+                                <div class="content-img-dropzone">
+
+                                    <div class="remove-item-content">
+                                        <button type="button" class="close remove-item" aria-label="Close"
+                                            (click)="onRemoveImage(i, i_invoice, 'invoice_images');"
+                                            title="Borrar Imagen">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <img src="{{ image.url ? image.url : image.Location }}" draggable="false"
+                                        (error)="onImageError($event);" />
+
+                                </div>
+
+                            </ng-container>
+
+                        </div>
+
+                        <div
+                            *ngIf="formInsertLocker.get('products')['controls'][i].controls.invoice_images.value.length === 0">
+                            <span class="mdi mdi-cloud-upload" style="font-size: 90px;"></span>
+                            <h5>
+                                Arrastra tu imagen o haz clic
+                                <a class="font-weight-bold cursor-pointer" (click)="uploadImage(i, 'invoice_images');">
+                                    aquí.
+                                </a>
+                            </h5>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col container-drops">
+
+                    <div class="form-group">
+                        <label for="product_name{{i}}">Nombre de producto</label>
+                        <input type="text" class="form-control" id="product_name{{i}}"
+                            placeholder="Ingresa el nombre del producto." formControlName="name"
+                            [ngClass]="{ 'is-invalid' : formInsertLocker.get('products')['controls'][i].controls.name.errors }">
+                        <div class="invalid-feedback"
+                            *ngIf="formInsertLocker.get('products')['controls'][i].controls.name.errors">
+                            <ng-container
+                                *ngIf="formInsertLocker.get('products')['controls'][i].controls.name.errors.required">
+                                El nombre es requerido.
+                            </ng-container>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="locker_observations{{i}}">Observaciones del producto</label>
+                        <textarea class="form-control" id="locker_observations{{i}}" rows="3"
+                            formControlName="locker_observations"
+                            placeholder="Ingresa alguna observación que tengas sobre el producto.">
+                        </textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="client_observations{{i}}">Observación del cliente</label>
+                        <textarea class="form-control" id="client_observations{{i}}" rows="3"
+                            formControlName="client_observations" placeholder="Observaciones del cliente.">
+                        </textarea>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-3">
+
+                    <div class="form-group row">
+                        <label for="inputPassword{{i}}" class="col col-form-label">Valor Producto</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="inputPassword{{i}}"
+                                formControlName="declared_value_admin" placeholder="Ingresa el valor del producto."
+                                min="0" (keypress)="numberOnly($event);"
+                                [ngClass]="{ 'is-invalid' : formInsertLocker.get('products')['controls'][i].controls.declared_value_admin.errors }">
+                            <div class="invalid-feedback"
+                                *ngIf="formInsertLocker.get('products')['controls'][i].controls.declared_value_admin.errors">
+                                <ng-container
+                                    *ngIf="formInsertLocker.get('products')['controls'][i].controls.declared_value_admin.errors.required">
+                                    El nombre es requerido.
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div>
+
+                            <a>
+                                <span class="mdi mdi-minus"></span>
+                            </a>
+
+                            <label class="col col-form-label">Cantidad: </label>
+
+                            <strong>
+                                {{ formInsertLocker.get('products')['controls'][i].controls.quantity.value }}
+                            </strong>
+
+                            <a>
+                                <span class="mdi mdi-plus"></span>
+                            </a>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="permanent_shipping_value{{i}}" class="col col-form-label">Valor Envío Fijo</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="permanent_shipping_value{{i}}"
+                                formControlName="permanent_shipping_value" placeholder="Ingresa el valor del producto."
+                                min="0" (keypress)="numberOnly($event);">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="weight{{i}}" class="col col-form-label">Peso (Libras)</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" id="weight{{i}}" formControlName="weight"
+                                placeholder="Ingresa el peso del producto." min="0" (keypress)="numberOnly($event);"
+                                [ngClass]="{ 'is-invalid' : formInsertLocker.get('products')['controls'][i].controls.weight.errors }">
+                            <div class="invalid-feedback"
+                                *ngIf="formInsertLocker.get('products')['controls'][i].controls.weight.errors">
+                                <ng-container
+                                    *ngIf="formInsertLocker.get('products')['controls'][i].controls.weight.errors.required">
+                                    El peso es requerido.
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Categoría</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Color</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Capacidad</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">Talla</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div> -->
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" formControlName="free_shipping">
+                        <label class="form-check-label">Envío Gratis</label>
+                    </div>
+
+                    <div class="form-check form-switch mt-3">
+                        <input class="form-check-input" type="checkbox" formControlName="force_commercial_shipping">
+                        <label class="form-check-label">
+                            Envío Comercial
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="container-final-buttons">
+
+                    <a class="delete-item" (click)="removeItem(i);" *ngIf="!isLoading">Eliminar Ingreso</a>
+
+                    <ng-container *ngIf="last">
+
+                        <button class="button-add-new-item" type="submit" [disabled]="isLoading"
+                            style="margin-left: 10px; margin-right: 10px;">
+                            Añadir Ingreso
+                            <strong style="color: #48c78e;">
+                                +
+                            </strong>
+                        </button>
+
+                        <button class="button-encargomio" type="button" [disabled]="isLoading"
+                            (click)="registerData();">
+                            Completar Ingreso
+                        </button>
+
+                    </ng-container>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>

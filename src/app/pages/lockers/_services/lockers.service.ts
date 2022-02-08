@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { handleError, header } from 'src/app/_helpers/tools/header.tool';
 import { environment } from 'src/environments/environment';
 
@@ -59,7 +59,7 @@ export class LockersService {
         return res;
       }),
       catchError(handleError)
-    )
+    );
   }
 
   getProductsInLocker(data: any): Observable<any> {
@@ -71,7 +71,40 @@ export class LockersService {
         return res;
       }),
       catchError(handleError)
-    )
+    );
+  }
+
+  uploadImageNewLocker(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${environment.microservices.management}products/upload-images`, payload
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
+  uploadImageInvoice(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${environment.microservices.management}products/upload-invoice`, payload
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
+  insertInLocker(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${environment.microservices.management}income`, payload
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
   }
 
 }

@@ -7,10 +7,8 @@ import { UserService } from "src/app/_services/users.service";
 import * as moment from 'moment';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { PurchasesService } from '../../_services/purchases.service';
-
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
-
 
 @Component({
   selector: 'app-table-purchases',
@@ -29,7 +27,7 @@ export class TablePurchasesComponent implements OnInit {
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isLoading: boolean = false;
-  public isAndroid: boolean = false;
+  public isIphone: boolean = false;
 
   public users: [] = [];
   public stores: any[] = [];
@@ -53,8 +51,10 @@ export class TablePurchasesComponent implements OnInit {
 
   public purchaseSelected: any = {};
 
-  constructor(private _userService: UserService, private modalService: NgbModal, 
-    private _orderService: OrderService, private readonly purchasesService: PurchasesService) { }
+  constructor(
+    private _userService: UserService, private modalService: NgbModal,
+    private _orderService: OrderService, private readonly purchasesService: PurchasesService
+  ) { }
 
   ngOnInit(): void {
     this.checkOperativeSystem();
@@ -68,9 +68,9 @@ export class TablePurchasesComponent implements OnInit {
   checkOperativeSystem() {
     if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
       if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+        this.isIphone = true;
       } else {
-        this.isAndroid = true;
+        this.isIphone = false;
       }
     }
   }
@@ -148,7 +148,7 @@ export class TablePurchasesComponent implements OnInit {
   }
 
   keyDownFunction(event: any) {
-    if (!this.isAndroid) {
+    if (this.isIphone) {
       if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
         this.filterPurchase();
       }
@@ -256,12 +256,12 @@ export class TablePurchasesComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.purchasesService.deletePurchase({ id: data.id })
-        .subscribe((res: any) => {
-          Swal.fire('', 'La compra ha sido eliminada correctamente.', 'success');
-          this.refreshTable.emit(true);
-        }, (err) => {
-          throw err;
-        })
+          .subscribe((res: any) => {
+            Swal.fire('', 'La compra ha sido eliminada correctamente.', 'success');
+            this.refreshTable.emit(true);
+          }, (err) => {
+            throw err;
+          })
       }
     });
   }

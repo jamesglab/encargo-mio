@@ -29,6 +29,7 @@ export class ModalEditOrderComponent implements OnInit {
   public disabledAllInputs: boolean = false;
   public isLoadingQuery: boolean = false;
   public isLoadingUpload: boolean = false;
+  public isSafari: boolean = false;
 
   public productSelected: any;
 
@@ -39,7 +40,18 @@ export class ModalEditOrderComponent implements OnInit {
     private _compress: ImageCompressService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { this.checkIfSafari(); }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
+      }
+    }
+  }
 
   ngOnChanges() {
     if (this.orderSelected) {
@@ -264,7 +276,7 @@ export class ModalEditOrderComponent implements OnInit {
   }
 
   numberOnly(event): boolean {// Función para que sólo se permitan números en un input
-    return numberOnly(event);
+    return numberOnly(event, this.isSafari);
   }
 
   onImageError(event) { event.target.src = "assets/images/default.jpg"; }

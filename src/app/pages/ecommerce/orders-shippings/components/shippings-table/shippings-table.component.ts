@@ -1,11 +1,10 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import Swal from 'sweetalert2';
 import * as moment from "moment";
 import { OrderService } from '../../../_services/orders.service';
 import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { Observable } from 'rxjs';
-import { filter, map, startWith } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shippings-table',
@@ -28,7 +27,8 @@ export class ShippingsTableComponent implements OnInit {
   @Output() public defaultResetValues = new EventEmitter<any>();
 
   public isLoading: boolean = false;
-  public isAndroid: boolean = false;
+  public isIphone: boolean = false;
+  public isSafari: boolean = false;
 
   public typesShippings: any = [];
   public filteredUsers: Observable<string[]>;
@@ -43,6 +43,7 @@ export class ShippingsTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.checkOperativeSystem();
+    this.checkIfSafari();
     this.getTypes();
     this.shippingsFilters = this._fb.group({
       shipping: [null],
@@ -60,9 +61,20 @@ export class ShippingsTableComponent implements OnInit {
   checkOperativeSystem() {
     if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
       if (document.cookie.indexOf("iphone_redirect=false") == -1) {
-        this.isAndroid = false;
+        this.isIphone = true;
       } else {
-        this.isAndroid = true;
+        this.isIphone = false;
+      }
+    }
+  }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
       }
     }
   }
@@ -131,7 +143,7 @@ export class ShippingsTableComponent implements OnInit {
     this.showChangeStatusModal.emit(shipping_order);
   }
 
-  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isSafari); } // Función para que sólo se permitan números en un input
 
   displayFnUserName(name: any) {
     return name ? `CA${name.locker_id} | ${name.name + ' ' + name.last_name}` : '';
@@ -176,7 +188,7 @@ export class ShippingsTableComponent implements OnInit {
   }
 
   keyDownFunction(event: any) {
-    if (!this.isAndroid) {
+    if (this.isIphone) {
       if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
         this.sendFilter();
       }

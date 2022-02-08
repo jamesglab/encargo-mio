@@ -21,6 +21,7 @@ export class ModalEditPurchaseComponent implements OnInit {
   public purchaseForm: FormGroup;
 
   public isLoading: boolean = false;
+  public isSafari: boolean = false;
 
   public stores: [] = [];
   public conveyors: [] = [];
@@ -36,6 +37,18 @@ export class ModalEditPurchaseComponent implements OnInit {
     this.getStores();
     this.buildForm();
     this.getConvenyors();
+    this.checkIfSafari();
+  }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
+      }
+    }
   }
 
   // CREACION DE FORMULARIO Y ENVIO DE DATOS NO EDITABLES
@@ -120,7 +133,7 @@ export class ModalEditPurchaseComponent implements OnInit {
   }
 
   numberOnly(event): boolean { // Función para que sólo se permitan números en un input
-    return numberOnly(event);
+    return numberOnly(event, this.isSafari);
   }
 
 }

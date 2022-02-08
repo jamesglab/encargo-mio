@@ -40,6 +40,7 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   public disabledInLocker: boolean = false;
   public disabledInShipping: boolean = false;
+  public isSafari: boolean = false;
 
   public conveyors: any = [];
   public address: any = [];
@@ -77,7 +78,18 @@ export class ModalUpdateShippingComponent implements OnInit {
     private _dragdrop: DragdropService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { this.checkIfSafari(); }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
+      }
+    }
+  }
 
   getConveyorsAndShippings() {
     this._orderService.getConvenyor().subscribe((res: any) => {
@@ -322,7 +334,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     event.target.src = 'assets/images/default.jpg';
   }
 
-  numberOnly($event): boolean { return numberOnly($event); } // Función para que sólo se permitan números en un input
+  numberOnly($event): boolean { return numberOnly($event, this.isSafari); } // Función para que sólo se permitan números en un input
 
   closeModale(): void {
     this.modalService.dismissAll();

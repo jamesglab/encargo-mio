@@ -1,8 +1,4 @@
-import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-} from "@angular/cdk/drag-drop";
+import { CdkDragDrop, moveItemInArray, transferArrayItem, } from "@angular/cdk/drag-drop";
 import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Clipboard } from "@angular/cdk/clipboard";
@@ -17,10 +13,7 @@ import { updateShipping } from "src/app/_helpers/tools/create-order-parse.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { UserService } from "src/app/_services/users.service";
 
-import {
-  numberOnly,
-  validateShippingstatus,
-} from "src/app/_helpers/tools/utils.tool";
+import { numberOnly, validateShippingstatus } from "src/app/_helpers/tools/utils.tool";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { DragdropService } from "src/app/pages/ecommerce/orders-shippings/_services/dragdrop.service";
 import { OrderShippingService } from "src/app/pages/ecommerce/orders-shippings/_services/order-shipping.service";
@@ -31,20 +24,23 @@ import { ExportPdfService } from "src/app/pages/ecommerce/_services/export-pdf.s
   templateUrl: "./modal-shipping.component.html",
   styleUrls: ["./modal-shipping.component.scss"],
 })
+
 export class ModalShippingComponent implements OnInit {
+
   @Input() public users: any = [];
   @Input() public trm: any;
-  public shippingToUpdate: any;
   @Input() public status: number;
 
   @Output() public getTransactions = new EventEmitter<any>();
 
+  public shippingToUpdate: any;
+
   public isLoading: boolean = false;
   public isLoadingLabel: boolean = false;
   public isLoadingData: boolean = false;
-
   public disabledInLocker: boolean = false;
   public disabledInShipping: boolean = false;
+  public isSafari: boolean = false;
 
   public conveyors: any = [];
   public address: any = [];
@@ -80,33 +76,37 @@ export class ModalShippingComponent implements OnInit {
     public _router: Router,
     private clipboard: Clipboard,
     private _dragdrop: DragdropService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getConveyorsAndShippings();
     this.buildForm(this.shippingToUpdate);
+    this.checkIfSafari();
+  }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
+      }
+    }
   }
 
   getConveyorsAndShippings() {
-    this._orderService.getConvenyor().subscribe(
-      (res: any) => {
-        this.conveyors = res;
-      },
-      (err) => {
-        throw err;
-      }
-    );
-    this._orderService.getShippingTypes().subscribe(
-      (res: any) => {
-        this.shipping_types = res;
-      },
-      (err) => {
-        throw err;
-      }
-    );
+    this._orderService.getConvenyor().subscribe((res: any) => {
+      this.conveyors = res;
+    }, err => {
+      throw err;
+    });
+    this._orderService.getShippingTypes().subscribe((res: any) => {
+      this.shipping_types = res;
+    }, err => {
+      throw err;
+    });
   }
-
-
 
   buildForm(shipping: any): void {
     this.addressSelected = shipping.address; // Ojo esta variable se usa para la generación del rótulo.
@@ -438,7 +438,7 @@ export class ModalShippingComponent implements OnInit {
   }
 
   numberOnly($event): boolean {
-    return numberOnly($event);
+    return numberOnly($event, this.isSafari);
   } // Función para que sólo se permitan números en un input
 
   closeModale(): void {

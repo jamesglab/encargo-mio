@@ -11,14 +11,17 @@ import { NotifyService } from "src/app/_services/notify.service";
   templateUrl: "./modal-purchase.component.html",
   styleUrls: ["./modal-purchase.component.scss"],
 })
+
 export class ModalPurchaseComponent implements OnInit {
-  public purchaseSelected: any;
 
   @Output() successUpload = new EventEmitter<any>();
+
+  public purchaseSelected: any;
 
   public purchaseForm: FormGroup;
 
   public isLoading: boolean = false;
+  public isSafari: boolean = false;
 
   public stores: [] = [];
   public conveyors: [] = [];
@@ -28,12 +31,24 @@ export class ModalPurchaseComponent implements OnInit {
     private fb: FormBuilder,
     public _notify: NotifyService,
     public modalService: NgbModal
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getStores();
     this.buildForm();
     this.getConvenyors();
+    this.checkIfSafari();
+  }
+
+  checkIfSafari(): void {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('safari') != -1) {
+      if (ua.indexOf('chrome') > -1) {
+        this.isSafari = false;
+      } else {
+        this.isSafari = true;
+      }
+    }
   }
 
   // CREACION DE FORMULARIO Y ENVIO DE DATOS NO EDITABLES
@@ -62,7 +77,7 @@ export class ModalPurchaseComponent implements OnInit {
       ],
       guide_number: [
         this.purchaseSelected.guide_number_alph ||
-          this.purchaseSelected.guide_number,
+        this.purchaseSelected.guide_number,
       ],
       invoice_number: [
         this.purchaseSelected.invoice_number,
@@ -88,25 +103,21 @@ export class ModalPurchaseComponent implements OnInit {
 
   // CONSUMIMOS END-POINT DE LAS TIENDAS ASOCIADAS A ENCARGOMIO
   getStores() {
-    this._orderService.getStores().subscribe(
-      (res: any) => {
+    this._orderService.getStores()
+      .subscribe((res: any) => {
         this.stores = res;
-      },
-      (err) => {
+      }, err => {
         throw err;
-      }
-    );
+      });
   }
   // AGREGAMOS LAS TRANSPORTADORAS
   getConvenyors() {
-    this._orderService.getConvenyor().subscribe(
-      (res: any) => {
+    this._orderService.getConvenyor()
+      .subscribe((res: any) => {
         this.conveyors = res;
-      },
-      (err) => {
+      }, err => {
         throw err;
-      }
-    );
+      });
   }
 
   closeModale() {
@@ -122,26 +133,22 @@ export class ModalPurchaseComponent implements OnInit {
           ...this.purchaseForm.getRawValue(),
           purchase_date,
           locker_entry_date,
-        })
-        .subscribe(
-          (res: any) => {
-            this.successUpload.emit(true);
-            this._notify.show(
-              "Compra Actualizada",
-              "La orden ha sido actualizada con éxito.",
-              "success"
-            );
-          },
-          (err) => {
-            this.isLoading = false;
-            this._notify.show(
-              "Error",
-              "No se pudo actualizar la compra, intenta de nuevo",
-              "error"
-            );
-            throw err;
-          }
-        );
+        }).subscribe((res: any) => {
+          this.successUpload.emit(true);
+          this._notify.show(
+            "Compra Actualizada",
+            "La orden ha sido actualizada con éxito.",
+            "success"
+          );
+        }, err => {
+          this.isLoading = false;
+          this._notify.show(
+            "Error",
+            "No se pudo actualizar la compra, intenta de nuevo",
+            "error"
+          );
+          throw err;
+        });
     } else {
       this._notify.show("Error", "Campos incompletos", "warning");
     }
@@ -164,6 +171,6 @@ export class ModalPurchaseComponent implements OnInit {
 
   numberOnly(event): boolean {
     // Función para que sólo se permitan números en un input
-    return numberOnly(event);
+    return numberOnly(event, this.isSafari);
   }
 }
