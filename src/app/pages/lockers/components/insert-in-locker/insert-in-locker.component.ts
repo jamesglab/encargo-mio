@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
@@ -10,6 +11,7 @@ import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { UserService } from 'src/app/_services/users.service';
 import { LockersService } from '../../_services/lockers.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-insert-in-locker',
@@ -41,7 +43,8 @@ export class InsertInLockerComponent implements OnInit {
     private _orderService: OrderService,
     private _usersService: UserService,
     private _lockers: LockersService,
-    public _cdr: ChangeDetectorRef
+    public _cdr: ChangeDetectorRef,
+    public router: Router
   ) { }
 
   ngOnInit(): void {
@@ -120,6 +123,7 @@ export class InsertInLockerComponent implements OnInit {
       novelty_article: [null],
       free_shipping: [false],
       force_commercial_shipping: [false],
+      loadingImage: [false],
       images: [[]],
       invoice_images: [[]]
     });
@@ -136,10 +140,22 @@ export class InsertInLockerComponent implements OnInit {
     this.products.controls.splice(i, 1);
   }
 
+  addQuantity(i: number): void { // Añadir una cantidad al producto
+    let actualQuantity: number = this.formInsertLocker.get('products')['controls'][i].controls.quantity.value;
+    this.formInsertLocker.get('products')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
+  }
+
+  substractQuantity(i: number): void { // Quitar una cantidad a un producto.
+    let actualQuantity: number = this.formInsertLocker.get('products')['controls'][i].controls.quantity.value;
+    if (actualQuantity > 1) {
+      this.formInsertLocker.get('products')['controls'][i].controls.quantity.setValue(actualQuantity - 1);
+    }
+  }
+
   filesDropped(file: FileHandle[], position: number, array: string) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {  // file = file del drop, i = posición de la imagen, array = tipo de arreglo de imagen: "image" o "invoice_image"
       this._compress.compressImage(file[0].base64).then((res: any) => {
-        this.products.controls[position]['controls'][array].value.push(res);
+        this.uploadImageToBucket(res, position, array);
       }, err => {
         this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
         throw err;
@@ -149,13 +165,49 @@ export class InsertInLockerComponent implements OnInit {
     }
   }
 
-  uploadImage(position: number, array: string) {  // position = item dinámico del ingreso del arreglo, array = tipo de arreglo de imagen: "image" o "invoice_image"
+  uploadImageLocally(position: number, array: string) {  // position = item dinámico del ingreso del arreglo, array = tipo de arreglo de imagen: "image" o "invoice_image"
     this._compress.uploadImage().then((res: any) => {
-      this.products.controls[position]['controls'][array].value.push(res);
+      this.uploadImageToBucket(res, position, array);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
       throw err;
     });
+  }
+
+  uploadImageToBucket(response: any, position: number, array: string): void {
+    if (array === 'images') { // Images = se irá al endpoint de añadir una nueva imagen del producto
+      this.formInsertLocker.get('products')['controls'][position].controls.loadingImage.setValue(true);
+      const formData = new FormData(); // Creamos un formData para enviarlo
+      formData.append('images', response.file); // Pusheamos la respuesta de la imagen comprimida en el formData
+      this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
+        if (res.images) { // res.images es un arreglo
+          for (let index = 0; index < res.images.length; index++) {
+            this.products.controls[position]['controls'][array].value.push(res.images[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
+          }
+        }
+        this.formInsertLocker.get('products')['controls'][position].controls.loadingImage.setValue(false);
+      }, err => {
+        this.formInsertLocker.get('products')['controls'][position].controls.loadingImage.setValue(false);
+        this._notify.show('', 'Ocurrió un error al intentar cargar la imagen del producto, intenta de nuevo.', 'error');
+        throw err;
+      });
+    } else { // invoice_images = se irá al endpoint de añadir una nueva imagen de factura.
+      this.formInsertLocker.get('products')['controls'][position].controls.loadingImage.setValue(true);
+      const formDataInvoice = new FormData();  // Pusheamos la respuesta de la imagen comprimida en el formData
+      formDataInvoice.append('invoice', response.file); // Pusheamos la respuesta de la imagen comprimida en el formData
+      this._lockers.uploadImageInvoice(formDataInvoice).subscribe((res: any) => {
+        if (res.invoice) { // res.invoice es un arreglo
+          for (let index = 0; index < res.invoice.length; index++) { // recorremos el arreglo 
+            this.products.controls[position]['controls'][array].value.push(res.invoice[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
+          }
+        }
+        this.formInsertLocker.get('products')['controls'][position].controls.loadingImage.setValue(false);
+      }, err => {
+        this.formInsertLocker.get('products')['controls'][position].controls.loadingImage.setValue(false);
+        this._notify.show('', 'Ocurrió un error al intentar cargar la imagen de la factura, intenta de nuevo.', 'error');
+        throw err;
+      });
+    }
   }
 
   onRemoveImage(position: number, i: number, array: string) { // position = item dinámico del ingreso, i = posición de la imagen, array = tipo de arreglo de imagen: "image" o "invoice_image"
@@ -200,7 +252,7 @@ export class InsertInLockerComponent implements OnInit {
     return locker ? `CA${locker.locker_id} | ${locker.name} ${locker.last_name}` : '';
   }
 
-  validatePushItems(type: string): void { // Método para validar si el formulario es válido y añadir un nuevo ítem
+  validatePushItems(): void { // Método para validar si el formulario es válido y añadir un nuevo ítem
     if (this.formInsertLocker.valid) {
       this.addItem(); // Llamar el método para añadir un nuevo item
       return;
@@ -212,107 +264,31 @@ export class InsertInLockerComponent implements OnInit {
   registerData(): void { // En este métodoentramos cuando ya el usuario hace clic para completar el ingreso.
 
     if (this.formInsertLocker.invalid) {
-      this._notify.show('', 'Asegurate que hayas llenado todos los campos, antes de completar el ingreso..', 'info');
+      this._notify.show('', 'Asegurate que hayas llenado todos los campos, antes de completar el ingreso.', 'info');
       return;
     }
 
-    const formData = new FormData();
-    const formDataInvoice = new FormData();
-
-    let sendImages: any = [];
-    let sendInvoiceImages: any = [];
-
-    for (let product_index = 0; product_index < this.formInsertLocker.value.products.length; product_index++) { // Recorremos el formulario en el arreglo de productos
-
-      for (let image_index = 0; image_index < this.formInsertLocker.value.products[product_index].images.length; image_index++) { // Al obtener el index de cada uno de los ítems de formInsertLocker.value.products en la posición de imagenes
-        delete this.formInsertLocker.value.products[product_index].images.url; // Removemos el base64
-        formData.append('payload', JSON.stringify({ position: product_index })); // Pusheamos en el payload la posición del arreglo para enviarlo al backend
-        sendImages.push(this.formInsertLocker.value.products[product_index].images[image_index].file); // Pusheamos la data solamente del file
-      }
-
-      for (let image_index = 0; image_index < this.formInsertLocker.value.products[product_index].invoice_images.length; image_index++) { // Al obtener el index de cada uno de los ítems de formInsertLocker.value.products en la posición de invoice_images
-        delete this.formInsertLocker.value.products[product_index].invoice_images.url; // Removemos el base64
-        formDataInvoice.append('payload', JSON.stringify({ position: product_index })); // Pusheamos en el payload la posición del arreglo para enviarlo al backend
-        sendInvoiceImages.push(this.formInsertLocker.value.products[product_index].invoice_images[image_index].file); // Pusheamos la data solamente del file
-      }
-
-    }
-
-    sendImages.forEach((item: any) => { formData.append('images', item); }); // Recorremos el array de sendImages y pusheamos cada ítem en formData
-    sendInvoiceImages.forEach((item: any) => { formDataInvoice.append('invoice', item); }); // Recorremos el array de SendInvoiceImages y pusheamos cada ítem en formDataInvoice
-
-    let uploadImagesLocker = new Promise((resolve, reject) => {
-
-      if (sendImages && sendImages.length > 0) {
-        this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => { // res.images es la respuesta.
-
-          for (let index = 0; index < res.images.length; index++) { // Recorremos la repuesta que nos da el backendpara obtener el index
-            for (let index_product = 0; index_product < this.products.value.length; index_product++) { // Recorremos cada ítem de los productos para obtener su index
-              if (res.images[index].position === index_product) { //Comparamos si la respuesta del ítem position es igual al index que teníamos del producto
-                this.formInsertLocker.get('products')['controls'][index_product].controls.images.setValue([]); // Seteamos el product.image como un array vacío
-                this.formInsertLocker.get('products')['controls'][index_product].controls.images.value.push(res.images[index]); // Pusheamos la data encontrada en product.images
-              }
-            }
+    this.isLoading = true;
+    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue());
+    this._lockers.insertInLockerWithout(payload)
+      .subscribe(() => {
+        this.isLoading = false;
+        Swal.fire({
+          title: '',
+          text: "Se ha realizado el ingreso de los productos correctamente.",
+          icon: 'success',
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.router.navigate(["/lockers/locker"]);
           }
-
-          resolve(res);
-
-        }, err => {
-          this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
-          reject(err);
-          throw err;
         });
-      } else {
-        resolve("not_images");
-      }
-    });
-
-    let uploadImagesInvoice = new Promise((resolve, reject) => {
-
-      if (sendInvoiceImages && sendInvoiceImages.length > 0) {
-        this._lockers.uploadImageInvoice(formDataInvoice).subscribe((res: any) => { // res.invoice es la respuesta
-
-          for (let index = 0; index < res.invoice.length; index++) { // Recorremos la repuesta que nos da el backendpara obtener el index
-            for (let index_product = 0; index_product < this.products.value.length; index_product++) { // Recorremos cada ítem de los productos para obtener su index
-              if (res.invoice[index].position === index_product) { // Comparamos si la respuesta del ítem position es igual al index que teníamos del producto
-                this.formInsertLocker.get('products')['controls'][index_product].controls.invoice_images.setValue([]);; // Seteamos el product.invoice_images como un array vacío
-                this.formInsertLocker.get('products')['controls'][index_product].controls.invoice_images.value.push(res.invoice[index]); // Pusheamos la data encontrada en product.invoice_images
-              }
-            }
-          }
-          resolve(res);
-        }, err => {
-          reject(err);
-          throw err;
-        });
-      } else {
-        resolve("not_invoice_images");
-      }
-    });
-
-    Promise.all([uploadImagesLocker, uploadImagesInvoice]).then((response: any) => {
-
-      for (let index = 0; index < response.length; index++) {
-        if (response[index] === 'not_images') {
-          this._notify.show('', 'Debes añadir al menos una imagen para los productos.', 'info');
-          return;
-        }
-      }
-
-      this.isLoading = true;
-
-      let payload = insertOnlyLocker(this.formInsertLocker.getRawValue());
-
-      this._lockers.insertInLocker(payload)
-        .subscribe((res: any) => {
-          console.log("RESPONSE:", res);
-          this.isLoading = false;
-        }, err => {
-          this.isLoading = false;
-          throw err;
-        });
-
-    });
+      }, err => {
+        this.isLoading = false;
+        this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
+        throw err;
+      });
 
   }
 

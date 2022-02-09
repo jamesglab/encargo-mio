@@ -119,14 +119,14 @@ export const MENU: MenuItem[] = [
                 code: 'CAS100',
                 showItem: false
             },
-            // {
-            //     id: 43,
-            //     label: 'Ingreso a Casillero',
-            //     parentId: 4,
-            //     link: '/lockers/insert-in-locker',
-            //     code: 'CAS100',
-            //     showItem: false
-            // }
+            {
+                id: 43,
+                label: 'Ingreso a Casillero',
+                parentId: 4,
+                link: '/lockers/insert-in-locker',
+                code: 'CAS100',
+                showItem: false
+            }
         ]
     }
 ];
