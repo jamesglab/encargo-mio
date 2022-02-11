@@ -172,12 +172,31 @@
 
               <div class="container-img-dropzone">
 
-                <a href="{{ createProductForm.get('products')['controls'][i].controls.link.value }}" target="_blank">
-                  <img src="{{ createProductForm.get('products')['controls'][i].controls.uploadedFiles.value.url }}"
-                    draggable="false" (error)="onImageError($event);" />
-                </a>
+                <div *ngIf="createProductForm.get('products')['controls'][i].controls.images.value.length === 0">
+                  <span class="mdi mdi-cloud-upload" style="font-size: 80px;"></span>
+                </div>
 
-                <h5>Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
+                <div class="container-image">
+
+                  <ng-container
+                    *ngFor="let image of createProductForm.get('products')['controls'][i].controls.images.value; let i_image = index;">
+
+                    <div class="relative-position">
+
+                      <a (click)="removeImage(i, i_image);" title="Borrar Imagen">
+                        <span class="mdi mdi-delete remove-image"></span>
+                      </a>
+
+                      <img draggable="false" [src]="image.Location" (error)="onImageError($event);" />
+
+                    </div>
+
+                  </ng-container>
+
+                </div>
+
+                <h5>
+                  Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
                     (click)="uploadImage(i);">aquí.</a>
                 </h5>
 
@@ -213,7 +232,7 @@
                   <div class="h6">
 
                     <a *ngIf="createProductForm.get('products')['controls'][i].controls.quantity.value === 1"
-                      (click)="removeProduct(i);">
+                      (click)="removeProduct(i);" title="Borrar Imagen">
                       <i class="mdi mdi-delete"></i>
                     </a>
 
@@ -353,7 +372,7 @@
 
 <div class="modal-footer">
 
-  <button class="btn btn-secondary" (click)="close_modale.emit()">
+  <button class="btn btn-secondary" [disabled]="isLoading" (click)="close_modale.emit()">
     Cancelar
   </button>
 

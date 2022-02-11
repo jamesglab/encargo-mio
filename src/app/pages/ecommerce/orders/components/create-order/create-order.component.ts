@@ -7,6 +7,7 @@ import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool
 import { map, startWith } from 'rxjs/operators';
 import { FileHandle } from 'src/app/_directives/file-handle';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
+import { LockersService } from '../../../../lockers/_services/lockers.service'
 import { Observable } from 'rxjs';
 
 @Component({
@@ -42,7 +43,8 @@ export class CreateOrderComponent implements OnInit {
     private quotationService: OrderService,
     private _notify: NotifyService,
     private _compress: ImageCompressService,
-    private _orders: OrderService
+    private _orders: OrderService,
+    private _lockers: LockersService
   ) { }
 
   ngOnInit(): void {
@@ -103,7 +105,7 @@ export class CreateOrderComponent implements OnInit {
       sub_total: [0],
       selected_tax: [null],
       initial_weight: [0],
-      uploadedFiles: [this.createProductForm.value.image ? { file: null, type: 'image', url: this.createProductForm.value.image } : ""],
+      images: [[]],
       key_aws_bucket: [null]
     });
     return createProduct;
@@ -115,17 +117,16 @@ export class CreateOrderComponent implements OnInit {
 
   //creamos un producto nuevo que sera pusheado en los formArray
   addProduct(): void {
-    if (!this.createProductForm.invalid) {
+    if (this.createProductForm.valid) {
 
       this.products = this.createProductForm.get('products') as FormArray;
       this.isLoading = true;
 
       if (this.form.link.value) {
-
         let newUrl: any;
         newUrl = "https" + this.form.link.value.split("https")[1];
         this.form.link.setValue(newUrl);
-        this.quotationService.getProductInfo(newUrl)
+        this.quotationService.getProductInfo(this.form.link.value)
           .subscribe((res: any) => {
             this.addItem(res);
             this._notify.show('Tu producto ha sido añadido correctamente.', '', 'success');
@@ -136,16 +137,16 @@ export class CreateOrderComponent implements OnInit {
             this.isLoading = false;
             throw err;
           });
+
       } else {
-        this._notify.show('No has añadido ningún producto.', '', 'warning');
         this.isLoading = false;
+        this.addItem(null);
       }
 
     } else {
       this.isLoading = false;
       this._notify.show('Los datos del producto están incompletos.', '', 'warning');
     }
-
   }
 
   _filter(value: string, array: any): string[] {
@@ -297,7 +298,6 @@ export class CreateOrderComponent implements OnInit {
   filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
       this._compress.compressImage(file[0].base64).then((res: any) => {
-        this.products.controls[position]['controls'].uploadedFiles.setValue(res);
         this.createFormData(res, position);
       }, err => {
         this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
@@ -310,12 +310,10 @@ export class CreateOrderComponent implements OnInit {
 
   createFormData(res: any, position: number) {
     const formData = new FormData();
-    formData.append("image", res.file);
-    formData.append("payload", this.products.controls[position].value.key_aws_bucket);
+    formData.append("images", res.file);
     this.isLoading = true;
-    this._orders.uploadNewImage(formData).subscribe((res: any) => {
-      this.products.controls[position]['controls'].image.setValue(res.Location);
-      this.products.controls[position]['controls'].key_aws_bucket.setValue(res.Key);
+    this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
+      this.products.controls[position]['controls'].images.value.push(res.images[0]);
       this.isLoading = false;
     }, err => {
       this.isLoading = false;
@@ -325,13 +323,22 @@ export class CreateOrderComponent implements OnInit {
   }
 
   uploadImage(position: number) {
-    this._compress.uploadImage().then((res) => {
-      this.products.controls[position]['controls'].uploadedFiles.setValue(res);
+    this._compress.uploadImage().then((res: any) => {
       this.createFormData(res, position);
     }, err => {
       this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
       throw err;
     });
+  }
+
+  removeImage(position: number, image_position: number) {
+    this._lockers.deleteImage(this.products.controls[position]['controls'].images.value[image_position].Key)
+      .subscribe(() => {
+        this.products.controls[position]['controls'].images.value.splice(image_position, 1);
+      }, err => {
+        this._notify.show('', 'Ocurrió un error al intentar eliminar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
   }
 
   removeProduct(position: number): void {

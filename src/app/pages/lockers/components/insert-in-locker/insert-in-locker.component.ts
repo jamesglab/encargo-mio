@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
@@ -27,6 +27,8 @@ export class InsertInLockerComponent implements OnInit {
   public isAndroid: boolean = false;
   public isLoading: boolean = false;
 
+  public id: any = null;
+
   public conveyors: any = [];
   public users: any = [];
 
@@ -44,13 +46,29 @@ export class InsertInLockerComponent implements OnInit {
     private _usersService: UserService,
     private _lockers: LockersService,
     public _cdr: ChangeDetectorRef,
-    public router: Router
+    public router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    this.checkParamId();
     this.buildForm();
     this.getAllData();
     this.checkOperativeSystem();
+  }
+
+  checkParamId(): void {
+    this.route.queryParamMap.subscribe((params: any) => {
+      this.id = params.params.id;
+      console.log(this.id);
+    });
+    if (this.id) {
+      this._orderService.getOrderPurchaseById(this.id).subscribe((res: any) => {
+        console.log(res);
+      }, err => {
+        throw err;
+      });
+    }
   }
 
   buildForm(): void { // Creamos el formulario general.
@@ -211,7 +229,13 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   onRemoveImage(position: number, i: number, array: string) { // position = item dinámico del ingreso, i = posición de la imagen, array = tipo de arreglo de imagen: "image" o "invoice_image"
-    this.products.controls[position]['controls'][array].value.splice(i, 1);
+    this._lockers.deleteImage(this.products.controls[position]['controls'][array].value[i].Key)
+      .subscribe(() => {
+        this.products.controls[position]['controls'][array].value.splice(i, 1);
+      }, err => {
+        this._notify.show('', 'Ocurrió un error al intentar eliminar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
   }
 
   onImageError(event: any) { // Cuando hay un error en alguna imagen se setea una imagen de una caja por defecto.

@@ -104,23 +104,22 @@
 
         <td>{{ data.total_products ? data.total_products : "" }}</td>
 
-        <td *ngIf="getStatusNumber(status) > 1">{{ data.payment_date ? (data.payment_date | date: 'MMM d, y, h:mm:ss a') : "" }}</td>
+        <td *ngIf="getStatusNumber(status) > 1">{{ data.payment_date ? (data.payment_date | date: 'MMM d, y, h:mm:ss a')
+          : "" }}</td>
 
         <td>{{ data.total_value ? data.total_value : "" }}</td>
 
         <td class="d-flex justify-content-around">
+
           <!-- validamos el boton que se muestra dependiendo del estado de la orden -->
           <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(data, editOrder,'xl');"
             [disabled]="isLoading">
-
             <ng-container *ngIf="getStatusNumber(data.status) >= 2">
               Ver Detalle
             </ng-container>
-
             <ng-container *ngIf="getStatusNumber(data.status) < 2">
               Editar
             </ng-container>
-
           </button>
 
           <!-- ABRIMOS EL ESTADO DE LA ORDEN PARA MOSTRAR EL BOTON DE APROBAR PRODUCTOS -->
@@ -128,6 +127,11 @@
             class="btn btn-primary btn-sm btn-rounded" (click)="openModal(data, registerPurchase,'lg');"
             [disabled]="isLoading">
             Registrar Compra
+          </button>
+
+          <button type="button" style="margin-left: 10px;" class="btn btn-warning btn-sm btn-rounded"
+            (click)="goToInsertLocker(data);" *ngIf="data.status === '4'">
+            Ingresar a Casillero
           </button>
 
           <button type="button" style="margin-left: 10px;"

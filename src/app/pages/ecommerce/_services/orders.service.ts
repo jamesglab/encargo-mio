@@ -399,17 +399,27 @@ export class OrderService {
   }
 
   ordersForPurchase(params: any): Observable<any> {
-    return this.http
-      .get<any>(
-        `${environment.microservices.management}order-purchase/products`,
-        { headers: header, params }
-      )
-      .pipe(
-        map((res: any) => {
-          return res;
-        }),
-        catchError(handleError)
-      );
+    return this.http.get<any>(
+      `${environment.microservices.management}order-purchase/products`,
+      { headers: header, params }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
+  getOrderPurchaseById(id: string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}order-purchase/by-order-service`,
+      { headers: header, params: { id } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
   }
 
   getDataByGuide(data: any): Observable<any> {

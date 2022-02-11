@@ -43,9 +43,13 @@
 }
 
 .container-img-dropzone {
+  overflow-x: auto;
+}
+
+.container-image {
+  display: flex;
   img {
     height: 170px;
-    width: 100%;
     object-fit: contain;
   }
 }
@@ -54,4 +58,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.remove-image {
+  position: absolute;
+  top: 5px;
+  background-color: #ff0000a8;
+  right: 4px;
+  padding: 3px;
+  border-radius: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+.relative-position {
+  position: relative;
+  margin: 10px;
 }
