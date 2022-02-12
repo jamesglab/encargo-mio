@@ -15,18 +15,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.authVersion();
-    this.checkIfSafari();
-  }
-
-  checkIfSafari(): void {
-    var ua = navigator.userAgent.toLowerCase();
-    if (ua.indexOf('safari') != -1) {
-      if (ua.indexOf('chrome') > -1) {
-        console.log("chorme");
-      } else {
-        console.log("safari");
-      }
-    }
   }
 
   authVersion() {

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormControl } from "@angular/forms";
+import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import * as moment from "moment";
 import { Observable } from "rxjs";
@@ -49,7 +50,8 @@ export class TransactionComponent implements OnInit {
     private modalService: NgbModal,
     public _notify: NotifyService,
     private _userService: UserService,
-    private _orders: OrderService
+    private _orders: OrderService,
+    public route: Router
   ) { }
 
   ngOnInit() {
@@ -143,21 +145,6 @@ export class TransactionComponent implements OnInit {
       return (payment_method == 'transfer') ? 'Transferencia' : 'Credito';
     }
     return '';
-
-  }
-
-  private _normalizeValue(value: any, array: any): string {
-    if (typeof value === 'object') {
-      if (array === 'conveyors') {
-        return value.name.toLowerCase().replace(/\s/g, '');
-      } else if (array === 'users') {
-        return value.full_name.toLowerCase().replace(/\s/g, '');
-      } else if (array === 'address') {
-        return value.address.toLowerCase().replace(/\s/g, '');
-      }
-    } else {
-      return value.toLowerCase().replace(/\s/g, '');
-    }
   }
 
   delete(data: any): void {
@@ -187,6 +174,24 @@ export class TransactionComponent implements OnInit {
       },
       allowOutsideClick: () => !Swal.isLoading()
     });
+  }
+
+  goToInsertLocker(data: any): void {
+    this.route.navigate(["/lockers/insert-in-locker"], { queryParams: { id: data.id } });
+  }
+
+  private _normalizeValue(value: any, array: any): string {
+    if (typeof value === 'object') {
+      if (array === 'conveyors') {
+        return value.name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'users') {
+        return value.full_name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'address') {
+        return value.address.toLowerCase().replace(/\s/g, '');
+      }
+    } else {
+      return value.toLowerCase().replace(/\s/g, '');
+    }
   }
 
 }

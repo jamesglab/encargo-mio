@@ -102,8 +102,6 @@ export const updateShipping = (data: any): any => {
 
 export const insertOnlyLocker = (form: any): any => {
 
-    console.log(form);
-
     let data = {
         "locker": form.user.locker_id,
         "guide_number": form.guide_number,

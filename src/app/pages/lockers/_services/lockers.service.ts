@@ -85,6 +85,17 @@ export class LockersService {
     );
   }
 
+  deleteImage(Key: string): Observable<any> {
+    return this.http.post<any>(
+      `${environment.microservices.management}products/delete-image`, { Key: Key }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
   uploadImageInvoice(payload: any): Observable<any> {
     return this.http.post<any>(
       `${environment.microservices.management}products/upload-invoice`, payload
@@ -96,9 +107,9 @@ export class LockersService {
     );
   }
 
-  insertInLocker(payload: any): Observable<any> {
+  insertInLockerWithout(payload: any): Observable<any> {
     return this.http.post<any>(
-      `${environment.microservices.management}income`, payload
+      `${environment.microservices.management}income/whitout-order`, payload
     ).pipe(
       map((res: any) => {
         return res;
