@@ -16,15 +16,38 @@
 
                 <div class="col-sm">
                     <div class="form-group">
+
                         <label for="guia">Guia Origen</label>
-                        <input type="text" class="form-control" id="guia" formControlName="guide_number"
-                            placeholder="Escanea o digita la guía origen"
-                            [ngClass]="{ 'is-invalid' : form.guide_number.errors }">
-                        <div class="invalid-feedback" *ngIf="form.guide_number.errors">
-                            <ng-container *ngIf="form.guide_number.errors.required">
-                                Debes ingresar una guia de origen.
-                            </ng-container>
-                        </div>
+
+                        <ng-container *ngIf="id">
+                            <input type="text" class="form-control" id="guia" formControlName="guide_number"
+                                placeholder="Escanea o digita la guía origen"
+                                [ngClass]="{ 'is-invalid' : form.guide_number.errors }">
+                            <div class="invalid-feedback" *ngIf="form.guide_number.errors">
+                                <ng-container *ngIf="form.guide_number.errors.required">
+                                    Debes ingresar una guia de origen.
+                                </ng-container>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="!id">
+                            <input type="text" id="guia" class="form-control" placeholder="Busca el número de guía"
+                                formControlName="guide_number" [matAutocomplete]="auto_guide"
+                                (input)="autoCompleteGuide($event.target.value);"
+                                title="{{ formInsertLocker.controls.guide_number.value ? formInsertLocker.controls.guide_number.value : '' }}"
+                                [ngClass]="{ 'is-invalid' : form.guide_number.errors }">
+                            <div class="invalid-feedback" *ngIf="form.guide_number.errors">
+                                <ng-container *ngIf="form.guide_number.errors.required">
+                                    Debes ingresar una guia de origen.
+                                </ng-container>
+                            </div>
+                            <mat-autocomplete #auto_guide="matAutocomplete" [displayWith]="displayGuides">
+                                <mat-option *ngFor="let guide of allGuides" [value]="guide" (click)="clickGuideItem(guide);">
+                                    {{ guide.guide_number_alph ? guide.guide_number_alph : guide.guide_number }}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </ng-container>
+
                     </div>
                 </div>
 

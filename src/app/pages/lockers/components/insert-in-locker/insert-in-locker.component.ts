@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { FileHandle } from 'src/app/_directives/file-handle';
 import { insertOnlyLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
-import { dataURLtoFile, FormArrayCheck, numberOnly } from 'src/app/_helpers/tools/utils.tool';
+import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -31,6 +31,7 @@ export class InsertInLockerComponent implements OnInit {
 
   public conveyors: any = [];
   public users: any = [];
+  public allGuides: any = [];
 
   public cloudImages: any = [];
   public cloudInvoiceImages: any = [];
@@ -126,7 +127,19 @@ export class InsertInLockerComponent implements OnInit {
 
   }
 
-  checkOperativeSystem() { // Checkeamos en que sistema operativo Safari IOS o Chorme.
+  clickGuideItem(item: any): void {
+    if (typeof item === 'object') {
+      for (let index = 0; index < this.formInsertLocker.controls.products.value.length; index++) {
+        this.removeItem(index);
+      }
+      this.formInsertLocker.controls.user.setValue({ locker_id: item.locker.id, full_name: item.user.name + " " + item.user.last_name });
+      let userConveyor = this.conveyors.filter(x => x.id === item.conveyor);
+      this.formInsertLocker.controls.conveyor.setValue(userConveyor[0]);
+      this.addItem({ name: item.product.name, declared_value_admin: item.product_price, weight: item.weight, permanent_shipping_value: item.permanent_shipping_value, quantity: item.product.quantity, image: item.product.image, force_commercial_shipping: (item.force_commercial_shipping ? item.force_commercial_shipping : false), order_service: item.order_service.id });
+    }
+  }
+
+  checkOperativeSystem() { // Checkeamos en que sistema operativo Safari I|OS o Chorme.
     var ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf('safari') != -1) {
       if (ua.indexOf('chrome') > -1) {
@@ -140,18 +153,19 @@ export class InsertInLockerComponent implements OnInit {
   createItem(product?: any): FormGroup { // Creamos el ítem del formulario dinámico
     let createItem = this._fb.group({
       name: [product ? product.name : null, [Validators.required]],
-      locker_observations: [null],
-      client_observations: [null],
-      declared_value_admin: [null, [Validators.required]],
+      declared_value_admin: [product ? product.declared_value_admin : null, [Validators.required]],
       permanent_shipping_value: [product ? product.permanent_shipping_value : null],
       quantity: [product ? product.quantity : 1],
-      weight: [null, [Validators.required]],
-      novelty_article: [null],
-      free_shipping: [false],
-      force_commercial_shipping: [false],
-      loadingImage: [false],
+      weight: [product ? product.weight : null, [Validators.required]],
+      force_commercial_shipping: [product ? product.force_commercial_shipping : false],
+      order_service: [product ? product.order_service : null],
       images: [[]],
       invoice_images: [[]],
+      locker_observations: [null],
+      client_observations: [null],
+      novelty_article: [null],
+      free_shipping: [false],
+      loadingImage: [false],
       scrap_image: [product ? product.image : null]
     });
     return createItem;
@@ -177,6 +191,16 @@ export class InsertInLockerComponent implements OnInit {
     if (actualQuantity > 1) {
       this.formInsertLocker.get('products')['controls'][i].controls.quantity.setValue(actualQuantity - 1);
     }
+  }
+
+  autoCompleteGuide(params: any): void {
+    this._orderService.getDataByGuide(params)
+      .subscribe((res: any) => { // Obtenemos los datos por los params de guía
+        this.allGuides = res;
+        this._cdr.detectChanges();
+      }, err => {
+        throw err;
+      });
   }
 
   filesDropped(file: FileHandle[], position: number, array: string) { // Método el cual entra cuando un usuario hace el "drop"
@@ -283,6 +307,10 @@ export class InsertInLockerComponent implements OnInit {
 
   displayLocker(locker: any) { // Método para mostrar la data en elautocomplete del locker o user.
     return locker ? `CA${locker.locker_id} | ${locker.full_name}` : '';
+  }
+
+  displayGuides(guide: any): void {
+    return guide ? guide.guide_number_alph : "";
   }
 
   validatePushItems(): void { // Método para validar si el formulario es válido y añadir un nuevo ítem
