@@ -37,6 +37,7 @@
     "ngx-dropzone": "^3.0.0",
     "ngx-dropzone-wrapper": "^10.0.1",
     "ngx-image-compress": "^11.0.3",
+    "ngx-image-zoom": "^0.6.0",
     "ngx-owl-carousel-o": "^6.0.0",
     "ngx-ui-switch": "^10.0.2",
     "pdfmake": "^0.2.2",

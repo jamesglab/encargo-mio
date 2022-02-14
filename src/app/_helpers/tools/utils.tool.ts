@@ -166,3 +166,14 @@ export const dataURLtoFile = (dataurl, filename) => { // Método para convertir 
     }
     return new File([u8arr], filename, { type: "image/jpeg" });
 }
+
+export class FormArrayCheck {
+
+    static nonEmpty(control: any) {
+        if (!control.value || control.value.length === 0) {
+            return { 'noElements': true };
+        }
+        return null;
+    }
+
+};

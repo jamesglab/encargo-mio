@@ -6,7 +6,7 @@ import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { FileHandle } from 'src/app/_directives/file-handle';
 import { insertOnlyLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
-import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
+import { dataURLtoFile, FormArrayCheck, numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -38,6 +38,8 @@ export class InsertInLockerComponent implements OnInit {
   public filteredConveyors: Observable<string[]>;
   public filteredUsers: Observable<string[]>;
 
+  public actualDate: Date = new Date();
+
   constructor(
     public _fb: FormBuilder,
     private _notify: NotifyService,
@@ -47,40 +49,46 @@ export class InsertInLockerComponent implements OnInit {
     private _lockers: LockersService,
     public _cdr: ChangeDetectorRef,
     public router: Router,
-    private route: ActivatedRoute
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.checkParamId();
-    this.buildForm();
-    this.getAllData();
     this.checkOperativeSystem();
   }
 
   checkParamId(): void {
-    this.route.queryParamMap.subscribe((params: any) => {
-      this.id = params.params.id;
-      console.log(this.id);
-    });
+    this.activatedRoute.queryParamMap.subscribe((params: any) => { this.id = params.params.id; });
     if (this.id) {
       this._orderService.getOrderPurchaseById(this.id).subscribe((res: any) => {
-        console.log(res);
+        if (res.order_purchase && res.order_purchase.length > 0) {
+          this.buildForm({ guide: res.order_purchase[0].guide_number ? res.order_purchase[0].guide_number : res.order_purchase[0].guide_number_alph, user: res.order_purchase[0].order_service.user, conveyor: res.order_purchase[0].conveyor });
+          this.addItem(res.order_purchase[0].product);
+        } else {
+          this.router.navigate(["/lockers/insert-in-locker"]);
+          this.buildForm();
+        }
       }, err => {
+        this.router.navigate(["/lockers/insert-in-locker"]);
         throw err;
       });
+    } else {
+      this.buildForm();
     }
   }
 
-  buildForm(): void { // Creamos el formulario general.
+  buildForm(data?: any): void { // Creamos el formulario general.
     this.formInsertLocker = this._fb.group({
-      guide_number: [null, [Validators.required]],
-      user: [null, [Validators.required]],
-      conveyor: [null, [Validators.required]],
-      receipt_date: [null, [Validators.required]],
+      guide_number: [data ? data.guide : null, [Validators.required]],
+      user: [data ? data.user.locker : null, [Validators.required]],
+      conveyor: [data ? data.conveyor : null, [Validators.required]],
+      receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }, [Validators.required]],
       products: this._fb.array([])
     });
     this.formInsertLocker.controls.user.disable();
     this.formInsertLocker.controls.conveyor.disable();
+    this._cdr.detectChanges();
+    this.getAllData();
   }
 
   get form() {
@@ -129,28 +137,29 @@ export class InsertInLockerComponent implements OnInit {
     }
   }
 
-  createItem(): FormGroup { // Creamos el ítem del formulario dinámico
+  createItem(product?: any): FormGroup { // Creamos el ítem del formulario dinámico
     let createItem = this._fb.group({
-      name: [null, [Validators.required]],
+      name: [product ? product.name : null, [Validators.required]],
       locker_observations: [null],
       client_observations: [null],
       declared_value_admin: [null, [Validators.required]],
-      permanent_shipping_value: [null],
-      quantity: [1],
+      permanent_shipping_value: [product ? product.permanent_shipping_value : null],
+      quantity: [product ? product.quantity : 1],
       weight: [null, [Validators.required]],
       novelty_article: [null],
       free_shipping: [false],
       force_commercial_shipping: [false],
       loadingImage: [false],
       images: [[]],
-      invoice_images: [[]]
+      invoice_images: [[]],
+      scrap_image: [product ? product.image : null]
     });
     return createItem;
   }
 
-  addItem(): void { // Método para pushear un nuevo ítem al arreglo de productos.
+  addItem(product?: any): void { // Método para pushear un nuevo ítem al arreglo de productos.
     this.products = this.formInsertLocker.get('products') as FormArray; // Igualamos el arreglo de productos al array products del FormArray
-    this.products.push(this.createItem()); // Pusheamos un nuevo ítem al arreglo de productos.
+    this.products.push(this.createItem(product)); // Pusheamos un nuevo ítem al arreglo de productos.
   }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
@@ -273,7 +282,7 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   displayLocker(locker: any) { // Método para mostrar la data en elautocomplete del locker o user.
-    return locker ? `CA${locker.locker_id} | ${locker.name} ${locker.last_name}` : '';
+    return locker ? `CA${locker.locker_id} | ${locker.full_name}` : '';
   }
 
   validatePushItems(): void { // Método para validar si el formulario es válido y añadir un nuevo ítem
@@ -293,7 +302,7 @@ export class InsertInLockerComponent implements OnInit {
     }
 
     this.isLoading = true;
-    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue());
+    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.id);
     this._lockers.insertInLockerWithout(payload)
       .subscribe(() => {
         this.isLoading = false;

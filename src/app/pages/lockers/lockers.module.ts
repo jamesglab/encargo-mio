@@ -12,6 +12,7 @@ import { NgxDropzoneModule } from 'ngx-dropzone';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxImageZoomModule } from 'ngx-image-zoom';
 import { EcommerceModule } from '../ecommerce/ecommerce.module';
 import { UsersProductsComponent } from './components/users-products/users-products.component';
 import { InsertInLockerComponent } from './components/insert-in-locker/insert-in-locker.component';
@@ -36,7 +37,8 @@ import { InsertInLockerComponent } from './components/insert-in-locker/insert-in
     MatAutocompleteModule,
     MatInputModule,
     NgbDatepickerModule,
-    EcommerceModule
+    EcommerceModule,
+    NgxImageZoomModule
   ]
 })
 

@@ -1,12 +1,12 @@
 <h3>
     <strong>
-        Ingreso a Casillero
+        {{ id ? 'Ingreso a Casillero #'+id : 'Ingreso a Casillero' }}
     </strong>
 </h3>
 
 <br>
 
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="formInsertLocker">
 
     <form [formGroup]="formInsertLocker" (ngSubmit)="validatePushItems();">
 
@@ -183,6 +183,19 @@
                             Debes ingresar al menos una imagen del producto.
                         </div>
 
+                    </div>
+
+                    <br>
+
+                    <h5 class="container-drops">Imagen de la tienda</h5>
+
+                    <div class="container-zoom-image">
+                        <lib-ngx-image-zoom
+                            [thumbImage]="formInsertLocker.get('products')['controls'][i].controls.scrap_image.value"
+                            [fullImage]="formInsertLocker.get('products')['controls'][i].controls.scrap_image.value"
+                            [enableScrollZoom]="true" [zoomMode]="'hover-freeze'" [enableLens]="true" [lensWidth]="200"
+                            [lensHeight]="200" [circularLens]="true">
+                        </lib-ngx-image-zoom>
                     </div>
 
                     <br>
