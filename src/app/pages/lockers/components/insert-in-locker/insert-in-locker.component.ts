@@ -169,7 +169,7 @@ export class InsertInLockerComponent implements OnInit {
           name: item.product.name,
           permanent_shipping_value: item.product.permanent_shipping_value,
           quantity: item.product.quantity, image: item.product.image, force_commercial_shipping: (item.product.force_commercial_shipping ? item.product.force_commercial_shipping : false),
-          images: (item.product.images ? item.product.images : [])
+          images: item.product.images
         },
         product_price: item.product_price,
         order_service: item.order_service.id,
@@ -344,7 +344,9 @@ export class InsertInLockerComponent implements OnInit {
         }
       }
     } else {
-      return value.toLowerCase().replace(/\s/g, '');
+      if (value) {
+        return value.toLowerCase().replace(/\s/g, '');
+      }
     }
   }
 
