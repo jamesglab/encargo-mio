@@ -65,6 +65,7 @@ export class InsertInLockerComponent implements OnInit {
       this._orderService.getOrderPurchaseById(this.id).subscribe((res: any) => {
         this.buildForm();
         if (res.order_purchase && res.order_purchase.length > 0) {
+          this.allOrders = [];
           this.allOrders = res.order_purchase;
           this.formInsertLocker.controls.order_service.enable();
         }
@@ -133,6 +134,7 @@ export class InsertInLockerComponent implements OnInit {
       if (typeof user === 'object' && user !== null) {
         this._orderService.getLockersByUser(user.id).subscribe((res: any) => {
           if (res && res.length > 0) {
+            this.allOrders = [];
             this.allOrders = res;
           }
           this.formInsertLocker.controls.order_service.enable();
@@ -193,21 +195,21 @@ export class InsertInLockerComponent implements OnInit {
 
   createItem(item?: any): FormGroup { // Creamos el ítem del formulario dinámico
     let createItem = this._fb.group({
-      name: [item ? item.product.name : null, [Validators.required]],
+      name: [item ? item.product?.name : null, [Validators.required]],
       declared_value_admin: [item ? item.product_price : null, [Validators.required]],
-      permanent_shipping_value: [item ? item.product.permanent_shipping_value : null],
-      quantity: [item ? item.product.quantity : 1],
+      permanent_shipping_value: [item ? item.product?.permanent_shipping_value : null],
+      quantity: [item ? item.product?.quantity : 1],
       weight: [item ? item.weight : null, [Validators.required]],
-      force_commercial_shipping: [item ? item.product.force_commercial_shipping : false],
-      order_service: [item ? item.order_service.id : null],
-      images: [item ? item.product.images : []],
+      force_commercial_shipping: [item ? item.product?.force_commercial_shipping : false],
+      order_service: [item ? item.order_service?.id : null],
+      images: [item.product?.images ? item.product.images : []],
       invoice_images: [[]],
       locker_observations: [null],
       client_observations: [null],
       novelty_article: [null],
       free_shipping: [false],
       loadingImage: [false],
-      scrap_image: [item ? item.product.image : null]
+      scrap_image: [item ? item.product?.image : null]
     });
     return createItem;
   }
@@ -215,6 +217,11 @@ export class InsertInLockerComponent implements OnInit {
   addItem(product?: any): void { // Método para pushear un nuevo ítem al arreglo de productos.
     this.products = this.formInsertLocker.get('products') as FormArray; // Igualamos el arreglo de productos al array products del FormArray
     this.products.push(this.createItem(product)); // Pusheamos un nuevo ítem al arreglo de productos.
+    for (let index = 0; index < this.products.controls.length; index++) {
+      if (index >= 1) {
+        this.formInsertLocker.get('products')['controls'][index].controls.images.setValue([]);
+      }
+    }
   }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
@@ -237,6 +244,7 @@ export class InsertInLockerComponent implements OnInit {
   autoCompleteGuide(params: any): void {
     this._orderService.getDataByGuide(params)
       .subscribe((res: any) => { // Obtenemos los datos por los params de guía
+        this.allGuides = [];
         this.allGuides = res;
         this._cdr.detectChanges();
       }, err => {
