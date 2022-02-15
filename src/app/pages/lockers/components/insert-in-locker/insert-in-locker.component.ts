@@ -32,12 +32,13 @@ export class InsertInLockerComponent implements OnInit {
   public conveyors: any = [];
   public users: any = [];
   public allGuides: any = [];
+  public allOrders: any = [];
 
-  public cloudImages: any = [];
-  public cloudInvoiceImages: any = [];
+  public selectedProductOrder: any = {};
 
   public filteredConveyors: Observable<string[]>;
   public filteredUsers: Observable<string[]>;
+  public filteredOrders: Observable<string[]>;
 
   public actualDate: Date = new Date();
 
@@ -62,12 +63,10 @@ export class InsertInLockerComponent implements OnInit {
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.id = params.params.id; });
     if (this.id) {
       this._orderService.getOrderPurchaseById(this.id).subscribe((res: any) => {
+        this.buildForm();
         if (res.order_purchase && res.order_purchase.length > 0) {
-          this.buildForm({ guide: res.order_purchase[0].guide_number ? res.order_purchase[0].guide_number : res.order_purchase[0].guide_number_alph, user: res.order_purchase[0].order_service.user, conveyor: res.order_purchase[0].conveyor });
-          this.addItem(res.order_purchase[0].product);
-        } else {
-          this.router.navigate(["/lockers/insert-in-locker"]);
-          this.buildForm();
+          this.allOrders = res.order_purchase;
+          this.formInsertLocker.controls.order_service.enable();
         }
       }, err => {
         this.router.navigate(["/lockers/insert-in-locker"]);
@@ -84,12 +83,14 @@ export class InsertInLockerComponent implements OnInit {
       user: [data ? data.user.locker : null, [Validators.required]],
       conveyor: [data ? data.conveyor : null, [Validators.required]],
       receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }, [Validators.required]],
+      order_service: [{ value: null, disabled: true }],
       products: this._fb.array([])
     });
     this.formInsertLocker.controls.user.disable();
     this.formInsertLocker.controls.conveyor.disable();
     this._cdr.detectChanges();
     this.getAllData();
+    this.subscribeToData();
   }
 
   get form() {
@@ -127,6 +128,34 @@ export class InsertInLockerComponent implements OnInit {
 
   }
 
+  subscribeToData(): void {
+    this.formInsertLocker.controls.user.valueChanges.subscribe((user: any) => {
+      if (typeof user === 'object' && user !== null) {
+        this._orderService.getLockersByUser(user.id).subscribe((res: any) => {
+          if (res && res.length > 0) {
+            this.allOrders = res;
+          }
+          this.formInsertLocker.controls.order_service.enable();
+        }, err => {
+          this.formInsertLocker.controls.order_service.disable();
+          throw err;
+        });
+      }
+    });
+    this.filteredOrders = this.formInsertLocker.controls.order_service.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'allOrders')));
+  }
+
+  clickOrderItem(order: any) {
+    if (typeof order === 'object' && order !== null) {
+      this.selectedProductOrder = order;
+      let filteredConveyor = this.conveyors.filter(x => x.id === order.conveyor);
+      this.formInsertLocker.controls.guide_number.setValue(order.guide_number);
+      this.formInsertLocker.controls.user.setValue(order.order_service?.user?.locker);
+      this.formInsertLocker.controls.conveyor.setValue(filteredConveyor[0]);
+      this.addItem(order);
+    }
+  }
+
   clickGuideItem(item: any): void {
     if (typeof item === 'object') {
       for (let index = 0; index < this.formInsertLocker.controls.products.value.length; index++) {
@@ -135,7 +164,19 @@ export class InsertInLockerComponent implements OnInit {
       this.formInsertLocker.controls.user.setValue({ locker_id: item.locker.id, full_name: item.user.name + " " + item.user.last_name });
       let userConveyor = this.conveyors.filter(x => x.id === item.conveyor);
       this.formInsertLocker.controls.conveyor.setValue(userConveyor[0]);
-      this.addItem({ name: item.product.name, declared_value_admin: item.product_price, weight: item.weight, permanent_shipping_value: item.permanent_shipping_value, quantity: item.product.quantity, image: item.product.image, force_commercial_shipping: (item.force_commercial_shipping ? item.force_commercial_shipping : false), order_service: item.order_service.id });
+      let data = {
+        product: {
+          name: item.product.name,
+          permanent_shipping_value: item.product.permanent_shipping_value,
+          quantity: item.product.quantity, image: item.product.image, force_commercial_shipping: (item.product.force_commercial_shipping ? item.product.force_commercial_shipping : false),
+          images: (item.product.images ? item.product.images : [])
+        },
+        product_price: item.product_price,
+        order_service: item.order_service.id,
+        weight: item.weight
+      };
+      this.selectedProductOrder = data;
+      this.addItem(data);
     }
   }
 
@@ -150,23 +191,23 @@ export class InsertInLockerComponent implements OnInit {
     }
   }
 
-  createItem(product?: any): FormGroup { // Creamos el ítem del formulario dinámico
+  createItem(item?: any): FormGroup { // Creamos el ítem del formulario dinámico
     let createItem = this._fb.group({
-      name: [product ? product.name : null, [Validators.required]],
-      declared_value_admin: [product ? product.declared_value_admin : null, [Validators.required]],
-      permanent_shipping_value: [product ? product.permanent_shipping_value : null],
-      quantity: [product ? product.quantity : 1],
-      weight: [product ? product.weight : null, [Validators.required]],
-      force_commercial_shipping: [product ? product.force_commercial_shipping : false],
-      order_service: [product ? product.order_service : null],
-      images: [[]],
+      name: [item ? item.product.name : null, [Validators.required]],
+      declared_value_admin: [item ? item.product_price : null, [Validators.required]],
+      permanent_shipping_value: [item ? item.product.permanent_shipping_value : null],
+      quantity: [item ? item.product.quantity : 1],
+      weight: [item ? item.weight : null, [Validators.required]],
+      force_commercial_shipping: [item ? item.product.force_commercial_shipping : false],
+      order_service: [item ? item.order_service.id : null],
+      images: [item ? item.product.images : []],
       invoice_images: [[]],
       locker_observations: [null],
       client_observations: [null],
       novelty_article: [null],
       free_shipping: [false],
       loadingImage: [false],
-      scrap_image: [product ? product.image : null]
+      scrap_image: [item ? item.product.image : null]
     });
     return createItem;
   }
@@ -281,20 +322,26 @@ export class InsertInLockerComponent implements OnInit {
 
   _filter(value: string, array: any): string[] { // Método que usa el filtro del material autocomplete
     const filterValue = this._normalizeValue(value, array);
-    let fileterdData = this[array].filter(option => this._normalizeValue(option, array).includes(filterValue)); // Simplemente filtramos los valores incluyendo lo que el usuario escribe (filterValue)
-    if (fileterdData.length > 0) { // Si filteredData retorna más de 1 valor entonces retornamos la data al autocomplete
-      return fileterdData;
+    let filterData = this[array].filter(option => this._normalizeValue(option, array).includes(filterValue)); // Simplemente filtramos los valores incluyendo lo que el usuario escribe (filterValue)
+    if (filterData.length > 0) { // Si filteredData retorna más de 1 valor entonces retornamos la data al autocomplete
+      return filterData;
     } else {
-      return this[array]; // Si no retorna nada el filteredData simplemente retornamos el arreglo completo (dinámico).
+      return this[array];
     }
   }
 
   _normalizeValue(value: any, array: any): string { // Método para normalizar el valor del autocomplete convirtiéndolo en minúscula.
-    if (typeof value === 'object') {
+    if (typeof value === 'object' && value !== null) {
       if (array === 'conveyors') {
         return value.name.toLowerCase().replace(/\s/g, '');
       } else if (array === 'users') {
         return value.full_name.toLowerCase().replace(/\s/g, '');
+      } else if (array === 'allOrders') {
+        if (value.product && value.product.name) {
+          return value.product.name.toLowerCase().replace(/\s/g, '');
+        } else {
+          return "";
+        }
       }
     } else {
       return value.toLowerCase().replace(/\s/g, '');
@@ -313,13 +360,12 @@ export class InsertInLockerComponent implements OnInit {
     return guide ? guide.guide_number_alph : "";
   }
 
+  displayOrder(order: any) {
+    return order ? `${order.order_service.id} | ${order.product.name}` : '';
+  }
+
   validatePushItems(): void { // Método para validar si el formulario es válido y añadir un nuevo ítem
-    if (this.formInsertLocker.valid) {
-      this.addItem(); // Llamar el método para añadir un nuevo item
-      return;
-    } else {
-      this._notify.show('', 'Asegurate que hayas llenado todos los campos, antes de añadir un ingreso.', 'info');
-    }
+    this.addItem(this.selectedProductOrder); // Llamar el método para añadir un nuevo item
   }
 
   registerData(): void { // En este métodoentramos cuando ya el usuario hace clic para completar el ingreso.
