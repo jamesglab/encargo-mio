@@ -63,11 +63,13 @@ export class InsertInLockerComponent implements OnInit {
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.id = params.params.id; });
     if (this.id) {
       this._orderService.getOrderPurchaseById(this.id).subscribe((res: any) => {
-        this.buildForm();
         if (res.order_purchase && res.order_purchase.length > 0) {
+          this.buildForm();
           this.allOrders = [];
           this.allOrders = res.order_purchase;
+          this.allOrders.map((item: any) => { item.order_service.user = { ...item.order_service.user, locker: res.locker_item }; });
           this.formInsertLocker.controls.order_service.enable();
+          this.formInsertLocker.controls.user.setValue(res.locker_item);
         }
       }, err => {
         this.router.navigate(["/lockers/insert-in-locker"]);
@@ -132,7 +134,8 @@ export class InsertInLockerComponent implements OnInit {
   subscribeToData(): void {
     this.formInsertLocker.controls.user.valueChanges.subscribe((user: any) => {
       if (typeof user === 'object' && user !== null) {
-        this._orderService.getLockersByUser(user.id).subscribe((res: any) => {
+        let type_id = user.id ? user.id : user.locker_id;
+        this._orderService.getLockersByUser(type_id).subscribe((res: any) => {
           if (res && res.length > 0) {
             this.allOrders = [];
             this.allOrders = res;
@@ -151,8 +154,7 @@ export class InsertInLockerComponent implements OnInit {
     if (typeof order === 'object' && order !== null) {
       this.selectedProductOrder = order;
       let filteredConveyor = this.conveyors.filter(x => x.id === order.conveyor);
-      this.formInsertLocker.controls.guide_number.setValue(order.guide_number);
-      this.formInsertLocker.controls.user.setValue(order.order_service?.user?.locker);
+      this.formInsertLocker.controls.guide_number.setValue({ guide_number: order.guide_number, guide_number_alph: order.guide_number_alph });
       this.formInsertLocker.controls.conveyor.setValue(filteredConveyor[0]);
       this.addItem(order);
     }
