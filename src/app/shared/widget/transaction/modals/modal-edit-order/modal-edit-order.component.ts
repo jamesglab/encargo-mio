@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
 import { numberOnly, validateErrors } from "src/app/_helpers/tools/utils.tool";
@@ -37,7 +37,8 @@ export class ModalEditOrderComponent implements OnInit {
     private _orders: OrderService,
     public _notify: NotifyService,
     public modalService: NgbModal,
-    private _compress: ImageCompressService
+    private _compress: ImageCompressService,
+    public _cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void { this.checkIfSafari(); }
@@ -251,8 +252,8 @@ export class ModalEditOrderComponent implements OnInit {
     this.isLoading = true;
     this.isLoadingUpload = true;
     this._orders.uploadNewImage(formData).subscribe((res: any) => {
-      this.orderSelected.products[position].image = res.Location;
-      this.orderSelected.products[position].key_aws_bucket = res.Key;
+      this.orderSelected.products[position].images.push(res);
+      this._cdr.detectChanges();
       this.isLoadingUpload = false;
       this.isLoading = false;
     }, err => {
@@ -275,11 +276,11 @@ export class ModalEditOrderComponent implements OnInit {
     });
   }
 
-  numberOnly(event): boolean {// Función para que sólo se permitan números en un input
+  numberOnly(event: any): boolean {// Función para que sólo se permitan números en un input
     return numberOnly(event, this.isSafari);
   }
 
-  onImageError(event) { event.target.src = "assets/images/default.jpg"; }
+  onImageError(event: any) { event.target.src = "assets/images/default.jpg"; }
 
   upadteImageByProduct(image) {
     this.productSelected.image = image;
