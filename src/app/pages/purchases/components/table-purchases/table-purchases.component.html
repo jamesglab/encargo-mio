@@ -229,8 +229,9 @@
               Editar
             </button>
 
+            <!---modal-->
             <button type="button" *ngIf="!data.sold_out && !data.locker_has_product" style="margin-left: 10px;"
-              class="btn btn-success btn-sm btn-rounded" (click)="openLocker(modal, data);">
+              class="btn btn-success btn-sm btn-rounded" (click)="goToInsertLocker(data);">
               Ingresar a Casillero
             </button>
 
@@ -260,11 +261,11 @@
 
 </div>
 
-<ng-template #modal role="document" let-modal>
+<!-- <ng-template #modal role="document" let-modal>
   <app-locker-entry [users]="users" [trm]="trm" [conveyors]="conveyors" [purchaseSelected]="purchaseSelected"
     (refreshTable)="refreshTableReceive($event);" (closeModal)="closeModalReceive(modal);">
   </app-locker-entry>
-</ng-template>
+</ng-template> -->
 
 <ng-template #modaldetail role="document" let-modal>
   <app-detail-purchases [purchaseSelected]="purchaseSelected"></app-detail-purchases>

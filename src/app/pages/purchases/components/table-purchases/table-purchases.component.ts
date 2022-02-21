@@ -9,6 +9,7 @@ import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { PurchasesService } from '../../_services/purchases.service';
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-table-purchases',
@@ -52,8 +53,11 @@ export class TablePurchasesComponent implements OnInit {
   public purchaseSelected: any = {};
 
   constructor(
-    private _userService: UserService, private modalService: NgbModal,
-    private _orderService: OrderService, private readonly purchasesService: PurchasesService
+    private _userService: UserService,
+    private modalService: NgbModal,
+    private _orderService: OrderService,
+    private readonly purchasesService: PurchasesService,
+    public _router: Router
   ) { }
 
   ngOnInit(): void {
@@ -111,7 +115,7 @@ export class TablePurchasesComponent implements OnInit {
       });
   }
 
-  selectPurchase(purchase) {
+  selectPurchase(purchase: any) {
     this.editPurchase.emit(purchase);
   }
 
@@ -234,6 +238,10 @@ export class TablePurchasesComponent implements OnInit {
   openLocker(content: any, data: any): void {
     this.modalService.open(content, { size: 'lg', centered: true });
     this.purchaseSelected = data;
+  }
+
+  goToInsertLocker(data: any): void {
+    this._router.navigate(["/lockers/insert-in-locker"], { queryParams: { order_service: data.order_service, product: data.product_id } });
   }
 
   closeModalReceive(event: any) {

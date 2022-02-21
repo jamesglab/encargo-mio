@@ -28,6 +28,7 @@ export class InsertInLockerComponent implements OnInit {
   public isLoading: boolean = false;
 
   public params: any = {};
+  public locker: any = {};
 
   public conveyors: any = [];
   public users: any = [];
@@ -67,8 +68,16 @@ export class InsertInLockerComponent implements OnInit {
           this.buildForm();
           this.allOrders = [];
           this.allOrders = res.order_purchase;
+          this.locker = res.locker_item;
+          let filteredOrder = this.allOrders.filter(x => x.product.id == this.params.product);
+          if (filteredOrder && filteredOrder.length > 0) {
+            this.formInsertLocker.controls.order_service.setValue({ order_service: { id: filteredOrder[0].id }, product: { name: filteredOrder[0].product.name } });
+            this.formInsertLocker.controls.order_service.disable();
+            this.clickOrderItem(filteredOrder[0]);
+          } else {
+            this.formInsertLocker.controls.order_service.enable();
+          }
           this.allOrders.map((item: any) => { item.order_service.user = { ...item.order_service.user, locker: res.locker_item }; });
-          this.formInsertLocker.controls.order_service.enable();
           this.formInsertLocker.controls.user.setValue(res.locker_item);
         }
       }, err => {
@@ -132,6 +141,14 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   subscribeToData(): void {
+
+    this.filteredOrders = this.formInsertLocker.controls.order_service.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'allOrders')));
+
+    if (this.params.order_service) {
+      this.formInsertLocker.controls.user.disable();
+      return;
+    }
+
     this.formInsertLocker.controls.user.valueChanges.subscribe((user: any) => {
       if (typeof user === 'object' && user !== null) {
         let type_id = user.id ? user.id : user.locker_id;
@@ -147,15 +164,13 @@ export class InsertInLockerComponent implements OnInit {
         });
       }
     });
-    this.filteredOrders = this.formInsertLocker.controls.order_service.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'allOrders')));
+
   }
 
   clickOrderItem(order: any) {
     if (typeof order === 'object' && order !== null) {
       this.selectedProductOrder = order;
-      let filteredConveyor = this.conveyors.filter(x => x.id === order.conveyor);
       this.formInsertLocker.controls.guide_number.setValue({ guide_number: order.guide_number, guide_number_alph: order.guide_number_alph });
-      this.formInsertLocker.controls.conveyor.setValue(filteredConveyor[0]);
       this.addItem(order);
     }
   }
@@ -388,7 +403,7 @@ export class InsertInLockerComponent implements OnInit {
     }
 
     this.isLoading = true;
-    
+
     let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.params.order_service);
     this._lockers.insertInLockerWithout(payload)
       .subscribe(() => {
