@@ -7,6 +7,7 @@ import { LockersService } from '../../_services/lockers.service';
 import Swal from "sweetalert2";
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-lockers-table',
@@ -43,7 +44,8 @@ export class LockersTableComponent implements OnInit {
   constructor(
     public modalService: NgbModal,
     public lockerService: LockersService,
-    public usersService: UserService
+    public usersService: UserService,
+    public _router: Router
   ) { }
 
   ngOnInit(): void {
@@ -51,8 +53,8 @@ export class LockersTableComponent implements OnInit {
     this.getAllLockers();
   }
 
-  ngOnChanges(){
-    if(this.refreshTableStatus){
+  ngOnChanges() {
+    if (this.refreshTableStatus) {
       this.getAllLockers();
     }
   }
@@ -72,7 +74,7 @@ export class LockersTableComponent implements OnInit {
 
   //VALIDAMOS LOS FILTROS QUE ENVIAREMOS
   filterOptions() {
-    const options = {};
+    const options: any = {};
     if (this.filterGuide.value != null && this.filterGuide.value != '') {
       options['guide_number'] = this.filterGuide.value
     }
@@ -99,7 +101,7 @@ export class LockersTableComponent implements OnInit {
 
   // CONSULTAMOS LOS USUARIOS PARA VISUALIZAR LOS CASILLEROS QUE TIENEN
   getUsers() {
-    this.usersService.getUsersAdmin().subscribe(res => {
+    this.usersService.getUsersAdmin().subscribe((res: any) => {
       this.users = res;
       //INICIALIZAMOS LA SUBSCRIPCION DE LOS FILTROS
       this.initialFilterdsSubscriptions();
@@ -110,9 +112,9 @@ export class LockersTableComponent implements OnInit {
 
   formatDate() {
     if (this.filterDate.value?.year) {
-      return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD')
+      return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD');
     } else {
-      return ''
+      return '';
     }
   }
 
@@ -121,10 +123,8 @@ export class LockersTableComponent implements OnInit {
     this.filteredUsers = this.filterUserLocker.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
-  //ABRIMOS EL MODAL PARA VISUALIZAR EL PRODUCTO
-  viewDetail(locker: any, modal: any, sizeModale: string) {
-    this.lockerSelected = locker;
-    this.modalService.open(modal, { size: sizeModale, centered: true });
+  viewDetail(locker: any) {
+    this._router.navigate(["/lockers/update-locker"], { queryParams: { income: locker.income } });
   }
 
   closeModalEditLockers(event: any) {

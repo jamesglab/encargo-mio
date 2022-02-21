@@ -215,7 +215,6 @@ export class ModalEditLockersComponent implements OnInit {
       return;
     }
 
-    // this.isLoadingQuery = true;
     var formData = new FormData();
 
     this.allImages.map((image: any) => { if (!image.delete) { formData.append('images', image.file) } });
@@ -233,7 +232,7 @@ export class ModalEditLockersComponent implements OnInit {
     let payload = updateLocker(this.lockerEditForm.getRawValue());
 
     formData.append("payload", JSON.stringify(payload));
-
+    this.isLoadingQuery = true;
     this._orders.updateProductLocker(formData).subscribe((res: any) => {
       if (res) {
         this._notify.show('', res.message ? res.message : 'Se ha actualizado correctamente.', 'success');

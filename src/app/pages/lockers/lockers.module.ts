@@ -16,6 +16,7 @@ import { NgxImageZoomModule } from 'ngx-image-zoom';
 import { EcommerceModule } from '../ecommerce/ecommerce.module';
 import { UsersProductsComponent } from './components/users-products/users-products.component';
 import { InsertInLockerComponent } from './components/insert-in-locker/insert-in-locker.component';
+import { LockerUpdateComponent } from './components/locker-update/locker-update.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { InsertInLockerComponent } from './components/insert-in-locker/insert-in
     LockersTableComponent,
     ModalEditLockersComponent,
     UsersProductsComponent,
-    InsertInLockerComponent
+    InsertInLockerComponent,
+    LockerUpdateComponent
   ],
   imports: [
     CommonModule,

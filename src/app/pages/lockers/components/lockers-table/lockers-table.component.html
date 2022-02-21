@@ -115,10 +115,12 @@
         <td>{{ data.weight ? data.weight + " lb" : 0 }}</td>
 
         <td>
-          <button class="btn btn-primary btn-sm btn-rounded" (click)="viewDetail(data, modalLocker, 'xl')">
+          <button class="btn btn-primary btn-sm btn-rounded" (click)="viewDetail(data)">
             Editar
           </button>
-          <button class="btn btn-danger btn-sm btn-rounded" (click)="deleteProduct(data);">Borrar</button>
+          <button class="btn btn-danger btn-sm btn-rounded" style="margin-left: 10px;" (click)="deleteProduct(data);">
+            Borrar
+          </button>
         </td>
       </tr>
     </tbody>
@@ -129,7 +131,8 @@
   (page)="getAllLockers($event);">
 </mat-paginator>
 
-<ng-template #modalLocker role="document" let-modal>
+<!-- <ng-template #modalLocker role="document" let-modal>
+
   <div class="modal-header">
     <h5 class="modal-title mt-0">Producto #{{ lockerSelected.product }}</h5>
     <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
@@ -140,4 +143,5 @@
       (cancelModalStatus)="cancelModalReceive($event)">
     </app-modal-edit-lockers>
   </div>
-</ng-template>
+
+</ng-template> -->

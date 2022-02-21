@@ -27,7 +27,7 @@ export class InsertInLockerComponent implements OnInit {
   public isAndroid: boolean = false;
   public isLoading: boolean = false;
 
-  public id: any = null;
+  public params: any = {};
 
   public conveyors: any = [];
   public users: any = [];
@@ -60,9 +60,9 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   checkParamId(): void {
-    this.activatedRoute.queryParamMap.subscribe((params: any) => { this.id = params.params.id; });
-    if (this.id) {
-      this._orderService.getOrderPurchaseById(this.id).subscribe((res: any) => {
+    this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
+    if (this.params.order_service) {
+      this._orderService.getOrderPurchaseById(this.params.order_service).subscribe((res: any) => {
         if (res.order_purchase && res.order_purchase.length > 0) {
           this.buildForm();
           this.allOrders = [];
@@ -388,7 +388,8 @@ export class InsertInLockerComponent implements OnInit {
     }
 
     this.isLoading = true;
-    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.id);
+    
+    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.params.order_service);
     this._lockers.insertInLockerWithout(payload)
       .subscribe(() => {
         this.isLoading = false;

@@ -50,6 +50,18 @@ export class LockersService {
     );
   }
 
+  getProductsByIncome(id: string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}income?id=${id}`,
+      { headers: header }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
   getTypeOfShipping(data: string): Observable<any> {
     return this.http.get<any>(
       `${environment.microservices.management}locker/type-of-shipping`,
@@ -109,7 +121,18 @@ export class LockersService {
 
   insertInLockerWithout(payload: any): Observable<any> {
     return this.http.post<any>(
-      `${environment.microservices.management}income/whitout-order`, payload
+      `${environment.microservices.management}income`, payload
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
+  updateLocker(payload: any): Observable<any> {
+    return this.http.put<any>(
+      `${environment.microservices.management}income`, payload
     ).pipe(
       map((res: any) => {
         return res;
