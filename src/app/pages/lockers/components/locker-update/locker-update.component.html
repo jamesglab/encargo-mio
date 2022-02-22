@@ -165,7 +165,7 @@
 
                         <div>
                             <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
-                                *ngIf="formUpdateLocker.get('products')['controls'][i].controls.images.value.length === 0"></span>
+                                *ngIf="formUpdateLocker.get('products')['controls'][i].controls.images.value && formUpdateLocker.get('products')['controls'][i].controls.images.value.length === 0"></span>
                             <h5>
                                 Arrastra tu imagen o haz clic
                                 <a class="font-weight-bold cursor-pointer" (click)="uploadImageLocally(i, 'images');">
@@ -175,7 +175,7 @@
                         </div>
 
                         <div class="is-dangered"
-                            *ngIf="formUpdateLocker.get('products')['controls'][i].controls.images.value.length === 0">
+                            *ngIf="formUpdateLocker.get('products')['controls'][i].controls.images.value && formUpdateLocker.get('products')['controls'][i].controls.images.value.length === 0">
                             <span class="mdi mdi-information-outline"></span>
                             Debes ingresar al menos una imagen del producto.
                         </div>
@@ -238,7 +238,7 @@
 
                         <div>
                             <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
-                                *ngIf="formUpdateLocker.get('products')['controls'][i].controls.invoice_images.value.length === 0"></span>
+                                *ngIf="formUpdateLocker.get('products')['controls'][i].controls.invoice_images.value && formUpdateLocker.get('products')['controls'][i].controls.invoice_images.value.length === 0"></span>
                             <h5>
                                 Arrastra tu imagen o haz clic
                                 <a class="font-weight-bold cursor-pointer"
