@@ -17,7 +17,6 @@ import { ModalCreateShippingComponent } from './orders-shippings/components/moda
 import { ShippingsTableComponent } from './orders-shippings/components/shippings-table/shippings-table.component';
 import { ModalUpdateShippingComponent } from './orders-shippings/components/modal-update-shipping/modal-update-shipping.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { ModalLockerEntryComponent } from 'src/app/shared/widget/transaction/modals/modal-locker-entry/modal-locker-entry.component';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSelectModule } from '@angular/material/select';
@@ -34,7 +33,7 @@ import { CustomersComponent } from './customers/customers.component';
   declarations: [
     OrdersComponent, CreateOrderComponent,
     OrdersBuysComponent, OrdersShippingsComponent, ModalCreateShippingComponent,
-    ShippingsTableComponent, ModalUpdateShippingComponent, ModalLockerEntryComponent, ShipmentTrackingComponent,
+    ShippingsTableComponent, ModalUpdateShippingComponent, ShipmentTrackingComponent,
     OrderByPipe, EditShippingStatusComponent, CustomersComponent
   ],
   imports: [
@@ -63,7 +62,6 @@ import { CustomersComponent } from './customers/customers.component';
   exports: [
     MatSelectModule,
     MatAutocompleteModule,
-    ModalLockerEntryComponent,
     ImageDragDirective
   ],
   providers: [

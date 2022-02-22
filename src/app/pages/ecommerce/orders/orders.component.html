@@ -131,7 +131,3 @@
   <app-create-order [trm]="trm" [users]="users" (close_modale)="modal.close('Close click');"
     (refreshTable)="refreshTableReceive($event);"></app-create-order>
 </ng-template>
-
-<ng-template #modal_locker_entry role="document" let-modal>
-  <app-modal-locker-entry (refreshTable)="refreshTableReceive($event);"></app-modal-locker-entry>
-</ng-template>

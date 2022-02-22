@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { FileHandle } from 'src/app/_directives/file-handle';
 import { insertOnlyLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
@@ -79,7 +78,7 @@ export class LockerUpdateComponent implements OnInit {
           throw err;
         });
     } else {
-      this.router.navigate(["/landing"]);
+      this.router.navigate(["/lockers/locker"]);
     }
   }
 
@@ -90,6 +89,7 @@ export class LockerUpdateComponent implements OnInit {
       conveyor: [{ value: res ? res.conveyor : null, disabled: true }, [Validators.required]],
       receipt_date: [{ value: { year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }, disabled: true }, [Validators.required]],
       order_service: [{ value: res ? res.order_service : null, disabled: true }],
+      max_quantity: [res.max_quantity ? res.max_quantity : 0],
       products: this._fb.array([])
     });
     this.pushIfExistProducts(res.products);
@@ -178,7 +178,12 @@ export class LockerUpdateComponent implements OnInit {
 
   addQuantity(i: number): void { // Añadir una cantidad al producto
     let actualQuantity: number = this.formUpdateLocker.get('products')['controls'][i].controls.quantity.value;
-    this.formUpdateLocker.get('products')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
+    if (actualQuantity < this.formUpdateLocker.controls.max_quantity.value) {
+      this.formUpdateLocker.get('products')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
+    } else {
+      this._notify.show('No puedes añadir más cantidades.', `La cantidad máxima que puedes añadir es ${this.formUpdateLocker.controls.max_quantity.value}`, 'info');
+      return;
+    }
   }
 
   substractQuantity(i: number): void { // Quitar una cantidad a un producto.
@@ -346,7 +351,11 @@ export class LockerUpdateComponent implements OnInit {
   }
 
   validatePushItems(): void {
-    this.addItem(this.firstProductSelected);
+    if (this.products.length < this.formUpdateLocker.controls.max_quantity.value) {
+      this.addItem(this.firstProductSelected);
+    } else {
+      this._notify.show('No puedes añadir más cantidades.', `La cantidad máxima que puedes añadir es ${this.formUpdateLocker.controls.max_quantity.value}`, 'info');
+    }
   }
 
   registerData(): void {

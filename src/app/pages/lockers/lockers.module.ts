@@ -7,7 +7,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { LockersTableComponent } from './components/lockers-table/lockers-table.component';
-import { ModalEditLockersComponent } from './modals/modal-edit-lockers/modal-edit-lockers.component';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +21,6 @@ import { LockerUpdateComponent } from './components/locker-update/locker-update.
   declarations: [
     LockerComponent,
     LockersTableComponent,
-    ModalEditLockersComponent,
     UsersProductsComponent,
     InsertInLockerComponent,
     LockerUpdateComponent
