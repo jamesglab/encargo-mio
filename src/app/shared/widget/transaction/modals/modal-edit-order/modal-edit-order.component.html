@@ -150,6 +150,10 @@
                 </carousel>
               </ng-container>
 
+              <ng-container *ngIf="!item.images">
+                <img [src]="item.image" (error)="onImageError($event);" draggable="false">
+              </ng-container>
+
               <ng-container *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
                 <span class="mdi mdi-cloud-upload" style="font-size: 70px;"></span>
                 <h5>
