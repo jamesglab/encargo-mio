@@ -171,6 +171,7 @@ export class InsertInLockerComponent implements OnInit {
     if (typeof order === 'object' && order !== null) {
       this.selectedProductOrder = order;
       this.formInsertLocker.controls.guide_number.setValue({ guide_number: order.guide_number, guide_number_alph: order.guide_number_alph });
+      this.formInsertLocker.controls.conveyor.setValue(order.conveyor);
       this.addItem(order);
     }
   }
@@ -181,8 +182,7 @@ export class InsertInLockerComponent implements OnInit {
         this.removeItem(index);
       }
       this.formInsertLocker.controls.user.setValue({ locker_id: item.locker.id, full_name: item.user.name + " " + item.user.last_name });
-      let userConveyor = this.conveyors.filter(x => x.id === item.conveyor);
-      this.formInsertLocker.controls.conveyor.setValue(userConveyor[0]);
+      this.formInsertLocker.controls.conveyor.setValue(item.conveyor);
       let data = {
         product: {
           name: item.product.name,
@@ -212,6 +212,7 @@ export class InsertInLockerComponent implements OnInit {
 
   createItem(item?: any): FormGroup { // Creamos el ítem del formulario dinámico
     let createItem = this._fb.group({
+      product: [item ? (item.product?.id ? { id: item ? item.product?.id : null } : null) : null],
       name: [item ? item.product?.name : null, [Validators.required]],
       declared_value_admin: [item ? item.product_price : null, [Validators.required]],
       permanent_shipping_value: [item ? item.product?.permanent_shipping_value : null],
