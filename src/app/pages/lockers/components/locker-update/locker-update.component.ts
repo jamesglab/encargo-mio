@@ -23,6 +23,7 @@ export class LockerUpdateComponent implements OnInit {
 
   public params: any = {};
   public selectedProductOrder: any = {};
+  public firstProductSelected: any = {};
 
   public allGuides: any = [];
   public conveyors: any = [];
@@ -101,6 +102,7 @@ export class LockerUpdateComponent implements OnInit {
 
   pushIfExistProducts(products: any) {
     for (let index = 0; index < products.length; index++) {
+      this.firstProductSelected = products[0];
       this.addItem(products[index]);
     }
   }
@@ -344,7 +346,7 @@ export class LockerUpdateComponent implements OnInit {
   }
 
   validatePushItems(): void {
-    this.addItem();
+    this.addItem(this.firstProductSelected);
   }
 
   registerData(): void {
