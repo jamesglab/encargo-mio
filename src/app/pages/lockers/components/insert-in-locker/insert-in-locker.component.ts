@@ -414,7 +414,7 @@ export class InsertInLockerComponent implements OnInit {
     for (let index = 0; index < this.formInsertLocker.get('products')['controls'].length; index++) {
       actualQuantity += this.formInsertLocker.get('products')['controls'][index].value.quantity;
     }
-    if (actualQuantity > this.selectedProductOrder.product.quantity) {
+    if (actualQuantity > this.selectedProductOrder.product?.quantity) {
       this._notify.show('', `Has superado la cantidad máxima de productos que puedes ingresar (${this.selectedProductOrder.product.quantity} máximo) y tu tienes (${actualQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
       return;
     }
