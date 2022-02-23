@@ -1,0 +1,230 @@
+<div class="d-flex justify-content-center" *ngIf="isLoading">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<form [formGroup]="lockerEditForm" *ngIf="!isLoading">
+
+    <div class="row">
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+                <label for="guide">Número Guía Origen</label>
+                <input type="text" class="form-control" id="guide" placeholder="Ingresa el Número Guía Origen..."
+                    formControlName="guide_number">
+            </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+
+                <label for="conveyor">Transportadora Origen</label>
+
+                <input class="form-control" id="conveyor" formControlName="conveyor" [matAutocomplete]="auto_conveyor"
+                    placeholder="Búsqueda de transportadora...">
+
+                <mat-autocomplete #auto_conveyor="matAutocomplete" [displayWith]="displayWith">
+                    <mat-option *ngFor="let conveyor of allConveyors" [value]="conveyor">
+                        {{conveyor.name}}
+                    </mat-option>
+                </mat-autocomplete>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+
+                <label for="lockers">Casillero*</label>
+
+                <input class="form-control" id="locker" formControlName="locker_info"
+                    (input)="autoCompleteLocker($event.target.value);" [matAutocomplete]="auto_locker"
+                    placeholder="{{ allLockers.length > 0 ? '' : 'Escribe nombre de cliente' }}">
+
+                <div class="spinner-border text-dark" role="status" *ngIf="loaderLockers">
+                    <span class="sr-only"></span>
+                </div>
+
+                <mat-autocomplete #auto_locker="matAutocomplete" [displayWith]="setDisplayLocker">
+                    <mat-option *ngFor="let locker of allLockers" [value]="locker">
+                        CA{{ locker.locker_id ? locker.locker_id : 0 }} | {{ locker.us_name }} {{ locker.us_last_name }}
+                    </mat-option>
+                </mat-autocomplete>
+
+            </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+                <label for="order">Orden</label>
+                <input type="text" class="form-control" id="order" placeholder="Selecciona la orden..."
+                    formControlName="order" readonly>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+                <label for="name">Nombre*</label>
+                <input type="text" class="form-control" id="name" placeholder="Ingresa el nombre..."
+                    formControlName="name">
+            </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+            <div class="form-group">
+                <label for="weight">Peso Libras*</label>
+                <input type="number" class="form-control" id="weight" placeholder="Ingresa el peso en libras..."
+                    formControlName="weight" (keypress)="numberOnly($event);">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+                <label for="permanent_shipping_value">Valor Envío Fijo</label>
+                <input type="number" class="form-control" id="permanent_shipping_value"
+                    placeholder="Ingresa el valor de envío..." formControlName="permanent_shipping_value"
+                    (keypress)="numberOnly($event);">
+            </div>
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+
+                <label for="date_recieved">Fecha de Recibido</label>
+
+                <div class="input-group clockpicker">
+                    <input ngbDatepicker class="form-control" id="date_recieved" placeholder="yyyy-mm-dd"
+                        #dl="ngbDatepicker" formControlName="date_recieved">
+                    <div class="input-group-append" (click)="dl.toggle()">
+                        <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+                <label for="product_description">Descripción del Producto</label>
+                <textarea class="form-control" id="product_description" rows="3"
+                    placeholder="Ingresa la descripción del producto..."
+                    formControlName="product_description"></textarea>
+            </div>
+
+
+        </div>
+
+        <div class="col-12 col-sm-6">
+
+            <div class="form-group">
+                <label for="declared_value_admin">Valor declarado (Administrador)*</label>
+                <input type="number" class="form-control" id="declared_value_admin"
+                    placeholder="Ingresa el valor declarado..." formControlName="declared_value_admin"
+                    (keypress)="numberOnly($event);">
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="row mt-3">
+
+        <div class="col">
+
+            <div class="form-group col-md-6 margin-left-10 ">
+
+                <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" for="force_commercial_shipping" type="checkbox"
+                        id="flexSwitchCheckDefault" formControlName="force_commercial_shipping">
+                    <label class="form-check-label" for="flexSwitchCheckDefault">¿Forzar Envio Comercial?</label>
+                    <p>Los productos que se envíen en compañía de este articulo, aplicaran el cálculo bajo la fórmula de
+                        envío comercial.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-3">
+
+        <div class="align-items-center dropzone-in-create" appImageDrag (files)="filesDropped($event);">
+
+            <div class="container-img-dropzone d-flex">
+
+                <ng-container *ngFor="let image of form.images?.value; let i = index;">
+
+                    <div class="content-img-dropzone">
+
+                        <div class="remove-item-content">
+                            <button type="button" class="close remove-item" aria-label="Close"
+                                (click)="onRemoveImage(i);">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <img src="{{image.Location}}" draggable="false" (error)="onImageError($event);" />
+
+                    </div>
+
+                </ng-container>
+
+            </div>
+
+            <div>
+                <h5>
+                    Arrastra tu imagen o haz clic
+                    <a class="font-weight-bold cursor-pointer" (click)="uploadImage();">
+                        aquí.
+                    </a>
+                </h5>
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="container-buttons">
+        <button type="submit" class="btn" (click)="cancelModal();" [disabled]="isLoadingQuery">Cancelar</button>
+        <button type="submit" class="btn btn-primary" (click)="onSubmit();" [disabled]="isLoadingQuery">Guardar</button>
+    </div>
+
+</form>

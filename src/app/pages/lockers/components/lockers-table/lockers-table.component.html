@@ -1,10 +1,13 @@
 <div class="table-responsive mb-0" style="min-height: 500px;">
+
   <div class="alert alert-primary" role="alert" *ngIf="lockers && lockers.length === 0">
     No hay datos disponibles...
   </div>
 
   <table class="table table-centered table-nowrap">
+
     <thead class="table-light">
+
       <tr>
 
         <th>
@@ -115,8 +118,8 @@
         <td>{{ data.weight ? data.weight + " lb" : 0 }}</td>
 
         <td>
-          <button class="btn btn-primary btn-sm btn-rounded" (click)="viewDetail(data)">
-            Editar
+          <button class="btn btn-primary btn-sm btn-rounded" (click)="viewDetail(data, modalLocker)">
+            Ver Detalle
           </button>
           <button class="btn btn-danger btn-sm btn-rounded" style="margin-left: 10px;" (click)="deleteProduct(data);">
             Borrar
@@ -130,3 +133,16 @@
 <mat-paginator [length]="counts" [showFirstLastButtons]="true" [pageSizeOptions]="[10, 15, 20]"
   (page)="getAllLockers($event);">
 </mat-paginator>
+
+<ng-template #modalLocker role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Producto #{{ lockerSelected.product }}</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <app-modal-edit-lockers [lockerSelected]="lockerSelected" (closeModalEditLockers)="closeModalEditLockers($event)"
+      (cancelModalStatus)="cancelModalReceive($event)">
+    </app-modal-edit-lockers>
+  </div>
+</ng-template>

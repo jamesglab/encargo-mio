@@ -123,8 +123,13 @@ export class LockersTableComponent implements OnInit {
     this.filteredUsers = this.filterUserLocker.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
-  viewDetail(locker: any) {
-    this._router.navigate(["/lockers/update-locker"], { queryParams: { income: locker.income } });
+  viewDetail(locker: any, modal?: any) {
+    this.lockerSelected = locker;
+    if (this.lockerSelected.income) {
+      this._router.navigate(["/lockers/update-locker"], { queryParams: { income: locker.income } });
+    } else {
+      this.modalService.open(modal, { size: 'xl', centered: true });
+    }
   }
 
   closeModalEditLockers(event: any) {

@@ -40,7 +40,7 @@ export class LockersService {
 
   getLockerDetail(id: string): Observable<any> {
     return this.http.get<any>(
-      `${environment.microservices.management}locker/detail`,
+      `${environment.microservices.management}locker/detail-product`,
       { headers: header, params: { product: id } }
     ).pipe(
       map((res: any) => {
