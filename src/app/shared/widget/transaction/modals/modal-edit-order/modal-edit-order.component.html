@@ -142,14 +142,29 @@
 
             <div class="container-img-dropzone">
 
-              <a [href]="item.link" target="_blank">
-                <img src="{{item.image ? item.image : ''}}" (error)="onImageError($event);" draggable="false" />
-              </a>
+              <ng-container *ngIf="item.images && item.images.length > 0">
+                <carousel [width]="246">
+                  <div class="carousel-cell" *ngFor="let image of item.images">
+                    <a [href]="item.link" target="_blank">
+                      <img [src]="image.Location" (error)="onImageError($event);" draggable="false">
+                    </a>
+                  </div>
+                </carousel>
+              </ng-container>
 
-              <h5 *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
-                Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
-                  (click)="uploadImage(i);">aquí.</a>
-              </h5>
+              <ng-container *ngIf="item.images && item.images.length === 0">
+                <a [href]="item.link" target="_blank">
+                  <img [src]="item.image" title="Imagen de la tienda" (error)="onImageError($event);" draggable="false">
+                </a>
+              </ng-container>
+
+              <ng-container *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
+                <span class="mdi mdi-cloud-upload" style="font-size: 70px;"></span>
+                <h5>
+                  Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
+                    (click)="uploadImage(i);">aquí.</a>
+                </h5>
+              </ng-container>
 
               <ng-container *ngIf="isLoadingUpload">
                 <div class="spinner-border" role="status">

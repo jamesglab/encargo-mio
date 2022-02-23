@@ -59,15 +59,21 @@
 
                     <div style="display: flex; align-items: center; flex-wrap: wrap;">
 
-                        <a [href]="product.link" target="_blank">
-                            <img [src]="product.image" alt="" draggable="false"
-                                style="height: 150px; width: 150px; object-fit: contain;">
-                        </a>
+                        <!-- <img *ngFor="let images of product.images" [src]="images.Location" alt="" draggable="false"
+                            style="height: 150px; width: 150px; object-fit: contain;"> -->
+
+                        <carousel [width]="200" [arrows]="false">
+                            <div class="carousel-cell" *ngFor="let image of product.images">
+                                <img [src]="image.Location" draggable="false">
+                            </div>
+                        </carousel>
+
 
                         <div style="margin-left: 10px;">
 
                             <div title="{{product.name ? product.name : ''}}">
-                                {{ product.name ? ((product.name.length > 80) ? (product.name | slice:0:80 ) + '...' : product.name) : '' }}
+                                {{ product.name ? ((product.name.length > 80) ? (product.name | slice:0:80 ) + '...' :
+                                product.name) : '' }}
                             </div>
 
                             <div>

@@ -61,8 +61,18 @@
 
             <div class="card cont-card" *ngFor="let item of products">
 
-              <img class="card-img-top" [src]="item?.images[0]?.Location" (error)="onImageError($event)"
-                alt="Card image cap">
+              <ng-container *ngIf="item.images && item.images.length === 0">
+                <img class="card-img-top" src="https://i.imgur.com/riKFnErh.jpg" (error)="onImageError($event)"
+                  alt="Card image cap">
+              </ng-container>
+
+              <ng-container *ngIf="item.images && item.images.length > 0">
+                <carousel [cellsToShow]="1" style="z-index: 1 !important;">
+                  <div class="carousel-cell" *ngFor="let image of item.images">
+                    <img [src]="image.Location" (error)="onImageError($event)">
+                  </div>
+                </carousel>
+              </ng-container>
 
               <div class="card-body">
 

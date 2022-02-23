@@ -100,12 +100,13 @@ export const updateShipping = (data: any): any => {
 
 };
 
-export const insertOnlyLocker = (form: any): any => {
+export const insertOnlyLocker = (form: any, order_service: string, income?: any): any => {
 
     let data = {
         "locker": form.user.locker_id,
-        "guide_number": form.guide_number,
-        "order_service": null,
+        "guide_number": form.guide_number.guide_number_alph ? form.guide_number.guide_number_alph : form.guide_number,
+        "order_service": order_service ? order_service : (form.order_service?.id ? form.order_service.id : form.order_service),
+        "id": income ? parseInt(income) : null,
         "conveyor": form.conveyor.id,
         "products": form.products,
         "receipt_date": new Date(form.receipt_date.year, form.receipt_date.month - 1, form.receipt_date.day)

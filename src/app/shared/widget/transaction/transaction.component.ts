@@ -73,7 +73,7 @@ export class TransactionComponent implements OnInit {
   ngOnChanges() { }
 
   filterOrders() {
-    const filterValues = {};
+    const filterValues: any = {};
     if (this.filterId.value && this.filterId.value != '') {
       filterValues['id'] = this.filterId.value
     } if (this.filterDate?.value && this.filterDate.value.year) {
@@ -110,7 +110,7 @@ export class TransactionComponent implements OnInit {
 
   openModal(order: any, modal: any, sizeModale: string) {
     this.modalService.open(modal, { size: sizeModale, centered: true });
-    this.orderSelected = order
+    this.orderSelected = order;
     this.orderSelected.trm = 0;
   }
 
@@ -132,7 +132,7 @@ export class TransactionComponent implements OnInit {
     if (this.filterDate.value.year) {
       return moment(new Date(this.filterDate.value.year, this.filterDate.value.month - 1, this.filterDate.value.day)).format('YYYY/MM/DD')
     } else {
-      return ''
+      return '';
     }
   }
 
@@ -177,7 +177,7 @@ export class TransactionComponent implements OnInit {
   }
 
   goToInsertLocker(data: any): void {
-    this.route.navigate(["/lockers/insert-in-locker"], { queryParams: { id: data.id } });
+    this.route.navigate(["/lockers/insert-in-locker"], { queryParams: { order_service: data.id } });
   }
 
   private _normalizeValue(value: any, array: any): string {

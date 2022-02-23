@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ModalEditLockersComponent } from './modal-edit-lockers.component';
+import { LockerUpdateComponent } from './locker-update.component';
 
-describe('ModalEditLockersComponent', () => {
-  let component: ModalEditLockersComponent;
-  let fixture: ComponentFixture<ModalEditLockersComponent>;
+describe('LockerUpdateComponent', () => {
+  let component: LockerUpdateComponent;
+  let fixture: ComponentFixture<LockerUpdateComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ModalEditLockersComponent ]
+      declarations: [ LockerUpdateComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ModalEditLockersComponent);
+    fixture = TestBed.createComponent(LockerUpdateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

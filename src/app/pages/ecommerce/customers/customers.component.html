@@ -297,7 +297,7 @@
                         <div class="row mt-2">
 
                             <div class="col-6 h5 d-flex">
-                                
+
                                 Valor Pagado:
 
                                 <div>
@@ -327,20 +327,27 @@
 
                     <div class="row">
 
-                        <div class="col-4"
-                            *ngIf="item.image && !item.images">
-                            <img [src]="item.image" alt class="avatar" style="object-fit: contain; "
-                                draggable="false" />
-                        </div>
+                        <div class="col-3" *ngIf="item.image && !item.images">
 
-                        <ng-container *ngIf="item.images">
-                            <img *ngFor="let image of item.images" [src]="image.Location"
-                                style="height: 200px; object-fit: contain;" alt="" draggable="false">
-                        </ng-container>
+                            <ng-container *ngIf="item.image && !item.images">
+                                <img [src]="item.image" alt class="avatar" style="object-fit: contain; "
+                                    draggable="false" />
+                            </ng-container>
+
+                            <ng-container *ngIf="item.images">
+                                <carousel>
+                                    <div class="carousel-cell">
+                                        <img *ngFor="let image of item.images" [src]="image.Location"
+                                            style="height: 200px; object-fit: contain;" alt="" draggable="false">
+                                    </div>
+                                </carousel>
+                            </ng-container>
+
+                        </div>
 
                         <div class="col">
 
-                            <div>
+                            <div style="width: 500px;">
                                 <a [href]="item.link" target="blank">
                                     <h5 class="text-truncate h5">{{ item.name }}</h5>
                                 </a>
@@ -388,7 +395,7 @@
                     Esta orden no tiene comprobante de pagos asociados
                 </div>
 
-                <carousel [cellWidth]="700" [height]="700" [arrowsTheme]="'dark'" *ngIf="referenceImage">
+                <carousel [cellWidth]="400" [height]="400" [arrowsTheme]="'dark'" *ngIf="referenceImage">
 
                     <div class="carousel-cell" *ngFor="let image of referenceImage">
                         <a>

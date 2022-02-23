@@ -172,6 +172,14 @@
 
               <div class="container-img-dropzone">
 
+                <ng-container
+                  *ngIf="createProductForm.get('products')['controls'][i].controls.images.value.length === 0">
+                  <div class="container-image">
+                    <img draggable="false" [src]="createProductForm.get('products')['controls'][i].controls.image.value"
+                      (error)="onImageError($event);" />
+                  </div>
+                </ng-container>
+
                 <div *ngIf="createProductForm.get('products')['controls'][i].controls.images.value.length === 0">
                   <span class="mdi mdi-cloud-upload" style="font-size: 80px;"></span>
                 </div>

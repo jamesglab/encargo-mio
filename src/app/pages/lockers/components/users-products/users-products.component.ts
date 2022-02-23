@@ -95,8 +95,8 @@ export class UsersProductsComponent implements OnInit {
     }
   }
 
-  onImageError(event) {
-    event.target.src = "assets/images/default.jpg";
+  onImageError(event: any) {
+    event.target.src = "https://i.imgur.com/riKFnErh.jpg";
   }
 
 }
