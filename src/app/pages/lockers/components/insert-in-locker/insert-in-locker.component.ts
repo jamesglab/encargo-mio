@@ -224,7 +224,7 @@ export class InsertInLockerComponent implements OnInit {
       force_commercial_shipping: [item ? item.product?.force_commercial_shipping : false],
       order_service: [item ? item.order_service?.id : null],
       images: [item.product?.images ? item.product.images : []],
-      invoice_images: [item ? item.product?.invoice : []],
+      invoice_images: [item.product?.invoice ? item.product?.invoice : []],
       locker_observations: [null],
       client_observations: [null],
       novelty_article: [null],
@@ -395,7 +395,7 @@ export class InsertInLockerComponent implements OnInit {
     for (let index = 0; index < this.formInsertLocker.get('products')['controls'].length; index++) {
       actualQuantity += this.formInsertLocker.get('products')['controls'][index].value.quantity;
     }
-    if (actualQuantity > this.selectedProductOrder.product.quantity) {
+    if (actualQuantity > this.selectedProductOrder.product?.quantity) {
       this._notify.show('', `Has superado la cantidad máxima de productos que puedes ingresar (${this.selectedProductOrder.product.quantity} máximo) y tu tienes (${actualQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
       return;
     } else {
