@@ -178,12 +178,7 @@ export class LockerUpdateComponent implements OnInit {
 
   addQuantity(i: number): void { // Añadir una cantidad al producto
     let actualQuantity: number = this.formUpdateLocker.get('products')['controls'][i].controls.quantity.value;
-    if (actualQuantity < this.formUpdateLocker.controls.max_quantity.value) {
-      this.formUpdateLocker.get('products')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
-    } else {
-      this._notify.show('No puedes añadir más cantidades.', `La cantidad máxima que puedes añadir es ${this.formUpdateLocker.controls.max_quantity.value}`, 'info');
-      return;
-    }
+    this.formUpdateLocker.get('products')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
   }
 
   substractQuantity(i: number): void { // Quitar una cantidad a un producto.
@@ -351,10 +346,15 @@ export class LockerUpdateComponent implements OnInit {
   }
 
   validatePushItems(): void {
-    if (this.products.length < this.formUpdateLocker.controls.max_quantity.value) {
-      this.addItem(this.firstProductSelected);
+    let actualQuantity: number = 0;
+    for (let index = 0; index < this.formUpdateLocker.get('products')['controls'].length; index++) {
+      actualQuantity += this.formUpdateLocker.get('products')['controls'][index].value.quantity;
+    }
+    if (actualQuantity > this.formUpdateLocker.controls.max_quantity.value) {
+      this._notify.show('', `Has superado la cantidad máxima de productos que puedes ingresar (${this.formUpdateLocker.controls.max_quantity.value} máximo) y tu tienes (${actualQuantity} cantidades), revisa tus productos.`, 'info');
+      return;
     } else {
-      this._notify.show('No puedes añadir más cantidades.', `La cantidad máxima que puedes añadir es ${this.formUpdateLocker.controls.max_quantity.value}`, 'info');
+      this.addItem(this.firstProductSelected);
     }
   }
 
@@ -362,6 +362,16 @@ export class LockerUpdateComponent implements OnInit {
 
     if (this.formUpdateLocker.invalid) {
       this._notify.show('', 'Asegurate que hayas llenado todos los campos, antes de completar el ingreso.', 'info');
+      return;
+    }
+
+    let actualQuantity: number = 0;
+
+    for (let index = 0; index < this.formUpdateLocker.get('products')['controls'].length; index++) {
+      actualQuantity += this.formUpdateLocker.get('products')['controls'][index].value.quantity;
+    }
+    if (actualQuantity > this.formUpdateLocker.controls.max_quantity.value) {
+      this._notify.show('', `Has superado la cantidad máxima de productos que puedes ingresar (${this.formUpdateLocker.controls.max_quantity.value} máximo) y tu tienes (${actualQuantity} cantidades), revisa tus productos.`, 'info');
       return;
     }
 
@@ -387,7 +397,6 @@ export class LockerUpdateComponent implements OnInit {
         this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
         throw err;
       });
-
 
   }
 
