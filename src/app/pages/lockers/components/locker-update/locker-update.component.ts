@@ -103,13 +103,13 @@ export class LockerUpdateComponent implements OnInit {
   pushIfExistProducts(products: any) {
     for (let index = 0; index < products.length; index++) {
       this.firstProductSelected = products[0];
-      this.addItem(products[index]);
+      this.addItem(products[index], true);
     }
   }
 
-  addItem(product?: any): void { // Método para pushear un nuevo ítem al arreglo de productos.
+  addItem(product?: any, status?: boolean): void { // Método para pushear un nuevo ítem al arreglo de productos.
     this.products = this.formUpdateLocker.get('products') as FormArray; // Igualamos el arreglo de productos al array products del FormArray
-    this.products.push(this.createItem(product)); // Pusheamos un nuevo ítem al arreglo de productos.
+    this.products.push(this.createItem(product, status)); // Pusheamos un nuevo ítem al arreglo de productos.
   }
 
   getAllData() { // Creamos un método que reuna dos llamados al backend: traer los conveyors, los users y creamos una promise para un mejor funcionamiento.
@@ -145,7 +145,10 @@ export class LockerUpdateComponent implements OnInit {
 
   }
 
-  createItem(item?: any): FormGroup { // Creamos el ítem del formulario dinámico
+  createItem(item?: any, status?: boolean): FormGroup { // Creamos el ítem del formulario dinámico
+    if (!status) {
+      item.id = null;
+    }
     let createItem = this._fb.group({
       id: [item ? item.id : null],
       product: [item ? item.product : null],

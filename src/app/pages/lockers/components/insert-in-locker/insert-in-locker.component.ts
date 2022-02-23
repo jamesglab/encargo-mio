@@ -224,7 +224,7 @@ export class InsertInLockerComponent implements OnInit {
       force_commercial_shipping: [item ? item.product?.force_commercial_shipping : false],
       order_service: [item ? item.order_service?.id : null],
       images: [item.product?.images ? item.product.images : []],
-      invoice_images: [[]],
+      invoice_images: [item ? item.product?.invoice : []],
       locker_observations: [null],
       client_observations: [null],
       novelty_article: [null],
@@ -238,11 +238,6 @@ export class InsertInLockerComponent implements OnInit {
   addItem(product?: any): void { // Método para pushear un nuevo ítem al arreglo de productos.
     this.products = this.formInsertLocker.get('products') as FormArray; // Igualamos el arreglo de productos al array products del FormArray
     this.products.push(this.createItem(product)); // Pusheamos un nuevo ítem al arreglo de productos.
-    for (let index = 0; index < this.products.controls.length; index++) {
-      if (index >= 1) {
-        this.formInsertLocker.get('products')['controls'][index].controls.images.setValue([]);
-      }
-    }
   }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
@@ -396,13 +391,31 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   validatePushItems(): void { // Método para validar si el formulario es válido y añadir un nuevo ítem
-    this.addItem(this.selectedProductOrder); // Llamar el método para añadir un nuevo item
+    let actualQuantity: number = 0;
+    for (let index = 0; index < this.formInsertLocker.get('products')['controls'].length; index++) {
+      actualQuantity += this.formInsertLocker.get('products')['controls'][index].value.quantity;
+    }
+    if (actualQuantity > this.selectedProductOrder.product.quantity) {
+      this._notify.show('', `Has superado la cantidad máxima de productos que puedes ingresar (${this.selectedProductOrder.product.quantity} máximo) y tu tienes (${actualQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
+      return;
+    } else {
+      this.addItem(this.selectedProductOrder);// Llamar el método para añadir un nuevo item
+    }
   }
 
   registerData(): void { // En este métodoentramos cuando ya el usuario hace clic para completar el ingreso.
 
     if (this.formInsertLocker.invalid) {
       this._notify.show('', 'Asegurate que hayas llenado todos los campos, antes de completar el ingreso.', 'info');
+      return;
+    }
+
+    let actualQuantity: number = 0;
+    for (let index = 0; index < this.formInsertLocker.get('products')['controls'].length; index++) {
+      actualQuantity += this.formInsertLocker.get('products')['controls'][index].value.quantity;
+    }
+    if (actualQuantity > this.selectedProductOrder.product.quantity) {
+      this._notify.show('', `Has superado la cantidad máxima de productos que puedes ingresar (${this.selectedProductOrder.product.quantity} máximo) y tu tienes (${actualQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
       return;
     }
 

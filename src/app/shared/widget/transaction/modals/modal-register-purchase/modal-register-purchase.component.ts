@@ -196,6 +196,8 @@ export class ModalRegisterPurchaseComponent implements OnInit {
     }
   }
 
+  onImageError(event: any) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
+
   putValueProduct(product: any): void {
     let total_value: number = 0;
     total_value += product.product_value + product.shipping_origin_value_product + product.tax;
@@ -215,7 +217,7 @@ export class ModalRegisterPurchaseComponent implements OnInit {
         purchase_date,
         locker_entry_date,
       }).subscribe((res: any) => {
-        this._notify.show(`Orden de Compra Creada #${res.order_purchase.id}`, res.message, "success");
+        this._notify.show(`Orden de Compra creada #${res.order_purchase.id}`, res.message, "success");
         this.refreshTable.emit(true);
         this.modalService.dismissAll();
       }, err => {

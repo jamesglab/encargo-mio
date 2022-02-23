@@ -63,8 +63,8 @@
                             style="height: 150px; width: 150px; object-fit: contain;"> -->
 
                         <carousel [width]="200" [arrows]="false">
-                            <div class="carousel-cell">
-                                <img *ngFor="let image of product.images" [src]="image.Location" draggable="false">
+                            <div class="carousel-cell" *ngFor="let image of product.images">
+                                <img [src]="image.Location" draggable="false">
                             </div>
                         </carousel>
 

@@ -127,31 +127,6 @@
 
             </div>
 
-            <!-- <div class="row">
-
-                <div class="col-sm">
-                    <div class="form-group">
-                        <label for="reason">Plantilla de fraccion</label>
-                        <input type="text" class="form-control" id="reason" placeholder="name@example.com"
-                            formControlName="reason" [ngClass]="{ 'is-invalid' : form.reason.errors }">
-                        <div class="invalid-feedback" *ngIf="form.reason.errors">
-                            <ng-container *ngIf="form.reason.errors.required">
-                                Debes seleccionar la transportadora.
-                            </ng-container>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm">
-                    <div class="form-group">
-                        <label for="exampleFormControlInput1">Motivo de Fracción</label>
-                        <input type="email" class="form-control" id="exampleFormControlInput1"
-                            placeholder="name@example.com" formControlName="">
-                    </div>
-                </div>
-
-            </div> -->
-
             <br>
 
             <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
@@ -159,6 +134,10 @@
                 Iniciar Ingreso
             </button>
 
+        </div>
+
+        <div class="alert alert-primary" role="alert" *ngIf="selectedProductOrder.product">
+            Recuerda que puedes ingresar un máximo de <strong>{{ selectedProductOrder.product.quantity }} cantidades.</strong>
         </div>
 
         <div class="container-insert" formArrayName="products">

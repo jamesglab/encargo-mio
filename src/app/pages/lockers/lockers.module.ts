@@ -16,6 +16,7 @@ import { EcommerceModule } from '../ecommerce/ecommerce.module';
 import { UsersProductsComponent } from './components/users-products/users-products.component';
 import { InsertInLockerComponent } from './components/insert-in-locker/insert-in-locker.component';
 import { LockerUpdateComponent } from './components/locker-update/locker-update.component';
+import { IvyCarouselModule } from 'angular-responsive-carousel';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { LockerUpdateComponent } from './components/locker-update/locker-update.
     MatInputModule,
     NgbDatepickerModule,
     EcommerceModule,
-    NgxImageZoomModule
+    NgxImageZoomModule,
+    IvyCarouselModule
   ]
 })
 

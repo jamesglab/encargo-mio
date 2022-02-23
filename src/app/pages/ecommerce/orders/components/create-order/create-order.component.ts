@@ -196,7 +196,7 @@ export class CreateOrderComponent implements OnInit {
     this.createProductForm.controls.quantity.setValue(1);
   }
 
-  onImageError(event) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
+  onImageError(event: any) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 
   isRequired(item: string) { return isRequired(item); }// Método para saber que campos se pueden activar/desactivar los controls de PRODUCTS array
 

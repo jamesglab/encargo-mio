@@ -161,8 +161,14 @@
           <td style="position: relative;">
             <div class="image-product">
               <a [href]="data.product_link" target="_blank">
-                <img [src]="data.product_image || 'https://i.imgur.com/riKFnErh.jpg'"
-                  (error)="$event.src = 'https://i.imgur.com/riKFnErh.jpg'" draggable="false">
+                <ng-container *ngIf="data.product_images && data.product_images.length > 0">
+                  <img [src]="data.product_images[0]?.Location || 'https://i.imgur.com/riKFnErh.jpg'"
+                    (error)="$event.src = 'https://i.imgur.com/riKFnErh.jpg'" draggable="false">
+                </ng-container>
+                <ng-container *ngIf="data.product_images && data.product_images.length === 0 || !data.product_images">
+                  <img [src]="data.product_image" (error)="$event.src = 'https://i.imgur.com/riKFnErh.jpg'"
+                    draggable="false">
+                </ng-container>
               </a>
             </div>
             <a [href]="data.product_link" target="_blank" *ngIf="data.sold_out">
