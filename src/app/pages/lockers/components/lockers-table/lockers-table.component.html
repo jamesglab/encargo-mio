@@ -13,14 +13,16 @@
         <th>
           Número de Guía
           <div class="mt-2">
-            <input type="" [formControl]="filterGuide" class="form-control" (keyup.enter)="getAllLockers()" />
+            <input type="" [formControl]="filterGuide" class="form-control" (keyup.enter)="getAllLockers()"
+              (keydown)="keyDownFunction($event);" />
           </div>
         </th>
 
         <th>
           Cotización
           <div class="mt-2">
-            <input type="" [formControl]="filterOrderService" class="form-control" (keyup.enter)="getAllLockers()" />
+            <input type="" [formControl]="filterOrderService" class="form-control" (keyup.enter)="getAllLockers()"
+              (keydown)="keyDownFunction($event);" />
           </div>
         </th>
 
@@ -39,14 +41,16 @@
         <th class="align-middle">
           Id Producto
           <div class="mt-2">
-            <input type="text" class="form-control" [formControl]="filterIdProduct" (keyup.enter)="getAllLockers()" />
+            <input type="text" class="form-control" [formControl]="filterIdProduct" (keyup.enter)="getAllLockers()"
+              (keydown)="keyDownFunction($event);" />
           </div>
         </th>
 
         <th class="align-middle">
           Nombre de Producto
           <div class="mt-2">
-            <input type="text" class="form-control" [formControl]="filterProduct" (keyup.enter)="getAllLockers()" />
+            <input type="text" class="form-control" [formControl]="filterProduct" (keyup.enter)="getAllLockers()"
+              (keydown)="keyDownFunction($event);" />
           </div>
         </th>
 
