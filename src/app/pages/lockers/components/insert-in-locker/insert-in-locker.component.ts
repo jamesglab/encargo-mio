@@ -169,6 +169,9 @@ export class InsertInLockerComponent implements OnInit {
 
   clickOrderItem(order: any) {
     if (typeof order === 'object' && order !== null) {
+      for (let index = 0; index < this.formInsertLocker.get('products')['controls'].length; index++) {
+        this.removeItem(index);
+      }
       this.selectedProductOrder = order;
       this.formInsertLocker.controls.guide_number.setValue({ guide_number: order.guide_number, guide_number_alph: order.guide_number_alph });
       this.formInsertLocker.controls.conveyor.setValue(order.conveyor);
@@ -178,7 +181,7 @@ export class InsertInLockerComponent implements OnInit {
 
   clickGuideItem(item: any): void {
     if (typeof item === 'object') {
-      for (let index = 0; index < this.formInsertLocker.controls.products.value.length; index++) {
+      for (let index = 0; index < this.formInsertLocker.get('products')['controls'].length; index++) {
         this.removeItem(index);
       }
       this.formInsertLocker.controls.user.setValue({ locker_id: item.locker.id, full_name: item.user.name + " " + item.user.last_name });
