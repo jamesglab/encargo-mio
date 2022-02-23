@@ -219,7 +219,7 @@ export class InsertInLockerComponent implements OnInit {
       name: [item ? item.product?.name : null, [Validators.required]],
       declared_value_admin: [item ? item.product_price : null, [Validators.required]],
       permanent_shipping_value: [item ? item.product?.permanent_shipping_value : null],
-      quantity: [item ? item.product?.quantity : 1],
+      quantity: [item.product?.quantity ? item.product?.quantity : 1],
       weight: [item ? item.weight : null, [Validators.required]],
       force_commercial_shipping: [item ? item.product?.force_commercial_shipping : false],
       order_service: [item ? item.order_service?.id : null],
@@ -420,8 +420,8 @@ export class InsertInLockerComponent implements OnInit {
     }
 
     this.isLoading = true;
-
     let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.params.order_service);
+
     this._lockers.insertInLockerWithout(payload)
       .subscribe(() => {
         this.isLoading = false;

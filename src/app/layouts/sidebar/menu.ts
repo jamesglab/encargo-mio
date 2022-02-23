@@ -99,13 +99,13 @@ export const MENU: MenuItem[] = [
     },
     {
         id: 4,
-        label: 'Casillero',
+        label: 'Casilleros',
         icon: 'bxs-box',
         showItem: false,
         subItems: [
             {
                 id: 41,
-                label: 'Casilleros',
+                label: 'Productos en Casillero',
                 parentId: 4,
                 link: '/lockers/locker',
                 code: 'CAS000',
