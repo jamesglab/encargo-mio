@@ -6,6 +6,7 @@ import { NotifyService } from "src/app/_services/notify.service";
 import { FileHandle } from "src/app/_directives/file-handle";
 import { ImageCompressService } from "src/app/_services/image-compress.service";
 import Swal from "sweetalert2";
+import { LockersService } from "src/app/pages/lockers/_services/lockers.service";
 
 @Component({
   selector: "app-modal-edit-order",
@@ -38,7 +39,8 @@ export class ModalEditOrderComponent implements OnInit {
     public _notify: NotifyService,
     public modalService: NgbModal,
     private _compress: ImageCompressService,
-    public _cdr: ChangeDetectorRef
+    public _cdr: ChangeDetectorRef,
+    private _lockers: LockersService
   ) { }
 
   ngOnInit(): void { this.checkIfSafari(); }
@@ -72,6 +74,12 @@ export class ModalEditOrderComponent implements OnInit {
             product.name = (product.name ? product.name.trim() : null);
             product.free_shipping = (product.free_shipping ? product.free_shipping : false);
             product.tax_manually = false; // Asignamos el valor del tax manual a automático.
+            if (!product.images) {
+              product.images = [];
+            }
+            if (!product.invoice) {
+              product.invoice = [];
+            }
             this.calculateTotalPrices(index);
             this.calculateTotalArticles();
             this.calculateDiscount(index);

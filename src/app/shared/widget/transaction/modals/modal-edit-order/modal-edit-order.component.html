@@ -143,15 +143,19 @@
             <div class="container-img-dropzone">
 
               <ng-container *ngIf="item.images && item.images.length > 0">
-                <carousel [arrows]="false" [cellsToShow]="1" [width]="200">
+                <carousel [width]="246">
                   <div class="carousel-cell" *ngFor="let image of item.images">
-                    <img [src]="image.Location" (error)="onImageError($event);" draggable="false">
+                    <a [href]="item.link" target="_blank">
+                      <img [src]="image.Location" (error)="onImageError($event);" draggable="false">
+                    </a>
                   </div>
                 </carousel>
               </ng-container>
 
-              <ng-container *ngIf="!item.images">
-                <img [src]="item.image" (error)="onImageError($event);" draggable="false">
+              <ng-container *ngIf="item.images && item.images.length === 0">
+                <a [href]="item.link" target="_blank">
+                  <img [src]="item.image" title="Imagen de la tienda" (error)="onImageError($event);" draggable="false">
+                </a>
               </ng-container>
 
               <ng-container *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
