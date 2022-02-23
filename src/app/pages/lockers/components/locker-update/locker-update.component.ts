@@ -351,7 +351,7 @@ export class LockerUpdateComponent implements OnInit {
       actualQuantity += this.formUpdateLocker.get('products')['controls'][index].value.quantity;
     }
     if (actualQuantity > this.formUpdateLocker.controls.max_quantity.value) {
-      this._notify.show('', `Has superado la cantidad máxima de productos que puedes ingresar (${this.formUpdateLocker.controls.max_quantity.value} máximo) y tu tienes (${actualQuantity} cantidades), revisa tus productos.`, 'info');
+      this._notify.show('', `Has superado la cantidad máxima de productos que puedes ingresar (${this.formUpdateLocker.controls.max_quantity.value} máximo) y tu tienes (${actualQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
       return;
     } else {
       this.addItem(this.firstProductSelected);
