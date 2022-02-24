@@ -91,10 +91,10 @@ export class InsertInLockerComponent implements OnInit {
 
   buildForm(data?: any): void { // Creamos el formulario general.
     this.formInsertLocker = this._fb.group({
-      guide_number: [data ? data.guide : null, [Validators.required]],
+      guide_number: [data ? data.guide : null],
       user: [data ? data.user.locker : null, [Validators.required]],
       conveyor: [data ? data.conveyor : null, [Validators.required]],
-      receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }, [Validators.required]],
+      receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }],
       order_service: [{ value: null, disabled: true }],
       products: this._fb.array([])
     });
@@ -173,7 +173,7 @@ export class InsertInLockerComponent implements OnInit {
         this.removeItem(index);
       }
       this.selectedProductOrder = order;
-      this.formInsertLocker.controls.guide_number.setValue({ guide_number: order.guide_number, guide_number_alph: order.guide_number_alph });
+      this.formInsertLocker.controls.guide_number.setValue(order.guide_number_alph);
       this.formInsertLocker.controls.conveyor.setValue(order.conveyor);
       this.addItem(order);
     }
@@ -185,12 +185,15 @@ export class InsertInLockerComponent implements OnInit {
         this.removeItem(index);
       }
       this.formInsertLocker.controls.user.setValue({ locker_id: item.locker.id, full_name: item.user.name + " " + item.user.last_name });
+      this.formInsertLocker.controls.guide_number.setValue(item.guide_number);
       this.formInsertLocker.controls.conveyor.setValue(item.conveyor);
       let data = {
         product: {
           name: item.product.name,
           permanent_shipping_value: item.product.permanent_shipping_value,
-          quantity: item.product.quantity, image: item.product.image, force_commercial_shipping: (item.product.force_commercial_shipping ? item.product.force_commercial_shipping : false),
+          quantity: item.product.quantity,
+          image: item.product.image,
+          force_commercial_shipping: (item.product.force_commercial_shipping ? item.product.force_commercial_shipping : false),
           images: item.product.images
         },
         product_price: item.product_price,
@@ -383,7 +386,7 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   displayGuides(guide: any): void {
-    return guide ? guide.guide_number_alph : "";
+    return guide ? (guide.guide_number_alph ? guide.guide_number_alph : guide) : "";
   }
 
   displayOrder(order: any) {
@@ -421,7 +424,6 @@ export class InsertInLockerComponent implements OnInit {
 
     this.isLoading = true;
     let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.params.order_service);
-
     this._lockers.insertInLockerWithout(payload)
       .subscribe(() => {
         this.isLoading = false;

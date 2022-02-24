@@ -82,7 +82,7 @@ export class LockerUpdateComponent implements OnInit {
 
   buildForm(res: any): void {
     this.formUpdateLocker = this._fb.group({
-      guide_number: [{ value: res ? res.guide_number_alph : res.guide_number, disabled: true }, [Validators.required]],
+      guide_number: [{ value: res ? res.guide_number_alph : res.guide_number, disabled: true }],
       user: [{ value: res ? res.locker : null, disabled: true }, [Validators.required]],
       conveyor: [{ value: res ? res.conveyor : null, disabled: true }, [Validators.required]],
       receipt_date: [{ value: { year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }, disabled: true }, [Validators.required]],
@@ -111,7 +111,6 @@ export class LockerUpdateComponent implements OnInit {
   }
 
   getAllData() { // Creamos un método que reuna dos llamados al backend: traer los conveyors, los users y creamos una promise para un mejor funcionamiento.
-
     // let converyorsPromise = new Promise((resolve, reject) => {
     //   this._orderService.getConvenyor().subscribe((res: any) => {
     //     this.conveyors = res;
@@ -140,7 +139,6 @@ export class LockerUpdateComponent implements OnInit {
     //   this.filteredConveyors = this.formUpdateLocker.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
     //   this.filteredUsers = this.formUpdateLocker.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
     // });
-
   }
 
   createItem(item?: any, status?: boolean): FormGroup { // Creamos el ítem del formulario dinámico
@@ -157,7 +155,7 @@ export class LockerUpdateComponent implements OnInit {
       weight: [item ? item.weight : null, [Validators.required]],
       force_commercial_shipping: [item ? item.force_commercial_shipping : false],
       order_service: [item ? item.order_service : null],
-      images: [item ? (item.product?.images ? item.product.images : []) : []],
+      images: [item ? item.images : []],
       invoice_images: [item ? (item.product?.invoice ? item.product.invoice : []) : []],
       conveyor: [item ? item.conveyor : null],
       guide_number: [item ? item.product?.guide_number : null],
@@ -280,8 +278,10 @@ export class LockerUpdateComponent implements OnInit {
         product: {
           name: item.product.name,
           permanent_shipping_value: item.product.permanent_shipping_value,
-          quantity: item.product.quantity, image: item.product.image, force_commercial_shipping: (item.product.force_commercial_shipping ? item.product.force_commercial_shipping : false),
-          images: item.product.images
+          quantity: item.product.quantity,
+          image: item.product.image,
+          force_commercial_shipping: (item.product.force_commercial_shipping ? item.product.force_commercial_shipping : false),
+          images: item.images
         },
         product_price: item.product_price,
         order_service: item.order_service.id,

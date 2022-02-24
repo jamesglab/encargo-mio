@@ -49,7 +49,6 @@ export class SearchProductComponent implements OnInit {
   }
 
   keyDownFunction(event: any, value?: any) {
-    console.log(value);
     if (this.isIphone) {
       if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
         // this.onSearch();
