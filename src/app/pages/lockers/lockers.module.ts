@@ -17,6 +17,7 @@ import { UsersProductsComponent } from './components/users-products/users-produc
 import { InsertInLockerComponent } from './components/insert-in-locker/insert-in-locker.component';
 import { LockerUpdateComponent } from './components/locker-update/locker-update.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
+import { ModalEditLockersComponent } from './modals/modal-edit-lockers/modal-edit-lockers.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { IvyCarouselModule } from 'angular-responsive-carousel';
     LockersTableComponent,
     UsersProductsComponent,
     InsertInLockerComponent,
-    LockerUpdateComponent
+    LockerUpdateComponent,
+    ModalEditLockersComponent
   ],
   imports: [
     CommonModule,

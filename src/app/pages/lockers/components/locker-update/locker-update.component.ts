@@ -77,8 +77,6 @@ export class LockerUpdateComponent implements OnInit {
         }, err => {
           throw err;
         });
-    } else {
-      this.router.navigate(["/lockers/locker"]);
     }
   }
 

@@ -40,6 +40,8 @@ export class LockersTableComponent implements OnInit {
   public filteredUsers: Observable<string[]>;
   public counts: any;
 
+  public isIphone: boolean = false;
+
   //SERVICIOS Y DEMAS IMPORTACIONES
   constructor(
     public modalService: NgbModal,
@@ -51,11 +53,32 @@ export class LockersTableComponent implements OnInit {
   ngOnInit(): void {
     this.getUsers();
     this.getAllLockers();
+    this.checkOperativeSystem();
+  }
+
+  checkOperativeSystem() {
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isIphone = true;
+      } else {
+        this.isIphone = false;
+      }
+    }
   }
 
   ngOnChanges() {
     if (this.refreshTableStatus) {
       this.getAllLockers();
+    }
+  }
+
+  keyDownFunction(event: any) {
+    if (this.isIphone) {
+      if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
+        this.getAllLockers();
+      }
+    } else {
+      return;
     }
   }
 
@@ -123,8 +146,13 @@ export class LockersTableComponent implements OnInit {
     this.filteredUsers = this.filterUserLocker.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
   }
 
-  viewDetail(locker: any) {
-    this._router.navigate(["/lockers/update-locker"], { queryParams: { income: locker.income } });
+  viewDetail(locker: any, modal?: any) {
+    this.lockerSelected = locker;
+    if (this.lockerSelected.income) {
+      this._router.navigate(["/lockers/update-locker"], { queryParams: { income: locker.income } });
+    } else {
+      this.modalService.open(modal, { size: 'xl', centered: true });
+    }
   }
 
   closeModalEditLockers(event: any) {

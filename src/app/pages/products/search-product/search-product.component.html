@@ -7,7 +7,7 @@
             <div class="search-box me-2 mb-2 d-inline-block" style="width:100%">
                 <div class="position-relative">
                     <input type="text" class="form-control" placeholder="Busca por # de producto"
-                        (keyup.enter)="onSearch($event)">
+                        (keyup.enter)="onSearch($event)" (keydown)="keyDownFunction($event, $event.target.value);">
                     <i class="bx bx-search-alt search-icon"></i>
                 </div>
             </div>
