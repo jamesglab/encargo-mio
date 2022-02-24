@@ -94,7 +94,7 @@ export class InsertInLockerComponent implements OnInit {
       guide_number: [data ? data.guide : null],
       user: [data ? data.user.locker : null, [Validators.required]],
       conveyor: [data ? data.conveyor : null, [Validators.required]],
-      receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }, [Validators.required]],
+      receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }],
       order_service: [{ value: null, disabled: true }],
       products: this._fb.array([])
     });
