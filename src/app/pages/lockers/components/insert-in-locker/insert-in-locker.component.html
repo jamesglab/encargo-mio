@@ -35,8 +35,7 @@
                             </ng-container>
                         </div>
                         <mat-autocomplete #auto_guide="matAutocomplete" [displayWith]="displayGuides">
-                            <mat-option *ngFor="let guide of allGuides" [value]="guide"
-                                (click)="clickGuideItem(guide);">
+                            <mat-option *ngFor="let guide of allGuides" [value]="guide" (click)="clickGuideItem(guide);">
                                 {{ guide.guide_number_alph ? guide.guide_number_alph : guide.guide_number }}
                             </mat-option>
                         </mat-autocomplete>
