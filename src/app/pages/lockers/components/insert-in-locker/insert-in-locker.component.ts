@@ -127,6 +127,7 @@ export class InsertInLockerComponent implements OnInit {
         this.users = res;
         this.formInsertLocker.controls.user.enable();
         resolve(this.users);
+        console.log("USERS", this.users);
       }, err => {
         reject(err);
         throw err;
@@ -362,7 +363,7 @@ export class InsertInLockerComponent implements OnInit {
       if (array === 'conveyors') {
         return value.name.toLowerCase().replace(/\s/g, '');
       } else if (array === 'users') {
-        return value.full_name.toLowerCase().replace(/\s/g, '');
+        return value.full_info.toLowerCase().replace(/\s/g, '');
       } else if (array === 'allOrders') {
         if (value.product && value.product.name) {
           return value.product.name.toLowerCase().replace(/\s/g, '');
