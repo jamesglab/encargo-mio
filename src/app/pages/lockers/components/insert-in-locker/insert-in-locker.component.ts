@@ -127,7 +127,6 @@ export class InsertInLockerComponent implements OnInit {
         this.users = res;
         this.formInsertLocker.controls.user.enable();
         resolve(this.users);
-        console.log("USERS", this.users);
       }, err => {
         reject(err);
         throw err;
