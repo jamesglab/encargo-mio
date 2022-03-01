@@ -48,6 +48,14 @@
           </th>
 
           <th class="align-middle">
+            Guía
+            <div class="mt-2">
+              <input type="text" class="form-control" placeholder="Ingresa el número de guía..."
+                [formControl]="filterGuide" (keyup.enter)="filterPurchase()" (keydown)="keyDownFunction($event);">
+            </div>
+          </th>
+
+          <th class="align-middle">
             Estado Cotización
             <select class="form-select" [formControl]="filterOrderServiceStatus" (change)="filterPurchase();">
               <option disabled value="" title="Selecciona filtro...">Selecciona filtro...</option>
@@ -183,7 +191,11 @@
           </td>
 
           <td>
-            {{data.order_service || '-'}}
+            {{ data.order_service || '-' }}
+          </td>
+
+          <td>
+            {{ data.guide_number_alph || data.guide_number }}
           </td>
 
           <td>
