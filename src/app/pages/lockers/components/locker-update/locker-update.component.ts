@@ -71,6 +71,7 @@ export class LockerUpdateComponent implements OnInit {
     if (this.params.income) {
       this._lockers.getProductsByIncome(this.params.income)
         .subscribe((res: any) => {
+          console.log(res);
           this.buildForm(res);
         }, err => {
           throw err;
@@ -128,10 +129,11 @@ export class LockerUpdateComponent implements OnInit {
       guide_number_alph: [item ? item.guide_number_alph : null],
       locker_observations: [null],
       client_observations: [null],
-      // novelty_article: [null],
+      status: [item ? item.status : null],
       free_shipping: [false],
       loadingImage: [false],
-      scrap_image: [item ? item.product?.image : null]
+      scrap_image: [item ? item.product?.image : null],
+      // novelty_article: [null]
     });
     return createItem;
   }
