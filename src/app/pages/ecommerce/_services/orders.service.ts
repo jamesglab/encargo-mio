@@ -410,9 +410,9 @@ export class OrderService {
     );
   }
 
-  getOrderPurchaseById(id: string): Observable<any> {
+  getOrderService(id: string): Observable<any> {
     return this.http.get<any>(
-      `${environment.microservices.management}order-purchase/by-order-service`,
+      `${environment.microservices.management}income`,
       { headers: header, params: { id } }
     ).pipe(
       map((res: any) => {

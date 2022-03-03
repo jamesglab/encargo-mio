@@ -63,7 +63,7 @@ export class InsertInLockerComponent implements OnInit {
   checkParamId(): void {
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
     if (this.params.order_service) {
-      this._orderService.getOrderPurchaseById(this.params.order_service).subscribe((res: any) => {
+      this._orderService.getOrderService(this.params.order_service).subscribe((res: any) => {
         if (res.order_purchase && res.order_purchase.length > 0) {
           this.buildForm();
           this.allOrders = [];

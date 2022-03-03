@@ -68,8 +68,8 @@ export class LockerUpdateComponent implements OnInit {
 
   checkParams(): void {
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
-    if (this.params.income) {
-      this._lockers.getProductsByIncome(this.params.income)
+    if (this.params.order_service) {
+      this._lockers.getProductsByIncome(this.params.order_service)
         .subscribe((res: any) => {
           console.log(res);
           this.buildForm(res);
