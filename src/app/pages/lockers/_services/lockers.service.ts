@@ -119,7 +119,7 @@ export class LockersService {
     );
   }
 
-  insertInLockerWithout(payload: any): Observable<any> {
+  insertIncome(payload: any): Observable<any> {
     return this.http.post<any>(
       `${environment.microservices.management}income`, payload
     ).pipe(

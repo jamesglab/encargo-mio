@@ -18,6 +18,8 @@ import { InsertInLockerComponent } from './components/insert-in-locker/insert-in
 import { LockerUpdateComponent } from './components/locker-update/locker-update.component';
 import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { ModalEditLockersComponent } from './modals/modal-edit-lockers/modal-edit-lockers.component';
+import { IncomeProductsComponent } from './components/insert-in-locker/income-products/income-products.component';
+import { NotIncomeProductsComponent } from './components/insert-in-locker/not-income-products/not-income-products.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { ModalEditLockersComponent } from './modals/modal-edit-lockers/modal-edi
     UsersProductsComponent,
     InsertInLockerComponent,
     LockerUpdateComponent,
-    ModalEditLockersComponent
+    ModalEditLockersComponent,
+    IncomeProductsComponent,
+    NotIncomeProductsComponent
   ],
   imports: [
     CommonModule,
