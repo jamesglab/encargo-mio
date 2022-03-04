@@ -106,3 +106,10 @@
         margin-bottom: 10px;
     }
 }
+
+.flex-items {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}

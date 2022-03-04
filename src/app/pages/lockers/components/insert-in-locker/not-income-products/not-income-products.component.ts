@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileHandle } from 'src/app/_directives/file-handle';
 import { Router } from '@angular/router';
@@ -19,6 +19,8 @@ export class NotIncomeProductsComponent implements OnInit {
   @Input() public order_has_products: any = [];
   @Input() public formInsertLocker: any;
   @Input() public order_service: string;
+
+  @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public formNotIncome: FormGroup;
   public products: FormArray;
@@ -54,26 +56,26 @@ export class NotIncomeProductsComponent implements OnInit {
   pushItems(product?: any) {
     this.products = this.formNotIncome.get('product') as FormArray;
     this.products.push(this.createItem(product));
+    console.log(this.products);
   }
 
   createItem(product?: any): FormGroup {
-    console.log("Aaaaaaaaaaaaaa", product);
     let item = this._fb.group({
       product: [product ? (product.product?.id ? { id: product ? product.product?.id : null } : null) : null],
       name: [product ? product.product?.name : null, [Validators.required]],
-      declared_value_admin: [product ? product.product_price : 0, [Validators.required]],
-      weight: [product ? product.weight : 0, [Validators.required]],
-      permanent_shipping_value: [product ? product.product?.permanent_shipping_value : 0],
-      quantity: [product.product?.quantity ? product.product?.quantity : 1],
-      order_service: [this.order_service ? this.order_service : null],
-      images: [product.images ? product.images : []],
-      invoice_images: [product.invoice_images ? product.invoice_images : []],
-      description: [product ? product.product.description : null],
-      aditional_info: [product ? product.product.aditional_info : null],
+      declared_value_admin: [product ? product.product_price : null, [Validators.required]],
+      weight: [product ? product.weight : null, [Validators.required, Validators.minLength(0.1)]],
+      permanent_shipping_value: [product ? product.product?.permanent_shipping_value : null],
+      quantity: [product?.product?.quantity ? product.product?.quantity : 1],
+      order_service: [product ? product?.order_service : null],
+      images: [product?.images ? product.images : []],
+      invoice_images: [product?.invoice_images ? product.invoice_images : []],
+      description: [product ? product.product?.description : null],
+      aditional_info: [product ? product.product?.aditional_info : null],
       force_commercial_shipping: [product ? product.force_commercial_shipping : false],
       free_shipping: [product ? product.free_shipping : false],
       scrap_image: [product ? product.product?.image : null],
-      pending_quantity: [product ? product.product.pending_quantity : null]
+      pending_quantity: [product ? product.product?.pending_quantity : null]
     });
     return item;
   }
@@ -162,11 +164,10 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   addQuantity(i: number): void { // Añadir una cantidad al producto
-    console.log("1", this.formNotIncome.get('product')['controls'][i].controls.quantity.value);
-    console.log("2", this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value);
-    if (this.formNotIncome.get('product')['controls'][i].controls.quantity.value <= this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
-      let actualQuantity: number = this.formNotIncome.get('product')['controls'][i].controls.quantity.value;
+    let actualQuantity: number = this.formNotIncome.get('product')['controls'][i].controls.quantity.value;
+    if (!this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value || actualQuantity <= this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formNotIncome.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
+      return;
     }
   }
 
@@ -189,42 +190,50 @@ export class NotIncomeProductsComponent implements OnInit {
 
   addIncome(position: number) {
 
-    if (this.formNotIncome.getRawValue().product[position].quantity === this.formNotIncome.getRawValue().product[position].pending_quantity) {
-      this._notify.show('', `No puedes añadir más ingresos al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id}, debido a que tiene todas las cantidades (${this.formNotIncome.getRawValue().product[position].quantity}) ya han sido añadidas.`, 'info');
-      return;
-    }
+    if (!this.formNotIncome.getRawValue().product[position].pending_quantity) {
 
-    if (this.formNotIncome.getRawValue().product[position].quantity > this.formNotIncome.getRawValue().product[position].pending_quantity) {
-      this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${this.formNotIncome.getRawValue().product[position].quantity} cantidades), revisa la cantidad de tus productos.`, 'info');
-      return;
-    }
+      this.products.push(this.createItem());
 
-    let check = this.checkProductQuantity();
-
-    if (check.length === 0) {
-      let product: any = tranformFormItemNotIncome(this.products.controls[position]['controls']);
-      this.products.controls.splice(position + 1, 0, this.createItem(product));
     } else {
 
-      let totalQuantity: number = 0;
-
-      for (let index = 0; index < check.length; index++) {
-        totalQuantity += check[index].quantity;
-      }
-
-      if (totalQuantity === this.formNotIncome.getRawValue().product[position].pending_quantity) {
-        this._notify.show('', `No puedes añadir más ingresos al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id}, debido a que tiene todas las cantidades (${totalQuantity}) ya han sido añadidas.`, 'info');
+      if (this.formNotIncome.getRawValue().product[position].quantity === this.formNotIncome.getRawValue().product[position].pending_quantity) {
+        this._notify.show('', `No puedes añadir más ingresos al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id}, debido a que tiene todas las cantidades (${this.formNotIncome.getRawValue().product[position].quantity}) ya han sido añadidas.`, 'info');
         return;
       }
 
-      if (totalQuantity > this.formNotIncome.getRawValue().product[position].pending_quantity) {
-        this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${totalQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
+      if (this.formNotIncome.getRawValue().product[position].quantity > this.formNotIncome.getRawValue().product[position].pending_quantity) {
+        this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${this.formNotIncome.getRawValue().product[position].quantity} cantidades), revisa la cantidad de tus productos.`, 'info');
         return;
       }
 
-      if (totalQuantity < this.formNotIncome.getRawValue().product[position].pending_quantity) {
+      let check = this.checkProductQuantity();
+
+      if (check.length === 0) {
         let product: any = tranformFormItemNotIncome(this.products.controls[position]['controls']);
         this.products.controls.splice(position + 1, 0, this.createItem(product));
+      } else {
+
+        let totalQuantity: number = 0;
+
+        for (let index = 0; index < check.length; index++) {
+          totalQuantity += check[index].quantity;
+        }
+
+        if (totalQuantity === this.formNotIncome.getRawValue().product[position].pending_quantity) {
+          this._notify.show('', `No puedes añadir más ingresos al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id}, debido a que tiene todas las cantidades (${totalQuantity}) ya han sido añadidas.`, 'info');
+          return;
+        }
+
+        if (totalQuantity > this.formNotIncome.getRawValue().product[position].pending_quantity) {
+          this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${totalQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
+          return;
+        }
+
+        if (totalQuantity < this.formNotIncome.getRawValue().product[position].pending_quantity) {
+          let product: any = tranformFormItemNotIncome(this.products.controls[position]['controls']);
+          this.products.controls.splice(position + 1, 0, this.createItem(product));
+        }
+
       }
 
     }
@@ -245,39 +254,44 @@ export class NotIncomeProductsComponent implements OnInit {
     return products;
   }
 
-  registerData(position: number): void {
+  registerData(position?: number): void {
 
-    let check = this.checkIfProductsRepeat();
+    if (this.formNotIncome.invalid) {
+      this._notify.show('', 'No has completado el formulario correctamente, revisalos y vuelve a intentarlo.', 'info');
+      return;
+    }
+
     let payload: any;
 
-    if (check && check.length === 0) {
-
-      if (this.formNotIncome.getRawValue().product[position].quantity.value > this.formNotIncome.getRawValue().product[position].pending_quantity.value) {
-        this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${this.formNotIncome.getRawValue().product[position].product.quantity} cantidades), revisa la cantidad de tus productos.`, 'info');
-      }
-
-      payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, [this.formNotIncome.getRawValue().product[position]]);
-
+    if (!this.formNotIncome.getRawValue().product[position].product) {
+      payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[position]]);
     } else {
 
-      let totalQuantity: number = 0;
+      let check = this.checkIfProductsRepeat();
 
-      for (let index = 0; index < check.length; index++) {
-        totalQuantity += check[index].quantity;
+      if (check && check.length === 0) {
+        if (this.formNotIncome.getRawValue().product[position].quantity.value > this.formNotIncome.getRawValue().product[position].pending_quantity.value) {
+          this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${this.formNotIncome.getRawValue().product[position].product.quantity} cantidades), revisa la cantidad de tus productos.`, 'info');
+        }
+        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.formNotIncome.getRawValue().product[position].order_service, [this.formNotIncome.getRawValue().product[position]]);
+      } else {
+        let totalQuantity: number = 0;
+        for (let index = 0; index < check.length; index++) {
+          totalQuantity += check[index].quantity;
+        }
+        if (totalQuantity > this.formNotIncome.getRawValue().product[position].pending_quantity) {
+          this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${totalQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
+          return;
+        }
+        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.formNotIncome.getRawValue().product[position].order_servicee, check);
       }
-
-      if (totalQuantity > this.formNotIncome.getRawValue().product[position].pending_quantity) {
-        this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${totalQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
-        return;
-      }
-
-      payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, check);
 
     }
 
     this.isLoading = true;
     this._lockers.insertIncome(payload).subscribe((res: any) => {
       this.isLoading = false;
+      this.refreshData.emit(true);
       Swal.fire({
         title: '',
         text: "Se ha realizado el ingreso de los productos correctamente.",
@@ -286,7 +300,7 @@ export class NotIncomeProductsComponent implements OnInit {
         confirmButtonText: 'Aceptar'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.router.navigate(["/lockers/locker"]);
+          // this.router.navigate(["/lockers/locker"]);
         }
       });
     }, err => {

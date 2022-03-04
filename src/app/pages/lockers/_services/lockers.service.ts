@@ -141,4 +141,16 @@ export class LockersService {
     );
   }
 
+  getGuideIncome(guide_number: string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}income/by-guide`,
+      { headers: header, params: { guide_number } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
 }

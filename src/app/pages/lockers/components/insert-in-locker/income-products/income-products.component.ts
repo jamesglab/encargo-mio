@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { FileHandle } from 'src/app/_directives/file-handle';
-import { insertOnlyLocker, tranformFormItemNotIncome } from 'src/app/_helpers/tools/create-order-parse.tool';
+import { insertOnlyLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { LockersService } from '../../../_services/lockers.service';
@@ -16,9 +15,11 @@ import Swal from 'sweetalert2';
 
 export class IncomeProductsComponent implements OnInit {
 
-  @Input() public locker_has_product: any = [];
+  @Input() public locker_has_products: any = [];
   @Input() public formInsertLocker: any;
   @Input() public order_service: string;
+
+  @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public formLockerHasProduct: FormGroup;
   public products: FormArray;
@@ -29,16 +30,14 @@ export class IncomeProductsComponent implements OnInit {
     public _fb: FormBuilder,
     public _notify: NotifyService,
     public _compress: ImageCompressService,
-    private _lockers: LockersService,
-    private router: Router
+    private _lockers: LockersService
   ) { }
 
   ngOnInit(): void {
   }
 
   ngOnChanges() {
-    console.log(this.locker_has_product);
-    if (this.locker_has_product && this.locker_has_product.length > 0) {
+    if (this.locker_has_products && this.locker_has_products.length > 0) {
       this.buildForm();
     }
   }
@@ -47,8 +46,8 @@ export class IncomeProductsComponent implements OnInit {
     this.formLockerHasProduct = this._fb.group({
       product: this._fb.array([])
     });
-    for (let index = 0; index < this.locker_has_product.length; index++) {
-      this.pushItems(this.locker_has_product[index])
+    for (let index = 0; index < this.locker_has_products.length; index++) {
+      this.pushItems(this.locker_has_products[index])
     }
   }
 
@@ -58,7 +57,6 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   createItem(product?: any): FormGroup {
-    console.log(product);
     let item = this._fb.group({
       id: [product ? product.id : null],
       product: [product ? (product.product?.id ? { id: product ? product.product?.id : null } : null) : null],
@@ -176,15 +174,20 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   addQuantity(i: number): void { // Añadir una cantidad al producto
-    console.log("1", this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.value);
-    console.log("2", this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value);
-    if (this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.value <= this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value) {
-      let actualQuantity: number = this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.value;
+    if (!this.formLockerHasProduct.get('product')['controls'][i].controls.editable.value) {
+      return;
+    }
+    let actualQuantity: number = this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.value;
+    if (!this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value || actualQuantity <= this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
+      return;
     }
   }
 
   substractQuantity(i: number): void { // Quitar una cantidad a un producto.
+    if (!this.formLockerHasProduct.get('product')['controls'][i].controls.editable.value) {
+      return;
+    }
     let actualQuantity: number = this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.value;
     if (actualQuantity > 1) {
       this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.setValue(actualQuantity - 1);
@@ -202,22 +205,25 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   saveItem(position: number) {
+
+    if (this.formInsertLocker.invalid) {
+      this._notify.show('', 'No has completado el formulario correctamente, revisalos y vuelve a intentarlo.', 'info');
+      return;
+    }
+
     this.changeEditStatus(position);
+    console.log(this.formInsertLocker.getRawValue())
     let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
-    console.log(payload);
     this.isLoading = true;
     this._lockers.insertIncome(payload).subscribe((res: any) => {
       this.isLoading = false;
+      this.refreshData.emit(true);
       Swal.fire({
         title: '',
-        text: "Se ha realizado el ingreso de los productos correctamente.",
+        text: "Has realizado el ingreso de los productos correctamente.",
         icon: 'success',
         showCancelButton: false,
         confirmButtonText: 'Aceptar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(["/lockers/locker"]);
-        }
       });
     }, err => {
       this.isLoading = false;

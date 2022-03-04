@@ -71,7 +71,6 @@ export class LockerUpdateComponent implements OnInit {
     if (this.params.order_service) {
       this._lockers.getProductsByIncome(this.params.order_service)
         .subscribe((res: any) => {
-          console.log(res);
           this.buildForm(res);
         }, err => {
           throw err;

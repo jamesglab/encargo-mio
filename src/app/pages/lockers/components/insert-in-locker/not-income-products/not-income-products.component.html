@@ -1,10 +1,10 @@
-<h3>
-    <strong>
-        Productos sin Ingreso
-    </strong>
-</h3>
+<form [formGroup]="formNotIncome" *ngIf="formNotIncome">
 
-<form [formGroup]="formNotIncome">
+    <h3>
+        <strong>
+            Productos sin Ingreso
+        </strong>
+    </h3>
 
     <div class="container-income" formArrayName="product">
 
@@ -12,14 +12,25 @@
             [formGroupName]="i">
 
             <div class="income-color">
+
                 <h4>
                     <strong>
                         Ingreso {{i+1}}
                     </strong>
                 </h4>
-                <h5>
-                    PEC {{ formNotIncome.get('product')['controls'][i].controls.product.value.id }}
-                </h5>
+
+                <div class="flex-items">
+                    <h5 *ngIf="formNotIncome.get('product')['controls'][i].controls.product.value?.id">
+                        PEC {{ formNotIncome.get('product')['controls'][i].controls.product.value.id }}
+                    </h5>
+                    <h4 *ngIf="formNotIncome.get('product')['controls'][i].controls.order_service?.value">
+                        Orden de Servicio
+                        <strong>
+                            {{ formNotIncome.get('product')['controls'][i].controls.order_service.value }}
+                        </strong>
+                    </h4>
+                </div>
+
             </div>
 
             <div class="col-sm-3">
@@ -73,16 +84,20 @@
 
                 <br>
 
-                <h5 class="container-drops">Imagen de la tienda</h5>
+                <ng-container *ngIf="formNotIncome.get('product')['controls'][i].controls.scrap_image.value">
 
-                <div class="container-zoom-image">
-                    <lib-ngx-image-zoom
-                        [thumbImage]="formNotIncome.get('product')['controls'][i].controls.scrap_image.value"
-                        [fullImage]="formNotIncome.get('product')['controls'][i].controls.scrap_image.value"
-                        [enableScrollZoom]="true" [zoomMode]="'hover-freeze'" [enableLens]="true" [lensWidth]="200"
-                        [lensHeight]="200" [circularLens]="true">
-                    </lib-ngx-image-zoom>
-                </div>
+                    <h5 class="container-drops">Imagen de la tienda</h5>
+
+                    <div class="container-zoom-image">
+                        <lib-ngx-image-zoom
+                            [thumbImage]="formNotIncome.get('product')['controls'][i].controls.scrap_image.value"
+                            [fullImage]="formNotIncome.get('product')['controls'][i].controls.scrap_image.value"
+                            [enableScrollZoom]="true" [zoomMode]="'hover-freeze'" [enableLens]="true" [lensWidth]="200"
+                            [lensHeight]="200" [circularLens]="true">
+                        </lib-ngx-image-zoom>
+                    </div>
+
+                </ng-container>
 
                 <br>
 

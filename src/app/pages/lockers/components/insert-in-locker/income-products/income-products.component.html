@@ -1,10 +1,10 @@
-<h3>
-    <strong>
-        Productos Ingresados
-    </strong>
-</h3>
+<form [formGroup]="formLockerHasProduct" *ngIf="formLockerHasProduct">
 
-<form [formGroup]="formLockerHasProduct">
+    <h3>
+        <strong>
+            Productos Ingresados
+        </strong>
+    </h3>
 
     <div class="container-income" formArrayName="product">
 
@@ -13,20 +13,35 @@
             [ngClass]="{ 'income-background' : !formLockerHasProduct.get('product')['controls'][i].controls.editable.value, 'editable-active ': formLockerHasProduct.get('product')['controls'][i].controls.editable.value }">
 
             <div class="income-color">
+
                 <h4>
                     <strong>
                         Ingreso {{i+1}}
                     </strong>
                 </h4>
-                <h5>
-                    PEC {{ formLockerHasProduct.get('product')['controls'][i].controls.product.value.id }}
-                    <ng-container
-                        *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value">
-                        -
-                        {{ formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value }}
-                    </ng-container>
-                </h5>
+
+                <div class="flex-items">
+
+                    <h5>
+                        PEC {{ formLockerHasProduct.get('product')['controls'][i].controls.product.value.id }}
+                        <ng-container
+                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value">
+                            -
+                            {{ formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value }}
+                        </ng-container>
+                    </h5>
+
+                    <h4 *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.order_service?.value">
+                        Orden de Servicio
+                        <strong>
+                            {{ formLockerHasProduct.get('product')['controls'][i].controls.order_service.value }}
+                        </strong>
+                    </h4>
+
+                </div>
+
             </div>
+
 
             <div class="col-sm-3">
 
