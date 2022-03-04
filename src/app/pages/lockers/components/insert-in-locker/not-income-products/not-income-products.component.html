@@ -1,0 +1,284 @@
+<form [formGroup]="formNotIncome" *ngIf="formNotIncome">
+
+    <h3>
+        <strong>
+            Productos sin Ingreso
+        </strong>
+    </h3>
+
+    <div class="container-income" formArrayName="product">
+
+        <div class="row" *ngFor="let item of formNotIncome.get('product')['controls']; let i = index;"
+            [formGroupName]="i">
+
+            <div class="income-color">
+
+                <h4>
+                    <strong>
+                        Ingreso {{i+1}}
+                    </strong>
+                </h4>
+
+                <div class="flex-items">
+                    <h5 *ngIf="formNotIncome.get('product')['controls'][i].controls.product.value?.id">
+                        PEC {{ formNotIncome.get('product')['controls'][i].controls.product.value.id }}
+                    </h5>
+                    <h4 *ngIf="formNotIncome.get('product')['controls'][i].controls.order_service?.value">
+                        Orden de Servicio
+                        <strong>
+                            {{ formNotIncome.get('product')['controls'][i].controls.order_service.value }}
+                        </strong>
+                    </h4>
+                </div>
+
+            </div>
+
+            <div class="col-sm-3">
+
+                <h5 class="container-drops">Imagen del Producto</h5>
+
+                <div class="align-items-center dropzone-in-create" appImageDrag
+                    (files)="filesDropped($event, i, 'images');">
+
+                    <div class="container-img-dropzone d-flex">
+
+                        <ng-container
+                            *ngFor="let image of formNotIncome.get('product')['controls'][i].controls.images.value; let i_image = index;">
+
+                            <div class="content-img-dropzone">
+
+                                <div class="remove-item-content">
+                                    <button type="button" class="close remove-item" aria-label="Close"
+                                        (click)="onRemoveImage(i, i_image, 'images');" title="Borrar Imagen">
+                                        <span class="mdi mdi-delete"></span>
+                                    </button>
+                                </div>
+
+                                <img src="{{ image.url ? image.url : image.Location }}" draggable="false"
+                                    (error)="onImageError($event);" />
+
+                            </div>
+
+                        </ng-container>
+
+                    </div>
+
+                    <div>
+                        <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
+                            *ngIf="formNotIncome.get('product')['controls'][i].controls.images.value.length === 0"></span>
+                        <h5>
+                            Arrastra tu imagen o haz clic
+                            <a class="font-weight-bold cursor-pointer" (click)="uploadImageLocally(i, 'images');">
+                                aquí.
+                            </a>
+                        </h5>
+                    </div>
+
+                    <div class="is-dangered"
+                        *ngIf="formNotIncome.get('product')['controls'][i].controls.images.value.length === 0">
+                        <span class="mdi mdi-information-outline"></span>
+                        Debes ingresar al menos una imagen del producto.
+                    </div>
+
+                </div>
+
+                <br>
+
+                <ng-container *ngIf="formNotIncome.get('product')['controls'][i].controls.scrap_image.value">
+
+                    <h5 class="container-drops">Imagen de la tienda</h5>
+
+                    <div class="container-zoom-image">
+                        <lib-ngx-image-zoom
+                            [thumbImage]="formNotIncome.get('product')['controls'][i].controls.scrap_image.value"
+                            [fullImage]="formNotIncome.get('product')['controls'][i].controls.scrap_image.value"
+                            [enableScrollZoom]="true" [zoomMode]="'hover-freeze'" [enableLens]="true" [lensWidth]="200"
+                            [lensHeight]="200" [circularLens]="true">
+                        </lib-ngx-image-zoom>
+                    </div>
+
+                </ng-container>
+
+                <br>
+
+                <h5 class="container-drops">Imagen de Factura</h5>
+
+                <div class="align-items-center dropzone-in-create" appImageDrag
+                    (files)="filesDropped($event, i, 'invoice_images');">
+
+                    <div class="container-img-dropzone d-flex">
+
+                        <ng-container
+                            *ngFor="let image of formNotIncome.get('product')['controls'][i].controls.invoice_images.value; let i_invoice = index;">
+
+                            <div class="content-img-dropzone">
+
+                                <div class="remove-item-content">
+                                    <button type="button" class="close remove-item" aria-label="Close"
+                                        (click)="onRemoveImage(i, i_invoice, 'invoice_images');" title="Borrar Imagen">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+
+                                <img src="{{ image.url ? image.url : image.Location }}" draggable="false"
+                                    (error)="onImageError($event);" />
+
+                            </div>
+
+                        </ng-container>
+
+                    </div>
+
+                    <div>
+                        <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
+                            *ngIf="formNotIncome.get('product')['controls'][i].controls.invoice_images.value.length === 0"></span>
+                        <h5>
+                            Arrastra tu imagen o haz clic
+                            <a class="font-weight-bold cursor-pointer"
+                                (click)="uploadImageLocally(i, 'invoice_images');">
+                                aquí.
+                            </a>
+                        </h5>
+                    </div>
+
+                </div>
+
+                <br>
+
+            </div>
+
+            <div class="col container-drops">
+
+                <div class="form-group">
+                    <label for="product_name{{i}}">Nombre de producto</label>
+                    <input type="text" class="form-control" id="product_name{{i}}"
+                        placeholder="Ingresa el nombre del producto." formControlName="name"
+                        [ngClass]="{ 'is-invalid' : formNotIncome.get('product')['controls'][i].controls.name.errors }">
+                    <div class="invalid-feedback"
+                        *ngIf="formNotIncome.get('product')['controls'][i].controls.name.errors">
+                        <ng-container *ngIf="formNotIncome.get('product')['controls'][i].controls.name.errors.required">
+                            El nombre es requerido.
+                        </ng-container>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description_product{{i}}">Observaciones del producto</label>
+                    <textarea class="form-control" id="description_product{{i}}" rows="3" formControlName="description"
+                        placeholder="Ingresa alguna observación que tengas sobre el producto.">
+                    </textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="client_observations{{i}}">Observación del cliente</label>
+                    <textarea class="form-control" id="client_observations{{i}}" rows="3"
+                        formControlName="aditional_info" placeholder="Observaciones del cliente.">
+                    </textarea>
+                </div>
+
+            </div>
+
+            <div class="col-sm-3">
+
+                <div class="form-group row">
+                    <label for="inputPassword{{i}}" class="col col-form-label">Valor Producto
+                        (Administrador)</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="inputPassword{{i}}"
+                            formControlName="declared_value_admin" placeholder="Ingresa el valor del producto." min="0"
+                            (keypress)="numberOnly($event);"
+                            [ngClass]="{ 'is-invalid' : formNotIncome.get('product')['controls'][i].controls.declared_value_admin.errors }">
+                        <div class="invalid-feedback"
+                            *ngIf="formNotIncome.get('product')['controls'][i].controls.declared_value_admin.errors">
+                            <ng-container
+                                *ngIf="formNotIncome.get('product')['controls'][i].controls.declared_value_admin.errors.required">
+                                El nombre es requerido.
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+
+                    <div>
+
+                        <a (click)="substractQuantity(i);" style="cursor: pointer;">
+                            <span class="mdi mdi-minus"></span>
+                        </a>
+
+                        <label class="col col-form-label">Cantidad</label>
+
+                        <strong>
+                            {{ formNotIncome.get('product')['controls'][i].controls.quantity.value }}
+                        </strong>
+
+                        <a (click)="addQuantity(i);" style="cursor: pointer;">
+                            <span class="mdi mdi-plus"></span>
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group row">
+                    <label for="permanent_shipping_value{{i}}" class="col col-form-label">Valor Envío Fijo</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="permanent_shipping_value{{i}}"
+                            formControlName="permanent_shipping_value" placeholder="Ingresa el valor del producto."
+                            min="0" (keypress)="numberOnly($event);">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="weight{{i}}" class="col col-form-label">Peso (Libras)</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control" id="weight{{i}}" formControlName="weight"
+                            placeholder="Ingresa el peso del producto." min="0" (keypress)="numberOnly($event);"
+                            [ngClass]="{ 'is-invalid' : formNotIncome.get('product')['controls'][i].controls.weight.errors }">
+                        <div class="invalid-feedback"
+                            *ngIf="formNotIncome.get('product')['controls'][i].controls.weight.errors">
+                            <ng-container
+                                *ngIf="formNotIncome.get('product')['controls'][i].controls.weight.errors.required">
+                                El peso es requerido.
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" formControlName="free_shipping">
+                    <label class="form-check-label">Envío Gratis</label>
+                </div>
+
+                <div class="form-check form-switch mt-3">
+                    <input class="form-check-input" type="checkbox" formControlName="force_commercial_shipping">
+                    <label class="form-check-label">
+                        Envío Comercial
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="container-final-buttons">
+
+                <a class="delete-item" (click)="removeItem(i);" *ngIf="!isLoading">Eliminar Ingreso</a>
+
+                <button class="button-add-new-item" type="submit" [disabled]="isLoading"
+                    style="margin-left: 10px; margin-right: 10px;" (click)="addIncome(i);">
+                    Añadir Ingreso
+                    <strong style="color: #48c78e;">
+                        +
+                    </strong>
+                </button>
+
+                <button class="button-encargomio" type="button" [disabled]="isLoading" (click)="registerData(i);">
+                    Completar Ingreso
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>

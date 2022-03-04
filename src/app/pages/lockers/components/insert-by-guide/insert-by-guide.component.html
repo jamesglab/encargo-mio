@@ -1,18 +1,12 @@
 <h3>
     <strong>
-        {{ params.order_service ? 'Ingreso a Casillero #'+ params.order_service : 'Ingreso a Casillero' }}
+        Ingreso a Casillero por Guía
     </strong>
 </h3>
 
-<h4 *ngIf="locker">
-    {{ locker.full_info }}
-</h4>
+<div class="container-fluid">
 
-<br>
-
-<div class="container-fluid" *ngIf="formInsertLocker">
-
-    <form [formGroup]="formInsertLocker">
+    <form [formGroup]="formInsertByGuide">
 
         <div class="container-fluid">
 
@@ -26,14 +20,20 @@
 
                         <input type="text" id="guia" class="form-control" placeholder="Busca el número de guía"
                             formControlName="guide_number"
-                            title="{{ formInsertLocker.controls.guide_number.value ? formInsertLocker.controls.guide_number.value : '' }}"
-                            [ngClass]="{ 'is-invalid' : form.guide_number.errors }">
+                            title="{{ formInsertByGuide.controls.guide_number.value ? formInsertByGuide.controls.guide_number.value.guide_number : '' }}"
+                            [ngClass]="{ 'is-invalid' : form.guide_number.errors }" formControlName="guide_number"
+                            [matAutocomplete]="auto_guide" (keyup.enter)="autoCompleteGuide($event.target.value);">
                         <div class="invalid-feedback" *ngIf="form.guide_number.errors">
                             <ng-container *ngIf="form.guide_number.errors.required">
                                 Debes ingresar una guia de origen.
                             </ng-container>
                         </div>
-
+                        <mat-autocomplete #auto_guide="matAutocomplete" [displayWith]="displayGuides">
+                            <mat-option *ngFor="let guide of allGuides" [value]="guide"
+                                (click)="clickGuideItem(guide);">
+                                {{ guide.guide_number_alph ? guide.guide_number_alph : guide.guide_number }}
+                            </mat-option>
+                        </mat-autocomplete>
                     </div>
 
                 </div>
@@ -113,21 +113,21 @@
 
             <br>
 
-            <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
+            <button class="button-encargomio" type="submit" [disabled]="formInsertByGuide.invalid"
                 *ngIf="!order_has_products || !locker_has_products" (click)="addIncome();">
                 Iniciar Ingreso
             </button>
 
         </div>
 
-        <app-not-income-products [order_has_products]="order_has_products" [formInsertLocker]="formInsertLocker"
-            [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);">
+        <app-not-income-products [order_has_products]="order_has_products" [formInsertLocker]="formInsertByGuide"
+            (refreshData)="refreshDataRefresh($event);">
         </app-not-income-products>
 
         <hr>
 
-        <app-income-products [locker_has_products]="locker_has_products" [formInsertLocker]="formInsertLocker"
-            [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);">
+        <app-income-products [locker_has_products]="locker_has_products" [formInsertLocker]="formInsertByGuide"
+            [order_service]="" (refreshData)="refreshDataRefresh($event);">
         </app-income-products>
 
     </form>

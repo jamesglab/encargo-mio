@@ -71,7 +71,6 @@ export class TablePurchasesComponent implements OnInit {
   }
 
   ngOnChanges() {
-    console.log(this.purchases);
   }
 
   checkOperativeSystem() {
