@@ -105,7 +105,7 @@ export const insertOnlyLocker = (form: any, order_service: string, income?: any)
     let data = {
         "locker": form.user.locker_id,
         "guide_number": form.guide_number ? form.guide_number : null,
-        "order_service": order_service ? order_service : (form.order_service?.id ? form.order_service.id : form.order_service),
+        "order_service": order_service ? order_service : (form.order_service ? form.order_service.order_service.id : form.order_service),
         "id": income ? parseInt(income) : null,
         "conveyor": form.conveyor.id,
         "products": form.products,
