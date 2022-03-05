@@ -296,7 +296,10 @@
 
               <div *ngIf="item.arrived">
                 <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
-                  #{{ item.product ? item.product.id : '' }}
+                  PEC {{ item.product ? item.product.id : '' }}
+                  <ng-container *ngIf="item.product.secuential_fraction">
+                    - {{ item.product.secuential_fraction }}
+                  </ng-container>
                 </a>
               </div>
 
@@ -397,7 +400,10 @@
 
               <div *ngIf="item.arrived">
                 <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
-                  #{{ item.product ? item.product.id : '' }}
+                  PEC {{ item.product ? item.product.id : '' }}
+                  <ng-container *ngIf="item.product.secuential_fraction">
+                    - {{ item.product.secuential_fraction }}
+                  </ng-container>
                 </a>
               </div>
 
@@ -498,7 +504,10 @@
 
               <div *ngIf="item.arrived">
                 <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
-                  #{{ item.product ? item.product.id : '' }}
+                  PEC {{ item.product ? item.product.id : '' }}
+                  <ng-container *ngIf="item.product.secuential_fraction">
+                    - {{ item.product.secuential_fraction }}
+                  </ng-container>
                 </a>
               </div>
 
