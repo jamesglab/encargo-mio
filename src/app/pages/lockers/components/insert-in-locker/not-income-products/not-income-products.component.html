@@ -1,6 +1,6 @@
 <form [formGroup]="formNotIncome" *ngIf="formNotIncome">
 
-    <h3>
+    <h3 *ngIf="formNotIncome.get('product')['controls'] && formNotIncome.get('product')['controls'].length > 0">
         <strong>
             Productos sin Ingreso
         </strong>

@@ -39,7 +39,7 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   ngOnChanges() {
-    if (this.order_has_products && this.order_has_products.length > 0) {
+    if (this.order_has_products && this.order_has_products.length >= 0) {
       this.buildForm();
     }
   }
@@ -56,7 +56,6 @@ export class NotIncomeProductsComponent implements OnInit {
   pushItems(product?: any) {
     this.products = this.formNotIncome.get('product') as FormArray;
     this.products.push(this.createItem(product));
-    console.log(this.products);
   }
 
   createItem(product?: any): FormGroup {
@@ -75,7 +74,7 @@ export class NotIncomeProductsComponent implements OnInit {
       force_commercial_shipping: [product ? product.force_commercial_shipping : false],
       free_shipping: [product ? product.free_shipping : false],
       scrap_image: [product ? product.product?.image : null],
-      pending_quantity: [product ? product.product?.pending_quantity : null]
+      pending_quantity: [product ? product.product?.pending_quantity : 0]
     });
     return item;
   }
@@ -165,7 +164,7 @@ export class NotIncomeProductsComponent implements OnInit {
 
   addQuantity(i: number): void { // Añadir una cantidad al producto
     let actualQuantity: number = this.formNotIncome.get('product')['controls'][i].controls.quantity.value;
-    if (!this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value || actualQuantity <= this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
+    if (actualQuantity <= this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formNotIncome.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
     }

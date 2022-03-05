@@ -37,7 +37,7 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   ngOnChanges() {
-    if (this.locker_has_products && this.locker_has_products.length > 0) {
+    if (this.locker_has_products && this.locker_has_products.length >= 0) {
       this.buildForm();
     }
   }
@@ -178,7 +178,7 @@ export class IncomeProductsComponent implements OnInit {
       return;
     }
     let actualQuantity: number = this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.value;
-    if (!this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value || actualQuantity <= this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value) {
+    if (actualQuantity <= this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
     }
@@ -212,7 +212,6 @@ export class IncomeProductsComponent implements OnInit {
     }
 
     this.changeEditStatus(position);
-    console.log(this.formInsertLocker.getRawValue())
     let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
     this.isLoading = true;
     this._lockers.insertIncome(payload).subscribe((res: any) => {

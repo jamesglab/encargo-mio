@@ -5,6 +5,8 @@ import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
 import { UserService } from 'src/app/_services/users.service';
 import { LockersService } from '../../_services/lockers.service';
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-insert-by-guide',
@@ -34,7 +36,8 @@ export class InsertByGuideComponent implements OnInit {
     private _orderService: OrderService,
     private _usersService: UserService,
     public _lockers: LockersService,
-    public _cdr: ChangeDetectorRef
+    public _cdr: ChangeDetectorRef,
+    public router: Router
   ) { }
 
   ngOnInit(): void {
@@ -103,20 +106,37 @@ export class InsertByGuideComponent implements OnInit {
   }
 
   clickGuideItem(item: any) {
-    console.log(item);
-    this.actualGuide = item.guide_number;
+    this.actualGuide = (item.guide_number ? item.guide_number : item);
     if (typeof item === 'object' && item !== null) {
+      this.formInsertByGuide.controls.guide_number.setValue(item.guide_number);
       this.formInsertByGuide.controls.user.setValue(item.locker);
-      this.formInsertByGuide.controls.order_service.setValue(item.order?.id);
-      this.formInsertByGuide.controls.conveyor.setValue(item.conveyor?.id);
+      this.formInsertByGuide.controls.order_service.setValue(item.order_service.id);
+      this.formInsertByGuide.controls.conveyor.setValue(item.conveyor);
     }
 
     this.disableItems(true);
     this._lockers.getGuideIncome(this.actualGuide).subscribe((res: any) => {
-      if (res) {
+      if (res.locker_has_products.length >= 0 || res.order_has_products.length >= 0) {
+        this.order_has_products = null;
+        this.locker_has_products = null;
         this.order_has_products = res?.order_has_products;
         this.locker_has_products = res?.locker_has_products;
+        this.order_has_products.reverse();
+        this.locker_has_products.reverse();
+      } else if (res.locker_has_products.length === 0 && res.order_has_products.length === 0) {
+        Swal.fire({
+          title: '',
+          text: "Lo sentimos no encontramos productos asociados a esta orden.",
+          icon: 'info',
+          showCancelButton: false,
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.formInsertByGuide.reset();
+          }
+        });
       }
+
       this.disableItems(false);
     }, err => {
       this.disableItems(false);
@@ -175,16 +195,14 @@ export class InsertByGuideComponent implements OnInit {
   }
 
   displayGuides(guide: any): void {
-    return guide ? guide.guide_number_alph : "";
+    return guide ? guide : "";
   }
 
   displayOrder(order: any) {
     return order ? order : '';
   }
 
-  addIncome() {
-
-  }
+  addIncome() { }
 
   refreshDataRefresh(data: boolean) {
     if (data) {

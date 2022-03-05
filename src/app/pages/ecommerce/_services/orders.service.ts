@@ -412,6 +412,18 @@ export class OrderService {
 
   getOrderService(id: string): Observable<any> {
     return this.http.get<any>(
+      `${environment.microservices.management}income/by-order-service`,
+      { headers: header, params: { id } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
+  getOrderServiceWithoutOrder(id: string): Observable<any> {
+    return this.http.get<any>(
       `${environment.microservices.management}income`,
       { headers: header, params: { id } }
     ).pipe(

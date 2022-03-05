@@ -70,7 +70,27 @@ export class InsertInLockerComponent implements OnInit {
         throw err;
       });
     } else {
-      this.buildForm();
+      this._orderService.getOrderServiceWithoutOrder(this.params.income).subscribe((res: any) => {
+        if (res.income || res.locker_has_products.length > 0 || res.order_has_products.length > 0) {
+          this.locker = res.income?.locker;
+          this.buildForm(res);
+        } else if (res.locker_has_products.length === 0 && res.order_has_products.length === 0) {
+          Swal.fire({
+            title: '',
+            text: "Lo sentimos no encontramos productos asociados a esta orden.",
+            icon: 'info',
+            showCancelButton: false,
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.router.navigate(["/lockers/insert-in-locker"]);
+            }
+          });
+        }
+      }, err => {
+        this.router.navigate(["/lockers/insert-in-locker"]);
+        throw err;
+      });
     }
   }
 
