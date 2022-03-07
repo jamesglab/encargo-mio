@@ -466,7 +466,7 @@ export class OrderService {
     return this.http
       .get<any>(`${environment.microservices.management}locker/user-locker`, {
         headers: header,
-        params: { user: data },
+        params: { user: data }
       })
       .pipe(
         map((res: any) => {

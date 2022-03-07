@@ -27,12 +27,20 @@
                         <input type="text" id="guia" class="form-control" placeholder="Busca el número de guía"
                             formControlName="guide_number"
                             title="{{ formInsertLocker.controls.guide_number.value ? formInsertLocker.controls.guide_number.value : '' }}"
-                            [ngClass]="{ 'is-invalid' : form.guide_number.errors }">
+                            [ngClass]="{ 'is-invalid' : form.guide_number.errors }" [matAutocomplete]="auto_guide"
+                            (keyup.enter)="autoCompleteGuide($event.target.value);">
+
                         <div class="invalid-feedback" *ngIf="form.guide_number.errors">
                             <ng-container *ngIf="form.guide_number.errors.required">
                                 Debes ingresar una guia de origen.
                             </ng-container>
                         </div>
+
+                        <mat-autocomplete #auto_guide="matAutocomplete" [displayWith]="displayGuides">
+                            <mat-option *ngFor="let guide of guides" [value]="guide" (click)="clickGuideItem(guide);">
+                                {{ guide.guide_number_alph ? guide.guide_number_alph : guide.guide_number }}
+                            </mat-option>
+                        </mat-autocomplete>
 
                     </div>
 
@@ -62,12 +70,19 @@
                     <div class="form-group">
                         <label for="name">Orden de Servicio</label>
                         <input type="text" class="form-control" id="name" placeholder="Ingresa la orden de servicio..."
-                            formControlName="order_service" [ngClass]="{ 'is-invalid' : form.order_service.errors }">
+                            formControlName="order_service" [ngClass]="{ 'is-invalid' : form.order_service.errors }"
+                            [matAutocomplete]="auto_service">
                         <div class="invalid-feedback" *ngIf="form.order_service.errors">
                             <ng-container *ngIf="form.order_service.errors.required">
                                 Debes ingresar una orden de servicio.
                             </ng-container>
                         </div>
+                        <mat-autocomplete #auto_service="matAutocomplete" [displayWith]="displayOrderService">
+                            <mat-option *ngFor="let order of filteredOrders | async" [value]="order"
+                                (click)="selectedOrder();">
+                                {{ order.id }}
+                            </mat-option>
+                        </mat-autocomplete>
                     </div>
                 </div>
 
@@ -113,20 +128,39 @@
 
             <br>
 
-            <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
-                *ngIf="!order_has_products || !locker_has_products" (click)="addIncome();">
-                Iniciar Ingreso
-            </button>
+            <div class="container-buttons">
+
+                <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
+                    *ngIf="!formInsertLocker.controls.order_service.value && order_has_products.length === 0 && locker_has_products.length === 0"
+                    (click)="addIncome();">
+                    Iniciar Ingreso
+                </button>
+
+                <button class="button-reset" type="button" (click)="resetAllForm();" *ngIf="!params.order_service">
+                    Resetear Formulario
+                </button>
+
+            </div>
 
         </div>
 
-        <app-not-income-products [order_has_products]="order_has_products" [formInsertLocker]="formInsertLocker"
-            [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);">
-        </app-not-income-products>
+        <div class="d-flex justify-content-center" *ngIf="loadingOrderQuery">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
 
-        <app-income-products [locker_has_products]="locker_has_products" [formInsertLocker]="formInsertLocker"
-            [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);">
-        </app-income-products>
+        <ng-container *ngIf="!loadingOrderQuery">
+
+            <app-not-income-products [order_has_products]="order_has_products" [formInsertLocker]="formInsertLocker"
+                [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);">
+            </app-not-income-products>
+
+            <app-income-products [locker_has_products]="locker_has_products" [formInsertLocker]="formInsertLocker"
+                [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);">
+            </app-income-products>
+
+        </ng-container>
 
     </form>
 

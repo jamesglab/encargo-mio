@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { InsertByGuideComponent } from './components/insert-by-guide/insert-by-guide.component';
 import { InsertInLockerComponent } from './components/insert-in-locker/insert-in-locker.component';
 import { LockerUpdateComponent } from './components/locker-update/locker-update.component';
 import { LockerComponent } from './components/locker/locker.component';
@@ -22,10 +21,6 @@ const routes: Routes = [
   {
     path: 'update-locker',
     component: LockerUpdateComponent
-  },
-  {
-    path: 'insert-by-guide',
-    component: InsertByGuideComponent
   }
 ];
 

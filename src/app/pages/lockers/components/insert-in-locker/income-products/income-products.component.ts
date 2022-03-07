@@ -37,9 +37,7 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   ngOnChanges() {
-    if (this.locker_has_products && this.locker_has_products.length >= 0) {
-      this.buildForm();
-    }
+    this.buildForm();
   }
 
   buildForm() {

@@ -39,9 +39,7 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   ngOnChanges() {
-    if (this.order_has_products && this.order_has_products.length >= 0) {
-      this.buildForm();
-    }
+    this.buildForm();
   }
 
   buildForm() {
@@ -289,7 +287,6 @@ export class NotIncomeProductsComponent implements OnInit {
 
     this.isLoading = true;
     this._lockers.insertIncome(payload).subscribe((res: any) => {
-      this.isLoading = false;
       this.refreshData.emit(true);
       Swal.fire({
         title: '',
@@ -299,7 +296,8 @@ export class NotIncomeProductsComponent implements OnInit {
         confirmButtonText: 'Aceptar'
       }).then((result) => {
         if (result.isConfirmed) {
-          // this.router.navigate(["/lockers/locker"]);
+          this.refreshData.emit(true);
+          this.isLoading = false;
         }
       });
     }, err => {

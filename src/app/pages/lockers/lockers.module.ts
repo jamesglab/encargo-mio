@@ -20,7 +20,6 @@ import { IvyCarouselModule } from 'angular-responsive-carousel';
 import { ModalEditLockersComponent } from './modals/modal-edit-lockers/modal-edit-lockers.component';
 import { IncomeProductsComponent } from './components/insert-in-locker/income-products/income-products.component';
 import { NotIncomeProductsComponent } from './components/insert-in-locker/not-income-products/not-income-products.component';
-import { InsertByGuideComponent } from './components/insert-by-guide/insert-by-guide.component';
 
 @NgModule({
   declarations: [
@@ -31,8 +30,7 @@ import { InsertByGuideComponent } from './components/insert-by-guide/insert-by-g
     LockerUpdateComponent,
     ModalEditLockersComponent,
     IncomeProductsComponent,
-    NotIncomeProductsComponent,
-    InsertByGuideComponent
+    NotIncomeProductsComponent
   ],
   imports: [
     CommonModule,

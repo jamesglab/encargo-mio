@@ -126,14 +126,6 @@ export const MENU: MenuItem[] = [
                 link: '/lockers/insert-in-locker',
                 code: 'CAS100',
                 showItem: false
-            },
-            {
-                id: 44,
-                label: 'Ingreso por Guía',
-                parentId: 4,
-                link: '/lockers/insert-by-guide',
-                code: 'CAS100',
-                showItem: false
             }
         ]
     }

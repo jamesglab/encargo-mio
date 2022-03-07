@@ -1,6 +1,7 @@
 <form [formGroup]="formLockerHasProduct" *ngIf="formLockerHasProduct">
 
-    <h3 *ngIf="formLockerHasProduct.get('product')['controls'] && formLockerHasProduct.get('product')['controls'].length > 0">
+    <h3
+        *ngIf="formLockerHasProduct.get('product')['controls'] && formLockerHasProduct.get('product')['controls'].length > 0">
         <strong>
             Productos Ingresados
         </strong>
