@@ -21,7 +21,7 @@
             (keydown)="keyDownFunction($event);">
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
             <mat-option *ngFor="let user of filteredUsers | async" [value]="user" (click)="filterOrders()">
-              CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+              CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}
             </mat-option>
           </mat-autocomplete>
         </th>
@@ -86,8 +86,10 @@
           </a>
         </td>
 
-        <td> CA {{ (data.user.locker.id ? data.user.locker.id +' | ': '') + ' ' + (data.user?.name ? data.user?.name:
-          "") + ' ' + (data.user?.last_name ? data.user?.last_name: "") }}
+        <td>
+          CA{{ data.user.locker ? data.user.locker.id : '' }}
+          {{ data.user.name ? data.user.name : '' }}
+          {{ data.user.last_name ? data.user.last_name : '' }}
         </td>
 
         <td>
