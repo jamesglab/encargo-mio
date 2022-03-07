@@ -182,7 +182,7 @@
   <ng-container *ngIf="form.product?.value?.images && form.product?.value?.images.length > 0">
 
     <div class="d-flex justify-content-center padding-image">
-      <carousel [width]="200" [cellsToShow]="1">
+      <carousel [width]="200" [cellsToShow]="1" style="z-index: 1 !important;">
         <div class="carousel-cell" *ngFor="let image of form.product.value.images">
           <a [href]="image.Location" target="_blank">
             <img [src]="image.Location" title="" alt="" draggable="false" (error)="onImageError($event);">
