@@ -255,8 +255,8 @@ export class NotIncomeProductsComponent implements OnInit {
 
   registerData(position?: number): void {
 
-    if (this.formNotIncome.invalid) {
-      this._notify.show('', 'No has completado el formulario correctamente, revisalos y vuelve a intentarlo.', 'info');
+    if (this.formNotIncome.controls.product['controls'][position].invalid) {
+      this._notify.show('', `No has completado el formulario del Ingreso ${position + 1} correctamente, revisalo y vuelve a intentarlo.`, 'info');
       return;
     }
 

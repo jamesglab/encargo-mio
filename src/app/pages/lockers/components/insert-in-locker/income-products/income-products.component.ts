@@ -206,8 +206,8 @@ export class IncomeProductsComponent implements OnInit {
 
   saveItem(position: number) {
 
-    if (this.formInsertLocker.invalid) {
-      this._notify.show('', 'No has completado el formulario correctamente, revisalos y vuelve a intentarlo.', 'info');
+    if (this.formLockerHasProduct.controls.product['controls'][position].invalid) {
+      this._notify.show('', `No has completado el formulario del Ingreso ${position + 1} correctamente, revisalo y vuelve a intentarlo.`, 'info');
       return;
     }
 
