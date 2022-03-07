@@ -70,7 +70,7 @@ export class NotIncomeProductsComponent implements OnInit {
       images: [product?.images ? product.images : []],
       invoice_images: [product?.invoice_images ? product.invoice_images : []],
       description: [product ? product.product?.description : null],
-      aditional_info: [product ? product.product?.aditional_info : null],
+      aditional_info: [{ value: product ? product.product?.aditional_info : null, disabled: true }],
       force_commercial_shipping: [product ? product.force_commercial_shipping : false],
       free_shipping: [product ? product.free_shipping : false],
       scrap_image: [product ? product.product?.image : null],
