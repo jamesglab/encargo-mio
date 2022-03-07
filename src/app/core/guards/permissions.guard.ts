@@ -16,7 +16,6 @@ export class PermissionsGuard implements CanActivate {
   ) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-
     // const permissions = this.authenticationService.getItem('permissions');
     // let access_module = false;
 

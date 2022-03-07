@@ -69,7 +69,7 @@ export class InsertInLockerComponent implements OnInit {
         this.router.navigate(["/lockers/insert-in-locker"]);
         throw err;
       });
-    } else {
+    } else if (this.params.income) {
       this._orderService.getOrderServiceWithoutOrder(this.params.income).subscribe((res: any) => {
         if (res.income || res.locker_has_products.length > 0 || res.order_has_products.length > 0) {
           this.locker = res.income?.locker;
@@ -91,6 +91,8 @@ export class InsertInLockerComponent implements OnInit {
         this.router.navigate(["/lockers/insert-in-locker"]);
         throw err;
       });
+    } else {
+      this.buildForm();
     }
   }
 
