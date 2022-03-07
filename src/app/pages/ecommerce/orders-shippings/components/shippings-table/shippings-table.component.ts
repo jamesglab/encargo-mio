@@ -80,6 +80,7 @@ export class ShippingsTableComponent implements OnInit {
   }
 
   ngOnChanges() {
+    console.log(this.shippings);
     if (this.resetAllFilters) {
       this.shippingsFilters.reset();
       this.filterData.emit({ data: this.shippingsFilters.getRawValue(), reset: true });
@@ -127,7 +128,7 @@ export class ShippingsTableComponent implements OnInit {
     if (value) {
       if (typeof value === 'object') {
         if (array === 'users') {
-          return value.full_name.toLowerCase().replace(/\s/g, '');
+          return value.full_info.toLowerCase().replace(/\s/g, '');
         }
       } else {
         return value.toLowerCase().replace(/\s/g, '');

@@ -28,7 +28,7 @@
           Guía
           <input type="text" class="form-control mt-2" formControlName="guide_number"
             placeholder="Filtra por número de guía..." title="Filtra por el número de guía..."
-            (keyup.enter)="sendFilter();" (keydown)="keyDownFunction($event);">
+            (keyup.enter)="sendFilter();" (keydown)="keyDownFunction($event);" style="width: 150px;">
         </th>
 
         <th class="align-middle">
@@ -53,8 +53,8 @@
 
           <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayFnUserName">
             <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
-              title="CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}" (click)="sendFilter();">
-              CA{{ user.locker_id }} | {{ user.name }} {{ user.last_name }}
+              title="CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}" (click)="sendFilter();">
+              CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}
             </mat-option>
           </mat-autocomplete>
 
