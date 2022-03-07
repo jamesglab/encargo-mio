@@ -264,7 +264,6 @@
             <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
         </div>
 
-
         <div class="modal-body">
 
             <div class="container">
@@ -327,14 +326,14 @@
 
                     <div class="row">
 
-                        <div class="col-3" *ngIf="item.image && !item.images">
+                        <div class="col-3">
 
-                            <ng-container *ngIf="item.image && !item.images">
+                            <ng-container *ngIf="item.images && item.images.length === 0">
                                 <img [src]="item.image" alt class="avatar" style="object-fit: contain; "
                                     draggable="false" />
                             </ng-container>
 
-                            <ng-container *ngIf="item.images">
+                            <ng-container *ngIf="item.images && item.images.length > 0">
                                 <carousel>
                                     <div class="carousel-cell">
                                         <img *ngFor="let image of item.images" [src]="image.Location"
