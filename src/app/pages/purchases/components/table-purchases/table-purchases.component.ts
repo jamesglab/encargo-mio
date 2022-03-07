@@ -260,6 +260,8 @@ export class TablePurchasesComponent implements OnInit {
     this.refreshTable.emit(event);
   }
 
+  onImageError(event: any) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
+
   delete(data: any): void {
     Swal.fire({
       title: '¿Estás seguro de eliminar esta compra?',
