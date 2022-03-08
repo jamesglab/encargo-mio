@@ -141,14 +141,16 @@ export class InsertInLockerComponent implements OnInit {
     this.formInsertLocker.controls.user.valueChanges.subscribe((user: any) => {
       this.formInsertLocker.controls.order_service.disable();
       if (typeof user === 'object' && user != null) {
-        this._orderService.getLockersByUser(user.id).subscribe((order: any) => {
-          this.orders = order;
-          this.formInsertLocker.controls.order_service.enable();
-          this.filteredOrders = this.formInsertLocker.controls.order_service.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'orders')));
-        }, err => {
-          this.formInsertLocker.controls.order_service.disable();
-          throw err;
-        });
+        if (user.user) {
+          this._orderService.getLockersByUser(user.user.id).subscribe((order: any) => {
+            this.orders = order;
+            this.formInsertLocker.controls.order_service.enable();
+            this.filteredOrders = this.formInsertLocker.controls.order_service.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'orders')));
+          }, err => {
+            this.formInsertLocker.controls.order_service.disable();
+            throw err;
+          });
+        }
       }
     });
 

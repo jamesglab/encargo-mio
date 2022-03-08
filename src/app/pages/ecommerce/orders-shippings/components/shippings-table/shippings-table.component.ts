@@ -80,7 +80,6 @@ export class ShippingsTableComponent implements OnInit {
   }
 
   ngOnChanges() {
-    console.log(this.shippings);
     if (this.resetAllFilters) {
       this.shippingsFilters.reset();
       this.filterData.emit({ data: this.shippingsFilters.getRawValue(), reset: true });
