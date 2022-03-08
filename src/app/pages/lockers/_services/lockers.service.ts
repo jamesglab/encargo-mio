@@ -141,7 +141,8 @@ export class LockersService {
     );
   }
 
-  getGuideIncome(guide_number: string): Observable<any> {
+  getGuideIncome(guide: string): Observable<any> {
+    let guide_number = guide.trim();
     return this.http.get<any>(
       `${environment.microservices.management}income/by-guide`,
       { headers: header, params: { guide_number } }
