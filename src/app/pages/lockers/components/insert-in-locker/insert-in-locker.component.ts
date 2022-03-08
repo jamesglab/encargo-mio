@@ -244,10 +244,10 @@ export class InsertInLockerComponent implements OnInit {
 
   clickGuideItem(item: any) {
 
-    this.actualGuide = (item.guide_number ? item.guide_number : item);
+    this.actualGuide = (item.guide_number_alph ? item.guide_number_alph : item);
 
     if (typeof item === 'object' && item !== null) {
-      this.formInsertLocker.controls.guide_number.setValue(item.guide_number);
+      this.formInsertLocker.controls.guide_number.setValue(item.guide_number_alph);
       this.formInsertLocker.controls.user.setValue(item.locker);
       this.formInsertLocker.controls.order_service.setValue(item.order_service.id);
       this.formInsertLocker.controls.conveyor.setValue(item.conveyor);
