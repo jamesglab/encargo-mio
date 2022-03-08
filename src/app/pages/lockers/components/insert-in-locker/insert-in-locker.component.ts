@@ -138,11 +138,20 @@ export class InsertInLockerComponent implements OnInit {
       this.getAllData(); // Obtenemos la respuesta de los conveyors y los users
     });
 
+    let userId: any = null;
+
     this.formInsertLocker.controls.user.valueChanges.subscribe((user: any) => {
+      if (user !== null) {
+        if (user.user) {
+          userId = user.user.id;
+        } else {
+          userId = user.id;
+        }
+      }
       this.formInsertLocker.controls.order_service.disable();
       if (typeof user === 'object' && user != null) {
-        if (user.user) {
-          this._orderService.getLockersByUser(user.user.id).subscribe((order: any) => {
+        if (userId) {
+          this._orderService.getLockersByUser(userId).subscribe((order: any) => {
             this.orders = order;
             this.formInsertLocker.controls.order_service.enable();
             this.filteredOrders = this.formInsertLocker.controls.order_service.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'orders')));
@@ -293,17 +302,19 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   _normalizeValue(value: any, array: any): string { // Método para normalizar el valor del autocomplete convirtiéndolo en minúscula.
-    if (typeof value === 'object' && value !== null) {
-      if (array === 'conveyors') {
-        return value.name.toLowerCase().replace(/\s/g, '');
-      } else if (array === 'users') {
-        return value.full_info.toLowerCase().replace(/\s/g, '');
-      } else if (array === 'orders') {
-        return value.id.toString();
-      }
-    } else {
-      if (typeof value !== 'number' && value !== null) {
-        return value.toLowerCase().replace(/\s/g, '');
+    if (value !== null) {
+      if (typeof value === 'object') {
+        if (array === 'conveyors') {
+          return value.name.toLowerCase().replace(/\s/g, '');
+        } else if (array === 'users') {
+          return value.full_info.toLowerCase().replace(/\s/g, '');
+        } else if (array === 'orders') {
+          return value.id.toString();
+        }
+      } else {
+        if (typeof value !== 'number') {
+          return value.toLowerCase().replace(/\s/g, '');
+        }
       }
     }
   }
