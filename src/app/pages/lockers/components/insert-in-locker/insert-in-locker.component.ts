@@ -59,7 +59,6 @@ export class InsertInLockerComponent implements OnInit {
     this.loadingOrderQuery = true;
 
     if (this.params.order_service) {
-
       this._orderService.getOrderService(this.params.order_service).subscribe((res: any) => {
         if (res.income || res.locker_has_products.length > 0 || res.order_has_products.length > 0) {
           this.locker = res.income?.locker;
@@ -123,7 +122,7 @@ export class InsertInLockerComponent implements OnInit {
         id: [data ? data.income?.id : null],
         guide_number: [data ? data.income?.guide_number_alph : null],
         user: [data ? data.income?.locker : null, [Validators.required]],
-        conveyor: [data ? data.income?.conveyor : null, [Validators.required]],
+        conveyor: [data ? data.income?.conveyor : null],
         receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }],
         order_service: [{ value: (data ? data.income?.order_service : null), disabled: true }]
       });
@@ -328,7 +327,7 @@ export class InsertInLockerComponent implements OnInit {
   }
 
   displayOrderService(order: any) {
-    return order ? order.id : '';
+    return order?.id ? order.id : order;
   }
 
   displayGuides(guide: any): void {

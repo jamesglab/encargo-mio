@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FileHandle } from 'src/app/_directives/file-handle';
-import { Router } from '@angular/router';
 import { insertOnlyLocker, tranformFormItemNotIncome } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { LockersService } from '../../../_services/lockers.service';
 import Swal from 'sweetalert2';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-not-income-products',
@@ -27,15 +27,20 @@ export class NotIncomeProductsComponent implements OnInit {
 
   public isLoading: boolean = false;
 
+  public params: any = {};
+
   constructor(
     public _fb: FormBuilder,
     public _notify: NotifyService,
     public _compress: ImageCompressService,
     private _lockers: LockersService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
+    console.log(this.params);
   }
 
   ngOnChanges() {
@@ -58,6 +63,7 @@ export class NotIncomeProductsComponent implements OnInit {
 
   createItem(product?: any): FormGroup {
     let item = this._fb.group({
+      id: [null],
       product: [product ? (product.product?.id ? { id: product ? product.product?.id : null } : null) : null],
       name: [product ? product.product?.name : null, [Validators.required]],
       declared_value_admin: [product ? product.product_price : null, [Validators.required]],
@@ -72,7 +78,8 @@ export class NotIncomeProductsComponent implements OnInit {
       force_commercial_shipping: [product ? product.force_commercial_shipping : false],
       free_shipping: [product ? product.free_shipping : false],
       scrap_image: [product ? product.product?.image : null],
-      pending_quantity: [product ? product.product?.pending_quantity : 0]
+      pending_quantity: [product ? product.product?.pending_quantity : null],
+      secuential_fraction: [null]
     });
     return item;
   }
@@ -187,11 +194,7 @@ export class NotIncomeProductsComponent implements OnInit {
 
   addIncome(position: number) {
 
-    if (!this.formNotIncome.getRawValue().product[position].pending_quantity) {
-
-      this.products.push(this.createItem());
-
-    } else {
+    if (this.formNotIncome.getRawValue().product[position].pending_quantity >= 0) {
 
       if (this.formNotIncome.getRawValue().product[position].quantity === this.formNotIncome.getRawValue().product[position].pending_quantity) {
         this._notify.show('', `No puedes añadir más ingresos al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id}, debido a que tiene todas las cantidades (${this.formNotIncome.getRawValue().product[position].quantity}) ya han sido añadidas.`, 'info');
@@ -233,6 +236,8 @@ export class NotIncomeProductsComponent implements OnInit {
 
       }
 
+    } else {
+      this.products.push(this.createItem());
     }
 
   }
@@ -253,6 +258,11 @@ export class NotIncomeProductsComponent implements OnInit {
 
   registerData(position?: number): void {
 
+    if (this.formInsertLocker.invalid) {
+      this._notify.show('', `No has completado el formulario correctamente, revisalo y vuelve a intentarlo.`, 'info');
+      return;
+    }
+
     if (this.formNotIncome.controls.product['controls'][position].invalid) {
       this._notify.show('', `No has completado el formulario del Ingreso ${position + 1} correctamente, revisalo y vuelve a intentarlo.`, 'info');
       return;
@@ -263,7 +273,6 @@ export class NotIncomeProductsComponent implements OnInit {
     if (!this.formNotIncome.getRawValue().product[position].product) {
       payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[position]]);
     } else {
-
       let check = this.checkIfProductsRepeat();
 
       if (check && check.length === 0) {
@@ -287,7 +296,6 @@ export class NotIncomeProductsComponent implements OnInit {
 
     this.isLoading = true;
     this._lockers.insertIncome(payload).subscribe((res: any) => {
-      this.refreshData.emit(true);
       Swal.fire({
         title: '',
         text: "Se ha realizado el ingreso de los productos correctamente.",
@@ -296,8 +304,12 @@ export class NotIncomeProductsComponent implements OnInit {
         confirmButtonText: 'Aceptar'
       }).then((result) => {
         if (result.isConfirmed) {
-          this.refreshData.emit(true);
-          this.isLoading = false;
+          if (!this.params.order_service || this.params.income) {
+            this.router.navigate(["/lockers/locker"]);
+          } else {
+            this.refreshData.emit(true);
+            this.isLoading = false;
+          }
         }
       });
     }, err => {
