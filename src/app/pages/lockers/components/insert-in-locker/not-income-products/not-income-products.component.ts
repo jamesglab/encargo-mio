@@ -40,7 +40,6 @@ export class NotIncomeProductsComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
-    console.log(this.params);
   }
 
   ngOnChanges() {
@@ -194,7 +193,7 @@ export class NotIncomeProductsComponent implements OnInit {
 
   addIncome(position: number) {
 
-    if (this.formNotIncome.getRawValue().product[position].pending_quantity >= 0) {
+    if (this.formNotIncome.getRawValue().product[position].pending_quantity > 0) {
 
       if (this.formNotIncome.getRawValue().product[position].quantity === this.formNotIncome.getRawValue().product[position].pending_quantity) {
         this._notify.show('', `No puedes añadir más ingresos al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id}, debido a que tiene todas las cantidades (${this.formNotIncome.getRawValue().product[position].quantity}) ya han sido añadidas.`, 'info');
