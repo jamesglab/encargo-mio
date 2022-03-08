@@ -68,7 +68,7 @@ export class NotIncomeProductsComponent implements OnInit {
       declared_value_admin: [product ? product.product_price : null, [Validators.required]],
       weight: [product ? product.weight : null, [Validators.required, Validators.minLength(0.1)]],
       permanent_shipping_value: [product ? product.product?.permanent_shipping_value : null],
-      quantity: [product?.product?.quantity ? product.product?.quantity : 1],
+      quantity: [product?.product?.pending_quantity ? product.product?.pending_quantity : 1],
       order_service: [product ? product?.order_service : null],
       images: [product?.images ? product.images : []],
       invoice_images: [product?.invoice_images ? product.invoice_images : []],
@@ -130,6 +130,7 @@ export class NotIncomeProductsComponent implements OnInit {
       this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
         if (res.images) { // res.images es un arreglo
           for (let index = 0; index < res.images.length; index++) {
+            this.products.controls[position]['controls'][array].setValue([]);
             this.products.controls[position]['controls'][array].value.push(res.images[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
@@ -143,6 +144,7 @@ export class NotIncomeProductsComponent implements OnInit {
       this._lockers.uploadImageInvoice(formDataInvoice).subscribe((res: any) => {
         if (res.invoice) { // res.invoice es un arreglo
           for (let index = 0; index < res.invoice.length; index++) { // recorremos el arreglo 
+            this.products.controls[position]['controls'][array].setValue([]);
             this.products.controls[position]['controls'][array].value.push(res.invoice[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
@@ -168,6 +170,10 @@ export class NotIncomeProductsComponent implements OnInit {
 
   addQuantity(i: number): void { // Añadir una cantidad al producto
     let actualQuantity: number = this.formNotIncome.get('product')['controls'][i].controls.quantity.value;
+    if (!this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
+      this.formNotIncome.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
+      return;
+    }
     if (actualQuantity <= this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formNotIncome.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
@@ -267,55 +273,82 @@ export class NotIncomeProductsComponent implements OnInit {
       return;
     }
 
-    let payload: any;
+    let payload: any = null;
 
     if (!this.formNotIncome.getRawValue().product[position].product) {
-      payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, this.formNotIncome.getRawValue().product);
-      console.log("payload", payload);
+
+      for (let index = 0; index < this.formNotIncome.getRawValue().product.length; index++) {
+        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[position]]);
+        this.isLoading = true;
+        this._lockers.insertIncome(payload).subscribe((res: any) => {
+          Swal.fire({
+            title: '',
+            text: "Se ha realizado el ingreso de los productos correctamente.",
+            icon: 'success',
+            showCancelButton: false,
+            confirmButtonText: 'Aceptar'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              if (!this.params.order_service || this.params.income) {
+                this.router.navigate(["/lockers/locker"]);
+              } else {
+                this.refreshData.emit(true);
+                this.isLoading = false;
+              }
+            }
+          });
+        }, err => {
+          this.isLoading = false;
+          this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
+          throw err;
+        });
+      }
+
     } else {
-      let check = this.checkIfProductsRepeat();
-      if (check && check.length === 0) {
+
+      let checkArray = this.checkIfProductsRepeat();
+      if (checkArray && checkArray.length === 0) {
         if (this.formNotIncome.getRawValue().product[position].quantity.value > this.formNotIncome.getRawValue().product[position].pending_quantity.value) {
           this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${this.formNotIncome.getRawValue().product[position].product.quantity} cantidades), revisa la cantidad de tus productos.`, 'info');
         }
         payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.formNotIncome.getRawValue().product[position].order_service, [this.formNotIncome.getRawValue().product[position]]);
       } else {
         let totalQuantity: number = 0;
-        for (let index = 0; index < check.length; index++) {
-          totalQuantity += check[index].quantity;
+        for (let index = 0; index < checkArray.length; index++) {
+          totalQuantity += checkArray[index].quantity;
         }
         if (totalQuantity > this.formNotIncome.getRawValue().product[position].pending_quantity) {
           this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${totalQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
           return;
         }
-        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.formNotIncome.getRawValue().product[position].order_service, check);
+        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.formNotIncome.getRawValue().product[position].order_service, checkArray);
       }
 
-    }
-
-    this.isLoading = true;
-    this._lockers.insertIncome(payload).subscribe((res: any) => {
-      Swal.fire({
-        title: '',
-        text: "Se ha realizado el ingreso de los productos correctamente.",
-        icon: 'success',
-        showCancelButton: false,
-        confirmButtonText: 'Aceptar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if (!this.params.order_service || this.params.income) {
-            this.router.navigate(["/lockers/locker"]);
-          } else {
-            this.refreshData.emit(true);
-            this.isLoading = false;
+      this.isLoading = true;
+      this._lockers.insertIncome(payload).subscribe((res: any) => {
+        Swal.fire({
+          title: '',
+          text: "Se ha realizado el ingreso de los productos correctamente.",
+          icon: 'success',
+          showCancelButton: false,
+          confirmButtonText: 'Aceptar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            if (!this.params.order_service || this.params.income) {
+              this.router.navigate(["/lockers/locker"]);
+            } else {
+              this.refreshData.emit(true);
+              this.isLoading = false;
+            }
           }
-        }
+        });
+      }, err => {
+        this.isLoading = false;
+        this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
+        throw err;
       });
-    }, err => {
-      this.isLoading = false;
-      this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
-      throw err;
-    });
+
+    }
 
   }
 
