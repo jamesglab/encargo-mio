@@ -270,10 +270,10 @@ export class NotIncomeProductsComponent implements OnInit {
     let payload: any;
 
     if (!this.formNotIncome.getRawValue().product[position].product) {
-      payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[position]]);
+      payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, this.formNotIncome.getRawValue().product);
+      console.log("payload", payload);
     } else {
       let check = this.checkIfProductsRepeat();
-
       if (check && check.length === 0) {
         if (this.formNotIncome.getRawValue().product[position].quantity.value > this.formNotIncome.getRawValue().product[position].pending_quantity.value) {
           this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${this.formNotIncome.getRawValue().product[position].product.quantity} cantidades), revisa la cantidad de tus productos.`, 'info');
@@ -288,7 +288,7 @@ export class NotIncomeProductsComponent implements OnInit {
           this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${totalQuantity} cantidades), revisa la cantidad de tus productos.`, 'info');
           return;
         }
-        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.formNotIncome.getRawValue().product[position].order_servicee, check);
+        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.formNotIncome.getRawValue().product[position].order_service, check);
       }
 
     }
