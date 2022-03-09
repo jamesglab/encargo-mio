@@ -137,7 +137,8 @@
                 </button>
 
                 <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
-                    (click)="createMassive();" title="Este botón funciona para hacer ingresos masivos.">
+                    (click)="createMassive();" title="Este botón funciona para hacer ingresos masivos."
+                    *ngIf="formInsertLocker.controls.guide_number.value">
                     Ingreso Masivo
                 </button>
 

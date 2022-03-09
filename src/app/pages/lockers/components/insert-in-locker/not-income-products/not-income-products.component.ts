@@ -278,12 +278,11 @@ export class NotIncomeProductsComponent implements OnInit {
       return;
     }
 
-    let payload: any = null;
-
     if (!this.formNotIncome.getRawValue().product[position].product) {
 
       for (let index = 0; index < this.formNotIncome.getRawValue().product.length; index++) {
-        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[position]]);
+        let payload: any = null;
+        payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[index]]);
         this.isLoading = true;
         this._lockers.insertIncome(payload).subscribe((res: any) => {
           Swal.fire({
@@ -311,6 +310,7 @@ export class NotIncomeProductsComponent implements OnInit {
 
     } else {
 
+      let payload: any = null;
       let checkArray = this.checkIfProductsRepeat();
       if (checkArray && checkArray.length === 0) {
         if (this.formNotIncome.getRawValue().product[position].quantity.value > this.formNotIncome.getRawValue().product[position].pending_quantity.value) {
