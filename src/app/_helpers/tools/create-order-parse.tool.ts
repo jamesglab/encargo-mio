@@ -100,17 +100,46 @@ export const updateShipping = (data: any): any => {
 
 };
 
-export const insertOnlyLocker = (form: any, order_service: string, income?: any): any => {
+export const insertOnlyLocker = (form: any, order_service: any, products: any): any => {
 
     let data = {
+        "id": form.id ? form.id : null,
         "locker": form.user.locker_id,
         "guide_number": form.guide_number ? form.guide_number : null,
-        "order_service": order_service ? order_service : (form.order_service ? form.order_service.order_service.id : form.order_service),
-        "id": income ? parseInt(income) : null,
-        "conveyor": form.conveyor.id,
-        "products": form.products,
+        "order_service": order_service ? order_service : form.order_service,
+        "conveyor": form.conveyor ? form.conveyor.id : null,
+        "products": products ? products : [],
         "receipt_date": new Date(form.receipt_date.year, form.receipt_date.month - 1, form.receipt_date.day)
     };
 
     return data;
-}
+};
+
+export const tranformFormItemNotIncome = (data: any): any => {
+
+    let transfrom = {
+        "product": {
+            "id": data.product.value.id,
+            "name": data.name.value,
+            "permanent_shipping_value": data.permanent_shipping_value.value,
+            "quantity": data.quantity.value,
+            "description": data.description.value,
+            "aditional_info": data.aditional_info.value,
+            "image": data.scrap_image.value,
+            "pending_quantity": data.pending_quantity ? data.pending_quantity?.value : null
+        },
+        "product_price": data.declared_value_admin.value,
+        "declared_value_admin": data.declared_value_admin.value,
+        "weight": data.weight.value,
+        "order_service": data.order_service.value,
+        "images": data.images.value,
+        "invoice_images": data.invoice_images.value,
+        "force_commercial_shipping": data.force_commercial_shipping.value,
+        "free_shipping": data.free_shipping.value,
+        "secuential_fraction": data.secuential_fraction.value,
+        "id": data.id.value
+    };
+
+    return transfrom;
+
+};

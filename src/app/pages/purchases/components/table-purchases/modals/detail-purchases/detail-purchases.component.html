@@ -59,15 +59,18 @@
 
                     <div style="display: flex; align-items: center; flex-wrap: wrap;">
 
-                        <!-- <img *ngFor="let images of product.images" [src]="images.Location" alt="" draggable="false"
-                            style="height: 150px; width: 150px; object-fit: contain;"> -->
+                        <ng-container *ngIf="product.images && product.images.length > 0">
+                            <carousel [width]="200" [arrows]="false">
+                                <div class="carousel-cell" *ngFor="let image of product.images">
+                                    <img [src]="image.Location" draggable="false" (error)="onImageError($event);">
+                                </div>
+                            </carousel>
+                        </ng-container>
 
-                        <carousel [width]="200" [arrows]="false">
-                            <div class="carousel-cell" *ngFor="let image of product.images">
-                                <img [src]="image.Location" draggable="false">
-                            </div>
-                        </carousel>
-
+                        <ng-container *ngIf="product.images && product.images.length == 0 && product.image">
+                            <img width="200" height="200" [src]="product.image" alt="" (error)="onImageError($event);"
+                                draggable="false">
+                        </ng-container>
 
                         <div style="margin-left: 10px;">
 
@@ -89,6 +92,8 @@
                         </div>
 
                     </div>
+
+                    <br>
 
                 </div>
 

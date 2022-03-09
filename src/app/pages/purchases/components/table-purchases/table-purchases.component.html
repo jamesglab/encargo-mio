@@ -48,6 +48,14 @@
           </th>
 
           <th class="align-middle">
+            Guía
+            <div class="mt-2">
+              <input type="text" class="form-control" placeholder="Ingresa el número de guía..."
+                [formControl]="filterGuide" (keyup.enter)="filterPurchase()" (keydown)="keyDownFunction($event);">
+            </div>
+          </th>
+
+          <th class="align-middle">
             Estado Cotización
             <select class="form-select" [formControl]="filterOrderServiceStatus" (change)="filterPurchase();">
               <option disabled value="" title="Selecciona filtro...">Selecciona filtro...</option>
@@ -87,9 +95,9 @@
           </th>
 
           <th class="align-middle">
-            Id del Producto
+            PEC
             <div class="mt-2">
-              <input type="text" class="form-control" [formControl]="filterIdProduct" placeholder="Id del producto"
+              <input type="text" class="form-control" [formControl]="filterIdProduct" placeholder="PEC"
                 (keyup.enter)="filterPurchase()" (keydown)="keyDownFunction($event);" />
             </div>
           </th>
@@ -161,14 +169,15 @@
           <td style="position: relative;">
             <div class="image-product">
               <a [href]="data.product_link" target="_blank">
+
                 <ng-container *ngIf="data.product_images && data.product_images.length > 0">
-                  <img [src]="data.product_images[0]?.Location || 'https://i.imgur.com/riKFnErh.jpg'"
-                    (error)="$event.src = 'https://i.imgur.com/riKFnErh.jpg'" draggable="false">
+                  <img [src]="data.product_images[0]?.Location" (error)="onImageError($event);" draggable="false">
                 </ng-container>
+
                 <ng-container *ngIf="data.product_images && data.product_images.length === 0 || !data.product_images">
-                  <img [src]="data.product_image" (error)="$event.src = 'https://i.imgur.com/riKFnErh.jpg'"
-                    draggable="false">
+                  <img [src]="data.product_image" (error)="onImageError($event);" draggable=" false">
                 </ng-container>
+
               </a>
             </div>
             <a [href]="data.product_link" target="_blank" *ngIf="data.sold_out">
@@ -183,7 +192,11 @@
           </td>
 
           <td>
-            {{data.order_service || '-'}}
+            {{ data.order_service || '-' }}
+          </td>
+
+          <td>
+            {{ data.guide_number_alph || data.guide_number }}
           </td>
 
           <td>

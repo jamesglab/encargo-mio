@@ -185,7 +185,7 @@ export class TransactionComponent implements OnInit {
       if (array === 'conveyors') {
         return value.name.toLowerCase().replace(/\s/g, '');
       } else if (array === 'users') {
-        return value.full_name.toLowerCase().replace(/\s/g, '');
+        return value.full_info.toLowerCase().replace(/\s/g, '');
       } else if (array === 'address') {
         return value.address.toLowerCase().replace(/\s/g, '');
       }

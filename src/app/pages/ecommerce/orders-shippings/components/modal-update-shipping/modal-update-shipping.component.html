@@ -296,7 +296,10 @@
 
               <div *ngIf="item.arrived">
                 <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
-                  #{{ item.product ? item.product.id : '' }}
+                  PEC {{ item.product ? item.product.id : '' }}
+                  <ng-container *ngIf="item.product.secuential_fraction">
+                    - {{ item.product.secuential_fraction }}
+                  </ng-container>
                 </a>
               </div>
 
@@ -390,13 +393,17 @@
                 </carousel>
               </div>
 
-              <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length === 0">
+              <div class="d-flex justify-content-center"
+                *ngIf="item.images && item.images.length === 0 || !item.images && item.product.image">
                 <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
               </div>
 
               <div *ngIf="item.arrived">
                 <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
-                  #{{ item.product ? item.product.id : '' }}
+                  PEC {{ item.product ? item.product.id : '' }}
+                  <ng-container *ngIf="item.product.secuential_fraction">
+                    - {{ item.product.secuential_fraction }}
+                  </ng-container>
                 </a>
               </div>
 
@@ -497,7 +504,10 @@
 
               <div *ngIf="item.arrived">
                 <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
-                  #{{ item.product ? item.product.id : '' }}
+                  PEC {{ item.product ? item.product.id : '' }}
+                  <ng-container *ngIf="item.product.secuential_fraction">
+                    - {{ item.product.secuential_fraction }}
+                  </ng-container>
                 </a>
               </div>
 

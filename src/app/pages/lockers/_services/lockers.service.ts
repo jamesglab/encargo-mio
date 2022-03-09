@@ -119,7 +119,7 @@ export class LockersService {
     );
   }
 
-  insertInLockerWithout(payload: any): Observable<any> {
+  insertIncome(payload: any): Observable<any> {
     return this.http.post<any>(
       `${environment.microservices.management}income`, payload
     ).pipe(
@@ -139,6 +139,19 @@ export class LockersService {
       }),
       catchError(handleError)
     );
+  }
+
+  getGuideIncome(guide: string): Observable<any> {
+    let guide_number = guide.trim();
+    return this.http.get<any>(
+      `${environment.microservices.management}income/by-guide`,
+      { headers: header, params: { guide_number } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
   }
 
 }

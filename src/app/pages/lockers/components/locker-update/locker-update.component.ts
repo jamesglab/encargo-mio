@@ -8,7 +8,6 @@ import { insertOnlyLocker } from 'src/app/_helpers/tools/create-order-parse.tool
 import { numberOnly } from 'src/app/_helpers/tools/utils.tool';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
-import { UserService } from 'src/app/_services/users.service';
 import { LockersService } from '../../_services/lockers.service';
 import Swal from 'sweetalert2';
 
@@ -48,8 +47,7 @@ export class LockerUpdateComponent implements OnInit {
     public _notify: NotifyService,
     public _compress: ImageCompressService,
     private _lockers: LockersService,
-    private _orderService: OrderService,
-    private _usersService: UserService
+    private _orderService: OrderService
   ) { }
 
   ngOnInit(): void {
@@ -70,10 +68,9 @@ export class LockerUpdateComponent implements OnInit {
 
   checkParams(): void {
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
-    if (this.params.income) {
-      this._lockers.getProductsByIncome(this.params.income)
+    if (this.params.order_service) {
+      this._lockers.getProductsByIncome(this.params.order_service)
         .subscribe((res: any) => {
-          console.log(res);
           this.buildForm(res);
         }, err => {
           throw err;
@@ -92,7 +89,6 @@ export class LockerUpdateComponent implements OnInit {
       products: this._fb.array([])
     });
     this.pushIfExistProducts(res.products);
-    this.getAllData();
   }
 
   get form() {
@@ -109,37 +105,6 @@ export class LockerUpdateComponent implements OnInit {
   addItem(product?: any, status?: boolean): void { // Método para pushear un nuevo ítem al arreglo de productos.
     this.products = this.formUpdateLocker.get('products') as FormArray; // Igualamos el arreglo de productos al array products del FormArray
     this.products.push(this.createItem(product, status)); // Pusheamos un nuevo ítem al arreglo de productos.
-  }
-
-  getAllData() { // Creamos un método que reuna dos llamados al backend: traer los conveyors, los users y creamos una promise para un mejor funcionamiento.
-    // let converyorsPromise = new Promise((resolve, reject) => {
-    //   this._orderService.getConvenyor().subscribe((res: any) => {
-    //     this.conveyors = res;
-    //     let conveyorSelected = this.conveyors.filter(x => x.id === this.formUpdateLocker.controls.conveyor.value);
-    //     this.formUpdateLocker.controls.conveyor.setValue(conveyorSelected[0]);
-    //     this.formUpdateLocker.controls.conveyor.enable();
-    //     resolve(this.conveyors);
-    //   }, err => {
-    //     reject(err);
-    //     throw err;
-    //   });
-    // });
-
-    // let usersPromise = new Promise((resolve, reject) => {
-    //   this._usersService.getUsersAdmin().subscribe((res: any) => {
-    //     this.users = res;
-    //     this.formUpdateLocker.controls.user.enable();
-    //     resolve(this.users);
-    //   }, err => {
-    //     reject(err);
-    //     throw err;
-    //   });
-    // });
-
-    // Promise.all([converyorsPromise, usersPromise]).then(() => { // Cuando se cumplan las dos peticiones se incia el método del filter
-    //   this.filteredConveyors = this.formUpdateLocker.controls.conveyor.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'conveyors')));
-    //   this.filteredUsers = this.formUpdateLocker.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
-    // });
   }
 
   createItem(item?: any, status?: boolean): FormGroup { // Creamos el ítem del formulario dinámico
@@ -218,9 +183,7 @@ export class LockerUpdateComponent implements OnInit {
       formData.append('images', response.file); // Pusheamos la respuesta de la imagen comprimida en el formData
       this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
         if (res.images) { // res.images es un arreglo
-          for (let index = 0; index < res.images.length; index++) {
-            this.products.controls[position]['controls'][array].value.push(res.images[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
-          }
+          this.products.controls[position]['controls'][array].setValue([...this.products.controls[position]['controls'][array].value, res.images[0]]) // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
         }
         this.formUpdateLocker.get('products')['controls'][position].controls.loadingImage.setValue(false);
       }, err => {
@@ -234,9 +197,7 @@ export class LockerUpdateComponent implements OnInit {
       formDataInvoice.append('invoice', response.file); // Pusheamos la respuesta de la imagen comprimida en el formData
       this._lockers.uploadImageInvoice(formDataInvoice).subscribe((res: any) => {
         if (res.invoice) { // res.invoice es un arreglo
-          for (let index = 0; index < res.invoice.length; index++) { // recorremos el arreglo 
-            this.products.controls[position]['controls'][array].value.push(res.invoice[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
-          }
+          this.products.controls[position]['controls'][array].setValue([...this.products.controls[position]['controls'][array].value, res.invoice[0]]) // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
         }
         this.formUpdateLocker.get('products')['controls'][position].controls.loadingImage.setValue(false);
       }, err => {

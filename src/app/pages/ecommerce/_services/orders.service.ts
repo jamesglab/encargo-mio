@@ -410,9 +410,21 @@ export class OrderService {
     );
   }
 
-  getOrderPurchaseById(id: string): Observable<any> {
+  getOrderService(id: string): Observable<any> {
     return this.http.get<any>(
-      `${environment.microservices.management}order-purchase/by-order-service`,
+      `${environment.microservices.management}income/by-order-service`,
+      { headers: header, params: { id } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    );
+  }
+
+  getOrderServiceWithoutOrder(id: string): Observable<any> {
+    return this.http.get<any>(
+      `${environment.microservices.management}income`,
       { headers: header, params: { id } }
     ).pipe(
       map((res: any) => {
@@ -454,7 +466,7 @@ export class OrderService {
     return this.http
       .get<any>(`${environment.microservices.management}locker/user-locker`, {
         headers: header,
-        params: { user: data },
+        params: { user: data }
       })
       .pipe(
         map((res: any) => {

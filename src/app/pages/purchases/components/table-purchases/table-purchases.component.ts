@@ -37,6 +37,7 @@ export class TablePurchasesComponent implements OnInit {
 
   public filterCode = new FormControl('');
   public filterOrderService = new FormControl('');
+  public filterGuide = new FormControl('');
   public filterOrderServiceStatus = new FormControl(null);
   public filterDate = new FormControl('');
   public filterLockerDate = new FormControl('');
@@ -67,6 +68,9 @@ export class TablePurchasesComponent implements OnInit {
     this.getStores();
     this.getConveyors();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
+  }
+
+  ngOnChanges() {
   }
 
   checkOperativeSystem() {
@@ -139,6 +143,7 @@ export class TablePurchasesComponent implements OnInit {
   resetFilters() {
     this.filterCode.reset();
     this.filterOrderService.reset();
+    this.filterGuide.reset();
     this.filterOrderServiceStatus.reset();
     this.filterUser.reset();
     this.filterDate.reset();
@@ -196,6 +201,9 @@ export class TablePurchasesComponent implements OnInit {
     if (this.filterStatusProduct.value != null && this.filterStatusProduct.value != '') {
       filterValues['locker_has_product'] = this.filterStatusProduct.value;
     }
+    if (this.filterGuide.value != null && this.filterGuide.value != '') {
+      filterValues['guide_number'] = this.filterGuide.value;
+    }
     this.filterValues.emit(filterValues);
   }
 
@@ -251,6 +259,8 @@ export class TablePurchasesComponent implements OnInit {
   refreshTableReceive(event: boolean) {
     this.refreshTable.emit(event);
   }
+
+  onImageError(event: any) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 
   delete(data: any): void {
     Swal.fire({
