@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h5 class="modal-title">Imagen de la Tienda</h5>
+    <button type="button" class="btn-close" (click)="closeModal();" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+
+    <div class="container-image">
+        <img [src]="image" alt="" draggable="false" (error)="onImageError($event);">
+    </div>
+
+</div>

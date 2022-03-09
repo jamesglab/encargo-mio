@@ -1,0 +1,9 @@
+.container-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+        height: 500px;
+        object-fit: contain;
+    }
+}

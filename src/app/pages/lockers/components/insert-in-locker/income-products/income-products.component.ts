@@ -6,6 +6,8 @@ import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { LockersService } from '../../../_services/lockers.service';
 import Swal from 'sweetalert2';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ImageViewComponent } from '../image-view/image-view.component';
 
 @Component({
   selector: 'app-income-products',
@@ -30,7 +32,8 @@ export class IncomeProductsComponent implements OnInit {
     public _fb: FormBuilder,
     public _notify: NotifyService,
     public _compress: ImageCompressService,
-    private _lockers: LockersService
+    private _lockers: LockersService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +67,8 @@ export class IncomeProductsComponent implements OnInit {
       permanent_shipping_value: [{ value: product ? product.permanent_shipping_value : 0, disabled: true }],
       quantity: [product.quantity ? product.quantity : 1],
       order_service: [product ? product.order_service : null],
-      images: [product.images ? product.images : []],
+      images: [product?.product?.images ? product?.product?.images : []],
+      images_locker: [product ? product.images : []],
       invoice_images: [product.invoice_images ? product.invoice_images : []],
       description: [{ value: product ? product.product.description : null, disabled: true }],
       aditional_info: [{ value: product ? product.product.aditional_info : null, disabled: true }],
@@ -72,7 +76,6 @@ export class IncomeProductsComponent implements OnInit {
       free_shipping: [{ value: product ? product.free_shipping : false, disabled: true }],
       secuential_fraction: [product ? product.secuential_fraction : null],
       editable: [false],
-      scrap_image: [product ? product.product?.image : null],
       pending_quantity: [product ? product.product.pending_quantity : null]
     });
     return item;
@@ -129,12 +132,13 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   uploadImageToBucket(response: any, position: number, array: string): void {
-    if (array === 'images') { // Images = se irá al endpoint de añadir una nueva imagen del producto
+    if (array === 'images_locker') { // Images = se irá al endpoint de añadir una nueva imagen del producto
       const formData = new FormData(); // Creamos un formData para enviarlo
       formData.append('images', response.file); // Pusheamos la respuesta de la imagen comprimida en el formData
       this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
         if (res.images) { // res.images es un arreglo
           for (let index = 0; index < res.images.length; index++) {
+            this.products.controls[position]['controls'][array].setValue([]);
             this.products.controls[position]['controls'][array].value.push(res.images[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
@@ -148,6 +152,7 @@ export class IncomeProductsComponent implements OnInit {
       this._lockers.uploadImageInvoice(formDataInvoice).subscribe((res: any) => {
         if (res.invoice) { // res.invoice es un arreglo
           for (let index = 0; index < res.invoice.length; index++) { // recorremos el arreglo 
+            this.products.controls[position]['controls'][array].setValue([]);
             this.products.controls[position]['controls'][array].value.push(res.invoice[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
@@ -200,6 +205,11 @@ export class IncomeProductsComponent implements OnInit {
 
   onImageError(event: any) { // Cuando hay un error en alguna imagen se setea una imagen de una caja por defecto.
     event.target.src = "https://i.imgur.com/riKFnErh.jpg";
+  }
+
+  openModalImage(image: string) {
+    let modal = this.modalService.open(ImageViewComponent, { size: 'lg', centered: true });
+    modal.componentInstance.image = image;
   }
 
   saveItem(position: number) {

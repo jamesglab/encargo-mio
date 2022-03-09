@@ -382,7 +382,7 @@ export class InsertInLockerComponent implements OnInit {
     }
   }
 
-  createMassive() {
+  createMassive(): void {
     this.getDataIncome = true;
   }
 

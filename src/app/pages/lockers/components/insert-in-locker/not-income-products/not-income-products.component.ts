@@ -7,6 +7,8 @@ import { NotifyService } from 'src/app/_services/notify.service';
 import { LockersService } from '../../../_services/lockers.service';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ImageViewComponent } from '../image-view/image-view.component';
 
 @Component({
   selector: 'app-not-income-products',
@@ -37,7 +39,8 @@ export class NotIncomeProductsComponent implements OnInit {
     public _compress: ImageCompressService,
     private _lockers: LockersService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -75,17 +78,22 @@ export class NotIncomeProductsComponent implements OnInit {
       permanent_shipping_value: [product ? product.product?.permanent_shipping_value : null],
       quantity: [product?.product?.pending_quantity ? product.product?.pending_quantity : 1],
       order_service: [product ? product?.order_service : null],
-      images: [product?.images ? product.images : []],
+      images: [product?.product?.images ? product?.product?.images : []],
+      images_locker: [[]],
       invoice_images: [product?.invoice_images ? product.invoice_images : []],
       description: [product ? product.product?.description : null],
       aditional_info: [{ value: product ? product.product?.aditional_info : null, disabled: true }],
       force_commercial_shipping: [product ? product.force_commercial_shipping : false],
       free_shipping: [product ? product.free_shipping : false],
-      scrap_image: [product ? product.product?.image : null],
       pending_quantity: [product ? product.product?.pending_quantity : null],
       secuential_fraction: [null]
     });
+    this.pushScrapImage(product.image);
     return item;
+  }
+
+  pushScrapImage(item: any) {
+    console.log(item);
   }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
@@ -129,7 +137,7 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   uploadImageToBucket(response: any, position: number, array: string): void {
-    if (array === 'images') { // Images = se irá al endpoint de añadir una nueva imagen del producto
+    if (array === 'images_locker') { // Images = se irá al endpoint de añadir una nueva imagen del producto
       const formData = new FormData(); // Creamos un formData para enviarlo
       formData.append('images', response.file); // Pusheamos la respuesta de la imagen comprimida en el formData
       this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
@@ -264,6 +272,11 @@ export class NotIncomeProductsComponent implements OnInit {
   checkProductQuantity() {
     let products = this.checkIfProductsRepeat();
     return products;
+  }
+
+  openModalImage(image: string) {
+    let modal = this.modalService.open(ImageViewComponent, { size: 'lg', centered: true });
+    modal.componentInstance.image = image;
   }
 
   registerData(position?: number): void {
