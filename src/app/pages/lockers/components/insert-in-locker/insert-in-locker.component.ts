@@ -364,6 +364,7 @@ export class InsertInLockerComponent implements OnInit {
       return;
     }
     this.formInsertLocker.reset();
+    this.formInsertLocker.controls.receipt_date.setValue({ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() });
     this.order_has_products = [];
     this.locker_has_products = [];
     this.locker = null;
