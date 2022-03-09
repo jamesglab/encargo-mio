@@ -88,13 +88,13 @@ export class NotIncomeProductsComponent implements OnInit {
       pending_quantity: [product ? product.product?.pending_quantity : null],
       secuential_fraction: [null]
     });
-    this.pushScrapImage(product.image);
+    // this.pushScrapImage(product.image);
     return item;
   }
 
-  pushScrapImage(item: any) {
-    console.log(item);
-  }
+  // pushScrapImage(item: any) {
+  //   console.log(item);
+  // }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
     this.products.value.splice(i, 1);

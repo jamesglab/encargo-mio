@@ -41,6 +41,7 @@ export class InsertInLockerComponent implements OnInit {
 
   public loadingOrderQuery: boolean = false;
   public getDataIncome: boolean = false;
+  public shippingHome: any = { show: false, status: false };
 
   constructor(
     public _fb: FormBuilder,
@@ -210,6 +211,9 @@ export class InsertInLockerComponent implements OnInit {
       this.loadingOrderQuery = true;
 
       this._orderService.getOrderService(this.formInsertLocker.controls.order_service.value.id).subscribe((res: any) => {
+
+        this.shippingHome.status = res.income.shipping_to_locker;
+        this.shippingHome.show = true;
 
         if (res.income || res.locker_has_products.length > 0 || res.order_has_products.length > 0) {
 

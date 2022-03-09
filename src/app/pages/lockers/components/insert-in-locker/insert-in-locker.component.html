@@ -157,6 +157,10 @@
             </div>
         </div>
 
+        <div class="alert alert-primary" role="alert" *ngIf="shippingHome.show">
+            Orden con <strong>{{ shippingHome.status ? 'Envío a Casillero' : 'Envío a Casa' }}</strong>
+        </div>
+
         <ng-container *ngIf="!loadingOrderQuery">
 
             <app-not-income-products [order_has_products]="order_has_products" [formInsertLocker]="formInsertLocker"
