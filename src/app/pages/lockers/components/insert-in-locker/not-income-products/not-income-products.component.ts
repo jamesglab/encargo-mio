@@ -19,8 +19,10 @@ export class NotIncomeProductsComponent implements OnInit {
   @Input() public order_has_products: any = [];
   @Input() public formInsertLocker: any;
   @Input() public order_service: string;
+  @Input() public getDataIncome: boolean;
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() public productsStatus: EventEmitter<any> = new EventEmitter<any>();
 
   public formNotIncome: FormGroup;
   public products: FormArray;
@@ -43,6 +45,9 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   ngOnChanges() {
+    if (this.getDataIncome) {
+      this.productsStatus.emit(this.formNotIncome.getRawValue());
+    }
     this.buildForm();
   }
 

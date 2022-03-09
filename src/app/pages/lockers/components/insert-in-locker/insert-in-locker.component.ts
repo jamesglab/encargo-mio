@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
+import { insertOnlyLocker, tranformFormItemNotIncome } from 'src/app/_helpers/tools/create-order-parse.tool';
+import { NotifyService } from 'src/app/_services/notify.service';
 import { UserService } from 'src/app/_services/users.service';
 import Swal from 'sweetalert2';
 import { LockersService } from '../../_services/lockers.service';
@@ -38,6 +40,7 @@ export class InsertInLockerComponent implements OnInit {
   public actualDate: Date = new Date();
 
   public loadingOrderQuery: boolean = false;
+  public getDataIncome: boolean = false;
 
   constructor(
     public _fb: FormBuilder,
@@ -46,7 +49,8 @@ export class InsertInLockerComponent implements OnInit {
     public _lockers: LockersService,
     public _cdr: ChangeDetectorRef,
     public router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    public _notify: NotifyService
   ) { }
 
   ngOnInit(): void {
@@ -375,6 +379,43 @@ export class InsertInLockerComponent implements OnInit {
     if (status) {
       this.checkParamId();
     }
+  }
+
+  createMassive() {
+    this.getDataIncome = true;
+  }
+
+  productsStatusReceive(event: any) {
+    if (event) {
+      for (let index = 0; index < event.product.length; index++) {
+        let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_has_products[index].order_service, [event.product[index]]);
+        this.loadingOrderQuery = true;
+        this._cdr.detectChanges();
+        this._lockers.insertIncome(payload).subscribe((res: any) => {
+          Swal.fire({
+            title: '',
+            text: "Se ha realizado el ingreso de los productos correctamente.",
+            icon: 'success',
+            showCancelButton: false,
+            confirmButtonText: 'Aceptar'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              if (!this.params.order_service || this.params.income) {
+                this.router.navigate(["/lockers/locker"]);
+              } else {
+                this.loadingOrderQuery = false;
+              }
+            }
+          });
+        }, err => {
+          this._cdr.detectChanges();
+          this.loadingOrderQuery = false;
+          this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
+          throw err;
+        });
+      }
+    }
+
   }
 
 }
