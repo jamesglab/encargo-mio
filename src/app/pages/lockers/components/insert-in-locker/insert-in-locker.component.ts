@@ -131,6 +131,9 @@ export class InsertInLockerComponent implements OnInit {
         receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }],
         order_service: [{ value: (data ? data.income?.order_service : null), disabled: true }]
       });
+      if (!this.params.order_service || !this.params.income) {
+        this.formInsertLocker.controls.user.disable();
+      }
       if (data) {
         this.order_has_products = data.order_has_products;
         this.locker_has_products = data.locker_has_products;
@@ -157,8 +160,12 @@ export class InsertInLockerComponent implements OnInit {
         if (userId) {
           this._orderService.getLockersByUser(userId).subscribe((order: any) => {
             this.orders = order;
-            this.formInsertLocker.controls.order_service.enable();
             this.filteredOrders = this.formInsertLocker.controls.order_service.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'orders')));
+            if (!this.params.order_service || !this.params.income) {
+              this.formInsertLocker.controls.order_service.enable();
+              return;
+            }
+            this.formInsertLocker.controls.order_service.disable();
           }, err => {
             this.formInsertLocker.controls.order_service.disable();
             throw err;
@@ -167,6 +174,10 @@ export class InsertInLockerComponent implements OnInit {
       }
     });
 
+  }
+
+  selectLocker(): void {
+    this.formInsertLocker.controls.user.disable();
   }
 
   get form() {
@@ -189,6 +200,10 @@ export class InsertInLockerComponent implements OnInit {
     let usersPromise = new Promise((resolve, reject) => {
       this._usersService.getUsersAdmin().subscribe((res: any) => {
         this.users = res;
+        if (this.params.order_service || this.params.income) {
+          this.formInsertLocker.controls.order_service.disable();
+          return;
+        }
         this.formInsertLocker.controls.user.enable();
         resolve(this.users);
       }, err => {
@@ -225,6 +240,8 @@ export class InsertInLockerComponent implements OnInit {
           this.order_has_products = res?.order_has_products;
           this.locker_has_products = res?.locker_has_products;
           this.loadingOrderQuery = false;
+
+          this.formInsertLocker.controls.order_service.disable();
 
         } else if (res.locker_has_products.length === 0 && res.order_has_products.length === 0) {
 
@@ -367,6 +384,9 @@ export class InsertInLockerComponent implements OnInit {
     if (this.params.order_service) {
       return;
     }
+    this.shippingHome.status = false;
+    this.shippingHome.show = false;
+    this.formInsertLocker.controls.user.enable();
     this.formInsertLocker.reset();
     this.formInsertLocker.controls.receipt_date.setValue({ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() });
     this.order_has_products = [];

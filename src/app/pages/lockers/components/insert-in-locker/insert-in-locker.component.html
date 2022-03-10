@@ -59,7 +59,7 @@
                         </div>
                         <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayLocker">
                             <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
-                                title="CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}">
+                                title="CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}" (click)="selectLocker();">
                                 CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}
                             </mat-option>
                         </mat-autocomplete>
