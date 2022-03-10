@@ -72,6 +72,7 @@ export class NotIncomeProductsComponent implements OnInit {
     let item = this._fb.group({
       id: [null],
       product: [product ? (product.product?.id ? { id: product ? product.product?.id : null } : null) : null],
+      product_link: [product ? product?.product?.link : null],
       name: [product ? product.product?.name : null, [Validators.required]],
       declared_value_admin: [product ? product.product_price : null, [Validators.required]],
       weight: [product ? product.weight : null, [Validators.required, Validators.minLength(0.1)]],
@@ -275,9 +276,10 @@ export class NotIncomeProductsComponent implements OnInit {
     return products;
   }
 
-  openModalImage(image: string) {
+  openModalImage(image: string, url: string) {
     let modal = this.modalService.open(ImageViewComponent, { size: 'lg', centered: true });
     modal.componentInstance.image = image;
+    modal.componentInstance.url = url;
   }
 
   registerData(position?: number): void {

@@ -74,7 +74,6 @@ export class ModalUpdateShippingComponent implements OnInit {
     public modalService: NgbModal,
     public _label: ExportPdfService,
     public _router: Router,
-    private clipboard: Clipboard,
     private _dragdrop: DragdropService
   ) { }
 
@@ -340,12 +339,9 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  copyMessage(item: any) {
-    if (item) {
-      this.clipboard.copy(item);
-      Swal.fire('Información copida. ', '', 'info');
-    } else {
-      Swal.fire('', 'No hay información a copiar.', 'error');
+  openLink(url: string) {
+    if (url) {
+      window.open(url);
     }
   }
 

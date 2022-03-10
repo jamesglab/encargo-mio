@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { OrderService } from "src/app/pages/ecommerce/_services/orders.service";
-import { numberOnly, validateErrors } from "src/app/_helpers/tools/utils.tool";
+import { numberOnly } from "src/app/_helpers/tools/utils.tool";
 import { NotifyService } from "src/app/_services/notify.service";
 import { FileHandle } from "src/app/_directives/file-handle";
 import { ImageCompressService } from "src/app/_services/image-compress.service";
@@ -292,6 +292,12 @@ export class ModalEditOrderComponent implements OnInit {
 
   upadteImageByProduct(image) {
     this.productSelected.image = image;
+  }
+
+  openLink(url: string) {
+    if (url) {
+      window.open(url);
+    }
   }
 
   openModal(product: any, modal: any, sizeModale: string) { //ITS ONLY FOR EDIT IMAGE

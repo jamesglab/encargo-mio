@@ -94,8 +94,9 @@
                         <carousel [cellsToShow]="1" [counter]="true" style="z-index: 1 !important;">
                             <div class="carousel-cell"
                                 *ngFor="let image of formNotIncome.get('product')['controls'][i].controls.images_locker.value">
-                                <img [src]="image.Location" (click)="openModalImage(image.Location);" draggable="false"
-                                    (error)="onImageError($event);">
+                                <img [src]="image.Location"
+                                    (click)="openModalImage(image.Location, formNotIncome.get('product')['controls'][i].controls.product_link.value);"
+                                    draggable="false" (error)="onImageError($event);">
                             </div>
                         </carousel>
 

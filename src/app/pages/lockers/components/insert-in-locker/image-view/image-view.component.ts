@@ -9,6 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ImageViewComponent implements OnInit {
 
   public image: any = null;
+  public url: string = null;
 
   constructor(
     private modalService: NgbModal
@@ -23,6 +24,12 @@ export class ImageViewComponent implements OnInit {
 
   onImageError(event: any) { // Cuando hay un error en alguna imagen se setea una imagen de una caja por defecto.
     event.target.src = "https://i.imgur.com/riKFnErh.jpg";
+  }
+
+  openLink() {
+    if (this.url) {
+      window.open(this.url);
+    }
   }
 
 }

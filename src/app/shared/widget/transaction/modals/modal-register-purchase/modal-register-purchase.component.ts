@@ -198,6 +198,12 @@ export class ModalRegisterPurchaseComponent implements OnInit {
 
   onImageError(event: any) { event.target.src = "https://i.imgur.com/riKFnErh.jpg"; }
 
+  openImage(url?: string) {
+    if (this.purchaseForm.controls.product.value?.link) {
+      window.open(this.purchaseForm.controls.product.value.link);
+    }
+  }
+
   putValueProduct(product: any): void {
     let total_value: number = 0;
     total_value += product.product_value + product.shipping_origin_value_product + product.tax;

@@ -6,7 +6,8 @@
 <div class="modal-body">
 
     <div class="container-image">
-        <img [src]="image" alt="" draggable="false" (error)="onImageError($event);">
+        <img [src]="image" [ngClass]="{ 'is-hover': url }" alt="" draggable="false" (click)="openLink();"
+            (error)="onImageError($event);">
     </div>
 
 </div>
