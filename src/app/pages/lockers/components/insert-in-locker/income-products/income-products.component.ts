@@ -67,8 +67,8 @@ export class IncomeProductsComponent implements OnInit {
       permanent_shipping_value: [{ value: product ? product.permanent_shipping_value : 0, disabled: true }],
       quantity: [product.quantity ? product.quantity : 1],
       order_service: [product ? product.order_service : null],
-      images: [product?.product?.images ? product?.product?.images : []],
-      images_locker: [product ? product.images : []],
+      images: [product ? product.images : []],
+      images_locker: [product?.product?.images ? product?.product?.images : []],
       invoice_images: [product.invoice_images ? product.invoice_images : []],
       description: [{ value: product ? product.product.description : null, disabled: true }],
       aditional_info: [{ value: product ? product.product.aditional_info : null, disabled: true }],
@@ -78,6 +78,10 @@ export class IncomeProductsComponent implements OnInit {
       editable: [false],
       pending_quantity: [product ? product.product.pending_quantity : null]
     });
+    if (product?.product?.image) {
+      let value = item.controls.images_locker.value;
+      value.push({ Location: product.product.image });
+    }
     return item;
   }
 
@@ -138,8 +142,9 @@ export class IncomeProductsComponent implements OnInit {
       this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
         if (res.images) { // res.images es un arreglo
           for (let index = 0; index < res.images.length; index++) {
-            this.products.controls[position]['controls'][array].setValue([]);
-            this.products.controls[position]['controls'][array].value.push(res.images[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
+            let arrayImages: any[] = this.products.controls[position]['controls'][array].value;
+            arrayImages.push(res.images[index]);
+            this.products.controls[position]['controls'][array].setValue(arrayImages); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
       }, err => {
@@ -152,8 +157,9 @@ export class IncomeProductsComponent implements OnInit {
       this._lockers.uploadImageInvoice(formDataInvoice).subscribe((res: any) => {
         if (res.invoice) { // res.invoice es un arreglo
           for (let index = 0; index < res.invoice.length; index++) { // recorremos el arreglo 
-            this.products.controls[position]['controls'][array].setValue([]);
-            this.products.controls[position]['controls'][array].value.push(res.invoice[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
+            let arrayImages: any[] = this.products.controls[position]['controls'][array].value;
+            arrayImages.push(res.invoice[index]);
+            this.products.controls[position]['controls'][array].setValue(arrayImages); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
       }, err => {

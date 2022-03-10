@@ -49,18 +49,18 @@
                 <h5 class="container-drops">Imagen del Producto</h5>
 
                 <div class="align-items-center dropzone-in-create" appImageDrag
-                    (files)="filesDropped($event, i, 'images_locker');">
+                    (files)="filesDropped($event, i, 'images');">
 
                     <div class="container-img-dropzone d-flex">
 
                         <ng-container
-                            *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value; let i_image = index;">
+                            *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.images.value; let i_image = index;">
 
                             <div class="content-img-dropzone">
 
                                 <div class="remove-item-content">
                                     <button type="button" class="close remove-item" aria-label="Close"
-                                        (click)="onRemoveImage(i, i_image, 'images_locker');" title="Borrar Imagen">
+                                        (click)="onRemoveImage(i, i_image, 'images');" title="Borrar Imagen">
                                         <span class="mdi mdi-delete"></span>
                                     </button>
                                 </div>
@@ -76,18 +76,17 @@
 
                     <div>
                         <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
-                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value.length === 0"></span>
+                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value.length === 0"></span>
                         <h5>
                             Arrastra tu imagen o haz clic
-                            <a class="font-weight-bold cursor-pointer"
-                                (click)="uploadImageLocally(i, 'images_locker');">
+                            <a class="font-weight-bold cursor-pointer" (click)="uploadImageLocally(i, 'images');">
                                 aquí.
                             </a>
                         </h5>
                     </div>
 
                     <div class="is-dangered"
-                        *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value.length === 0">
+                        *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value.length === 0">
                         <span class="mdi mdi-information-outline"></span>
                         Debes ingresar al menos una imagen del producto.
                     </div>
@@ -97,7 +96,7 @@
                 <br>
 
                 <ng-container
-                    *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value && formLockerHasProduct.get('product')['controls'][i].controls.images.value.length > 0">
+                    *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value && formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value.length > 0">
 
                     <h5 class="container-drops">Imagen de la tienda</h5>
 
@@ -105,7 +104,7 @@
 
                         <carousel [cellsToShow]="1" [counter]="true" style="z-index: 1 !important;">
                             <div class="carousel-cell"
-                                *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.images.value">
+                                *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value">
                                 <img [src]="image.Location" (click)="openModalImage(image.Location);" draggable="false"
                                     (error)="onImageError($event);">
                             </div>
