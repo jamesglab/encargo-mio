@@ -66,6 +66,7 @@ export class NotIncomeProductsComponent implements OnInit {
   pushItems(product?: any) {
     this.products = this.formNotIncome.get('product') as FormArray;
     this.products.push(this.createItem(product));
+    console.log(this.products.getRawValue());
   }
 
   createItem(product?: any): FormGroup {
@@ -86,6 +87,7 @@ export class NotIncomeProductsComponent implements OnInit {
       aditional_info: [{ value: product ? product.product?.aditional_info : null, disabled: true }],
       force_commercial_shipping: [product ? product.force_commercial_shipping : false],
       free_shipping: [product ? product.free_shipping : false],
+      incomed_quantity: [product ? product.product?.incomed_quantity : null],
       pending_quantity: [product ? product.product?.pending_quantity : null],
       secuential_fraction: [null]
     });
@@ -294,6 +296,8 @@ export class NotIncomeProductsComponent implements OnInit {
       return;
     }
 
+    console.log(this.formNotIncome.controls.product['controls'][position].getRawValue())
+    return;
     if (!this.formNotIncome.getRawValue().product[position].product) {
 
       for (let index = 0; index < this.formNotIncome.getRawValue().product.length; index++) {

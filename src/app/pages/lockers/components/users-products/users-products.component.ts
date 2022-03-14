@@ -23,12 +23,24 @@ export class UsersProductsComponent implements OnInit {
 
   public isLoading: boolean = false;
   public isEmpty: boolean = false;
+  public isIphone: boolean = false;
 
   constructor(private usersService: UserService, private lockerService: LockersService) { }
 
   ngOnInit(): void {
+    this.checkOperativeSystem();
     this.filteredUsers = this.filterUser.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
     this.getUsers()
+  }
+
+  checkOperativeSystem() { // Checkeamos en que sistema operativo Safari IOS o Chorme.
+    if ((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) {
+      if (document.cookie.indexOf("iphone_redirect=false") == -1) {
+        this.isIphone = true;
+      } else {
+        this.isIphone = false;
+      }
+    }
   }
 
   getUsers() {
@@ -66,6 +78,16 @@ export class UsersProductsComponent implements OnInit {
     } else {
       // RETORNAMOS EL VALOR FORMATEADO PARA FILTRAR CUANDO NO VAMOS A CONSULTAR UN OBJETO
       return value.toLowerCase().replace(/\s/g, '');
+    }
+  }
+
+  keyDownFunction(event: any) {
+    if (this.isIphone) {
+      if (event.keyCode === 13) { // Si presiona el botón de intro o return en safari en IOS.
+        this.filterProductsByUser();
+      }
+    } else {
+      return;
     }
   }
 
