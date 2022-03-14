@@ -282,10 +282,17 @@
                 </ng-container>
 
                 <ng-container *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
+
+                    <button class="button-add-new-item" type="button" (click)="closeEdit(i);"
+                        style="margin-right: 10px;">
+                        Cancelar
+                    </button>
+
                     <button class="button-encargomio" type="button" [disabled]="isLoading" (click)="saveItem(i);">
                         <span class="mdi mdi-content-save"></span>
                         Guardar
                     </button>
+
                 </ng-container>
 
                 <ng-container *ngIf="!formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
@@ -296,7 +303,6 @@
                     </button>
 
                 </ng-container>
-
 
             </div>
 

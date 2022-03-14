@@ -196,7 +196,8 @@
             </app-not-income-products>
 
             <app-income-products [locker_has_products]="locker_has_products" [formInsertLocker]="formInsertLocker"
-                [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);">
+                [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);"
+                (refreshDataCanceled)="refreshDataCanceledReceive($event);">
             </app-income-products>
 
         </ng-container>

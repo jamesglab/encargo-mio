@@ -64,32 +64,7 @@ export class InsertInLockerComponent implements OnInit {
     this.loadingOrderQuery = true;
 
     if (this.params.order_service) {
-      this._orderService.getOrderService(this.params.order_service).subscribe((res: any) => {
-        if (res.income || res.locker_has_products.length > 0 || res.order_has_products.length > 0) {
-          this.locker = res.income?.locker;
-          this.shippingHome.status = res.income.shipping_to_locker;
-          this.shippingHome.show = true;
-          this.buildForm(res);
-        } else if (res.locker_has_products.length === 0 && res.order_has_products.length === 0) {
-          Swal.fire({
-            title: '',
-            text: "Lo sentimos no encontramos productos asociados a esta orden.",
-            icon: 'info',
-            showCancelButton: false,
-            confirmButtonText: 'Ok'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.router.navigate(["/lockers/insert-in-locker"]);
-            }
-          });
-        }
-        this.loadingOrderQuery = false;
-      }, err => {
-        this.loadingOrderQuery = false;
-        this.router.navigate(["/lockers/insert-in-locker"]);
-        throw err;
-      });
-
+      this.obtainOrderService(this.params.order_service);
     } else if (this.params.income) {
 
       this._orderService.getOrderServiceWithoutOrder(this.params.income).subscribe((res: any) => {
@@ -123,6 +98,35 @@ export class InsertInLockerComponent implements OnInit {
       this.buildForm();
     }
 
+  }
+
+  obtainOrderService(order_service: any): void {
+    this.loadingOrderQuery = true;
+    this._orderService.getOrderService(order_service).subscribe((res: any) => {
+      if (res.income || res.locker_has_products.length > 0 || res.order_has_products.length > 0) {
+        this.locker = res.income?.locker;
+        this.shippingHome.status = res.income.shipping_to_locker;
+        this.shippingHome.show = true;
+        this.buildForm(res);
+      } else if (res.locker_has_products.length === 0 && res.order_has_products.length === 0) {
+        Swal.fire({
+          title: '',
+          text: "Lo sentimos no encontramos productos asociados a esta orden.",
+          icon: 'info',
+          showCancelButton: false,
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.router.navigate(["/lockers/insert-in-locker"]);
+          }
+        });
+      }
+      this.loadingOrderQuery = false;
+    }, err => {
+      this.loadingOrderQuery = false;
+      this.router.navigate(["/lockers/insert-in-locker"]);
+      throw err;
+    });
   }
 
   buildForm(data?: any) { // Creamos el formulario general.
@@ -399,6 +403,14 @@ export class InsertInLockerComponent implements OnInit {
   refreshDataRefresh(status: boolean) {
     if (status) {
       this.checkParamId();
+    }
+  }
+
+  refreshDataCanceledReceive(event: boolean) {
+    if (event) {
+      if (this.formInsertLocker.getRawValue().order_service) {
+        this.obtainOrderService(this.formInsertLocker.getRawValue().order_service.id)
+      }
     }
   }
 

@@ -266,21 +266,16 @@
 
                 <div>
                     <strong>Pendiente por Ingresar:</strong>
-                    {{ formNotIncome.get('product')['controls'][i].controls.pending_quantity
+                    {{ formNotIncome.get('product')['controls'][i].controls.pending_quantity.value
                     ? formNotIncome.get('product')['controls'][i].controls.pending_quantity.value : 0 }}
                     <br>
                     <strong>Cantidad Ingresados:</strong>
-                    {{ formNotIncome.get('product')['controls'][i].controls.incomed_quantity ?
+                    {{ formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value ?
                     formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value : 0 }}
                     <br>
                     <strong>Cantidad Total:</strong>
-
-                    <ng-container
-                        *ngIf="formNotIncome.get('product')['controls'][i].controls.pending_quantity.value">
-                        {{ formNotIncome.get('product')['controls'][i].controls.pending_quantity?.value +
-                        formNotIncome.get('product')['controls'][i].controls.incomed_quantity?.value}}
-                    </ng-container>
-
+                    {{ formNotIncome.get('product')['controls'][i].controls.pending_quantity.value +
+                    formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value}}
                 </div>
 
             </div>

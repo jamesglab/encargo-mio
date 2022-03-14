@@ -301,7 +301,7 @@ export class NotIncomeProductsComponent implements OnInit {
         let payload: any = null;
         payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[index]]);
         this.isLoading = true;
-        this._lockers.insertIncome(payload).subscribe((res: any) => {
+        this._lockers.insertIncome(payload).subscribe(() => {
           Swal.fire({
             title: '',
             text: "Se ha realizado el ingreso de los productos correctamente.",
@@ -347,7 +347,7 @@ export class NotIncomeProductsComponent implements OnInit {
       }
 
       this.isLoading = true;
-      this._lockers.insertIncome(payload).subscribe((res: any) => {
+      this._lockers.insertIncome(payload).subscribe(() => {
         Swal.fire({
           title: '',
           text: "Se ha realizado el ingreso de los productos correctamente.",

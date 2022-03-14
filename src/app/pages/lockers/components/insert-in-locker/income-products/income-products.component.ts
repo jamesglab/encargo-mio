@@ -22,6 +22,7 @@ export class IncomeProductsComponent implements OnInit {
   @Input() public order_service: string;
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() public refreshDataCanceled: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public formLockerHasProduct: FormGroup;
   public products: FormArray;
@@ -219,6 +220,13 @@ export class IncomeProductsComponent implements OnInit {
     modal.componentInstance.image = image;
   }
 
+  closeEdit(position: number) {
+    this.formLockerHasProduct.controls.product['controls'][position].controls.editable.setValue(false);
+    this.changeEditStatus(position);
+    this.refreshDataCanceled.emit(true);
+    // this.refreshData.emit(true);
+  }
+
   saveItem(position: number) {
 
     if (this.formInsertLocker.invalid) {
@@ -233,22 +241,23 @@ export class IncomeProductsComponent implements OnInit {
 
     this.changeEditStatus(position);
     let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
-    this.isLoading = true;
-    this._lockers.insertIncome(payload).subscribe((res: any) => {
-      this.isLoading = false;
-      this.refreshData.emit(true);
-      Swal.fire({
-        title: '',
-        text: "Has realizado el ingreso de los productos correctamente.",
-        icon: 'success',
-        showCancelButton: false,
-        confirmButtonText: 'Aceptar'
-      });
-    }, err => {
-      this.isLoading = false;
-      this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
-      throw err;
-    });
+    
+    // this.isLoading = true;
+    // this._lockers.insertIncome(payload).subscribe((res: any) => {
+    //   this.isLoading = false;
+    //   this.refreshData.emit(true);
+    //   Swal.fire({
+    //     title: '',
+    //     text: "Has realizado el ingreso de los productos correctamente.",
+    //     icon: 'success',
+    //     showCancelButton: false,
+    //     confirmButtonText: 'Aceptar'
+    //   });
+    // }, err => {
+    //   this.isLoading = false;
+    //   this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
+    //   throw err;
+    // });
 
   }
 
