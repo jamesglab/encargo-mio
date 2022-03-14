@@ -274,16 +274,8 @@
                     formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value : 0 }}
                     <br>
                     <strong>Cantidad Total:</strong>
-
-                    <ng-container *ngIf="formNotIncome.get('product')['controls'][i].controls.pending_quantity.value">
-                        {{ formNotIncome.get('product')['controls'][i].controls.pending_quantity.value +
-                        formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value}}
-                    </ng-container>
-
-                    <ng-container *ngIf="formNotIncome.get('product')['controls'][i].controls.quantity.value">
-                        {{ formNotIncome.get('product')['controls'][i].controls.quantity.value }}
-                    </ng-container>
-
+                    {{ formNotIncome.get('product')['controls'][i].controls.pending_quantity.value +
+                    formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value}}
                 </div>
 
             </div>
