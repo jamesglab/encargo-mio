@@ -80,6 +80,7 @@
                         <mat-autocomplete #auto_service="matAutocomplete" [displayWith]="displayOrderService">
                             <mat-option *ngFor="let order of filteredOrders | async" [value]="order"
                                 (click)="selectedOrder();">
+                                <img src="https://i.imgur.com/riKFnErh.jpg" height="40" width="40" alt="">
                                 {{ order.id }}
                             </mat-option>
                         </mat-autocomplete>
@@ -130,13 +131,13 @@
 
             <div class="container-buttons">
 
-                <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
+                <button class="button-encargomio" type="button" [disabled]="formInsertLocker.invalid"
                     *ngIf="!formInsertLocker.controls.order_service.value && order_has_products.length === 0 && locker_has_products.length === 0"
                     (click)="addIncome();">
                     Iniciar Ingreso
                 </button>
 
-                <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
+                <button class="button-encargomio" type="button" [disabled]="formInsertLocker.invalid"
                     (click)="createMassive();" title="Este botón funciona para hacer ingresos masivos."
                     *ngIf="order_has_products && order_has_products.length > 0">
                     Ingreso Masivo

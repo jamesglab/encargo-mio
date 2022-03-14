@@ -75,8 +75,9 @@ export class IncomeProductsComponent implements OnInit {
       force_commercial_shipping: [{ value: product ? product.force_commercial_shipping : false, disabled: true }],
       free_shipping: [{ value: product ? product.free_shipping : false, disabled: true }],
       secuential_fraction: [product ? product.secuential_fraction : null],
+      incomed_quantity: [product ? product.product?.incomed_quantity : null],
+      pending_quantity: [product ? product.product?.pending_quantity : null],
       editable: [false],
-      pending_quantity: [product ? product.product.pending_quantity : null]
     });
     if (product?.product?.image) {
       let value = item.controls.images_locker.value;

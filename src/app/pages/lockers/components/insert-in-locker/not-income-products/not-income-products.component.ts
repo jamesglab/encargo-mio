@@ -66,7 +66,6 @@ export class NotIncomeProductsComponent implements OnInit {
   pushItems(product?: any) {
     this.products = this.formNotIncome.get('product') as FormArray;
     this.products.push(this.createItem(product));
-    console.log(this.products.getRawValue());
   }
 
   createItem(product?: any): FormGroup {
