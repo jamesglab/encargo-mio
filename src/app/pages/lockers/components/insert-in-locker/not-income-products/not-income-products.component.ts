@@ -296,8 +296,6 @@ export class NotIncomeProductsComponent implements OnInit {
       return;
     }
 
-    console.log(this.formNotIncome.controls.product['controls'][position].getRawValue())
-    return;
     if (!this.formNotIncome.getRawValue().product[position].product) {
 
       for (let index = 0; index < this.formNotIncome.getRawValue().product.length; index++) {
