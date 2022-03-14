@@ -109,7 +109,8 @@ export const insertOnlyLocker = (form: any, order_service: any, products: any): 
         "order_service": order_service ? order_service : form.order_service,
         "conveyor": form.conveyor ? form.conveyor.id : null,
         "products": products ? products : [],
-        "receipt_date": new Date(form.receipt_date.year, form.receipt_date.month - 1, form.receipt_date.day)
+        "receipt_date": new Date(form.receipt_date.year, form.receipt_date.month - 1, form.receipt_date.day),
+        "shipping_to_locker": form.order_service ? form.shipping_to_locker : false
     };
 
     return data;

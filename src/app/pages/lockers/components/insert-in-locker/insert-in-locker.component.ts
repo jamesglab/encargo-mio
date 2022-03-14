@@ -129,7 +129,8 @@ export class InsertInLockerComponent implements OnInit {
         user: [data ? data.income?.locker : null, [Validators.required]],
         conveyor: [data ? data.income?.conveyor : null],
         receipt_date: [{ year: this.actualDate.getUTCFullYear(), month: this.actualDate.getUTCMonth() + 1, day: this.actualDate.getDate() }],
-        order_service: [{ value: (data ? data.income?.order_service : null), disabled: true }]
+        order_service: [{ value: (data ? data.income?.order_service : null), disabled: true }],
+        shipping_to_locker: [data?.income?.shipping_to_locker]
       });
       if (!this.params.order_service || !this.params.income) {
         this.formInsertLocker.controls.user.disable();
@@ -236,6 +237,7 @@ export class InsertInLockerComponent implements OnInit {
           this.formInsertLocker.controls.id.setValue(res.income?.id);
           this.formInsertLocker.controls.guide_number.setValue(res.income?.guide_number_alph);
           this.formInsertLocker.controls.conveyor.setValue(res.income?.conveyor);
+          this.formInsertLocker.controls.shipping_to_locker.setValue(res.income?.shipping_to_locker);
           this.formInsertLocker.controls.conveyor.setValue(res.income?.order_service);
           this.order_has_products = res?.order_has_products;
           this.locker_has_products = res?.locker_has_products;
