@@ -34,3 +34,11 @@
     display: flex;
     justify-content: space-around;
 }
+
+.container-product-order-service {
+    img {
+        height: 40px;
+        width: 40px;
+        object-fit: contain;
+    }
+}
