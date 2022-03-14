@@ -273,27 +273,6 @@
                     </label>
                 </div>
 
-                <br>
-
-                <div>
-                    <strong>Pendiente por Ingresar:</strong>
-                    {{ formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity
-                    ? formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value : 0 }}
-                    <br>
-                    <strong>Cantidad Ingresados:</strong>
-                    {{ formLockerHasProduct.get('product')['controls'][i].controls.incomed_quantity ?
-                    formLockerHasProduct.get('product')['controls'][i].controls.incomed_quantity.value : 0 }}
-                    <br>
-                    <strong>Cantidad Total:</strong>
-
-                    <ng-container
-                        *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value">
-                        {{ formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity?.value +
-                        formLockerHasProduct.get('product')['controls'][i].controls.incomed_quantity?.value}}
-                    </ng-container>
-
-                </div>
-
             </div>
 
             <div class="container-final-buttons">
