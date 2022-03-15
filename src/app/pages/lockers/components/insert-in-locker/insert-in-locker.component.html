@@ -93,11 +93,11 @@
                                     *ngFor="let order_has_product of order.order_has_products; let i = index;" title="
                                     {{ order_has_product.product?.name }}">
 
-                                    <img *ngIf="order_has_product.product.image && !order_has_product.product.images"
+                                    <img *ngIf="order_has_product.product.images && order_has_product.product.images.length === 0"
                                         [src]="order_has_product.product.image" alt="" draggable="false"
                                         (error)="onImageError($event);">
 
-                                    <img *ngIf="order_has_product.product.images && !order_has_product.product.image"
+                                    <img *ngIf="order_has_product.product.images && order_has_product.product.images.length > 0 && !order_has_product.product.image"
                                         [src]="order_has_product.product.images[0].Location" draggable="false" alt=""
                                         (error)="onImageError($event);">
 
