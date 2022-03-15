@@ -144,14 +144,14 @@
                 <carousel [width]="246">
                   <div class="carousel-cell" *ngFor="let image of item.images">
                     <img [src]="image.Location" (error)="onImageError($event);" draggable="false"
-                      (click)="openLink(item.link);">
+                      (click)="openLink(item.link);" [ngClass]="{ 'is-hovered' : item.link }">
                   </div>
                 </carousel>
               </ng-container>
 
               <ng-container *ngIf="item.images && item.images.length === 0">
                 <img [src]="item.image" title="Imagen de la tienda" (error)="onImageError($event);" draggable="false"
-                  (click)="openLink(item);">
+                  (click)="openLink(item.link);" [ngClass]="{ 'is-hovered' : item.link }">
               </ng-container>
 
               <ng-container *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
