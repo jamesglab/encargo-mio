@@ -162,13 +162,15 @@
 
   </form>
 
-  <ng-container *ngIf="form.product?.value?.image && !form.product?.value?.images || form.product?.value?.images && form.product?.value?.images.length == 0">
+  <ng-container
+    *ngIf="form.product?.value?.image && !form.product?.value?.images || form.product?.value?.images && form.product?.value?.images.length == 0">
 
     <div class="d-flex justify-content-center padding-image">
 
       <div style="border: 1px solid rgb(209, 208, 208); width:250px; height: 250px; ">
         <img [src]="form.product.value.image" draggable="false" alt=""
-          style="width: 100%; height: 100%; object-fit: contain;">
+          style="width: 100%; height: 100%; object-fit: contain;" (click)="openImage();"
+          [ngClass]="{ 'is-hover' : purchaseForm.controls.product.value?.link }">
       </div>
 
     </div>
@@ -184,9 +186,8 @@
     <div class="d-flex justify-content-center padding-image">
       <carousel [width]="200" [cellsToShow]="1" style="z-index: 1 !important;">
         <div class="carousel-cell" *ngFor="let image of form.product.value.images">
-          <a [href]="image.Location" target="_blank">
-            <img [src]="image.Location" title="" alt="" draggable="false" (error)="onImageError($event);">
-          </a>
+          <img [src]="image.Location" title="" alt="" draggable="false" (error)="onImageError($event);"
+            (click)="openImage();" [ngClass]="{ 'is-hover' : purchaseForm.controls.product.value?.link }">
         </div>
       </carousel>
     </div>

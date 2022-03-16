@@ -84,17 +84,22 @@
 
                 <br>
 
-                <ng-container *ngIf="formNotIncome.get('product')['controls'][i].controls.scrap_image.value">
+                <ng-container
+                    *ngIf="formNotIncome.get('product')['controls'][i].controls.images_locker.value && formNotIncome.get('product')['controls'][i].controls.images_locker.value.length > 0">
 
                     <h5 class="container-drops">Imagen de la tienda</h5>
 
                     <div class="container-zoom-image">
-                        <lib-ngx-image-zoom
-                            [thumbImage]="formNotIncome.get('product')['controls'][i].controls.scrap_image.value"
-                            [fullImage]="formNotIncome.get('product')['controls'][i].controls.scrap_image.value"
-                            [enableScrollZoom]="true" [zoomMode]="'hover-freeze'" [enableLens]="true" [lensWidth]="200"
-                            [lensHeight]="200" [circularLens]="true">
-                        </lib-ngx-image-zoom>
+
+                        <carousel [cellsToShow]="1" [counter]="true" style="z-index: 1 !important;">
+                            <div class="carousel-cell"
+                                *ngFor="let image of formNotIncome.get('product')['controls'][i].controls.images_locker.value">
+                                <img [src]="image.Location"
+                                    (click)="openModalImage(image.Location, formNotIncome.get('product')['controls'][i].controls.product_link.value);"
+                                    draggable="false" (error)="onImageError($event);">
+                            </div>
+                        </carousel>
+
                     </div>
 
                 </ng-container>
@@ -255,6 +260,22 @@
                     <label class="form-check-label">
                         Envío Comercial
                     </label>
+                </div>
+
+                <br>
+
+                <div>
+                    <strong>Pendiente por Ingresar:</strong>
+                    {{ formNotIncome.get('product')['controls'][i].controls.pending_quantity.value
+                    ? formNotIncome.get('product')['controls'][i].controls.pending_quantity.value : 0 }}
+                    <br>
+                    <strong>Cantidad Ingresados:</strong>
+                    {{ formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value ?
+                    formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value : 0 }}
+                    <br>
+                    <strong>Cantidad Total:</strong>
+                    {{ formNotIncome.get('product')['controls'][i].controls.pending_quantity.value +
+                    formNotIncome.get('product')['controls'][i].controls.incomed_quantity.value}}
                 </div>
 
             </div>

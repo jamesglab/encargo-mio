@@ -6,6 +6,8 @@ import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { LockersService } from '../../../_services/lockers.service';
 import Swal from 'sweetalert2';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ImageViewComponent } from '../image-view/image-view.component';
 
 @Component({
   selector: 'app-income-products',
@@ -20,6 +22,7 @@ export class IncomeProductsComponent implements OnInit {
   @Input() public order_service: string;
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() public refreshDataCanceled: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public formLockerHasProduct: FormGroup;
   public products: FormArray;
@@ -30,7 +33,8 @@ export class IncomeProductsComponent implements OnInit {
     public _fb: FormBuilder,
     public _notify: NotifyService,
     public _compress: ImageCompressService,
-    private _lockers: LockersService
+    private _lockers: LockersService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -64,17 +68,22 @@ export class IncomeProductsComponent implements OnInit {
       permanent_shipping_value: [{ value: product ? product.permanent_shipping_value : 0, disabled: true }],
       quantity: [product.quantity ? product.quantity : 1],
       order_service: [product ? product.order_service : null],
-      images: [product.images ? product.images : []],
+      images: [product ? product.images : []],
+      images_locker: [product?.product?.images ? product?.product?.images : []],
       invoice_images: [product.invoice_images ? product.invoice_images : []],
       description: [{ value: product ? product.product.description : null, disabled: true }],
       aditional_info: [{ value: product ? product.product.aditional_info : null, disabled: true }],
       force_commercial_shipping: [{ value: product ? product.force_commercial_shipping : false, disabled: true }],
       free_shipping: [{ value: product ? product.free_shipping : false, disabled: true }],
       secuential_fraction: [product ? product.secuential_fraction : null],
+      incomed_quantity: [product ? product.product?.incomed_quantity : null],
+      pending_quantity: [product ? product.product?.pending_quantity : null],
       editable: [false],
-      scrap_image: [product ? product.product?.image : null],
-      pending_quantity: [product ? product.product.pending_quantity : null]
     });
+    if (product?.product?.image) {
+      let value = item.controls.images_locker.value;
+      value.push({ Location: product.product.image });
+    }
     return item;
   }
 
@@ -129,13 +138,15 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   uploadImageToBucket(response: any, position: number, array: string): void {
-    if (array === 'images') { // Images = se irá al endpoint de añadir una nueva imagen del producto
+    if (array === 'images_locker') { // Images = se irá al endpoint de añadir una nueva imagen del producto
       const formData = new FormData(); // Creamos un formData para enviarlo
       formData.append('images', response.file); // Pusheamos la respuesta de la imagen comprimida en el formData
       this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
         if (res.images) { // res.images es un arreglo
           for (let index = 0; index < res.images.length; index++) {
-            this.products.controls[position]['controls'][array].value.push(res.images[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
+            let arrayImages: any[] = this.products.controls[position]['controls'][array].value;
+            arrayImages.push(res.images[index]);
+            this.products.controls[position]['controls'][array].setValue(arrayImages); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
       }, err => {
@@ -148,7 +159,9 @@ export class IncomeProductsComponent implements OnInit {
       this._lockers.uploadImageInvoice(formDataInvoice).subscribe((res: any) => {
         if (res.invoice) { // res.invoice es un arreglo
           for (let index = 0; index < res.invoice.length; index++) { // recorremos el arreglo 
-            this.products.controls[position]['controls'][array].value.push(res.invoice[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
+            let arrayImages: any[] = this.products.controls[position]['controls'][array].value;
+            arrayImages.push(res.invoice[index]);
+            this.products.controls[position]['controls'][array].setValue(arrayImages); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
       }, err => {
@@ -176,7 +189,7 @@ export class IncomeProductsComponent implements OnInit {
       return;
     }
     let actualQuantity: number = this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.value;
-    if (actualQuantity <= this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value) {
+    if (actualQuantity < this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
     }
@@ -202,6 +215,17 @@ export class IncomeProductsComponent implements OnInit {
     event.target.src = "https://i.imgur.com/riKFnErh.jpg";
   }
 
+  openModalImage(image: string) {
+    let modal = this.modalService.open(ImageViewComponent, { size: 'lg', centered: true });
+    modal.componentInstance.image = image;
+  }
+
+  closeEdit(position: number) {
+    this.formLockerHasProduct.controls.product['controls'][position].controls.editable.setValue(false);
+    this.changeEditStatus(position);
+    this.refreshDataCanceled.emit(true);
+  }
+
   saveItem(position: number) {
 
     if (this.formInsertLocker.invalid) {
@@ -216,6 +240,7 @@ export class IncomeProductsComponent implements OnInit {
 
     this.changeEditStatus(position);
     let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
+
     this.isLoading = true;
     this._lockers.insertIncome(payload).subscribe((res: any) => {
       this.isLoading = false;

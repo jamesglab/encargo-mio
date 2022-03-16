@@ -59,7 +59,8 @@
                         </div>
                         <mat-autocomplete #auto_user="matAutocomplete" [displayWith]="displayLocker">
                             <mat-option *ngFor="let user of filteredUsers | async" [value]="user"
-                                title="CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}">
+                                title="CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}"
+                                (click)="selectLocker(user);">
                                 CA{{ user.locker_id }} {{ user.name }} {{ user.last_name }}
                             </mat-option>
                         </mat-autocomplete>
@@ -67,23 +68,49 @@
                 </div>
 
                 <div class="col-sm">
+
                     <div class="form-group">
+
                         <label for="name">Orden de Servicio</label>
                         <input type="text" class="form-control" id="name" placeholder="Ingresa la orden de servicio..."
                             formControlName="order_service" [ngClass]="{ 'is-invalid' : form.order_service.errors }"
                             [matAutocomplete]="auto_service">
+
                         <div class="invalid-feedback" *ngIf="form.order_service.errors">
                             <ng-container *ngIf="form.order_service.errors.required">
                                 Debes ingresar una orden de servicio.
                             </ng-container>
                         </div>
+
                         <mat-autocomplete #auto_service="matAutocomplete" [displayWith]="displayOrderService">
+
                             <mat-option *ngFor="let order of filteredOrders | async" [value]="order"
                                 (click)="selectedOrder();">
-                                {{ order.id }}
+
+                                <strong>Orden {{ order.id }}</strong>
+
+                                <div class="container-product-order-service"
+                                    *ngFor="let order_has_product of order.order_has_products; let i = index;" title="
+                                    {{ order_has_product.product?.name }}">
+
+                                    <img *ngIf="order_has_product.product.images && order_has_product.product.images.length === 0"
+                                        [src]="order_has_product.product.image" alt="" draggable="false"
+                                        (error)="onImageError($event);">
+
+                                    <img *ngIf="order_has_product.product.images && order_has_product.product.images.length > 0 && !order_has_product.product.image"
+                                        [src]="order_has_product.product.images[0].Location" draggable="false" alt=""
+                                        (error)="onImageError($event);">
+
+                                    {{ order_has_product.product?.name }}
+
+                                </div>
+
                             </mat-option>
+
                         </mat-autocomplete>
+
                     </div>
+
                 </div>
 
                 <div class="col-sm">
@@ -130,15 +157,15 @@
 
             <div class="container-buttons">
 
-                <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
+                <button class="button-encargomio" type="button" [disabled]="formInsertLocker.invalid"
                     *ngIf="!formInsertLocker.controls.order_service.value && order_has_products.length === 0 && locker_has_products.length === 0"
                     (click)="addIncome();">
                     Iniciar Ingreso
                 </button>
 
-                <button class="button-encargomio" type="submit" [disabled]="formInsertLocker.invalid"
+                <button class="button-encargomio" type="button" [disabled]="formInsertLocker.invalid"
                     (click)="createMassive();" title="Este botón funciona para hacer ingresos masivos."
-                    *ngIf="formInsertLocker.controls.guide_number.value">
+                    *ngIf="order_has_products && order_has_products.length > 0">
                     Ingreso Masivo
                 </button>
 
@@ -157,6 +184,10 @@
             </div>
         </div>
 
+        <div class="alert alert-primary" role="alert" *ngIf="shippingHome.show">
+            Orden con <strong>{{ shippingHome.status ? 'Envío a Casillero' : 'Envío a Casa' }}</strong>
+        </div>
+
         <ng-container *ngIf="!loadingOrderQuery">
 
             <app-not-income-products [order_has_products]="order_has_products" [formInsertLocker]="formInsertLocker"
@@ -165,7 +196,8 @@
             </app-not-income-products>
 
             <app-income-products [locker_has_products]="locker_has_products" [formInsertLocker]="formInsertLocker"
-                [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);">
+                [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);"
+                (refreshDataCanceled)="refreshDataCanceledReceive($event);">
             </app-income-products>
 
         </ng-container>

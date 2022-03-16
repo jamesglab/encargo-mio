@@ -15,7 +15,7 @@
             <div class="form-outline">
               <input type="search" id="form1" class="form-control" type="text" id="user_id" class="form-control"
                 autocomplete="off" [formControl]="filterUser" placeholder="Busca y selecciona el usuario..."
-                [matAutocomplete]="auto_user" style="width: 290px;" />
+                [matAutocomplete]="auto_user" style="width: 290px;" (keydown)="keyDownFunction($event);" />
             </div>
 
             <button type="button" class="btn btn-primary" (click)="filterProductsByUser();" [disabled]="isLoading">

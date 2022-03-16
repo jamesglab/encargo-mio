@@ -76,7 +76,7 @@
 
                     <div>
                         <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
-                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value.length === 0"></span>
+                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value && formLockerHasProduct.get('product')['controls'][i].controls.images.value.length === 0"></span>
                         <h5>
                             Arrastra tu imagen o haz clic
                             <a class="font-weight-bold cursor-pointer" (click)="uploadImageLocally(i, 'images');">
@@ -86,7 +86,7 @@
                     </div>
 
                     <div class="is-dangered"
-                        *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value.length === 0">
+                        *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value && formLockerHasProduct.get('product')['controls'][i].controls.images.value.length === 0">
                         <span class="mdi mdi-information-outline"></span>
                         Debes ingresar al menos una imagen del producto.
                     </div>
@@ -95,16 +95,24 @@
 
                 <br>
 
-                <h5 class="container-drops">Imagen de la tienda</h5>
+                <ng-container
+                    *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value && formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value.length > 0">
 
-                <div class="container-zoom-image">
-                    <lib-ngx-image-zoom
-                        [thumbImage]="formLockerHasProduct.get('product')['controls'][i].controls.scrap_image.value"
-                        [fullImage]="formLockerHasProduct.get('product')['controls'][i].controls.scrap_image.value"
-                        [enableScrollZoom]="true" [zoomMode]="'hover-freeze'" [enableLens]="true" [lensWidth]="200"
-                        [lensHeight]="200" [circularLens]="true">
-                    </lib-ngx-image-zoom>
-                </div>
+                    <h5 class="container-drops">Imagen de la tienda</h5>
+
+                    <div class="container-zoom-image">
+
+                        <carousel [cellsToShow]="1" [counter]="true" style="z-index: 1 !important;">
+                            <div class="carousel-cell"
+                                *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.images_locker.value">
+                                <img [src]="image.Location" (click)="openModalImage(image.Location);" draggable="false"
+                                    (error)="onImageError($event);">
+                            </div>
+                        </carousel>
+
+                    </div>
+
+                </ng-container>
 
                 <br>
 
@@ -274,10 +282,17 @@
                 </ng-container>
 
                 <ng-container *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
+
+                    <button class="button-add-new-item" type="button" (click)="closeEdit(i);"
+                        style="margin-right: 10px;">
+                        Cancelar
+                    </button>
+
                     <button class="button-encargomio" type="button" [disabled]="isLoading" (click)="saveItem(i);">
                         <span class="mdi mdi-content-save"></span>
                         Guardar
                     </button>
+
                 </ng-container>
 
                 <ng-container *ngIf="!formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
@@ -288,7 +303,6 @@
                     </button>
 
                 </ng-container>
-
 
             </div>
 

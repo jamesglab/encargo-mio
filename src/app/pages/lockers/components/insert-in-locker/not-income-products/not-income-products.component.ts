@@ -7,6 +7,8 @@ import { NotifyService } from 'src/app/_services/notify.service';
 import { LockersService } from '../../../_services/lockers.service';
 import Swal from 'sweetalert2';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ImageViewComponent } from '../image-view/image-view.component';
 
 @Component({
   selector: 'app-not-income-products',
@@ -37,7 +39,8 @@ export class NotIncomeProductsComponent implements OnInit {
     public _compress: ImageCompressService,
     private _lockers: LockersService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -69,22 +72,28 @@ export class NotIncomeProductsComponent implements OnInit {
     let item = this._fb.group({
       id: [null],
       product: [product ? (product.product?.id ? { id: product ? product.product?.id : null } : null) : null],
+      product_link: [product ? product?.product?.link : null],
       name: [product ? product.product?.name : null, [Validators.required]],
       declared_value_admin: [product ? product.product_price : null, [Validators.required]],
       weight: [product ? product.weight : null, [Validators.required, Validators.minLength(0.1)]],
       permanent_shipping_value: [product ? product.product?.permanent_shipping_value : null],
       quantity: [product?.product?.pending_quantity ? product.product?.pending_quantity : 1],
       order_service: [product ? product?.order_service : null],
-      images: [product?.images ? product.images : []],
+      images: [[]],
+      images_locker: [product?.product?.images ? product?.product?.images : []],
       invoice_images: [product?.invoice_images ? product.invoice_images : []],
       description: [product ? product.product?.description : null],
       aditional_info: [{ value: product ? product.product?.aditional_info : null, disabled: true }],
       force_commercial_shipping: [product ? product.force_commercial_shipping : false],
       free_shipping: [product ? product.free_shipping : false],
-      scrap_image: [product ? product.product?.image : null],
+      incomed_quantity: [product ? product.product?.incomed_quantity : null],
       pending_quantity: [product ? product.product?.pending_quantity : null],
       secuential_fraction: [null]
     });
+    if (product?.product?.image) {
+      let value = item.controls.images_locker.value;
+      value.push({ Location: product.product.image });
+    }
     return item;
   }
 
@@ -129,14 +138,15 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   uploadImageToBucket(response: any, position: number, array: string): void {
-    if (array === 'images') { // Images = se irá al endpoint de añadir una nueva imagen del producto
+    if (array === 'images_locker') { // Images = se irá al endpoint de añadir una nueva imagen del producto
       const formData = new FormData(); // Creamos un formData para enviarlo
       formData.append('images', response.file); // Pusheamos la respuesta de la imagen comprimida en el formData
       this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
         if (res.images) { // res.images es un arreglo
           for (let index = 0; index < res.images.length; index++) {
-            this.products.controls[position]['controls'][array].setValue([]);
-            this.products.controls[position]['controls'][array].value.push(res.images[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
+            let arrayImages: any[] = this.products.controls[position]['controls'][array].value;
+            arrayImages.push(res.images[index]);
+            this.products.controls[position]['controls'][array].setValue(arrayImages); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
       }, err => {
@@ -149,8 +159,9 @@ export class NotIncomeProductsComponent implements OnInit {
       this._lockers.uploadImageInvoice(formDataInvoice).subscribe((res: any) => {
         if (res.invoice) { // res.invoice es un arreglo
           for (let index = 0; index < res.invoice.length; index++) { // recorremos el arreglo 
-            this.products.controls[position]['controls'][array].setValue([]);
-            this.products.controls[position]['controls'][array].value.push(res.invoice[index]); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
+            let arrayImages: any[] = this.products.controls[position]['controls'][array].value;
+            arrayImages.push(res.invoice[index]);
+            this.products.controls[position]['controls'][array].setValue(arrayImages); // Pusheamos la respuesta del backend en su respetiva posición y arreglo.
           }
         }
       }, err => {
@@ -179,7 +190,7 @@ export class NotIncomeProductsComponent implements OnInit {
       this.formNotIncome.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
     }
-    if (actualQuantity <= this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
+    if (actualQuantity < this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formNotIncome.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
     }
@@ -266,6 +277,12 @@ export class NotIncomeProductsComponent implements OnInit {
     return products;
   }
 
+  openModalImage(image: string, url: string) {
+    let modal = this.modalService.open(ImageViewComponent, { size: 'lg', centered: true });
+    modal.componentInstance.image = image;
+    modal.componentInstance.url = url;
+  }
+
   registerData(position?: number): void {
 
     if (this.formInsertLocker.invalid) {
@@ -284,7 +301,7 @@ export class NotIncomeProductsComponent implements OnInit {
         let payload: any = null;
         payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[index]]);
         this.isLoading = true;
-        this._lockers.insertIncome(payload).subscribe((res: any) => {
+        this._lockers.insertIncome(payload).subscribe(() => {
           Swal.fire({
             title: '',
             text: "Se ha realizado el ingreso de los productos correctamente.",
@@ -330,7 +347,7 @@ export class NotIncomeProductsComponent implements OnInit {
       }
 
       this.isLoading = true;
-      this._lockers.insertIncome(payload).subscribe((res: any) => {
+      this._lockers.insertIncome(payload).subscribe(() => {
         Swal.fire({
           title: '',
           text: "Se ha realizado el ingreso de los productos correctamente.",

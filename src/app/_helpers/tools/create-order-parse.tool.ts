@@ -109,7 +109,8 @@ export const insertOnlyLocker = (form: any, order_service: any, products: any): 
         "order_service": order_service ? order_service : form.order_service,
         "conveyor": form.conveyor ? form.conveyor.id : null,
         "products": products ? products : [],
-        "receipt_date": new Date(form.receipt_date.year, form.receipt_date.month - 1, form.receipt_date.day)
+        "receipt_date": new Date(form.receipt_date.year, form.receipt_date.month - 1, form.receipt_date.day),
+        "shipping_to_locker": form.order_service ? form.shipping_to_locker : true
     };
 
     return data;
@@ -125,14 +126,13 @@ export const tranformFormItemNotIncome = (data: any): any => {
             "quantity": data.quantity.value,
             "description": data.description.value,
             "aditional_info": data.aditional_info.value,
-            "image": data.scrap_image.value,
             "pending_quantity": data.pending_quantity ? data.pending_quantity?.value : null
         },
         "product_price": data.declared_value_admin.value,
         "declared_value_admin": data.declared_value_admin.value,
         "weight": data.weight.value,
         "order_service": data.order_service.value,
-        "images": data.images.value,
+        "images": data.images_locker.value,
         "invoice_images": data.invoice_images.value,
         "force_commercial_shipping": data.force_commercial_shipping.value,
         "free_shipping": data.free_shipping.value,

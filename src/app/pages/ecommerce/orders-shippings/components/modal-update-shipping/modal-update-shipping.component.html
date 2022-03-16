@@ -285,26 +285,28 @@
               <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                 <carousel [width]="246">
                   <div class="carousel-cell" *ngFor="let image of item.images;">
-                    <img [src]="image.Location" (error)="errorImage($event);" alt="" draggable="false">
+                    <img [src]="image.Location" (error)="errorImage($event);" alt="" draggable="false"
+                      (click)="openLink(item.product.link);">
                   </div>
                 </carousel>
               </div>
 
               <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length === 0">
-                <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
+                <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false"
+                  (click)="openLink(item.product.link);">
               </div>
 
               <div *ngIf="item.arrived">
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
+                <strong>
                   PEC {{ item.product ? item.product.id : '' }}
-                  <ng-container *ngIf="item.product.secuential_fraction">
-                    - {{ item.product.secuential_fraction }}
+                  <ng-container *ngIf="item.secuential_fraction">
+                    - {{ item.secuential_fraction }}
                   </ng-container>
-                </a>
+                </strong>
               </div>
 
               <div title="{{ item.product.name ? item.product.name : '' }}">
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
+                <a>
                   {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) + '...'
                   : item.product.name) : 'N/A' }}
                 </a>
@@ -312,42 +314,47 @@
 
               <div>
                 <strong># Orden:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
+                <a>
                   {{ item.order_service ? item.order_service : 'N/A' }}
                 </a>
               </div>
 
               <div>
+                <strong>Cantidad: </strong>
+                {{ item.quantity ? item.quantity : '' }}
+              </div>
+
+              <div>
                 <strong>Peso:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                <a>
                   {{item.weight ? item.weight : 0}} lb.
                 </a>
               </div>
 
               <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
                 <strong>Descripción:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
+                <a>
                   {{ item.product.description ? item.product.description : 'N/A' }}
                 </a>
               </div>
 
               <div>
                 <strong>Guía Origen:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
+                <a>
                   {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
                 </a>
               </div>
 
               <div>
                 <strong>Valor Declarado Admin.:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
+                <a>
                   {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
                 </a>
               </div>
 
               <div>
                 <strong>Valor Declarado Cliente: </strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
+                <a>
                   {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
                 </a>
               </div>
@@ -388,27 +395,29 @@
               <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                 <carousel [width]="246">
                   <div class="carousel-cell" *ngFor="let image of item.images;">
-                    <img [src]="image.Location" (error)="errorImage($event);" alt="" draggable="false">
+                    <img [src]="image.Location" (error)="errorImage($event);" alt="" draggable="false"
+                      (click)="openLink(item.product.link);">
                   </div>
                 </carousel>
               </div>
 
               <div class="d-flex justify-content-center"
                 *ngIf="item.images && item.images.length === 0 || !item.images && item.product.image">
-                <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
+                <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false"
+                  (click)="openLink(item.product.link);">
               </div>
 
               <div *ngIf="item.arrived">
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
+                <strong>
                   PEC {{ item.product ? item.product.id : '' }}
-                  <ng-container *ngIf="item.product.secuential_fraction">
-                    - {{ item.product.secuential_fraction }}
+                  <ng-container *ngIf="item.secuential_fraction">
+                    - {{ item.secuential_fraction }}
                   </ng-container>
-                </a>
+                </strong>
               </div>
 
               <div title="{{ item.product.name ? item.product.name : '' }}">
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
+                <a>
                   {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) +
                   '...'
                   : item.product.name) : 'N/A' }}
@@ -417,42 +426,47 @@
 
               <div>
                 <strong># Orden:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
+                <a>
                   {{ item.order_service ? item.order_service : 'N/A' }}
                 </a>
               </div>
 
               <div>
+                <strong>Cantidad: </strong>
+                {{ item.quantity ? item.quantity : '' }}
+              </div>
+
+              <div>
                 <strong>Peso:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                <a>
                   {{item.weight ? item.weight : 0}} lb.
                 </a>
               </div>
 
               <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
                 <strong>Descripción:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
+                <a>
                   {{ item.product.description ? item.product.description : 'N/A' }}
                 </a>
               </div>
 
               <div>
                 <strong>Guía Origen:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
+                <a>
                   {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
                 </a>
               </div>
 
               <div>
                 <strong>Valor Declarado Admin.:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
+                <a>
                   {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
                 </a>
               </div>
 
               <div>
                 <strong>Valor Declarado Cliente: </strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
+                <a>
                   {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
                 </a>
               </div>
@@ -493,26 +507,28 @@
               <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length > 0">
                 <carousel [width]="246">
                   <div class="carousel-cell" *ngFor="let image of item.images;">
-                    <img [src]="image.Location" (error)="errorImage($event);" alt="" draggable="false">
+                    <img [src]="image.Location" (error)="errorImage($event);" alt="" draggable="false"
+                      (click)="openLink(item.product.link);">
                   </div>
                 </carousel>
               </div>
 
               <div class="d-flex justify-content-center" *ngIf="item.images && item.images.length === 0">
-                <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false">
+                <img [src]="item.product.image" (error)="errorImage($event);" alt="" draggable="false"
+                  (click)="openLink(item.product.link);">
               </div>
 
               <div *ngIf="item.arrived">
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.id);">
+                <strong>
                   PEC {{ item.product ? item.product.id : '' }}
-                  <ng-container *ngIf="item.product.secuential_fraction">
-                    - {{ item.product.secuential_fraction }}
+                  <ng-container *ngIf="item.secuential_fraction">
+                    - {{ item.secuential_fraction }}
                   </ng-container>
-                </a>
+                </strong>
               </div>
 
               <div title="{{ item.product.name ? item.product.name : '' }}">
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.name);">
+                <a>
                   {{ item.product.name ? ((item.product.name.length > 50) ? (item.product.name | slice:0:50 ) +
                   '...'
                   : item.product.name) : 'N/A' }}
@@ -521,42 +537,47 @@
 
               <div>
                 <strong># Orden:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.order_service);">
+                <a>
                   {{ item.order_service ? item.order_service : 'N/A' }}
                 </a>
               </div>
 
               <div>
+                <strong>Cantidad: </strong>
+                {{ item.quantity ? item.quantity : '' }}
+              </div>
+
+              <div>
                 <strong>Peso:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.weight);">
+                <a>
                   {{item.weight ? item.weight : 0}} lb.
                 </a>
               </div>
 
               <div title="{{ item.product.description ? item.product.description : 'N/A'}}">
                 <strong>Descripción:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.product.description);">
+                <a>
                   {{ item.product.description ? item.product.description : 'N/A' }}
                 </a>
               </div>
 
               <div>
                 <strong>Guía Origen:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.guide_number_alph);">
+                <a>
                   {{ item.guide_number_alph ? item.guide_number_alph : 'N/A' }}
                 </a>
               </div>
 
               <div>
                 <strong>Valor Declarado Admin.:</strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_admin);">
+                <a>
                   {{ (item.declared_value_admin ? item.declared_value_admin : 0) | currency : 'USD' }} USD
                 </a>
               </div>
 
               <div>
                 <strong>Valor Declarado Cliente: </strong>
-                <a style="cursor: pointer;" (click)="copyMessage(item.declared_value_client);">
+                <a>
                   {{ (item.declared_value_client ? item.declared_value_client : 0) | currency : 'USD' }} USD
                 </a>
               </div>

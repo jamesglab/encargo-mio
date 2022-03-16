@@ -38,9 +38,7 @@
 
           <carousel>
             <div class="carousel-cell" *ngFor="let item of orderSelected.shopper_images">
-              <a [href]="item.Location" target="_blank">
-                <img [src]="item.Location" draggable="false" (error)="onImageError($event);">
-              </a>
+              <img [src]="item.Location" draggable="false" (error)="onImageError($event);">
             </div>
           </carousel>
 
@@ -145,17 +143,15 @@
               <ng-container *ngIf="item.images && item.images.length > 0">
                 <carousel [width]="246">
                   <div class="carousel-cell" *ngFor="let image of item.images">
-                    <a [href]="item.link" target="_blank">
-                      <img [src]="image.Location" (error)="onImageError($event);" draggable="false">
-                    </a>
+                    <img [src]="image.Location" (error)="onImageError($event);" draggable="false"
+                      (click)="openLink(item.link);" [ngClass]="{ 'is-hovered' : item.link }">
                   </div>
                 </carousel>
               </ng-container>
 
               <ng-container *ngIf="item.images && item.images.length === 0">
-                <a [href]="item.link" target="_blank">
-                  <img [src]="item.image" title="Imagen de la tienda" (error)="onImageError($event);" draggable="false">
-                </a>
+                <img [src]="item.image" title="Imagen de la tienda" (error)="onImageError($event);" draggable="false"
+                  (click)="openLink(item.link);" [ngClass]="{ 'is-hovered' : item.link }">
               </ng-container>
 
               <ng-container *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
