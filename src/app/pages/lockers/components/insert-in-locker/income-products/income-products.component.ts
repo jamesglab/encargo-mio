@@ -189,7 +189,7 @@ export class IncomeProductsComponent implements OnInit {
       return;
     }
     let actualQuantity: number = this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.value;
-    if (actualQuantity <= this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value) {
+    if (actualQuantity < this.formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formLockerHasProduct.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
     }
@@ -224,7 +224,6 @@ export class IncomeProductsComponent implements OnInit {
     this.formLockerHasProduct.controls.product['controls'][position].controls.editable.setValue(false);
     this.changeEditStatus(position);
     this.refreshDataCanceled.emit(true);
-    // this.refreshData.emit(true);
   }
 
   saveItem(position: number) {
@@ -241,23 +240,23 @@ export class IncomeProductsComponent implements OnInit {
 
     this.changeEditStatus(position);
     let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
-    
-    // this.isLoading = true;
-    // this._lockers.insertIncome(payload).subscribe((res: any) => {
-    //   this.isLoading = false;
-    //   this.refreshData.emit(true);
-    //   Swal.fire({
-    //     title: '',
-    //     text: "Has realizado el ingreso de los productos correctamente.",
-    //     icon: 'success',
-    //     showCancelButton: false,
-    //     confirmButtonText: 'Aceptar'
-    //   });
-    // }, err => {
-    //   this.isLoading = false;
-    //   this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
-    //   throw err;
-    // });
+
+    this.isLoading = true;
+    this._lockers.insertIncome(payload).subscribe((res: any) => {
+      this.isLoading = false;
+      this.refreshData.emit(true);
+      Swal.fire({
+        title: '',
+        text: "Has realizado el ingreso de los productos correctamente.",
+        icon: 'success',
+        showCancelButton: false,
+        confirmButtonText: 'Aceptar'
+      });
+    }, err => {
+      this.isLoading = false;
+      this._notify.show('', 'Ocurrió un error al intentar hacer el ingreso a casillero, intenta de nuevo.', 'error');
+      throw err;
+    });
 
   }
 

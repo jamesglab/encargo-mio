@@ -190,7 +190,7 @@ export class NotIncomeProductsComponent implements OnInit {
       this.formNotIncome.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
     }
-    if (actualQuantity <= this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
+    if (actualQuantity < this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
       this.formNotIncome.get('product')['controls'][i].controls.quantity.setValue(actualQuantity + 1);
       return;
     }
