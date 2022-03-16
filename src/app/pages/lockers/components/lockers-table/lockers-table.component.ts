@@ -18,8 +18,8 @@ import { Router } from '@angular/router';
 export class LockersTableComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
-  @Input() public lockers: any = [];
 
+  @Input() public lockers: any = [];
   @Input() public refreshTableStatus: boolean;
 
   public lockerSelected: any = {};
