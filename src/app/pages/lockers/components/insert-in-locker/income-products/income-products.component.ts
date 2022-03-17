@@ -8,6 +8,7 @@ import { LockersService } from '../../../_services/lockers.service';
 import Swal from 'sweetalert2';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImageViewComponent } from '../image-view/image-view.component';
+import { TakePhotoComponent } from 'src/app/shared/ui/take-photo/take-photo.component';
 
 @Component({
   selector: 'app-income-products',
@@ -99,6 +100,7 @@ export class IncomeProductsComponent implements OnInit {
   changeEditStatus(position: number): void {
     let status = this.products.controls[position]['controls'].editable.value;
     status = !status;
+    console.log(status);
     this.products.controls[position]['controls'].editable.setValue(status);
     for (const i in this.products.controls[position]['controls']) {
       if (this.products.controls[position]['controls'].editable.value) {
@@ -184,6 +186,15 @@ export class IncomeProductsComponent implements OnInit {
       });
   }
 
+  uploadWebCamImage(file: any, array: any) {
+    this._compress.compressImage(file.base64).then((res: any) => {
+      this.uploadImageToBucket(res, file.position, array);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
   addQuantity(i: number): void { // Añadir una cantidad al producto
     if (!this.formLockerHasProduct.get('product')['controls'][i].controls.editable.value) {
       return;
@@ -220,8 +231,20 @@ export class IncomeProductsComponent implements OnInit {
     modal.componentInstance.image = image;
   }
 
+  openWebCam(position: number, array: string): void {
+    const modal = this.modalService.open(TakePhotoComponent, {
+      size: "lg",
+      centered: true
+    });
+    modal.componentInstance.position = position;
+    modal.result.then((res) => {
+      if (res) {
+        this.uploadWebCamImage(res, array);
+      }
+    });
+  }
+
   closeEdit(position: number) {
-    this.formLockerHasProduct.controls.product['controls'][position].controls.editable.setValue(false);
     this.changeEditStatus(position);
     this.refreshDataCanceled.emit(true);
   }

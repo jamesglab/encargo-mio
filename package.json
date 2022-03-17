@@ -40,6 +40,7 @@
     "ngx-image-zoom": "^0.6.0",
     "ngx-owl-carousel-o": "^6.0.0",
     "ngx-ui-switch": "^10.0.2",
+    "ngx-webcam": "^0.4.1",
     "pdfmake": "^0.2.2",
     "resize-observer-polyfill": "^1.5.1",
     "rxjs": "~6.6.6",

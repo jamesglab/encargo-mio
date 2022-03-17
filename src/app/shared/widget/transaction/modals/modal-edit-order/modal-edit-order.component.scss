@@ -59,6 +59,23 @@
   color: #f46a6a;
 }
 
+.remove-image {
+  position: absolute;
+  top: 5px;
+  background-color: #ff0000a8;
+  left: 4px;
+  padding: 3px;
+  border-radius: 20px;
+  color: white;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.relative-position {
+  position: relative;
+  margin: 10px;
+}
+
 .is-hovered {
   cursor: pointer;
 }

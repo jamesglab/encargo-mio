@@ -1,14 +1,16 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { getInsertCreateOrder } from 'src/app/_helpers/tools/create-order-parse.tool';
+import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { OrderService } from '../../../_services/orders.service';
-import { numberOnly, isRequired } from '../../../../../_helpers/tools/utils.tool';
-import { map, startWith } from 'rxjs/operators';
-import { FileHandle } from 'src/app/_directives/file-handle';
 import { ImageCompressService } from 'src/app/_services/image-compress.service';
 import { LockersService } from '../../../../lockers/_services/lockers.service'
-import { Observable } from 'rxjs';
+import { FileHandle } from 'src/app/_directives/file-handle';
+import { TakePhotoComponent } from 'src/app/shared/ui/take-photo/take-photo.component';
 
 @Component({
   selector: 'app-create-order',
@@ -33,6 +35,7 @@ export class CreateOrderComponent implements OnInit {
   public isLoading: boolean = false;
   public isLoadingFormula: boolean = false;
   public isSafari: boolean = false;
+  public isLoadingUpload: boolean = false;
 
   public totalFormulas: any = [];
   public totalValues: any = [];
@@ -43,8 +46,9 @@ export class CreateOrderComponent implements OnInit {
     private quotationService: OrderService,
     private _notify: NotifyService,
     private _compress: ImageCompressService,
-    private _orders: OrderService,
-    private _lockers: LockersService
+    private _lockers: LockersService,
+    public _modal: NgbModal,
+    public _cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -308,20 +312,6 @@ export class CreateOrderComponent implements OnInit {
     }
   }
 
-  createFormData(res: any, position: number) {
-    const formData = new FormData();
-    formData.append("images", res.file);
-    this.isLoading = true;
-    this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
-      this.products.controls[position]['controls'].images.value.push(res.images[0]);
-      this.isLoading = false;
-    }, err => {
-      this.isLoading = false;
-      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
-      throw err;
-    });
-  }
-
   uploadImage(position: number) {
     this._compress.uploadImage().then((res: any) => {
       this.createFormData(res, position);
@@ -332,11 +322,14 @@ export class CreateOrderComponent implements OnInit {
   }
 
   removeImage(position: number, image_position: number) {
+    this.isLoadingUpload = true;
     this._lockers.deleteImage(this.products.controls[position]['controls'].images.value[image_position].Key)
       .subscribe(() => {
         this.products.controls[position]['controls'].images.value.splice(image_position, 1);
+        this.isLoadingUpload = false;
       }, err => {
         this._notify.show('', 'Ocurrió un error al intentar eliminar la imagen, intenta de nuevo.', 'error');
+        this.isLoadingUpload = false;
         throw err;
       });
   }
@@ -349,6 +342,42 @@ export class CreateOrderComponent implements OnInit {
       this.calculateTotalPrices(this.products.controls.length - 1); // Calcular el total de precios
       this.calculateTotalArticles(); // Calcular el valor de todos los artículos
     }
+  }
+
+  openWebCam(position: number): void {
+    const modal = this._modal.open(TakePhotoComponent, {
+      size: "lg",
+      centered: true
+    });
+    modal.componentInstance.position = position;
+    modal.result.then((res) => {
+      if (res) {
+        this.uploadWebCamImage(res);
+      }
+    });
+  }
+
+  uploadWebCamImage(file: any) {
+    this._compress.compressImage(file.base64).then((res: any) => {
+      this.createFormData(res, file.position);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
+  createFormData(res: any, position: number) {
+    const formData = new FormData();
+    formData.append("images", res.file);
+    this.isLoading = true;
+    this._lockers.uploadImageNewLocker(formData).subscribe((res: any) => {
+      this.products.controls[position]['controls'].images.value.push(res.images[0]);
+      this.isLoading = false;
+    }, err => {
+      this.isLoading = false;
+      this._notify.show('', 'Ocurrió un error al intentar guardar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
   }
 
   async createOrder() {

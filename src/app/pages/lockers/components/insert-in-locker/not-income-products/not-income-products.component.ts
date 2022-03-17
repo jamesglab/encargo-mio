@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImageViewComponent } from '../image-view/image-view.component';
+import { TakePhotoComponent } from 'src/app/shared/ui/take-photo/take-photo.component';
 
 @Component({
   selector: 'app-not-income-products',
@@ -184,6 +185,15 @@ export class NotIncomeProductsComponent implements OnInit {
       });
   }
 
+  uploadWebCamImage(file: any, array: any) {
+    this._compress.compressImage(file.base64).then((res: any) => {
+      this.uploadImageToBucket(res, file.position, array);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
   addQuantity(i: number): void { // Añadir una cantidad al producto
     let actualQuantity: number = this.formNotIncome.get('product')['controls'][i].controls.quantity.value;
     if (!this.formNotIncome.get('product')['controls'][i].controls.pending_quantity.value) {
@@ -281,6 +291,19 @@ export class NotIncomeProductsComponent implements OnInit {
     let modal = this.modalService.open(ImageViewComponent, { size: 'lg', centered: true });
     modal.componentInstance.image = image;
     modal.componentInstance.url = url;
+  }
+
+  openWebCam(position: number, array: string): void {
+    const modal = this.modalService.open(TakePhotoComponent, {
+      size: "lg",
+      centered: true
+    });
+    modal.componentInstance.position = position;
+    modal.result.then((res) => {
+      if (res) {
+        this.uploadWebCamImage(res, array);
+      }
+    });
   }
 
   registerData(position?: number): void {

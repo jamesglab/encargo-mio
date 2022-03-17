@@ -8,28 +8,11 @@
     min-height: 300px;
 }
 
-.container-img-dropzone {
-    overflow-x: auto;
+.container-image {
+    display: flex;
     img {
         height: 170px;
         object-fit: contain;
-    }
-    .content-img-dropzone {
-        position: relative;
-        margin: 10px;
-        .remove-item-content {
-            position: absolute;
-            right: 5px;
-            top: 5px;
-            cursor: pointer;
-        }
-        .remove-item {
-            border: none;
-            background-color: #df2335b9;
-            color: white;
-            border-radius: 20px;
-            font-size: 13px;
-        }
     }
 }
 
@@ -115,5 +98,25 @@
 }
 
 a:hover {
+    cursor: pointer;
+}
+
+.remove-image {
+    position: absolute;
+    top: 5px;
+    background-color: #ff0000a8;
+    left: 4px;
+    padding: 3px;
+    border-radius: 20px;
+    color: white;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.relative-position {
+    position: relative;
+}
+
+.item-hover:hover {
     cursor: pointer;
 }

@@ -172,45 +172,50 @@
 
               <div class="container-img-dropzone">
 
-                <ng-container
-                  *ngIf="createProductForm.get('products')['controls'][i].controls.images.value.length === 0">
-                  <div class="container-image">
-                    <img draggable="false" [src]="createProductForm.get('products')['controls'][i].controls.image.value"
-                      (error)="onImageError($event);" />
-                  </div>
-                </ng-container>
-
                 <div *ngIf="createProductForm.get('products')['controls'][i].controls.images.value.length === 0">
                   <span class="mdi mdi-cloud-upload" style="font-size: 80px;"></span>
                 </div>
 
-                <div class="container-image">
+                <div class="container-image" *ngIf="!isLoadingUpload">
 
                   <ng-container
-                    *ngFor="let image of createProductForm.get('products')['controls'][i].controls.images.value; let i_image = index;">
+                    *ngIf="createProductForm.get('products')['controls'][i].controls.images.value.length > 0">
 
-                    <div class="relative-position">
+                    <carousel [cellsToShow]="1" [width]="238" [counter]="true" style="z-index: 0 !important;">
 
-                      <a (click)="removeImage(i, i_image);" title="Borrar Imagen">
-                        <span class="mdi mdi-delete remove-image"></span>
-                      </a>
+                      <div class="carousel-cell"
+                        *ngFor="let image of createProductForm.get('products')['controls'][i].controls.images.value; let i_image = index;">
 
-                      <img draggable="false" [src]="image.Location" (error)="onImageError($event);" />
+                        <div class="relative-position">
 
-                    </div>
+                          <a (click)="removeImage(i, i_image);" title="Borrar Imagen">
+                            <span class="mdi mdi-delete remove-image"></span>
+                          </a>
+
+                          <img [src]="image.Location" draggable="false" (error)="onImageError($event);">
+
+                        </div>
+
+                      </div>
+
+                    </carousel>
 
                   </ng-container>
 
                 </div>
 
                 <h5>
-                  Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
-                    (click)="uploadImage(i);">aquí.</a>
+                  Arrastra tu imagen ó desde tu <span (click)="uploadImage(i);" title="Subir imagen desde tu ordenador."
+                    class="mdi mdi-monitor item-hover"></span> ó
+                  desde tu <span class="mdi mdi-webcam item-hover" title="Subir una imagen a través de tu webcam."
+                    (click)="openWebCam(i);"></span>
                 </h5>
 
               </div>
 
             </div>
+
+            <br>
 
             <div class="col-sm-9">
 

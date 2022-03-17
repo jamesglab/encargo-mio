@@ -1,0 +1,25 @@
+<div class="modal-content">
+
+    <div class="modal-header">
+        Subir imagen a través de Webcam
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="container-webcam" (window:resize)="onResize($event);">
+            <webcam [width]="width" [trigger]="triggerObservable" (imageCapture)="handleImage($event)"
+                [allowCameraSwitch]="allowCameraSwitch" [videoOptions]="videoOptions" [imageQuality]="1"
+                (initError)="handleInitError($event)">
+            </webcam>
+        </div>
+
+        <div class="container-button">
+            <button class="actionBtn" (click)="triggerSnapshot();" title="Toma la foto de tu producto.">
+                <span class="mdi mdi-camera"></span>
+            </button>
+        </div>
+
+    </div>
+
+</div>
