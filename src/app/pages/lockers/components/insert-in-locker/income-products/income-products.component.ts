@@ -59,7 +59,9 @@ export class IncomeProductsComponent implements OnInit {
     }
 
     Promise.all([promises]).then(() => { // Cuando finalice el recorrido del for va entrar a este método 
-      window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.order_service}&product=${this.product}#:~:text=PEC ${this.product}`, "_self");
+      if (this.order_service && this.product) {
+        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.order_service}&product=${this.product}#:~:text=PEC ${this.product}`, "_self");
+      }
     });
 
   }
