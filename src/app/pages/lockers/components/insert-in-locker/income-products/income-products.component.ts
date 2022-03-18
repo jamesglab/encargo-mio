@@ -101,8 +101,28 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
-    this.products.value.splice(i, 1);
-    this.products.controls.splice(i, 1);
+    if (this.products.value[i].id) {
+      Swal.fire({
+        title: '¿Estás seguro que quieres cambiar el estado?',
+        text: 'Si das clic en aceptar el ingreso cambiará al estado sin ingreso.',
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar',
+        showCancelButton: true,
+        cancelButtonColor: '#d33'
+      }).then((result: any) => {
+        if (result.isConfirmed) {
+          this._lockers.deleteIncome(this.products.value[i].id).subscribe(() => {
+            this.refreshDataCanceled.emit(true);
+          }, err => {
+            Swal.fire('', 'Ocurrió al intentar cambiar el estado del ingreso.', 'error');
+            throw err;
+          });
+        }
+      });
+    } else {
+      this.products.value.splice(i, 1);
+      this.products.controls.splice(i, 1);
+    }
   }
 
   editData(position: number) {
@@ -112,7 +132,6 @@ export class IncomeProductsComponent implements OnInit {
   changeEditStatus(position: number): void {
     let status = this.products.controls[position]['controls'].editable.value;
     status = !status;
-    console.log(status);
     this.products.controls[position]['controls'].editable.setValue(status);
     for (const i in this.products.controls[position]['controls']) {
       if (this.products.controls[position]['controls'].editable.value) {

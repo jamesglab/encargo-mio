@@ -298,7 +298,7 @@
 
             <div class="container-final-buttons">
 
-                <ng-container *ngIf="!formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
+                <ng-container *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
                     <a class="delete-item" (click)="removeItem(i);" *ngIf="!isLoading">Eliminar Ingreso</a>
                 </ng-container>
 

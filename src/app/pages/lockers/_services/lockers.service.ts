@@ -154,4 +154,16 @@ export class LockersService {
     )
   }
 
+  deleteIncome(id: string): Observable<any> {
+    return this.http.delete<any>(
+      `${environment.microservices.management}income`,
+      { headers: header, params: { id } }
+    ).pipe(
+      map((res: any) => {
+        return res;
+      }),
+      catchError(handleError)
+    )
+  }
+
 }

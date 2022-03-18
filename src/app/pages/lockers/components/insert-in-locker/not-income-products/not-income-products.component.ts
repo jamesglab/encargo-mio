@@ -69,7 +69,7 @@ export class NotIncomeProductsComponent implements OnInit {
     }
 
     Promise.all([promises]).then(() => { // Cuando finalice el recorrido del for va entrar a este método 
-      if(this.order_service && this.product){
+      if (this.order_service && this.product) {
         window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.order_service}&product=${this.product}#:~:text=PEC ${this.product}`, "_self");
       }
     });
@@ -111,8 +111,28 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
-    this.products.value.splice(i, 1);
-    this.products.controls.splice(i, 1);
+    if (this.products.value[i].id) {
+      Swal.fire({
+        title: '¿Estás seguro que quieres cambiar el estado?',
+        text: 'Si das clic en aceptar el ingreso cambiará al estado sin ingreso.',
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar',
+        showCancelButton: true,
+        cancelButtonColor: '#d33'
+      }).then((result: any) => {
+        if (result.isConfirmed) {
+          this._lockers.deleteIncome(this.products.value[i].id).subscribe(() => {
+            this.refreshData.emit(true);
+          }, err => {
+            Swal.fire('', 'Ocurrió al intentar cambiar el estado del ingreso.', 'error');
+            throw err;
+          });
+        }
+      });
+    } else {
+      this.products.value.splice(i, 1);
+      this.products.controls.splice(i, 1);
+    }
   }
 
   changeEditStatus(position: number): void {
