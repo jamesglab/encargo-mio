@@ -102,6 +102,13 @@ export const updateShipping = (data: any): any => {
 
 export const insertOnlyLocker = (form: any, order_service: any, products: any): any => {
 
+    let shipping_locker: boolean;
+    if (form.order_service) {
+        shipping_locker = form.shipping_to_locker;
+    } else {
+        shipping_locker = true;
+    }
+
     let data = {
         "id": form.id ? form.id : null,
         "locker": form.user.locker_id,
@@ -110,7 +117,7 @@ export const insertOnlyLocker = (form: any, order_service: any, products: any): 
         "conveyor": form.conveyor ? form.conveyor.id : null,
         "products": products ? products : [],
         "receipt_date": new Date(form.receipt_date.year, form.receipt_date.month - 1, form.receipt_date.day),
-        "shipping_to_locker": form.order_service ? form.shipping_to_locker : true
+        "shipping_to_locker": shipping_locker
     };
 
     return data;
