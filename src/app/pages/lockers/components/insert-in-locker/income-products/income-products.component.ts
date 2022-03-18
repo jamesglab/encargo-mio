@@ -21,6 +21,7 @@ export class IncomeProductsComponent implements OnInit {
   @Input() public locker_has_products: any = [];
   @Input() public formInsertLocker: any;
   @Input() public order_service: string;
+  @Input() public product: string;
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() public refreshDataCanceled: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -46,12 +47,21 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   buildForm() {
+
+    let promises: any = [];
+
     this.formLockerHasProduct = this._fb.group({
       product: this._fb.array([])
     });
+
     for (let index = 0; index < this.locker_has_products.length; index++) {
-      this.pushItems(this.locker_has_products[index])
+      promises.push(this.pushItems(this.locker_has_products[index]));
     }
+
+    Promise.all([promises]).then(() => { // Cuando finalice el recorrido del for va entrar a este método 
+      window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.order_service}&product=${this.product}#:~:text=PEC ${this.product}`, "_self");
+    });
+
   }
 
   pushItems(product?: any) {

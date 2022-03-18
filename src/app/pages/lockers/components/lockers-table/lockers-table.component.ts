@@ -149,7 +149,7 @@ export class LockersTableComponent implements OnInit {
   viewDetail(locker: any, modal?: any) {
     this.lockerSelected = locker;
     if (this.lockerSelected.order_service) {
-      this._router.navigate(["/lockers/insert-in-locker"], { queryParams: { order_service: this.lockerSelected.order_service } });
+      this._router.navigate(["/lockers/insert-in-locker"], { queryParams: { order_service: this.lockerSelected.order_service, product: this.lockerSelected.product } });
     } else {
       this._router.navigate(["/lockers/insert-in-locker"], { queryParams: { income: this.lockerSelected.income } });
     }
