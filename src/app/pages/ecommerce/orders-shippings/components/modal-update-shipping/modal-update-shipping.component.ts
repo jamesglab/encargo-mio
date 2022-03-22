@@ -212,7 +212,8 @@ export class ModalUpdateShippingComponent implements OnInit {
         if (type === 'shipping') {
           this.disabledAllDrag();
           this._dragdrop.moveAddProduct({ shipping: this.shippingToUpdate.id, product: objProduct })
-            .subscribe((res: any) => {
+            .subscribe(() => {
+              this._notify.show('', 'Se ha movido el producto correctamente.', 'success');
               transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
               this.enableAllDrag();
             }, err => {
@@ -222,8 +223,9 @@ export class ModalUpdateShippingComponent implements OnInit {
             });
         } else if (type === 'locker') {
           this.disabledAllDrag();
-          this._dragdrop.removeAddProduct({ shipping: this.shippingToUpdate.id, product: objProduct.product.id })
-            .subscribe((res: any) => {
+          this._dragdrop.removeAddProduct({ locker_income: objProduct.locker_income })
+            .subscribe(() => {
+              this._notify.show('', 'Se ha movido el producto correctamente.', 'success');
               transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
               this.enableAllDrag();
             }, err => {
