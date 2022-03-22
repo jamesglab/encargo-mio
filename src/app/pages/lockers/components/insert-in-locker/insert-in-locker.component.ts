@@ -421,6 +421,10 @@ export class InsertInLockerComponent implements OnInit {
     }
   }
 
+  refreshShippingLockerReceive(event: boolean) {
+    this.formInsertLocker.controls.shipping_to_locker.setValue(event);
+  }
+
   createMassive(): void {
     this.getDataIncome = true;
   }
