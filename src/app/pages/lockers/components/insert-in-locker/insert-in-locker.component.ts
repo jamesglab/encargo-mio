@@ -273,6 +273,7 @@ export class InsertInLockerComponent implements OnInit {
       this.formInsertLocker.controls.user.setValue(item.locker);
       this.formInsertLocker.controls.order_service.setValue(item.order_service.id);
       this.formInsertLocker.controls.conveyor.setValue(item.conveyor);
+      this.formInsertLocker.controls.shipping_to_locker.setValue(item.order_service.is_shipping_locker);
     }
 
     this._lockers.getGuideIncome(this.actualGuide).subscribe((res: any) => {
