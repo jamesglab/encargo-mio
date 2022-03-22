@@ -192,12 +192,14 @@
 
             <app-not-income-products [order_has_products]="order_has_products" [formInsertLocker]="formInsertLocker"
                 [order_service]="params.order_service" [getDataIncome]="getDataIncome"
-                (refreshData)="refreshDataRefresh($event);" (productsStatus)="productsStatusReceive($event);">
+                (refreshData)="refreshDataRefresh($event);" (productsStatus)="productsStatusReceive($event);"
+                (refreshShippingLocker)="refreshShippingLockerReceive($event);">
             </app-not-income-products>
 
             <app-income-products [locker_has_products]="locker_has_products" [formInsertLocker]="formInsertLocker"
                 [order_service]="params.order_service" (refreshData)="refreshDataRefresh($event);"
-                (refreshDataCanceled)="refreshDataCanceledReceive($event);">
+                (refreshDataCanceled)="refreshDataCanceledReceive($event);"
+                (refreshShippingLocker)="refreshShippingLockerReceive($event);">
             </app-income-products>
 
         </ng-container>

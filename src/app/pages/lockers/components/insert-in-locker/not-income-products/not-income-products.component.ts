@@ -25,6 +25,7 @@ export class NotIncomeProductsComponent implements OnInit {
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() public productsStatus: EventEmitter<any> = new EventEmitter<any>();
+  @Output() public refreshShippingLocker: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public formNotIncome: FormGroup;
   public products: FormArray;
@@ -88,7 +89,8 @@ export class NotIncomeProductsComponent implements OnInit {
       free_shipping: [product ? product.free_shipping : false],
       incomed_quantity: [product ? product.product?.incomed_quantity : null],
       pending_quantity: [product ? product.product?.pending_quantity : null],
-      secuential_fraction: [null]
+      secuential_fraction: [null],
+      shipping_to_locker: [product ? product.shipping_to_locker : null]
     });
     if (product?.product?.image) {
       let value = item.controls.images_locker.value;
@@ -285,6 +287,8 @@ export class NotIncomeProductsComponent implements OnInit {
 
   registerData(position?: number): void {
 
+    this.refreshShippingLocker.emit(this.formNotIncome.controls.product['controls'][position].controls.shipping_to_locker.value);
+
     if (this.formInsertLocker.invalid) {
       this._notify.show('', `No has completado el formulario correctamente, revisalo y vuelve a intentarlo.`, 'info');
       return;
@@ -329,6 +333,7 @@ export class NotIncomeProductsComponent implements OnInit {
 
       let payload: any = null;
       let checkArray = this.checkIfProductsRepeat();
+      
       if (checkArray && checkArray.length === 0) {
         if (this.formNotIncome.getRawValue().product[position].quantity.value > this.formNotIncome.getRawValue().product[position].pending_quantity.value) {
           this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${this.formNotIncome.getRawValue().product[position].product.quantity} cantidades), revisa la cantidad de tus productos.`, 'info');

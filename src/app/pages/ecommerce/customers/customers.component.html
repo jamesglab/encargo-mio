@@ -69,13 +69,15 @@
                             <thead class="table-light">
 
                                 <tr>
-                                    <th>#
+                                    <!-- <th>
+                                        #
                                         <div class="mt-2">
                                             <input type="" [formControl]="filterId" class="form-control min-width"
                                                 (keyup.enter)="getTransactions(status)"
                                                 (keydown)="keyDownFunction($event);" />
                                         </div>
-                                    </th>
+                                    </th> -->
+
                                     <th>Orden
 
                                         <div class="mt-2">
@@ -162,9 +164,9 @@
 
                                 <tr *ngFor="let transaction of transactions; let i = index">
 
-                                    <td>
+                                    <!-- <td>
                                         {{ transaction.id }}
-                                    </td>
+                                    </td> -->
 
                                     <td>
                                         {{ transaction.order_service ? transaction.order_service :

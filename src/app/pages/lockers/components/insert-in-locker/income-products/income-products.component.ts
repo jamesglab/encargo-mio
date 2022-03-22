@@ -23,6 +23,7 @@ export class IncomeProductsComponent implements OnInit {
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() public refreshDataCanceled: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() public refreshShippingLocker: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public formLockerHasProduct: FormGroup;
   public products: FormArray;
@@ -78,7 +79,8 @@ export class IncomeProductsComponent implements OnInit {
       secuential_fraction: [product ? product.secuential_fraction : null],
       incomed_quantity: [product ? product.product?.incomed_quantity : null],
       pending_quantity: [product ? product.product?.pending_quantity : null],
-      editable: [false],
+      shipping_to_locker: [product ? product.shipping_to_locker : null],
+      editable: [false]
     });
     if (product?.product?.image) {
       let value = item.controls.images_locker.value;
@@ -227,6 +229,8 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   saveItem(position: number) {
+
+    this.refreshShippingLocker.emit(this.formInsertLocker.controls.product['controls'][position].controls.shipping_to_locker.value);
 
     if (this.formInsertLocker.invalid) {
       this._notify.show('', `No has completado el formulario correctamente, revisalo y vuelve a intentarlo.`, 'info');
