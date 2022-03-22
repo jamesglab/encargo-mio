@@ -104,7 +104,7 @@ export const insertOnlyLocker = (form: any, order_service: any, products: any): 
 
     let shipping_locker: boolean;
     if (form.order_service) {
-        shipping_locker = form.shipping_to_locker || true;
+        shipping_locker = form.shipping_to_locker;
     } else {
         shipping_locker = true;
     }
