@@ -230,7 +230,11 @@ export class IncomeProductsComponent implements OnInit {
 
   saveItem(position: number) {
 
-    this.refreshShippingLocker.emit(this.formInsertLocker.controls.product['controls'][position].controls.shipping_to_locker.value);
+    if (this.formLockerHasProduct.controls.product['controls'][position].shipping_to_locker) {
+      this.refreshShippingLocker.emit(this.formInsertLocker.controls.shipping_to_locker.value);
+    } else {
+      this.refreshShippingLocker.emit(null);
+    }
 
     if (this.formInsertLocker.invalid) {
       this._notify.show('', `No has completado el formulario correctamente, revisalo y vuelve a intentarlo.`, 'info');
