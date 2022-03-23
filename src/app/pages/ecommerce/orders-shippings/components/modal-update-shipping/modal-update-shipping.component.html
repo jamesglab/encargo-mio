@@ -248,7 +248,8 @@
     </div>
 
     <div class="col-12 col-sm-12 p-3 px-4">
-      <div class="alert alert-danger" role="alert" *ngIf="message.await_products">
+      <!----message.await_products-->
+      <div class="alert alert-danger" role="alert" *ngIf="status === 0">
         <strong>
           Aún no estan todos los productos del envío en el casillero.
         </strong>

@@ -1,0 +1,22 @@
+.container-webcam {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.container-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .actionBtn {
+        border: none;
+        background-color: #e76310;
+        border-radius: 30px;
+        font-size: 30px;
+        height: 50px;
+        width: 50px;
+        color: white;
+        cursor: pointer;
+    }
+}

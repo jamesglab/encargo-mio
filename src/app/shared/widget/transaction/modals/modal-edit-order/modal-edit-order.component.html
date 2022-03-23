@@ -140,13 +140,30 @@
 
             <div class="container-img-dropzone">
 
-              <ng-container *ngIf="item.images && item.images.length > 0">
-                <carousel [width]="246">
-                  <div class="carousel-cell" *ngFor="let image of item.images">
-                    <img [src]="image.Location" (error)="onImageError($event);" draggable="false"
-                      (click)="openLink(item.link);" [ngClass]="{ 'is-hovered' : item.link }">
-                  </div>
-                </carousel>
+              <ng-container *ngIf="!isLoadingUpload">
+
+                <ng-container *ngIf="item.images && item.images.length > 0">
+
+                  <carousel [cellsToShow]="1" [width]="238" [counter]="true" style="z-index: 0 !important;">
+
+                    <div class="carousel-cell" *ngFor="let image of item.images; let i_image = index;">
+
+                      <div class="relative-position">
+
+                        <a (click)="removeImage(i, i_image);" title="Borrar Imagen">
+                          <span class="mdi mdi-delete remove-image"></span>
+                        </a>
+
+                        <img [src]="image.Location" (error)="onImageError($event);" draggable="false"
+                          (click)="openLink(item.link);" [ngClass]="{ 'is-hovered' : item.link }">
+                      </div>
+
+                    </div>
+
+                  </carousel>
+
+                </ng-container>
+
               </ng-container>
 
               <ng-container *ngIf="item.images && item.images.length === 0">
@@ -155,11 +172,16 @@
               </ng-container>
 
               <ng-container *ngIf="status !== 2 && status !== 3 && status !== 5 && status !== 6">
+
                 <span class="mdi mdi-cloud-upload" style="font-size: 70px;"></span>
+
                 <h5>
-                  Arrastra tu imagen o haz clic <a class="font-weight-bold cursor-pointer"
-                    (click)="uploadImage(i);">aquí.</a>
+                  Arrastra tu imagen ó desde tu <span (click)="uploadImage(i);" title="Subir imagen desde tu ordenador."
+                    class="mdi mdi-monitor is-hovered"></span> ó
+                  desde tu <span class="mdi mdi-webcam is-hovered" title="Subir una imagen a través de tu webcam."
+                    (click)="openWebCam(i);"></span>
                 </h5>
+
               </ng-container>
 
               <ng-container *ngIf="isLoadingUpload">

@@ -18,8 +18,8 @@ import { Router } from '@angular/router';
 export class LockersTableComponent implements OnInit {
 
   @Output() public refreshTable: EventEmitter<boolean> = new EventEmitter();
-  @Input() public lockers: any = [];
 
+  @Input() public lockers: any = [];
   @Input() public refreshTableStatus: boolean;
 
   public lockerSelected: any = {};
@@ -149,7 +149,11 @@ export class LockersTableComponent implements OnInit {
   viewDetail(locker: any, modal?: any) {
     this.lockerSelected = locker;
     if (this.lockerSelected.order_service) {
-      this._router.navigate(["/lockers/insert-in-locker"], { queryParams: { order_service: this.lockerSelected.order_service } });
+      const obj: any = {};
+      if (this.lockerSelected.secuential_fraction) {
+        obj["secuential_fraction"] = this.lockerSelected.secuential_fraction;
+      }
+      this._router.navigate(["/lockers/insert-in-locker"], { queryParams: { order_service: this.lockerSelected.order_service, product: this.lockerSelected.product, ...obj }});
     } else {
       this._router.navigate(["/lockers/insert-in-locker"], { queryParams: { income: this.lockerSelected.income } });
     }

@@ -6,6 +6,7 @@ import { NotifyService } from "src/app/_services/notify.service";
 import { FileHandle } from "src/app/_directives/file-handle";
 import { ImageCompressService } from "src/app/_services/image-compress.service";
 import Swal from "sweetalert2";
+import { TakePhotoComponent } from "src/app/shared/ui/take-photo/take-photo.component";
 import { LockersService } from "src/app/pages/lockers/_services/lockers.service";
 
 @Component({
@@ -31,16 +32,17 @@ export class ModalEditOrderComponent implements OnInit {
   public isLoadingQuery: boolean = false;
   public isLoadingUpload: boolean = false;
   public isSafari: boolean = false;
+  public refreshImages: boolean = false;
 
   public productSelected: any;
 
   constructor(
     private _orders: OrderService,
+    private _lockers: LockersService,
     public _notify: NotifyService,
     public modalService: NgbModal,
     private _compress: ImageCompressService,
-    public _cdr: ChangeDetectorRef,
-    private _lockers: LockersService
+    public _cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void { this.checkIfSafari(); }
@@ -240,6 +242,19 @@ export class ModalEditOrderComponent implements OnInit {
     });
   }
 
+  removeImage(position: number, image_position: number) {
+    this.isLoadingUpload = true;
+    this._lockers.deleteImage(this.orderSelected.products[position].images[image_position].Key)
+      .subscribe(() => {
+        this.orderSelected.products[position].images.splice(image_position, 1);
+        this.isLoadingUpload = false;
+      }, err => {
+        this.isLoadingUpload = false;
+        this._notify.show('', 'Ocurrió un error al intentar eliminar la imagen, intenta de nuevo.', 'error');
+        throw err;
+      });
+  }
+
   filesDropped(file: FileHandle[], position: number) { // Método el cual entra cuando un usuario hace el "drop"
     if (file[0].file.type && file[0].file.type.includes('image')) {
       this._compress.compressImage(file[0].base64).then((res: any) => {
@@ -284,6 +299,18 @@ export class ModalEditOrderComponent implements OnInit {
     });
   }
 
+  uploadWebCamImage(file: any) {
+    if (this.status == 2 || this.status == 3 || this.status == 5) {
+      return;
+    }
+    this._compress.compressImage(file.base64).then((res: any) => {
+      this.createFormData(res, file.position);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
   numberOnly(event: any): boolean {// Función para que sólo se permitan números en un input
     return numberOnly(event, this.isSafari);
   }
@@ -298,6 +325,19 @@ export class ModalEditOrderComponent implements OnInit {
     if (url) {
       window.open(url);
     }
+  }
+
+  openWebCam(position: number): void {
+    const modal = this.modalService.open(TakePhotoComponent, {
+      size: "lg",
+      centered: true
+    });
+    modal.componentInstance.position = position;
+    modal.result.then((res) => {
+      if (res) {
+        this.uploadWebCamImage(res);
+      }
+    });
   }
 
   openModal(product: any, modal: any, sizeModale: string) { //ITS ONLY FOR EDIT IMAGE

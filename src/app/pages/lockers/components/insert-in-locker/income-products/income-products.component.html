@@ -10,8 +10,8 @@
     <div class="container-income" formArrayName="product">
 
         <div class="row" *ngFor="let item of formLockerHasProduct.get('product')['controls']; let i = index;"
-            [formGroupName]="i"
-            [ngClass]="{ 'income-background' : !formLockerHasProduct.get('product')['controls'][i].controls.editable.value, 'editable-active ': formLockerHasProduct.get('product')['controls'][i].controls.editable.value }">
+            [formGroupName]="i" [ngClass]="{ 'income-background' : !formLockerHasProduct.get('product')['controls'][i].controls.editable.value, 
+            'editable-active ': formLockerHasProduct.get('product')['controls'][i].controls.editable.value }">
 
             <div class="income-color">
 
@@ -24,12 +24,10 @@
                 <div class="flex-items">
 
                     <h5>
-                        PEC {{ formLockerHasProduct.get('product')['controls'][i].controls.product.value.id }}
-                        <ng-container
-                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value">
-                            -
-                            {{ formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value }}
-                        </ng-container>
+                        PEC {{ formLockerHasProduct.get('product')['controls'][i].controls.product.value.id }}{{
+                        formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value ?
+                        '━'+formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value : ''
+                        }}
                     </h5>
 
                     <h4 *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.order_service?.value">
@@ -51,37 +49,47 @@
                 <div class="align-items-center dropzone-in-create" appImageDrag
                     (files)="filesDropped($event, i, 'images');">
 
-                    <div class="container-img-dropzone d-flex">
+                    <div class="container-image d-flex" *ngIf="!isLoading">
 
                         <ng-container
-                            *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.images.value; let i_image = index;">
+                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value.length > 0">
 
-                            <div class="content-img-dropzone">
+                            <carousel [cellsToShow]="1" [width]="300" [counter]="true" style="z-index: 0 !important;">
 
-                                <div class="remove-item-content">
-                                    <button type="button" class="close remove-item" aria-label="Close"
-                                        (click)="onRemoveImage(i, i_image, 'images');" title="Borrar Imagen">
-                                        <span class="mdi mdi-delete"></span>
-                                    </button>
+                                <div class="carousel-cell"
+                                    *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.images.value; let i_image = index;">
+
+                                    <div class="relative-position">
+
+                                        <a (click)="onRemoveImage(i, i_image, 'images')" title="Borrar Imagen">
+                                            <span class="mdi mdi-delete remove-image"></span>
+                                        </a>
+
+                                        <img [src]="image.Location" draggable="false" (error)="onImageError($event);">
+
+                                    </div>
+
                                 </div>
 
-                                <img src="{{ image.url ? image.url : image.Location }}" draggable="false"
-                                    (error)="onImageError($event);" />
-
-                            </div>
+                            </carousel>
 
                         </ng-container>
 
                     </div>
 
                     <div>
-                        <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
-                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value && formLockerHasProduct.get('product')['controls'][i].controls.images.value.length === 0"></span>
-                        <h5>
-                            Arrastra tu imagen o haz clic
-                            <a class="font-weight-bold cursor-pointer" (click)="uploadImageLocally(i, 'images');">
-                                aquí.
-                            </a>
+                        <ng-container
+                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value && formLockerHasProduct.get('product')['controls'][i].controls.images.value.length === 0">
+                            <span class="mdi mdi-cloud-upload" style="font-size: 90px;"></span>
+                            <h5> No hay imagenes asociadas.</h5>
+                        </ng-container>
+
+                        <h5 *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
+                            Arrastra tu imagen ó desde tu <span (click)="uploadImageLocally(i, 'images');"
+                                title="Subir imagen desde tu ordenador." class="mdi mdi-monitor item-hover"></span> ó
+                            desde tu <span class="mdi mdi-webcam item-hover"
+                                title="Subir una imagen a través de tu webcam."
+                                (click)="openWebCam(i, 'images');"></span>
                         </h5>
                     </div>
 
@@ -121,38 +129,49 @@
                 <div class="align-items-center dropzone-in-create" appImageDrag
                     (files)="filesDropped($event, i, 'invoice_images');">
 
-                    <div class="container-img-dropzone d-flex">
+                    <div class="container-image d-flex" *ngIf="!isLoading">
 
                         <ng-container
-                            *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.invoice_images.value; let i_invoice = index;">
+                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.invoice_images.value.length > 0">
 
-                            <div class="content-img-dropzone">
+                            <carousel [cellsToShow]="1" [width]="300" [counter]="true" style="z-index: 0 !important;">
 
-                                <div class="remove-item-content">
-                                    <button type="button" class="close remove-item" aria-label="Close"
-                                        (click)="onRemoveImage(i, i_invoice, 'invoice_images');" title="Borrar Imagen">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                <div class="carousel-cell"
+                                    *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.invoice_images.value; let i_image = index;">
+
+                                    <div class="relative-position">
+
+                                        <a (click)="onRemoveImage(i, i_image, 'invoice_images')" title="Borrar Imagen">
+                                            <span class="mdi mdi-delete remove-image"></span>
+                                        </a>
+
+                                        <img [src]="image.Location" draggable="false" (error)="onImageError($event);">
+
+                                    </div>
+
                                 </div>
 
-                                <img src="{{ image.url ? image.url : image.Location }}" draggable="false"
-                                    (error)="onImageError($event);" />
-
-                            </div>
+                            </carousel>
 
                         </ng-container>
 
                     </div>
 
                     <div>
-                        <span class="mdi mdi-cloud-upload" style="font-size: 90px;"
-                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.invoice_images.value.length === 0"></span>
-                        <h5>
-                            Arrastra tu imagen o haz clic
-                            <a class="font-weight-bold cursor-pointer"
-                                (click)="uploadImageLocally(i, 'invoice_images');">
-                                aquí.
-                            </a>
+                        <ng-container
+                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.invoice_images.value.length === 0">
+                            <span class="mdi mdi-cloud-upload" style="font-size: 90px;"></span>
+                            <h5> No hay imagenes asociadas.</h5>
+                        </ng-container>
+
+                        <h5 *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
+                            Arrastra tu imagen ó desde tu <span (click)="uploadImageLocally(i, 'invoice_images');"
+                                title="Subir imagen desde tu ordenador." class="mdi mdi-monitor item-hover">
+                            </span>
+                            ó desde tu <span class="mdi mdi-webcam item-hover"
+                                title="Subir una imagen a través de tu webcam."
+                                (click)="openWebCam(i, 'invoice_images');">
+                            </span>
                         </h5>
                     </div>
 
@@ -273,11 +292,27 @@
                     </label>
                 </div>
 
+                <br>
+
+                <div>
+                    <strong>Pendiente por Ingresar:</strong>
+                    {{ formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value
+                    ? formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value : 0 }}
+                    <br>
+                    <strong>Cantidad Ingresada:</strong>
+                    {{ formLockerHasProduct.get('product')['controls'][i].controls.quantity.value ?
+                    formLockerHasProduct.get('product')['controls'][i].controls.quantity.value : 0 }}
+                    <br>
+                    <strong>Cantidad Total:</strong>
+                    {{ formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value +
+                    formLockerHasProduct.get('product')['controls'][i].controls.incomed_quantity.value}}
+                </div>
+
             </div>
 
             <div class="container-final-buttons">
 
-                <ng-container *ngIf="!formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
+                <ng-container *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.editable.value">
                     <a class="delete-item" (click)="removeItem(i);" *ngIf="!isLoading">Eliminar Ingreso</a>
                 </ng-container>
 

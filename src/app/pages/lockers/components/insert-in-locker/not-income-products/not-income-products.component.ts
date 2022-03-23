@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImageViewComponent } from '../image-view/image-view.component';
+import { TakePhotoComponent } from 'src/app/shared/ui/take-photo/take-photo.component';
 
 @Component({
   selector: 'app-not-income-products',
@@ -20,7 +21,7 @@ export class NotIncomeProductsComponent implements OnInit {
 
   @Input() public order_has_products: any = [];
   @Input() public formInsertLocker: any;
-  @Input() public order_service: string;
+
   @Input() public getDataIncome: boolean;
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -56,12 +57,25 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   buildForm() {
+
+    let promises: any = [];
+
     this.formNotIncome = this._fb.group({
       product: this._fb.array([])
     });
+
     for (let index = 0; index < this.order_has_products.length; index++) {
-      this.pushItems(this.order_has_products[index])
+      promises.push(this.pushItems(this.order_has_products[index]));
     }
+
+    Promise.all([promises]).then(() => { // Cuando finalice el recorrido del for va entrar a este método 
+      if (this.params.secuential_fraction) {
+        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}&secuential_fraction=${this.params.secuential_fraction}#:~:text=PEC ${this.params.product}━${this.params.secuential_fraction}`, "_self");
+      } else if (this.params.order_service) {
+        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}#:~:text=PEC ${this.params.product}`, "_self");
+      }
+    });
+
   }
 
   pushItems(product?: any) {
@@ -100,8 +114,28 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
-    this.products.value.splice(i, 1);
-    this.products.controls.splice(i, 1);
+    if (this.products.value[i].id) {
+      Swal.fire({
+        title: '¿Estás seguro que quieres cambiar el estado?',
+        text: 'Si das clic en aceptar el ingreso cambiará al estado sin ingreso.',
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar',
+        showCancelButton: true,
+        cancelButtonColor: '#d33'
+      }).then((result: any) => {
+        if (result.isConfirmed) {
+          this._lockers.deleteIncome(this.products.value[i].id).subscribe(() => {
+            this.refreshData.emit(true);
+          }, err => {
+            Swal.fire('', 'Ocurrió al intentar cambiar el estado del ingreso.', 'error');
+            throw err;
+          });
+        }
+      });
+    } else {
+      this.products.value.splice(i, 1);
+      this.products.controls.splice(i, 1);
+    }
   }
 
   changeEditStatus(position: number): void {
@@ -184,6 +218,15 @@ export class NotIncomeProductsComponent implements OnInit {
         this.isLoading = false;
         throw err;
       });
+  }
+
+  uploadWebCamImage(file: any, array: any) {
+    this._compress.compressImage(file.base64).then((res: any) => {
+      this.uploadImageToBucket(res, file.position, array);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
   }
 
   addQuantity(i: number): void { // Añadir una cantidad al producto
@@ -285,6 +328,19 @@ export class NotIncomeProductsComponent implements OnInit {
     modal.componentInstance.url = url;
   }
 
+  openWebCam(position: number, array: string): void {
+    const modal = this.modalService.open(TakePhotoComponent, {
+      size: "lg",
+      centered: true
+    });
+    modal.componentInstance.position = position;
+    modal.result.then((res) => {
+      if (res) {
+        this.uploadWebCamImage(res, array);
+      }
+    });
+  }
+
   registerData(position?: number): void {
 
     this.refreshShippingLocker.emit(this.formNotIncome.controls.product['controls'][position].controls.shipping_to_locker.value);
@@ -304,6 +360,7 @@ export class NotIncomeProductsComponent implements OnInit {
       for (let index = 0; index < this.formNotIncome.getRawValue().product.length; index++) {
         let payload: any = null;
         payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), null, [this.formNotIncome.getRawValue().product[index]]);
+
         this.isLoading = true;
         this._lockers.insertIncome(payload).subscribe(() => {
           Swal.fire({
@@ -333,7 +390,6 @@ export class NotIncomeProductsComponent implements OnInit {
 
       let payload: any = null;
       let checkArray = this.checkIfProductsRepeat();
-      
       if (checkArray && checkArray.length === 0) {
         if (this.formNotIncome.getRawValue().product[position].quantity.value > this.formNotIncome.getRawValue().product[position].pending_quantity.value) {
           this._notify.show('', `Has superado la cantidad máxima de ingresos que puedes hacer (${this.formNotIncome.getRawValue().product[position].pending_quantity} máximo) al producto con PEC ${this.formNotIncome.getRawValue().product[position].product.id} y tu tienes (${this.formNotIncome.getRawValue().product[position].product.quantity} cantidades), revisa la cantidad de tus productos.`, 'info');

@@ -100,7 +100,10 @@
         </td>
 
         <td>
-          {{ data.product ? data.product : "" }}
+          {{ data.product ? data.product : "" }} 
+          <ng-container *ngIf="data.secuential_fraction">
+            - {{ data.secuential_fraction }}
+          </ng-container>
         </td>
 
         <td title="{{ data.product_name ? data.product_name : '' }}">

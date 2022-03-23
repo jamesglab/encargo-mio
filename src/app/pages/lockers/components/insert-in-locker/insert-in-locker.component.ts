@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { OrderService } from 'src/app/pages/ecommerce/_services/orders.service';
-import { insertOnlyLocker, tranformFormItemNotIncome } from 'src/app/_helpers/tools/create-order-parse.tool';
+import { insertOnlyLocker } from 'src/app/_helpers/tools/create-order-parse.tool';
 import { NotifyService } from 'src/app/_services/notify.service';
 import { UserService } from 'src/app/_services/users.service';
 import Swal from 'sweetalert2';
@@ -61,6 +61,7 @@ export class InsertInLockerComponent implements OnInit {
   checkParamId(): void {
 
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
+    
     this.loadingOrderQuery = true;
 
     if (this.params.order_service) {
@@ -410,7 +411,13 @@ export class InsertInLockerComponent implements OnInit {
   refreshDataCanceledReceive(event: boolean) {
     if (event) {
       if (this.formInsertLocker.getRawValue().order_service) {
-        this.obtainOrderService(this.formInsertLocker.getRawValue().order_service.id)
+        let id = null;
+        if (this.formInsertLocker.getRawValue().order_service.id) {
+          id = this.formInsertLocker.getRawValue().order_service.id;
+        } else {
+          id = this.formInsertLocker.getRawValue().order_service;
+        }
+        this.obtainOrderService(id);
       }
     }
   }

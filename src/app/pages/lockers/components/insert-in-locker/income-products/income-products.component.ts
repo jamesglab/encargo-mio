@@ -8,6 +8,8 @@ import { LockersService } from '../../../_services/lockers.service';
 import Swal from 'sweetalert2';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImageViewComponent } from '../image-view/image-view.component';
+import { TakePhotoComponent } from 'src/app/shared/ui/take-photo/take-photo.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-income-products',
@@ -19,7 +21,6 @@ export class IncomeProductsComponent implements OnInit {
 
   @Input() public locker_has_products: any = [];
   @Input() public formInsertLocker: any;
-  @Input() public order_service: string;
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() public refreshDataCanceled: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -30,15 +31,19 @@ export class IncomeProductsComponent implements OnInit {
 
   public isLoading: boolean = false;
 
+  public params: any = {};
+
   constructor(
     public _fb: FormBuilder,
     public _notify: NotifyService,
     public _compress: ImageCompressService,
     private _lockers: LockersService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
   }
 
   ngOnChanges() {
@@ -46,12 +51,25 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   buildForm() {
+
+    let promises: any = [];
+
     this.formLockerHasProduct = this._fb.group({
       product: this._fb.array([])
     });
+
     for (let index = 0; index < this.locker_has_products.length; index++) {
-      this.pushItems(this.locker_has_products[index])
+      promises.push(this.pushItems(this.locker_has_products[index]));
     }
+
+    Promise.all([promises]).then(() => { // Cuando finalice el recorrido del for va entrar a este método 
+      if (this.params.secuential_fraction) {
+        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}&secuential_fraction=${this.params.secuential_fraction}#:~:text=PEC ${this.params.product}━${this.params.secuential_fraction}`, "_self");
+      } else if (this.params.order_service) {
+        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}#:~:text=PEC ${this.params.product}`, "_self");
+      }
+    });
+
   }
 
   pushItems(product?: any) {
@@ -90,8 +108,28 @@ export class IncomeProductsComponent implements OnInit {
   }
 
   removeItem(i: number): void { // Removemos un item de ingreso.
-    this.products.value.splice(i, 1);
-    this.products.controls.splice(i, 1);
+    if (this.products.value[i].id) {
+      Swal.fire({
+        title: '¿Estás seguro que quieres cambiar el estado?',
+        text: 'Si das clic en aceptar el ingreso cambiará al estado sin ingreso.',
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar',
+        showCancelButton: true,
+        cancelButtonColor: '#d33'
+      }).then((result: any) => {
+        if (result.isConfirmed) {
+          this._lockers.deleteIncome(this.products.value[i].id).subscribe(() => {
+            this.refreshDataCanceled.emit(true);
+          }, err => {
+            Swal.fire('', 'Ocurrió al intentar cambiar el estado del ingreso.', 'error');
+            throw err;
+          });
+        }
+      });
+    } else {
+      this.products.value.splice(i, 1);
+      this.products.controls.splice(i, 1);
+    }
   }
 
   editData(position: number) {
@@ -186,6 +224,15 @@ export class IncomeProductsComponent implements OnInit {
       });
   }
 
+  uploadWebCamImage(file: any, array: any) {
+    this._compress.compressImage(file.base64).then((res: any) => {
+      this.uploadImageToBucket(res, file.position, array);
+    }, err => {
+      this._notify.show('', 'Ocurrió un error al intentar cargar la imagen, intenta de nuevo.', 'error');
+      throw err;
+    });
+  }
+
   addQuantity(i: number): void { // Añadir una cantidad al producto
     if (!this.formLockerHasProduct.get('product')['controls'][i].controls.editable.value) {
       return;
@@ -222,8 +269,20 @@ export class IncomeProductsComponent implements OnInit {
     modal.componentInstance.image = image;
   }
 
+  openWebCam(position: number, array: string): void {
+    const modal = this.modalService.open(TakePhotoComponent, {
+      size: "lg",
+      centered: true
+    });
+    modal.componentInstance.position = position;
+    modal.result.then((res) => {
+      if (res) {
+        this.uploadWebCamImage(res, array);
+      }
+    });
+  }
+
   closeEdit(position: number) {
-    this.formLockerHasProduct.controls.product['controls'][position].controls.editable.setValue(false);
     this.changeEditStatus(position);
     this.refreshDataCanceled.emit(true);
   }
@@ -247,7 +306,7 @@ export class IncomeProductsComponent implements OnInit {
     }
 
     this.changeEditStatus(position);
-    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
+    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.params.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
 
     this.isLoading = true;
     this._lockers.insertIncome(payload).subscribe((res: any) => {

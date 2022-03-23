@@ -15,8 +15,9 @@ import { IvyCarouselModule } from 'angular-responsive-carousel';
 @NgModule({
   declarations: [
     TransactionComponent,
-    ModalEditOrderComponent, ModalRegisterPurchaseComponent,
-    ImageDragDirective, ImageDragDirective
+    ModalEditOrderComponent,
+    ModalRegisterPurchaseComponent,
+    ImageDragDirective
   ],
   imports: [
     CommonModule,
