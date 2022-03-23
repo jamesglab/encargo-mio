@@ -51,7 +51,6 @@ export class TakePhotoComponent implements OnInit {
 
   public handleInitError(error: WebcamInitError): void {
     this.errors.push(error);
-    console.log(this.errors);
   }
 
   public handleImage(webcamImage: WebcamImage): void {

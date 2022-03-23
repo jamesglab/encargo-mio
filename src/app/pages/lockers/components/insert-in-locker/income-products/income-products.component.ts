@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ImageViewComponent } from '../image-view/image-view.component';
 import { TakePhotoComponent } from 'src/app/shared/ui/take-photo/take-photo.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-income-products',
@@ -20,8 +21,6 @@ export class IncomeProductsComponent implements OnInit {
 
   @Input() public locker_has_products: any = [];
   @Input() public formInsertLocker: any;
-  @Input() public order_service: string;
-  @Input() public product: string;
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() public refreshDataCanceled: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -32,15 +31,19 @@ export class IncomeProductsComponent implements OnInit {
 
   public isLoading: boolean = false;
 
+  public params: any = {};
+
   constructor(
     public _fb: FormBuilder,
     public _notify: NotifyService,
     public _compress: ImageCompressService,
     private _lockers: LockersService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
   }
 
   ngOnChanges() {
@@ -60,8 +63,10 @@ export class IncomeProductsComponent implements OnInit {
     }
 
     Promise.all([promises]).then(() => { // Cuando finalice el recorrido del for va entrar a este método 
-      if (this.order_service && this.product) {
-        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.order_service}&product=${this.product}#:~:text=PEC ${this.product}`, "_self");
+      if (this.params.secuential_fraction) {
+        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}&secuential_fraction=${this.params.secuential_fraction}#:~:text=PEC ${this.params.product}━${this.params.secuential_fraction}`, "_self");
+      } else if (this.params.order_service) {
+        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}#:~:text=PEC ${this.params.product}`, "_self");
       }
     });
 
@@ -297,7 +302,7 @@ export class IncomeProductsComponent implements OnInit {
     }
 
     this.changeEditStatus(position);
-    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
+    let payload = insertOnlyLocker(this.formInsertLocker.getRawValue(), this.params.order_service, [this.formLockerHasProduct.getRawValue().product[position]]);
 
     this.isLoading = true;
     this._lockers.insertIncome(payload).subscribe((res: any) => {

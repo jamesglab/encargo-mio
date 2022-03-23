@@ -61,6 +61,7 @@ export class InsertInLockerComponent implements OnInit {
   checkParamId(): void {
 
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
+    
     this.loadingOrderQuery = true;
 
     if (this.params.order_service) {

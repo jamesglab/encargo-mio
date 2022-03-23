@@ -24,12 +24,9 @@
                 <div class="flex-items">
 
                     <h5>
-                        PEC {{ formLockerHasProduct.get('product')['controls'][i].controls.product.value.id }}
-                        <ng-container
-                            *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value">
-                            -
-                            {{ formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value }}
-                        </ng-container>
+                        PEC {{ formLockerHasProduct.get('product')['controls'][i].controls.product.value.id }}{{
+                        formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value ?
+                        '━'+formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value : '' }}
                     </h5>
 
                     <h4 *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.order_service?.value">

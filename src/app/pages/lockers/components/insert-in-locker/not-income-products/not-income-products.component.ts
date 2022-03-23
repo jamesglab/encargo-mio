@@ -21,9 +21,8 @@ export class NotIncomeProductsComponent implements OnInit {
 
   @Input() public order_has_products: any = [];
   @Input() public formInsertLocker: any;
-  @Input() public order_service: string;
+
   @Input() public getDataIncome: boolean;
-  @Input() public product: string;
 
   @Output() public refreshData: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() public productsStatus: EventEmitter<any> = new EventEmitter<any>();
@@ -70,9 +69,11 @@ export class NotIncomeProductsComponent implements OnInit {
     }
 
     Promise.all([promises]).then(() => { // Cuando finalice el recorrido del for va entrar a este método 
-      if (this.order_service && this.product) {
-        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.order_service}&product=${this.product}#:~:text=PEC ${this.product}`, "_self");
-      }
+        if (this.params.secuential_fraction) {
+          window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}&secuential_fraction=${this.params.secuential_fraction}#:~:text=PEC ${this.params.product}━${this.params.secuential_fraction}`, "_self");
+        } else if (this.params.order_service) {
+          window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}#:~:text=PEC ${this.params.product}`, "_self");
+        }
     });
 
   }
@@ -83,7 +84,6 @@ export class NotIncomeProductsComponent implements OnInit {
   }
 
   createItem(product?: any): FormGroup {
-    console.log(product);
     let item = this._fb.group({
       id: [null],
       product: [product ? (product.product?.id ? { id: product ? product.product?.id : null } : null) : null],
