@@ -23,110 +23,144 @@ export class ExportPdfService {
 
   async exportToLabel(information: any, address: any, UID: string) {
     const docDefinitions: any = {
-      pageSize: 'A4',
-      pageOrientation: 'landscape',
-      margin: [0, 0, 0, 0],
+      pageSize: 'A5',
+      pageOrientation: 'portrait',
       content: [
         {
-          alignment: 'justify',
-          columns: [
+          canvas: [
             {
-              text: 'Hola!', style: 'header', alignment: 'center'
-            },
-            {
-              text: 'Al momento de recibir tu envío\n esta etiqueta no debe \n estar rota o rasgada', alignment: 'center'
+              type: 'rect',
+              x: 0,
+              y: -30,
+              w: 350,
+              h: 545,
+              r: 30,
+              lineColor: 'black'
             }
           ]
         },
         {
-          alignment: 'justify',
-          columns: [
+          image: await this.getBase64ImageFromURL("https://locker-products.s3.amazonaws.com/label/logo.jpg"),
+          width: 250,
+          alignment: "center",
+          absolutePosition: { x: 55, y: 20 }
+        },
+        {
+          canvas: [
             {
-              text: 'Somos tu mejor aliado\n en Compras y Envíos en el exterior', alignment: 'center'
-            },
+              type: 'rect',
+              x: 30, y: -475,
+              w: 285, h: 3,
+              color: '#e8e9ea'
+            }
+          ]
+        },
+        [
+          {
+            text: 'Remite:',
+            absolutePosition: { x: 70, y: 90 },
+            color: '#4f5159;',
+            fontSize: '18',
+            'bold': true
+          },
+          {
+            image: await this.getBase64ImageFromURL("https://locker-products.s3.amazonaws.com/label/caja.png"),
+            height: 80,
+            width: 80,
+            absolutePosition: { x: 85, y: 125 }
+          },
+          {
+            text: 'encargomio.com',
+            color: '#f08001',
+            fontSize: '15',
+            'bold': true,
+            absolutePosition: { x: 190, y: 100 }
+          },
+          {
+            text: 'Calle 11 #24 - 75 \n La Ceja - Antioquia \n Tel: 318 242 8086',
+            fontSize: '14',
+            absolutePosition: { x: 190, y: 120 },
+            color: '#4f5159'
+          },
+          {
+            text: '+13053996614',
+            fontSize: '14',
+            color: '#4f5159',
+            absolutePosition: { x: 210, y: 184 }
+          }
+        ],
+        {
+          canvas: [
             {
-              text: ''
+              type: 'rect',
+              x: 30, y: -340,
+              w: 285, h: 3,
+              color: '#e8e9ea'
+            }
+          ]
+        },
+        [
+          {
+            text: 'Destino: ',
+            color: '#4f5159',
+            'bold': true,
+            fontSize: '18',
+            absolutePosition: { x: 70, y: 220 },
+          },
+          {
+            image: await this.getBase64ImageFromURL("https://locker-products.s3.amazonaws.com/label/house.png"),
+            height: 80,
+            width: 80,
+            absolutePosition: { x: 85, y: 270 }
+          },
+          {
+            text: `${information.address ? information.address.first_name : ''}`,
+            color: '#f08001',
+            fontSize: '13',
+            'bold': true,
+            absolutePosition: { x: 180, y: 225 }
+          },
+          {
+            text: `${address.address} ${address.description ? address.description : ''}\n${address.city ? address.city.name : ''}, ${address.department ? address.department.name : ''}\n Tel: ${address.phone ? address.phone : 'N/A'}`,
+            fontSize: '10',
+            color: '#4f5159',
+            absolutePosition: { x: 180, y: 270 }
+          },
+        ],
+        {
+          canvas: [
+            {
+              type: 'rect',
+              x: 30, y: -175,
+              w: 285, h: 3,
+              color: '#e8e9ea'
             }
           ]
         },
         {
-          alignment: 'justify',
-          columns: [
-            {
-              text: 'Ideal para Negocios', alignment: 'center', bold: true
-            },
-            {
-              text: ''
-            }
-          ]
+          text: '¡Gracias por Elegirnos!',
+          'bold': true,
+          absolutePosition: { x: 50, y: 390 },
+          color: '#1dd595',
+          fontSize: 17,
+          alignment: "center",
         },
         {
-          columns: [
-            {
-              width: '50%',
-              table: {
-                body: [
-                  [
-                    {
-                      border: [false, false, false, false],
-                      text: 'Remitente: ',
-                    },
-                    {
-                      border: [false, false, false, false],
-                      text: 'Encargomio\n Calle 11 #24 - 75\n La Ceja - Antioquia\n Tel: 318 242 8086'
-                    },
-                    {
-                      border: [false, false, false, false],
-                      text: 'Envío: 4108'
-                    }
-                  ],
-                  [
-                    {
-                      rowSpan: 3,
-                      border: [false, false, false, false],
-                      text: 'Destinatario: '
-                    },
-                    {
-                      colSpan: 2,
-                      border: [false, false, false, false],
-                      text: `${information.address ? information.address.first_name : ''}`
-                    }
-                  ],
-                  [
-                    {
-                      rowSpan: 3,
-                      border: [false, false, false, false],
-                      text: 'xd: '
-                    },
-                    {
-                      colSpan: 2,
-                      border: [false, false, false, false],
-                      text: `xd`
-                    }
-                  ],
-                ]
-              },
-            },
-            {
-              width: '50%',
-              text: 'Fourth column'
-            }
-          ],
-          columnGap: 10
+          text: 'Tu mejor aliado\n en compras y envíos.',
+          absolutePosition: { x: 50, y: 420 },
+        },
+        {
+          text: `UID: ${UID}`,
+          absolutePosition: { x: 50, y: 460 },
+          'bold': true,
+          fontSize: 12
         }
       ],
       defaultStyle: {
         font: 'Poppins'
-      },
-      styles: {
-        header: {
-          fontSize: 30,
-          bold: true,
-          color: '#f5832a'
-        }
       }
     };
-    pdfMake.createPdf(docDefinitions).open();
+    pdfMake.createPdf(docDefinitions).download();
   }
 
   getBase64ImageFromURL(url: any) {
@@ -150,6 +184,5 @@ export class ExportPdfService {
     });
 
   }
-
 
 }
