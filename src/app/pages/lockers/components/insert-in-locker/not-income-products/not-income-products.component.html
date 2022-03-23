@@ -13,7 +13,7 @@
 
             <div class="income-color">
 
-                <h4>
+                <h4 *ngIf="!formNotIncome.get('product')['controls'][i].controls.product.value?.id">
                     <strong>
                         Ingreso {{i+1}}
                     </strong>
