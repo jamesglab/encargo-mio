@@ -26,7 +26,8 @@
                     <h5>
                         PEC {{ formLockerHasProduct.get('product')['controls'][i].controls.product.value.id }}{{
                         formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value ?
-                        '━'+formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value : '' }}
+                        '━'+formLockerHasProduct.get('product')['controls'][i].controls.secuential_fraction.value : ''
+                        }}
                     </h5>
 
                     <h4 *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.order_service?.value">
@@ -289,6 +290,22 @@
                     <label class="form-check-label">
                         Envío Comercial
                     </label>
+                </div>
+
+                <br>
+
+                <div>
+                    <strong>Pendiente por Ingresar:</strong>
+                    {{ formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value
+                    ? formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value : 0 }}
+                    <br>
+                    <strong>Cantidad Ingresados:</strong>
+                    {{ formLockerHasProduct.get('product')['controls'][i].controls.incomed_quantity.value ?
+                    formLockerHasProduct.get('product')['controls'][i].controls.incomed_quantity.value : 0 }}
+                    <br>
+                    <strong>Cantidad Total:</strong>
+                    {{ formLockerHasProduct.get('product')['controls'][i].controls.pending_quantity.value +
+                    formLockerHasProduct.get('product')['controls'][i].controls.incomed_quantity.value}}
                 </div>
 
             </div>
