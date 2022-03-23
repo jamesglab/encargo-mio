@@ -46,6 +46,13 @@
   overflow-x: auto;
 }
 
+.container-image-default {
+  img {
+    height: 230px;
+    width: 230px;
+  }
+}
+
 .container-image {
   display: flex;
   img {

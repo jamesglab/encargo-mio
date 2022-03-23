@@ -172,9 +172,13 @@
 
               <div class="container-img-dropzone">
 
-                <div *ngIf="createProductForm.get('products')['controls'][i].controls.images.value.length === 0">
-                  <span class="mdi mdi-cloud-upload" style="font-size: 80px;"></span>
-                </div>
+                <ng-container *ngIf="createProductForm.get('products')['controls'][i].controls.image.value 
+                && createProductForm.get('products')['controls'][i].controls.images.value.length === 0">
+                  <div class="container-image-default">
+                    <img [src]="createProductForm.get('products')['controls'][i].controls.image.value" alt=""
+                      draggable="false" (error)="onImageError($event);" title="Imagen de la tienda.">
+                  </div>
+                </ng-container>
 
                 <div class="container-image" *ngIf="!isLoadingUpload">
 
@@ -202,6 +206,10 @@
 
                   </ng-container>
 
+                </div>
+
+                <div *ngIf="createProductForm.get('products')['controls'][i].controls.images.value.length === 0">
+                  <span class="mdi mdi-cloud-upload" style="font-size: 80px;"></span>
                 </div>
 
                 <h5>
@@ -370,7 +378,7 @@
         <div class="mt-3 d-flex justify-content-center h6">
 
           <div class="alert alert-primary" role="alert">
-            Aún no has agredado los productos a la orden.
+            Aún no has agregado productos a la orden.
           </div>
 
         </div>
