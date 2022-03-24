@@ -115,18 +115,24 @@ export const validateShippingstatus = (status) => {
             status_name = 'En generación de guía';
             break;
         case '3':
-            status_name = 'Enviado';
+            status_name = 'Validación';
             break;
         case '4':
-            status_name = 'Cancelado';
+            status_name = 'Bodega Int...';
             break;
         case '5':
-            status_name = 'Pago en revisión'
+            status_name = 'Enviado'
             break;
         case '6':
-            status_name = 'Fraccionado';
+            status_name = 'Cancelado';
             break;
         case '7':
+            status_name = 'Pago en Revisión'
+            break;
+        case '8':
+            status_name = 'Fragmentado'
+            break;
+        case '9':
             status_name = 'Entregado'
             break;
         default:
@@ -137,14 +143,16 @@ export const validateShippingstatus = (status) => {
 }
 
 export const SHIPPING_STATUS = [
-    { "status": 0, "name": "Consolidación", "english": "consolidation" },
-    { "status": 1, "name": "Por empacar", "english": "for_packing" },
-    { "status": 2, "name": "En generación de guía", "english": "in_guide" },
-    { "status": 3, "name": "Enviado", "english": "sended" },
-    { "status": 7, "name": "Entregado", "english": "delivered" },
-    { "status": 4, "name": "Cancelado", "english": "cancel" },
-    { "status": 5, "name": "Pago en revisión", "english": "in_check" },
-    { "status": 6, "name": "Fraccionado", "english": "fragmented" }
+    { "status": 0, "name": "Consolidación" },
+    { "status": 1, "name": "Por empacar" },
+    { "status": 2, "name": "Generación de guía", },
+    { "status": 3, "name": "Validación" },
+    { "status": 4, "name": "Bodega Inter" },
+    { "status": 5, "name": "Enviado" },
+    { "status": 9, "name": "Entregado" },
+    { "status": 6, "name": "Cancelado" },
+    { "status": 7, "name": "Pago en revisión" },
+    { "status": 8, "name": "Fraccionado" }
 ];
 
 // MEOTODO QUE RECIBE UN ARRAY Y LOS CAMPOS QUE SON REQUERIDOS EN LA SOLICITUD

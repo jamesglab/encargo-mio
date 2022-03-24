@@ -115,9 +115,10 @@
           <div class="d-flex">
 
             <div class="center">
+              <!--9 == ENTREGADO-->
               <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="getOrderById(data.id)"
                 [disabled]="isLoading">
-                {{ (data.status != 7) ? 'Editar': 'Detalle' }}
+                {{ (data.status != '9') ? 'Editar': 'Detalle' }}
               </button>
             </div>
 

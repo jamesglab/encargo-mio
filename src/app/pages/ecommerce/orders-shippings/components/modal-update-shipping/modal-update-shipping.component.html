@@ -19,11 +19,15 @@
 
   <div class="d-flex justify-content-around">
 
-    <button class="btn btn-success" (click)="generateLabel();" [disabled]="isLoadingLabel">
-      Generar Rótulo
-    </button>
+    <ng-container *ngIf="shippingToUpdate.status == '3'">
+      <!--En validacion-->
+      <button class="btn btn-success" (click)="generateLabel();" [disabled]="isLoadingLabel">
+        Generar Rótulo
+      </button>
+    </ng-container>
 
-    <ng-container *ngIf="shippingToUpdate.status == '2'">
+    <ng-container *ngIf="shippingToUpdate.status == '1'">
+      <!--Por empacar-->
       <button class="btn btn-warning" (click)="goToFragment();">
         Fraccionar Envío
       </button>
@@ -225,7 +229,7 @@
 
       </div>
 
-      <div class="col-md-6 col-sm-12" *ngIf="shippingToUpdate.status == '6'">
+      <div class="col-md-6 col-sm-12" *ngIf="shippingToUpdate.status == '8'"><!--Fraccionado-->
 
         <div class="fragmented-status">
           <div class="row">
@@ -610,7 +614,7 @@
   </button>
 
   <ng-container
-    *ngIf="shippingToUpdate.status !='0' && shippingToUpdate.status != '1'  && shippingToUpdate.status != '7'">
+    *ngIf="shippingToUpdate.status != '0' && shippingToUpdate.status != '1'  && shippingToUpdate.status != '9'">
     <button class="btn btn-primary" [disabled]="isLoading" (click)="updateShipping()">
       Actualizar
     </button>

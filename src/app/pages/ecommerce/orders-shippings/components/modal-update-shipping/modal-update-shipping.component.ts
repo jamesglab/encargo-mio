@@ -145,7 +145,7 @@ export class ModalUpdateShippingComponent implements OnInit {
     this.filteredUsers = this.updateShippingForm.controls.user.valueChanges.pipe(startWith(''), map(value => this._filter(value, 'users')));
 
     this.getInfoUser();
-    if (this.shippingToUpdate.status == "6") { //ONLY FOR FRACTIONED
+    if (this.shippingToUpdate.status == "8") { //ONLY FOR FRACTIONED
       this.getFractionedChildren();
     }
     this.disabledInputs();
