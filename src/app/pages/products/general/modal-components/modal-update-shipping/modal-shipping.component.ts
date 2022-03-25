@@ -206,16 +206,16 @@ export class ModalShippingComponent implements OnInit {
         }
       );
 
-    await this._orderService
-      .validateNotProducts(this.shippingToUpdate.id)
-      .subscribe(
-        (res: any) => {
-          this.message = { ...res };
-        },
-        (err) => {
-          throw err;
-        }
-      );
+    // await this._orderService
+    //   .validateNotProducts(this.shippingToUpdate.id)
+    //   .subscribe(
+    //     (res: any) => {
+    //       this.message = { ...res };
+    //     },
+    //     (err) => {
+    //       throw err;
+    //     }
+    //   );
 
     this.isLoadingData = false;
     this.isLoadingLabel = false;

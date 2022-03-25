@@ -133,7 +133,8 @@
               </button>
             </div>
 
-            <div class="delivery" *ngIf="data.status == 3 || data.status == 7" (click)="sendShippingTracking(data);">
+            <div class="delivery" *ngIf="data.status == '5' || data.status == '9'"
+              (click)="sendShippingTracking(data);">
               <img src="assets/images/delivery.png" alt="" draggable="false">
             </div>
 

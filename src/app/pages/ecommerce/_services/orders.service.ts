@@ -491,19 +491,19 @@ export class OrderService {
       );
   }
 
-  validateNotProducts(shipping_order: any) {
-    return this.http
-      .get<any>(
-        `${environment.microservices.management}shipping-order/validate-not-products`,
-        { headers: header, params: { shipping_order: shipping_order } }
-      )
-      .pipe(
-        map((res: any) => {
-          return res;
-        }),
-        catchError(handleError)
-      );
-  }
+  // validateNotProducts(shipping_order: any) {
+  //   return this.http
+  //     .get<any>(
+  //       `${environment.microservices.management}shipping-order/validate-not-products`,
+  //       { headers: header, params: { shipping_order: shipping_order } }
+  //     )
+  //     .pipe(
+  //       map((res: any) => {
+  //         return res;
+  //       }),
+  //       catchError(handleError)
+  //     );
+  // }
 
   deleteProduct(product: string): Observable<any> {
     return this.http

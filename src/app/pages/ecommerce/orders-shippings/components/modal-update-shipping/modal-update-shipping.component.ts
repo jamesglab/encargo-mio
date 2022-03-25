@@ -371,7 +371,7 @@ export class ModalUpdateShippingComponent implements OnInit {
   }
 
   updateShipping(): void {
-    if (this.status == 2) {
+    if (this.status == 3) { //En validación
       if (this.updateShippingForm.controls.guide_number.value == '' || this.updateShippingForm.controls.guide_number.value == null ||
         this.updateShippingForm.controls.conveyor.value == '' || this.updateShippingForm.controls.conveyor.value == null) {
         Swal.fire('Numero de guia y transportadora requerido', '', 'info');
@@ -393,7 +393,7 @@ export class ModalUpdateShippingComponent implements OnInit {
       .updateShipping(updateShipping({
         ...this.updateShippingForm.getRawValue(),
         deleted_products: this.deleted_products,
-        status: (this.status == 2) ? 3 : this.status,
+        status: (this.status == 2) ? 3 : this.status, //EN GENERACION GUIA -> VALIDACIÓN
         newShipping: this.newShipping
       })).subscribe((res: any) => {
         this.modalService.dismissAll();
