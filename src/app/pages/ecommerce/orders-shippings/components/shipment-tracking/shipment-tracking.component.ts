@@ -24,7 +24,7 @@ export class ShipmentTrackingComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if (!this.shipping_order.conveyor) {
+    if (!this.shipping_order.conveyor && !this.shipping_order.international_conveyor) {
       this.showNoConveyor = true;
     } else {
       this.updateConveyorStatus();
@@ -32,7 +32,8 @@ export class ShipmentTrackingComponent implements OnInit {
   }
 
   updateConveyorStatus(): void {
-    const { id, conveyor, guide_number_alph } = this.shipping_order;
+    const { id, conveyor, guide_number_alph,
+      international_conveyor, international_guide_number_alph } = this.shipping_order;
     this.isLoadingData = true;
     this._orderService.updateStatusConveyor({ shipping: { id, conveyor, guide_number_alph } })
       .subscribe((res) => {

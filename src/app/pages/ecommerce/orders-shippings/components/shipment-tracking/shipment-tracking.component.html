@@ -15,7 +15,22 @@
 
 
   <ng-container *ngIf="!showNoConveyor && !isLoadingData">
-    <ng-container *ngIf="shipping_order.conveyor && shipping_order.conveyor === 1 || shipping_order.conveyor === 2">
+    <ng-container *ngIf="(shipping_order.international_conveyor && shipping_order.international_conveyor === 1 || 
+    shipping_order.international_conveyor === 2)">
+      <div class="row">
+        <div class="col-xl-12 col-md-12 col-sm-12">
+          Seguimiento Servientrega Internacional:
+          <a href="{{getDetailUrl(shipping_order.international_guide_number_alph, shipping_order.international_conveyor)}}" target="_blank">
+            <span class="guide_number">
+              ({{shipping_order.international_guide_number_alph || '' }})
+            </span>
+          </a>
+          <br>
+        </div>
+      </div>
+      <br>
+    </ng-container>
+    <ng-container *ngIf="(shipping_order.conveyor && shipping_order.conveyor === 1 || shipping_order.conveyor === 2)">
       <div class="row">
         <div class="col-xl-12 col-md-12 col-sm-12">
           Seguimiento Servientrega:
