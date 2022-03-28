@@ -72,7 +72,9 @@ export class NotIncomeProductsComponent implements OnInit {
       if (this.params.secuential_fraction) {
         window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}&secuential_fraction=${this.params.secuential_fraction}#:~:text=PEC ${this.params.product}━${this.params.secuential_fraction}`, "_self");
       } else if (this.params.order_service) {
-        window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}#:~:text=PEC ${this.params.product}`, "_self");
+        if (this.params.product) {
+          window.open(`${location.origin}/lockers/insert-in-locker?order_service=${this.params.order_service}&product=${this.params.product}#:~:text=PEC ${this.params.product}`, "_self");
+        }
       }
     });
 
