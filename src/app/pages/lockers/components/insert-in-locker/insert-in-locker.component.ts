@@ -61,7 +61,7 @@ export class InsertInLockerComponent implements OnInit {
   checkParamId(): void {
 
     this.activatedRoute.queryParamMap.subscribe((params: any) => { this.params = params.params; });
-    
+
     this.loadingOrderQuery = true;
 
     if (this.params.order_service) {
@@ -197,9 +197,9 @@ export class InsertInLockerComponent implements OnInit {
         this.users = res;
         if (this.params.order_service || this.params.income) {
           this.formInsertLocker.controls.order_service.disable();
-          return;
+        } else {
+          this.formInsertLocker.controls.user.enable();
         }
-        this.formInsertLocker.controls.user.enable();
         resolve(this.users);
       }, err => {
         reject(err);
