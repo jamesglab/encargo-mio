@@ -389,11 +389,15 @@ export class ModalUpdateShippingComponent implements OnInit {
 
   updateConsolidate(): void {
     this.isLoading = true;
+    let status = this.status;
+    if(status < 5){
+      status = status + 1;
+    }
     this._orderService
       .updateShipping(updateShipping({
         ...this.updateShippingForm.getRawValue(),
         deleted_products: this.deleted_products,
-        status: (this.status == 2) ? 3 : this.status, //EN GENERACION GUIA -> VALIDACIÓN
+        status: status, //EN GENERACION GUIA -> VALIDACIÓN
         newShipping: this.newShipping
       })).subscribe((res: any) => {
         this.modalService.dismissAll();
