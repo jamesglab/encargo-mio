@@ -294,7 +294,7 @@ export class IncomeProductsComponent implements OnInit {
     if (this.formLockerHasProduct.controls.product['controls'][position].shipping_to_locker) {
       this.refreshShippingLocker.emit(this.formInsertLocker.controls.shipping_to_locker.value);
     } else {
-      this.refreshShippingLocker.emit(null);
+      this.refreshShippingLocker.emit(true);
     }
 
     if (this.formInsertLocker.invalid) {

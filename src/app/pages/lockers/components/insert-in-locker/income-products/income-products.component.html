@@ -54,7 +54,7 @@
                         <ng-container
                             *ngIf="formLockerHasProduct.get('product')['controls'][i].controls.images.value.length > 0">
 
-                            <carousel [cellsToShow]="1" [width]="300" [counter]="true" style="z-index: 0 !important;">
+                            <carousel [cellsToShow]="1" [counter]="true" style="z-index: 0 !important;">
 
                                 <div class="carousel-cell"
                                     *ngFor="let image of formLockerHasProduct.get('product')['controls'][i].controls.images.value; let i_image = index;">
@@ -65,7 +65,8 @@
                                             <span class="mdi mdi-delete remove-image"></span>
                                         </a>
 
-                                        <img [src]="image.Location" draggable="false" (error)="onImageError($event);">
+                                        <img class="image-carousel" [src]="image.Location" draggable="false"
+                                            (error)="onImageError($event);">
 
                                     </div>
 
