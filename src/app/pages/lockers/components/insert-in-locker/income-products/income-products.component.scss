@@ -121,3 +121,8 @@ a:hover {
 .item-hover:hover {
     cursor: pointer;
 }
+
+.image-carousel {
+    height: 200px !important;
+    object-fit: cover !important;
+}
